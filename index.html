@@ -55,7 +55,7 @@
 }
 
 *,*::before,*::after{box-sizing:border-box;}
-html{scroll-behavior:smooth;}
+html{scroll-behavior:smooth;overflow-x:hidden;}
 body{
   margin:0; background:var(--bg); color:var(--ink);
   font-family:var(--font-body); font-size:17.5px; line-height:1.7;
@@ -157,14 +157,34 @@ noscript .reveal{opacity:1;}
   body{font-size:16.5px;}
   .landmark__orb{width:96px;height:96px;}
   .landmark__orb svg{width:36px;height:36px;}
-  .landmark{width:min(58vw,220px);}
-  .landmark.pos-l{left:35%;}
-  .landmark.pos-r{left:65%;}
-}
-@media (max-width:400px){
-  .landmark{width:min(70vw,200px);}
-  .landmark.pos-l{left:40%;}
-  .landmark.pos-r{left:60%;}
+
+  /* The winding-path layout uses fixed pixel gaps tuned for desktop line-wrapping;
+     on narrow screens the same text wraps taller and the absolutely-positioned
+     landmarks/banners collide. Below this width we drop the path entirely and
+     stack everything in normal document flow instead, where each item's real
+     height pushes the next one down naturally. */
+  .journey{aspect-ratio:auto !important;}
+  .journey svg.track{display:none;}
+  .phase-banner, .landmark, .journey-end{
+    position:static;
+    left:auto;
+    right:auto;
+    top:auto;
+    transform:none;
+    width:100%;
+    max-width:360px;
+    margin:0 auto 2.75rem;
+  }
+  .phase-banner{margin-top:3.5rem;}
+  .phase-banner.reveal{transform:translateY(26px) scale(.96);}
+  .phase-banner.reveal.in-view{transform:none;}
+  .journey-end.reveal{transform:translateY(26px) scale(.96);}
+  .journey-end.reveal.in-view{transform:none;}
+
+  /* Ambient background blobs are offset for wide desktop viewports (e.g.
+     right:-180px reads as a small edge-bleed at 1200px, but overflows a
+     380px phone screen and forces the whole page wider than the viewport). */
+  .blob{display:none;}
 }
 </style>
 </head>
