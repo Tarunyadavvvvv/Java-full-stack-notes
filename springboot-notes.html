@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spring &amp; Spring Boot Interview Notes</title>
+<style>
+  :root{
+    --ink:#1a1a1a; --muted:#555; --accent:#1f6feb; --accent2:#0b4f9e;
+    --code-bg:#f6f8fa; --code-ink:#24292e; --border:#d8dee4;
+    --tip:#0a7d3c; --warn:#b54708; --note:#1f6feb; --gotcha:#c0392b;
+  }
+  *{box-sizing:border-box;}
+  html{font-size:13.5px;}
+  body{
+    font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); line-height:1.55; margin:0; padding:0 0 40px;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .page{max-width:900px; margin:0 auto; padding:0 26px;}
+  h1,h2,h3,h4{line-height:1.25; font-weight:700;}
+  h1{font-size:2.1rem; color:var(--accent2); margin:0 0 .2em;}
+  h2{font-size:1.55rem; color:var(--accent2); border-bottom:3px solid var(--accent);
+     padding-bottom:.2em; margin:2.2em 0 .8em; scroll-margin-top:12px;}
+  h3{font-size:1.2rem; color:#222; margin:1.6em 0 .5em;
+     border-left:4px solid var(--accent); padding-left:.5em; scroll-margin-top:12px;}
+  h4{font-size:1.02rem; color:#333; margin:1.2em 0 .4em;}
+  p{margin:.55em 0;}
+  ul,ol{margin:.5em 0 .8em; padding-left:1.5em;}
+  li{margin:.25em 0;}
+  code{font-family:"Cascadia Code",Consolas,"Courier New",monospace; font-size:.86em;
+       background:var(--code-bg); color:#b5266a; padding:.1em .35em; border-radius:4px;}
+  pre{background:var(--code-bg); border:1px solid var(--border); border-radius:8px;
+      padding:12px 14px; overflow:auto; margin:.7em 0; line-height:1.45;}
+  pre code{background:none; color:var(--code-ink); padding:0; font-size:.83rem; white-space:pre;}
+  pre code.hljs{padding:0;}
+  table{border-collapse:collapse; width:100%; margin:.9em 0; font-size:.9rem;}
+  th,td{border:1px solid var(--border); padding:7px 10px; text-align:left; vertical-align:top;}
+  th{background:#eef4ff; color:#0b4f9e; font-weight:600;}
+  tr:nth-child(even) td{background:#fafbfc;}
+  .tag{display:inline-block; font-size:.7rem; font-weight:700; padding:.12em .55em;
+       border-radius:20px; vertical-align:middle; margin-left:.4em;}
+  .tag.basic{background:#e6f4ea; color:#0a7d3c;}
+  .tag.inter{background:#fff4e5; color:#b54708;}
+  .tag.adv{background:#fde8ef; color:#b5266a;}
+  .tag.crit{background:#fbe0e0; color:#a11; border:1px solid #f0b4b4;}
+  .tag.new{background:#e7f0ff; color:#0b4f9e; border:1px solid #b9d3ff;}
+  .callout{border-radius:8px; padding:10px 14px; margin:.8em 0; border-left:5px solid;}
+  .callout.tip{background:#eaf7ef; border-color:var(--tip);}
+  .callout.warn{background:#fff3e6; border-color:var(--warn);}
+  .callout.note{background:#eaf1fb; border-color:var(--note);}
+  .callout.gotcha{background:#fdeeec; border-color:var(--gotcha);}
+  .callout b{display:inline-block; margin-bottom:.1em;}
+  .callout.gotcha > b:first-child{color:var(--gotcha);}
+  .qa{margin:.7em 0; padding:10px 14px 10px 16px; background:#f0f6ff;
+      border:1px solid #cfe0ff; border-left:5px solid var(--accent); border-radius:8px;}
+  .qa .q{font-weight:700; color:var(--accent2);}
+  .qa .q::before{content:"Q. "; color:var(--accent);}
+  .qa .a{margin-top:.3em;}
+  .qa .a::before{content:"A. "; font-weight:700; color:var(--tip);}
+  .legend{border:1px solid var(--border); border-radius:10px; padding:8px 16px; margin:1.2em 0; background:#fbfdff;}
+  .legend table{margin:.5em 0;}
+  .toc{columns:2; column-gap:34px; font-size:.92rem; margin:1em 0 0;}
+  .toc a{text-decoration:none; color:#0b4f9e;}
+  .toc a:hover{text-decoration:underline;}
+  .toc ol{padding-left:1.3em; margin:.2em 0;}
+  .toc b{display:block; margin-top:.6em;}
+  .cover{text-align:center; padding:70px 0 24px;}
+  .cover .sub{color:var(--muted); font-size:1.1rem; margin-top:.4em;}
+  .cover .meta{color:var(--muted); font-size:.9rem; margin-top:1.5em;}
+  .lead{font-size:1.02rem; color:#333;}
+  hr{border:none; border-top:1px solid var(--border); margin:2.5em 0;}
+  .pillset span{display:inline-block; background:#eef4ff; color:#0b4f9e; border:1px solid #cfe0ff;
+     border-radius:20px; padding:.15em .7em; margin:.15em .2em; font-size:.82rem;}
+  .mermaid, .diagram{margin:1.1em 0; text-align:center; background:#fff;}
+  .mermaid svg, .diagram svg{max-width:100%; height:auto;}
+  .backtop{font-size:.72rem; font-weight:600; color:#8aa; text-decoration:none; float:right; margin-top:.5em;}
+  .backtop:hover{color:var(--accent);}
+  @media print{
+    h2{page-break-after:avoid;} h3,h4{page-break-after:avoid;}
+    pre,table,.qa,.callout,.mermaid,.diagram{page-break-inside:avoid;}
+    .toc{columns:2;}
+    .pagebreak{page-break-before:always;}
+    .backtop{display:none;}
+    a{color:inherit;}
+  }
+  @page{margin:16mm 14mm;}
+  pre code.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 1em
+}
+code.hljs {
+  padding: 3px 5px
+}
+/*!
+  Theme: GitHub
+  Description: Light theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-light
+  Current colors taken from GitHub's CSS
+*/
+.hljs {
+  color: #24292e;
+  background: #ffffff
+}
+.hljs-doctag,
+.hljs-keyword,
+.hljs-meta .hljs-keyword,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-type,
+.hljs-variable.language_ {
+  /* prettylights-syntax-keyword */
+  color: #d73a49
+}
+.hljs-title,
+.hljs-title.class_,
+.hljs-title.class_.inherited__,
+.hljs-title.function_ {
+  /* prettylights-syntax-entity */
+  color: #6f42c1
+}
+.hljs-attr,
+.hljs-attribute,
+.hljs-literal,
+.hljs-meta,
+.hljs-number,
+.hljs-operator,
+.hljs-variable,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-selector-id {
+  /* prettylights-syntax-constant */
+  color: #005cc5
+}
+.hljs-regexp,
+.hljs-string,
+.hljs-meta .hljs-string {
+  /* prettylights-syntax-string */
+  color: #032f62
+}
+.hljs-built_in,
+.hljs-symbol {
+  /* prettylights-syntax-variable */
+  color: #e36209
+}
+.hljs-comment,
+.hljs-code,
+.hljs-formula {
+  /* prettylights-syntax-comment */
+  color: #6a737d
+}
+.hljs-name,
+.hljs-quote,
+.hljs-selector-tag,
+.hljs-selector-pseudo {
+  /* prettylights-syntax-entity-tag */
+  color: #22863a
+}
+.hljs-subst {
+  /* prettylights-syntax-storage-modifier-import */
+  color: #24292e
+}
+.hljs-section {
+  /* prettylights-syntax-markup-heading */
+  color: #005cc5;
+  font-weight: bold
+}
+.hljs-bullet {
+  /* prettylights-syntax-markup-list */
+  color: #735c0f
+}
+.hljs-emphasis {
+  /* prettylights-syntax-markup-italic */
+  color: #24292e;
+  font-style: italic
+}
+.hljs-strong {
+  /* prettylights-syntax-markup-bold */
+  color: #24292e;
+  font-weight: bold
+}
+.hljs-addition {
+  /* prettylights-syntax-markup-inserted */
+  color: #22863a;
+  background-color: #f0fff4
+}
+.hljs-deletion {
+  /* prettylights-syntax-markup-deleted */
+  color: #b31d28;
+  background-color: #ffeef0
+}
+.hljs-char.escape_,
+.hljs-link,
+.hljs-params,
+.hljs-property,
+.hljs-punctuation,
+.hljs-tag {
+  /* purposely ignored */
+  
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="cover">
+  <h1>Spring &amp; Spring Boot</h1>
+  <div class="sub">Complete Interview Preparation Notes — Beginner to Advanced</div>
+  <div class="meta">A Senior Architect's Guide • IoC/DI, Spring Boot, AOP, REST APIs, Spring Data JPA, Transactions, Spring Security, WebSockets, gRPC, Microservices &amp; Resilience, Caching, Messaging, Testing, Docker</div>
+</div>
+
+<h2 id="toc" style="page-break-before:avoid;">Table of Contents</h2>
+<div class="toc">
+<ol>
+<li><a href="#s12">Spring Core &amp; IoC / DI</a></li>
+<li><a href="#s13">Bean Lifecycle &amp; Scopes</a></li>
+<li><a href="#s14">Spring Boot Essentials</a></li>
+<li><a href="#s15">Aspect-Oriented Programming</a></li>
+<li><a href="#s16">REST APIs</a></li>
+<li><a href="#s17">Validation</a></li>
+<li><a href="#s18">Exception Handling (Spring)</a></li>
+<li><a href="#s19">Spring Data JPA &amp; Hibernate</a></li>
+<li><a href="#s20">Transactions</a></li>
+<li><a href="#s21">Spring Security</a></li>
+<li><a href="#s22">WebSockets with Spring <span class="tag new">New</span></a></li>
+<li><a href="#s23">gRPC with Spring Boot <span class="tag new">New</span></a></li>
+<li><a href="#s24">Microservices &amp; Resilience</a></li>
+<li><a href="#s25">Caching</a></li>
+<li><a href="#s26">Messaging (Kafka / RabbitMQ)</a></li>
+<li><a href="#s27">Testing</a></li>
+<li><a href="#s28">Actuator &amp; Observability</a></li>
+<li><a href="#s29">Docker &amp; Deployment</a></li>
+<li><a href="#s30">Common Interview Scenarios</a></li>
+</ol>
+<b>Appendix</b>
+<ol>
+<li><a href="#cheat">Quick Revision Cheat-Sheet</a></li>
+</ol>
+</div>
+
+<div class="legend">
+<p><b>How to read these notes — difficulty tags.</b> Each section is tagged so you can plan revision passes. Some subsections carry their own tag when they are notably harder than the section around them.</p>
+<table>
+<tbody><tr><th>Tag</th><th>Meaning</th><th>How to use it</th></tr>
+<tr><td><span class="tag basic">Basic</span></td><td>Fundamentals every Spring developer must know cold.</td><td>Should be instant recall; skim to confirm.</td></tr>
+<tr><td><span class="tag inter">Intermediate</span></td><td>Standard interview material; expect follow-up questions.</td><td>Be able to explain <em>and</em> give an example.</td></tr>
+<tr><td><span class="tag adv">Advanced</span></td><td>Senior-level depth, internals, concurrency, trade-offs.</td><td>Practice reasoning out loud; know the "why".</td></tr>
+<tr><td><span class="tag crit">Critical</span></td><td>High-frequency "gotcha" topics that decide interviews (N+1, self-invocation, rollback rules).</td><td>Memorize the pitfall <em>and</em> the fix.</td></tr>
+</tbody></table>
+<p>Other cues: <b>Q&amp;A boxes</b> (blue) are quick-fire interview questions with model answers; <span style="color:var(--gotcha);font-weight:700;">Production Gotchas</span> (red callouts) flag real-world traps — each leaves a placeholder for you to drop in your own war story.</p>
+</div>
+
+<div class="callout note"><b>Note:</b> Core Java (fundamentals, collections, concurrency, JVM, streams, design patterns) is covered in the companion <b>Core Java</b> notes. This document assumes that knowledge and focuses purely on Spring &amp; Spring Boot.</div>
+
+<h2 id="s12">12. Spring Core &amp; IoC / DI <span class="tag inter">Intermediate</span> <a class="backtop" href="#toc">↑ Contents</a></h2>
+
+<h3>12.1 Inversion of Control (IoC)</h3>
+<p><b>IoC</b> means the framework, not your code, controls object creation and wiring. The <b>IoC container</b> (ApplicationContext) instantiates, configures, and assembles beans. <b>Dependency Injection (DI)</b> is the mechanism that implements IoC — dependencies are supplied to an object rather than created by it.</p>
+
+<h3>12.2 Types of dependency injection</h3>
+<table>
+<tbody><tr><th>Type</th><th>How</th><th>Notes</th></tr>
+<tr><td><b>Constructor</b></td><td>Via constructor args</td><td><b>Recommended</b> — immutable, enables final fields, fails fast, testable</td></tr>
+<tr><td><b>Setter</b></td><td>Via setter methods</td><td>For optional dependencies</td></tr>
+<tr><td><b>Field</b></td><td><code>@Autowired</code> on field</td><td>Concise but hard to test &amp; hides dependencies — avoid</td></tr>
+</tbody></table>
+<pre><code class="hljs language-java"><span class="hljs-meta">@Service</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">OrderService</span> {
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> PaymentGateway gateway;        <span class="hljs-comment">// final = enforced dependency</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">OrderService</span><span class="hljs-params">(PaymentGateway gateway)</span>{ <span class="hljs-comment">// constructor injection</span>
+        <span class="hljs-built_in">this</span>.gateway = gateway;                  <span class="hljs-comment">// @Autowired optional if single ctor</span>
+    }
+}</code></pre>
+
+<h3>12.3 Spring stereotypes &amp; configuration</h3>
+<table>
+<tbody><tr><th>Annotation</th><th>Role</th></tr>
+<tr><td><code>@Component</code></td><td>Generic Spring-managed bean</td></tr>
+<tr><td><code>@Service</code></td><td>Business logic layer (semantic)</td></tr>
+<tr><td><code>@Repository</code></td><td>Persistence layer + exception translation</td></tr>
+<tr><td><code>@Controller / @RestController</code></td><td>Web layer</td></tr>
+<tr><td><code>@Configuration + @Bean</code></td><td>Java-based bean definitions</td></tr>
+</tbody></table>
+
+<h3>12.4 @Autowired resolution &amp; ambiguity</h3>
+<ul>
+<li>By <b>type</b> first; if multiple candidates, by <b>name</b>.</li>
+<li><b>@Qualifier("beanName")</b> — pick a specific bean.</li>
+<li><b>@Primary</b> — default winner when multiple match.</li>
+<li><b>@Profile</b> — activate beans per environment (dev/prod).</li>
+</ul>
+
+<div class="qa">
+<div class="q">BeanFactory vs ApplicationContext?</div>
+<div class="a"><code>BeanFactory</code> is the basic container with lazy bean instantiation. <code>ApplicationContext</code> extends it adding eager singleton init, i18n, event publishing, AOP integration, and annotation support. Use ApplicationContext in apps.</div>
+</div>
+<div class="qa">
+<div class="q">Why prefer constructor injection?</div>
+<div class="a">Dependencies are explicit and mandatory, fields can be <code>final</code> (immutable/thread-safe), the object is always fully initialized, circular dependencies are caught at startup, and unit testing needs no Spring (just <code>new</code> with mocks).</div>
+</div>
+<div class="callout warn"><b>Circular dependency:</b> A → B → A. With constructor injection Spring throws at startup. Fix by redesign, <code>@Lazy</code>, or setter injection (last resort).</div>
+
+<h2 id="s13">13. Bean Lifecycle &amp; Scopes <span class="tag inter">Intermediate</span> <a class="backtop" href="#toc">↑ Contents</a></h2>
+
+<h3>13.1 Bean lifecycle</h3>
+<pre><code class="plain">1. Instantiate (constructor)
+2. Populate properties / inject dependencies
+3. *Aware callbacks (BeanNameAware, ApplicationContextAware...)
+4. BeanPostProcessor.postProcessBeforeInitialization
+5. @PostConstruct  -&gt;  InitializingBean.afterPropertiesSet()  -&gt;  custom init-method
+6. BeanPostProcessor.postProcessAfterInitialization   (AOP proxies created here)
+7. ... Bean in use ...
+8. @PreDestroy  -&gt;  DisposableBean.destroy()  -&gt;  custom destroy-method (singletons only)</code></pre>
+<pre><code class="hljs language-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CacheLoader</span> {
+    <span class="hljs-meta">@PostConstruct</span> <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">warmUp</span><span class="hljs-params">()</span>{ <span class="hljs-comment">/* load cache */</span> }
+    <span class="hljs-meta">@PreDestroy</span>   <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">flush</span><span class="hljs-params">()</span>{  <span class="hljs-comment">/* cleanup    */</span> }
+}</code></pre>
+
+<h3>13.2 Bean scopes</h3>
+<table>
+<tbody><tr><th>Scope</th><th>Lifetime</th></tr>
+<tr><td><b>singleton</b> (default)</td><td>One instance per container</td></tr>
+<tr><td><b>prototype</b></td><td>New instance every injection/lookup</td></tr>
+<tr><td><b>request</b></td><td>One per HTTP request (web)</td></tr>
+<tr><td><b>session</b></td><td>One per HTTP session (web)</td></tr>
+<tr><td><b>application</b></td><td>One per ServletContext</td></tr>
+</tbody></table>
+<div class="callout warn"><b>Pitfall:</b> Injecting a <b>prototype</b> bean into a <b>singleton</b> gives you only one prototype instance (created once). Use <code>ObjectFactory</code>, <code>Provider</code>, or method injection (<code>@Lookup</code>) to get a fresh one each time.</div>
+<div class="callout note"><b>Singleton beans must be stateless</b> — they are shared across all threads. Storing request state in singleton fields causes concurrency bugs.</div>
+
+
+<h2 id="s14">14. Spring Boot Essentials <span class="tag inter">Intermediate</span> <a class="backtop" href="#toc">↑ Contents</a></h2>
+
+<h3>14.1 What Spring Boot adds</h3>
+<ul>
+<li><b>Auto-configuration</b> — configures beans based on classpath + properties.</li>
+<li><b>Starters</b> — curated dependency bundles (<code>spring-boot-starter-web</code>, <code>-data-jpa</code>, <code>-security</code>).</li>
+<li><b>Embedded server</b> — Tomcat/Jetty/Undertow; run as a standalone fat JAR.</li>
+<li><b>Opinionated defaults</b> — sensible config you can override.</li>
+<li><b>Actuator</b> — production-ready metrics/health endpoints.</li>
+</ul>
+
+<h3>14.2 @SpringBootApplication</h3>
+<p>A meta-annotation combining three:</p>
+<table>
+<tbody><tr><th>Annotation</th><th>Purpose</th></tr>
+<tr><td><code>@Configuration</code></td><td>Marks a config class (source of bean defs)</td></tr>
+<tr><td><code>@EnableAutoConfiguration</code></td><td>Triggers auto-config based on classpath</td></tr>
+<tr><td><code>@ComponentScan</code></td><td>Scans the package &amp; sub-packages for beans</td></tr>
+</tbody></table>
+
+<h3>14.3 How auto-configuration works</h3>
+<ul>
+<li>Auto-config classes are listed in <code>META-INF/spring/...AutoConfiguration.imports</code> (was <code>spring.factories</code>).</li>
+<li>They are <b>conditional</b>: <code>@ConditionalOnClass</code>, <code>@ConditionalOnMissingBean</code>, <code>@ConditionalOnProperty</code>, etc.</li>
+<li>Example: if <code>DataSource.class</code> is on the classpath and you haven't defined one, Boot auto-creates it.</li>
+</ul>
+<div class="callout tip"><b>Debug:</b> run with <code>--debug</code> or check <code>/actuator/conditions</code> to see the auto-configuration report (matched / not-matched conditions).</div>
+
+<h3>14.4 Configuration &amp; profiles</h3>
+<ul>
+<li><b>application.properties / application.yml</b> — externalized config.</li>
+<li><b>Profiles:</b> <code>application-dev.yml</code>, activated via <code>spring.profiles.active=dev</code>.</li>
+<li><b>@ConfigurationProperties</b> — type-safe binding of a property group to a POJO (preferred over scattered <code>@Value</code>).</li>
+<li><b>Property precedence:</b> command-line args &gt; env vars &gt; profile-specific &gt; application.properties &gt; defaults.</li>
+</ul>
+<pre><code class="hljs language-java"><span class="hljs-meta">@ConfigurationProperties(prefix = "app.mail")</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">record</span> <span class="hljs-title class_">MailProps</span><span class="hljs-params">(String host, <span class="hljs-type">int</span> port, <span class="hljs-type">boolean</span> tls)</span> {}</code></pre>
+
+<div class="qa">
+<div class="q">How does an embedded server work and how is the app packaged?</div>
+<div class="a">The starter pulls in Tomcat as a library; Boot starts it programmatically in <code>main()</code>. The app builds a self-contained "fat JAR" (with a nested-jar layout and <code>JarLauncher</code>) runnable via <code>java -jar</code>.</div>
+</div>
+<div class="qa">
+<div class="q">@ConditionalOnMissingBean — why is it key to auto-config?</div>
+<div class="a">It lets Boot back off when you define your own bean. Your explicit bean wins; the auto-configured default only applies when you haven't provided one — giving override-friendly defaults.</div>
+</div>
+
+
+<h2 id="s15">15. Aspect-Oriented Programming (AOP) <span class="tag adv">Advanced</span> <a class="backtop" href="#toc">↑ Contents</a></h2>
+<p>AOP modularizes <b>cross-cutting concerns</b> (logging, security, transactions, metrics) that span many classes, keeping them out of business logic.</p>
+
+<h3>15.1 Terminology</h3>
+<table>
+<tbody><tr><th>Term</th><th>Meaning</th></tr>
+<tr><td><b>Aspect</b></td><td>Module of cross-cutting concern (<code>@Aspect</code> class)</td></tr>
+<tr><td><b>Join point</b></td><td>A point in execution (in Spring: method execution)</td></tr>
+<tr><td><b>Pointcut</b></td><td>Expression selecting join points</td></tr>
+<tr><td><b>Advice</b></td><td>Action at a join point</td></tr>
+<tr><td><b>Weaving</b></td><td>Linking aspects to target objects (Spring: runtime via proxies)</td></tr>
+</tbody></table>
+
+<h3>15.2 Advice types</h3>
+<ul>
+<li><code>@Before</code>, <code>@After</code> (finally), <code>@AfterReturning</code>, <code>@AfterThrowing</code>, <code>@Around</code> (most powerful — wraps the call).</li>
+</ul>
+<pre><code class="hljs language-java"><span class="hljs-meta">@Aspect</span> <span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">LoggingAspect</span> {
+    <span class="hljs-meta">@Around("execution(* com.app.service..*(..))")</span>
+    <span class="hljs-keyword">public</span> Object <span class="hljs-title function_">logTime</span><span class="hljs-params">(ProceedingJoinPoint pjp)</span> <span class="hljs-keyword">throws</span> Throwable {
+        <span class="hljs-type">long</span> <span class="hljs-variable">t</span> <span class="hljs-operator">=</span> System.nanoTime();
+        <span class="hljs-keyword">try</span> { <span class="hljs-keyword">return</span> pjp.proceed(); }
+        <span class="hljs-keyword">finally</span> { log.info(<span class="hljs-string">"{} took {}ns"</span>, pjp.getSignature(), System.nanoTime()-t); }
+    }
+}</code></pre>
+
+<h3>15.3 How Spring AOP works (proxies)</h3>
+<ul>
+<li>Spring creates a <b>proxy</b> around the bean: <b>JDK dynamic proxy</b> if it implements an interface, else <b>CGLIB</b> subclass proxy.</li>
+<li>Advice runs in the proxy, then it delegates to the real method.</li>
+</ul>
+<div class="callout warn"><b>Self-invocation pitfall:</b> Calling one <code>@Transactional</code>/advised method from another method <em>in the same class</em> bypasses the proxy — the advice does NOT run. Call via the injected bean reference or refactor to another bean.</div>
+
+
+<h2 id="s16">16. REST APIs <span class="tag inter">Intermediate</span> <a class="backtop" href="#toc">↑ Contents</a></h2>
+
+<h3>16.1 REST principles</h3>
+<p>Representational State Transfer: <b>stateless</b>, resource-oriented (nouns, not verbs), uses HTTP methods &amp; status codes, supports caching, and ideally is HATEOAS-driven.</p>
+
+<h3>16.2 HTTP methods &amp; idempotency</h3>
+<table>
+<tbody><tr><th>Method</th><th>Use</th><th>Idempotent?</th><th>Safe?</th></tr>
+<tr><td>GET</td><td>Read</td><td>Yes</td><td>Yes</td></tr>
+<tr><td>POST</td><td>Create</td><td>No</td><td>No</td></tr>
+<tr><td>PUT</td><td>Replace/update</td><td>Yes</td><td>No</td></tr>
+<tr><td>PATCH</td><td>Partial update</td><td>No*</td><td>No</td></tr>
+<tr><td>DELETE</td><td>Remove</td><td>Yes</td><td>No</td></tr>
+</tbody></table>
+
+<h3>16.3 Common status codes</h3>
+<table>
+<tbody><tr><th>Code</th><th>Meaning</th></tr>
+<tr><td>200 / 201 / 204</td><td>OK / Created / No Content</td></tr>
+<tr><td>400 / 401 / 403 / 404</td><td>Bad Request / Unauthorized / Forbidden / Not Found</td></tr>
+<tr><td>409 / 422</td><td>Conflict / Unprocessable Entity</td></tr>
+<tr><td>429</td><td>Too Many Requests (rate limit)</td></tr>
+<tr><td>500 / 502 / 503</td><td>Server Error / Bad Gateway / Unavailable</td></tr>
+</tbody></table>
+
+<h3>16.4 Spring MVC REST controller</h3>
+<pre><code class="hljs language-java"><span class="hljs-meta">@RestController</span>
+<span class="hljs-meta">@RequestMapping("/api/v1/users")</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UserController</span> {
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> UserService service;
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">UserController</span><span class="hljs-params">(UserService s)</span>{ <span class="hljs-built_in">this</span>.service = s; }
+
+    <span class="hljs-meta">@GetMapping("/{id}")</span>
+    <span class="hljs-keyword">public</span> UserDto <span class="hljs-title function_">get</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable</span> Long id)</span>{ <span class="hljs-keyword">return</span> service.find(id); }
+
+    <span class="hljs-meta">@PostMapping</span>
+    <span class="hljs-meta">@ResponseStatus(HttpStatus.CREATED)</span>
+    <span class="hljs-keyword">public</span> UserDto <span class="hljs-title function_">create</span><span class="hljs-params">(<span class="hljs-meta">@Valid</span> <span class="hljs-meta">@RequestBody</span> CreateUserReq req)</span>{ <span class="hljs-keyword">return</span> service.create(req); }
+
+    <span class="hljs-meta">@GetMapping</span>
+    <span class="hljs-keyword">public</span> Page&lt;UserDto&gt; <span class="hljs-title function_">list</span><span class="hljs-params">(<span class="hljs-meta">@RequestParam(defaultValue="0")</span> <span class="hljs-type">int</span> page)</span>{ ... }
+}</code></pre>
+<table>
+<tbody><tr><th>Annotation</th><th>Binds</th></tr>
+<tr><td><code>@PathVariable</code></td><td>URI template segment</td></tr>
+<tr><td><code>@RequestParam</code></td><td>Query/form param</td></tr>
+<tr><td><code>@RequestBody</code></td><td>JSON body → object (Jackson)</td></tr>
+<tr><td><code>@RequestHeader</code></td><td>HTTP header</td></tr>
+<tr><td><code>ResponseEntity&lt;T&gt;</code></td><td>Full control of status/headers/body</td></tr>
+</tbody></table>
+
+<h3>16.5 Best practices</h3>
+<ul>
+<li>Version your API (<code>/api/v1</code>), use plural nouns, nest sub-resources.</li>
+<li>Return DTOs, never entities (decouples API from DB; avoids lazy-loading leaks).</li>
+<li>Paginate large lists; use proper status codes; document with OpenAPI/Swagger.</li>
+<li>Make writes idempotent where possible (idempotency keys for POST).</li>
+</ul>
+<div class="callout note"><b>@Controller vs @RestController:</b> <code>@RestController</code> = <code>@Controller</code> + <code>@ResponseBody</code> on every method, so return values are serialized straight to the response body (JSON).</div>
+
+<h3>16.6 Idempotent APIs — the two-layer pattern <span class="tag crit">Critical</span></h3>
+<p>Networks retry. A client whose <code>POST /payments</code> times out will resend it — and without protection you charge the card twice. An operation is <b>idempotent</b> when repeating it has the same effect as doing it once. <code>GET</code>/<code>PUT</code>/<code>DELETE</code> are naturally idempotent; <code>POST</code> ("create", "charge", "send") is not, so you engineer it.</p>
+<p>The robust production pattern uses <b>two layers</b>: a fast in-memory guard to short-circuit the common duplicate, backed by a durable database constraint that <em>cannot</em> be bypassed even under a race.</p>
+<table>
+<tbody><tr><th>Layer</th><th>Mechanism</th><th>Role</th><th>Weakness alone</th></tr>
+<tr><td><b>1 — fast path</b></td><td>Redis <code>SETNX key</code> + TTL</td><td>Absorbs the vast majority of retries without touching the DB; cheap and O(1)</td><td>Race: two simultaneous retries can both miss; Redis can evict/restart</td></tr>
+<tr><td><b>2 — backstop</b></td><td>DB <code>UNIQUE</code> constraint on the idempotency key</td><td><b>Authoritative</b> — the database physically cannot insert the same key twice</td><td>A DB hit per request would be slower without Layer 1 in front</td></tr>
+</tbody></table>
+<pre><code class="hljs language-java"><span class="hljs-comment">// Client sends a stable "Idempotency-Key" header per logical operation (a UUID).</span>
+<span class="hljs-meta">@PostMapping("/payments")</span>
+<span class="hljs-keyword">public</span> ResponseEntity&lt;PaymentResult&gt; <span class="hljs-title function_">pay</span><span class="hljs-params">(
+        <span class="hljs-meta">@RequestHeader("Idempotency-Key")</span> String key,
+        <span class="hljs-meta">@Valid</span> <span class="hljs-meta">@RequestBody</span> ChargeRequest req)</span> {
+
+    <span class="hljs-comment">// ---- Layer 1: Redis fast path (SETNX + TTL) ----</span>
+    <span class="hljs-comment">// setIfAbsent returns false if the key already exists -&gt; a duplicate in flight/recent.</span>
+    <span class="hljs-type">Boolean</span> <span class="hljs-variable">fresh</span> <span class="hljs-operator">=</span> redis.opsForValue()
+            .setIfAbsent(<span class="hljs-string">"idem:"</span> + key, <span class="hljs-string">"IN_PROGRESS"</span>, Duration.ofMinutes(<span class="hljs-number">10</span>));
+    <span class="hljs-keyword">if</span> (Boolean.FALSE.equals(fresh)) {
+        <span class="hljs-type">PaymentResult</span> <span class="hljs-variable">cached</span> <span class="hljs-operator">=</span> store.findResult(key);           <span class="hljs-comment">// return prior result if done</span>
+        <span class="hljs-keyword">return</span> cached != <span class="hljs-literal">null</span> ? ResponseEntity.ok(cached)
+                              : ResponseEntity.status(HttpStatus.CONFLICT).build(); <span class="hljs-comment">// still running</span>
+    }
+
+    <span class="hljs-keyword">try</span> {
+        <span class="hljs-comment">// ---- Layer 2: durable unique-constraint backstop ----</span>
+        <span class="hljs-comment">// idempotency_keys(key VARCHAR PRIMARY KEY, ...) in the SAME transaction as the effect.</span>
+        <span class="hljs-type">PaymentResult</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> paymentService.chargeOnce(key, req); <span class="hljs-comment">// throws on duplicate key</span>
+        redis.opsForValue().set(<span class="hljs-string">"idem:"</span> + key, <span class="hljs-string">"DONE"</span>, Duration.ofHours(<span class="hljs-number">24</span>));
+        <span class="hljs-keyword">return</span> ResponseEntity.ok(result);
+
+    } <span class="hljs-keyword">catch</span> (DuplicateKeyException dup) {
+        <span class="hljs-comment">// A concurrent request won the race and already inserted the key -&gt; return its result.</span>
+        <span class="hljs-keyword">return</span> ResponseEntity.ok(store.findResult(key));
+    }
+}</code></pre>
+<pre><code class="hljs language-java"><span class="hljs-meta">@Transactional</span>
+<span class="hljs-keyword">public</span> PaymentResult <span class="hljs-title function_">chargeOnce</span><span class="hljs-params">(String key, ChargeRequest req)</span> {
+    <span class="hljs-comment">// Insert the key and perform the side effect atomically in one DB transaction.</span>
+    idempotencyRepo.insert(<span class="hljs-keyword">new</span> <span class="hljs-title class_">IdempotencyKey</span>(key));   <span class="hljs-comment">// UNIQUE violation =&gt; DuplicateKeyException</span>
+    <span class="hljs-type">PaymentResult</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> gateway.charge(req);        <span class="hljs-comment">// real side effect</span>
+    resultStore.save(key, result);
+    <span class="hljs-keyword">return</span> result;                                     <span class="hljs-comment">// commit persists key + result together</span>
+}</code></pre>
+<div class="callout note"><b>Why both layers?</b> Redis makes the happy path fast and keeps duplicate load off the DB; the unique constraint is the <em>only</em> thing that actually guarantees exactly-once effects when Redis misses, evicts, or two retries race. Pass the same key through to the payment provider (e.g. Stripe's <code>Idempotency-Key</code>) so it is idempotent end-to-end too.</div>
+
+<div class="qa">
+<div class="q">Your payment endpoint is called twice due to a client retry — how do you avoid double-charging?</div>
+<div class="a">Require a client-supplied idempotency key. Check Redis with <code>SETNX</code> + TTL to short-circuit fast (Layer 1); on a miss, insert the key against a DB <b>unique constraint</b> inside the same transaction as the charge (Layer 2). If the insert throws a duplicate-key error, a concurrent request already handled it — return the stored result. The unique constraint is the real guarantee; Redis is the optimization.</div>
+</div>
+
+<h2 id="s17">17. Validation <span class="tag basic">Basic</span> <a class="backtop" href="#toc">↑ Contents</a></h2>
+<p>Bean Validation (JSR-380, <code>jakarta.validation</code>) via Hibernate Validator. Annotate DTO fields and trigger with <code>@Valid</code>.</p>
+<pre><code class="hljs language-java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">record</span> <span class="hljs-title class_">CreateUserReq</span><span class="hljs-params">(
+    @NotBlank String name,
+    @Email String email,
+    @Min(18)</span> <span class="hljs-type">int</span> age,
+    <span class="hljs-meta">@Size(min=8)</span> String password) {}
+
+<span class="hljs-meta">@PostMapping</span>
+<span class="hljs-keyword">public</span> UserDto <span class="hljs-title function_">create</span><span class="hljs-params">(<span class="hljs-meta">@Valid</span> <span class="hljs-meta">@RequestBody</span> CreateUserReq req)</span>{ ... }</code></pre>
+<table>
+<tbody><tr><th>Annotation</th><th>Checks</th></tr>
+<tr><td>@NotNull / @NotEmpty / @NotBlank</td><td>not null / not empty / not blank (text)</td></tr>
+<tr><td>@Size, @Min, @Max</td><td>length / numeric bounds</td></tr>
+<tr><td>@Email, @Pattern</td><td>format / regex</td></tr>
+<tr><td>@Positive, @Past, @Future</td><td>numbers / dates</td></tr>
+</tbody></table>
+<ul>
+<li><b>@Valid</b> triggers validation and cascades into nested objects; <b>@Validated</b> (class-level) enables validation groups &amp; method-level validation on service beans.</li>
+<li>Failure throws <code>MethodArgumentNotValidException</code> → handle in a global handler to return clean 400 errors.</li>
+<li>Custom constraints: define an annotation + <code>ConstraintValidator</code>.</li>
+</ul>
+
+
+<h2 id="s18">18. Exception Handling in Spring <span class="tag inter">Intermediate</span> <a class="backtop" href="#toc">↑ Contents</a></h2>
+<p>Centralize error handling with <code>@RestControllerAdvice</code> + <code>@ExceptionHandler</code> for consistent error responses.</p>
+<pre><code class="hljs language-java"><span class="hljs-meta">@RestControllerAdvice</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">GlobalExceptionHandler</span> {
+
+    <span class="hljs-meta">@ExceptionHandler(ResourceNotFoundException.class)</span>
+    <span class="hljs-meta">@ResponseStatus(HttpStatus.NOT_FOUND)</span>
+    <span class="hljs-keyword">public</span> ApiError <span class="hljs-title function_">notFound</span><span class="hljs-params">(ResourceNotFoundException ex)</span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ApiError</span>(<span class="hljs-number">404</span>, ex.getMessage());
+    }
+
+    <span class="hljs-meta">@ExceptionHandler(MethodArgumentNotValidException.class)</span>
+    <span class="hljs-meta">@ResponseStatus(HttpStatus.BAD_REQUEST)</span>
+    <span class="hljs-keyword">public</span> ApiError <span class="hljs-title function_">invalid</span><span class="hljs-params">(MethodArgumentNotValidException ex)</span>{
+        <span class="hljs-type">var</span> <span class="hljs-variable">msgs</span> <span class="hljs-operator">=</span> ex.getBindingResult().getFieldErrors().stream()
+            .map(e -&gt; e.getField()+<span class="hljs-string">": "</span>+e.getDefaultMessage()).toList();
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ApiError</span>(<span class="hljs-number">400</span>, <span class="hljs-string">"Validation failed"</span>, msgs);
+    }
+}</code></pre>
+<table>
+<tbody><tr><th>Mechanism</th><th>Scope</th></tr>
+<tr><td><code>@ExceptionHandler</code></td><td>Single controller</td></tr>
+<tr><td><code>@RestControllerAdvice</code></td><td>Global, all controllers</td></tr>
+<tr><td><code>ResponseStatusException</code></td><td>Throw with status inline</td></tr>
+<tr><td><code>ErrorController</code> / <code>ProblemDetail</code></td><td>Fallback / RFC 7807 responses (Boot 3)</td></tr>
+</tbody></table>
+<div class="callout tip"><b>Best practice:</b> return a consistent error schema (timestamp, status, code, message, path, fieldErrors). Use RFC 7807 <code>ProblemDetail</code> in Spring Boot 3. Never leak stack traces to clients.</div>
+
+
+<h2 id="s19">19. Spring Data JPA &amp; Hibernate <span class="tag adv">Advanced</span> <a class="backtop" href="#toc">↑ Contents</a></h2>
+
+<h3>19.1 The stack</h3>
+<p><b>JPA</b> is the specification; <b>Hibernate</b> is the most common implementation (ORM); <b>Spring Data JPA</b> sits on top to remove boilerplate via repository interfaces.</p>
+
+<h3>19.2 Repositories</h3>
+<pre><code class="hljs language-java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">UserRepository</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">JpaRepository</span>&lt;User, Long&gt; {
+    List&lt;User&gt; <span class="hljs-title function_">findByLastNameAndActiveTrue</span><span class="hljs-params">(String lastName)</span>;   <span class="hljs-comment">// derived query</span>
+    <span class="hljs-meta">@Query("select u from User u where u.email = :email")</span>
+    Optional&lt;User&gt; <span class="hljs-title function_">findByEmail</span><span class="hljs-params">(<span class="hljs-meta">@Param("email")</span> String email)</span>;  <span class="hljs-comment">// JPQL</span>
+}</code></pre>
+<table>
+<tbody><tr><th>Interface</th><th>Adds</th></tr>
+<tr><td>CrudRepository</td><td>save, findById, delete, count</td></tr>
+<tr><td>PagingAndSortingRepository</td><td>pagination &amp; sorting</td></tr>
+<tr><td>JpaRepository</td><td>flush, batch, JPA-specific ops</td></tr>
+</tbody></table>
+
+<h3>19.3 Entity mapping &amp; relationships</h3>
+<pre><code class="hljs language-java"><span class="hljs-meta">@Entity</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Order</span> {
+    <span class="hljs-meta">@Id</span> <span class="hljs-meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span> Long id;
+    <span class="hljs-meta">@ManyToOne(fetch = FetchType.LAZY)</span> <span class="hljs-meta">@JoinColumn(name="customer_id")</span> Customer customer;
+    <span class="hljs-meta">@OneToMany(mappedBy="order", cascade=CascadeType.ALL, orphanRemoval=true)</span>
+    List&lt;OrderItem&gt; items = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();
+}</code></pre>
+<table>
+<tbody><tr><th>Relationship</th><th>Default fetch</th></tr>
+<tr><td>@OneToOne / @ManyToOne</td><td>EAGER</td></tr>
+<tr><td>@OneToMany / @ManyToMany</td><td>LAZY</td></tr>
+</tbody></table>
+
+<h3>19.4 The N+1 query problem <span class="tag crit">Critical</span></h3>
+<p>Loading N parents then one query per parent for its children = N+1 queries. <b>Fix</b> with a <code>JOIN FETCH</code>, an <code>@EntityGraph</code>, or batch fetching (<code>@BatchSize</code>).</p>
+<pre><code class="hljs language-java"><span class="hljs-meta">@Query("select o from Order o join fetch o.items where o.id = :id")</span>
+Optional&lt;Order&gt; <span class="hljs-title function_">findWithItems</span><span class="hljs-params">(<span class="hljs-meta">@Param("id")</span> Long id)</span>;</code></pre>
+
+<h3>19.5 Lazy vs Eager &amp; LazyInitializationException</h3>
+<ul>
+<li><b>LAZY</b> — load on first access (proxy). Accessing it after the session/transaction closes throws <code>LazyInitializationException</code>.</li>
+<li><b>Fix:</b> fetch within the transaction, use a fetch join, map to a DTO inside the service, or an <code>@EntityGraph</code> — <em>not</em> "open session in view" (an anti-pattern).</li>
+</ul>
+
+<h3>19.6 Persistence context &amp; entity states</h3>
+<table>
+<tbody><tr><th>State</th><th>Meaning</th></tr>
+<tr><td>Transient</td><td>New, not associated with persistence context</td></tr>
+<tr><td>Managed / Persistent</td><td>Tracked; changes auto-flushed (dirty checking)</td></tr>
+<tr><td>Detached</td><td>Was managed, session closed</td></tr>
+<tr><td>Removed</td><td>Scheduled for deletion</td></tr>
+</tbody></table>
+<ul>
+<li><b>First-level cache</b> = the persistence context (per transaction; always on).</li>
+<li><b>Dirty checking</b> — Hibernate auto-detects changes to managed entities and issues UPDATEs at flush.</li>
+<li><b>Second-level cache</b> (optional, e.g. Ehcache) = shared across sessions.</li>
+</ul>
+
+<div class="qa">
+<div class="q">save() vs saveAndFlush(); when does the INSERT happen?</div>
+<div class="a"><code>save()</code> registers the entity; the SQL may be deferred until flush (transaction commit or query trigger). <code>saveAndFlush()</code> flushes immediately, so the SQL runs at once.</div>
+</div>
+<div class="qa">
+<div class="q">FetchType.LAZY default but eager queries still run — why?</div>
+<div class="a">Likely the N+1 problem or accidental access of lazy associations during serialization. Map to DTOs and fetch exactly what you need with join fetch / entity graphs.</div>
+</div>
+<div class="callout warn"><b>Pitfalls:</b> serializing entities directly (triggers lazy loads / N+1); <code>CascadeType.ALL</code> + REMOVE deleting too much; bidirectional <code>toString</code>/<code>equals</code> causing infinite loops; using <code>GenerationType.AUTO</code> blindly (can pick a slow strategy on some DBs).</div>
+<div class="callout gotcha"><b>🐛 Production Gotchas — JPA / Hibernate.</b> The classics: (1) <b>N+1 in a serialized response</b> — the endpoint looked fine in tests but fired hundreds of queries in prod because Jackson walked a lazy collection; (2) <b>OSIV (Open-Session-In-View) masking the problem</b> in dev then blowing up connection-pool time in prod; (3) <code>save()</code> in a loop without batch inserts (<code>hibernate.jdbc.batch_size</code>); (4) <code>@Transactional</code> on a read that keeps a DB connection open across a slow external call. <em>(Your war story: __________________________ — the query count, how you caught it (p6spy / datasource-proxy / Hibernate statistics), the fix.)</em></div>
+
+
+<h2 id="s20">20. Transactions <span class="tag adv">Advanced</span> <a class="backtop" href="#toc">↑ Contents</a></h2>
+
+<h3>20.1 @Transactional &amp; ACID</h3>
+<p><code>@Transactional</code> declaratively wraps a method in a DB transaction (begin / commit / rollback) via an AOP proxy. Transactions guarantee <b>ACID</b>: Atomicity, Consistency, Isolation, Durability.</p>
+
+<h3>20.2 Propagation</h3>
+<table>
+<tbody><tr><th>Propagation</th><th>Behaviour</th></tr>
+<tr><td><b>REQUIRED</b> (default)</td><td>Join existing tx, or create new</td></tr>
+<tr><td>REQUIRES_NEW</td><td>Always new tx; suspend current</td></tr>
+<tr><td>SUPPORTS</td><td>Join if exists, else non-transactional</td></tr>
+<tr><td>MANDATORY</td><td>Must run within an existing tx (else error)</td></tr>
+<tr><td>NESTED</td><td>Nested tx with savepoint</td></tr>
+<tr><td>NEVER / NOT_SUPPORTED</td><td>Run non-transactionally</td></tr>
+</tbody></table>
+
+<h3>20.3 Isolation levels</h3>
+<table>
+<tbody><tr><th>Level</th><th>Prevents</th></tr>
+<tr><td>READ_UNCOMMITTED</td><td>nothing (dirty reads possible)</td></tr>
+<tr><td>READ_COMMITTED</td><td>dirty reads</td></tr>
+<tr><td>REPEATABLE_READ</td><td>dirty + non-repeatable reads</td></tr>
+<tr><td>SERIALIZABLE</td><td>all (incl. phantom reads); slowest</td></tr>
+</tbody></table>
+<table>
+<tbody><tr><th>Anomaly</th><th>What</th></tr>
+<tr><td>Dirty read</td><td>Read uncommitted data</td></tr>
+<tr><td>Non-repeatable read</td><td>Same row differs within a tx</td></tr>
+<tr><td>Phantom read</td><td>New rows appear matching a re-run query</td></tr>
+</tbody></table>
+
+<h3>20.4 Rollback rules</h3>
+<div class="callout warn"><b>Default:</b> Spring rolls back on <b>unchecked</b> (RuntimeException) &amp; Errors only — <b>NOT</b> on checked exceptions. Override with <code>@Transactional(rollbackFor = Exception.class)</code>.</div>
+<div class="callout warn"><b>Self-invocation:</b> like all AOP, calling a <code>@Transactional</code> method from another method in the same bean bypasses the proxy — no transaction. Also: <code>@Transactional</code> only works on <b>public</b> methods (proxy limitation).</div>
+
+<h3>20.5 Optimistic vs Pessimistic Locking <span class="tag crit">Critical</span></h3>
+<p>When two transactions update the same row concurrently, one must not silently clobber the other (the <b>lost update</b> problem). JPA offers two strategies.</p>
+<table>
+<tbody><tr><th></th><th>Optimistic locking</th><th>Pessimistic locking</th></tr>
+<tr><td>Assumption</td><td>Conflicts are rare</td><td>Conflicts are likely</td></tr>
+<tr><td>Mechanism</td><td>A version column checked at commit (no DB lock held)</td><td>DB row lock held for the transaction (<code>SELECT ... FOR UPDATE</code>)</td></tr>
+<tr><td>On conflict</td><td><code>OptimisticLockException</code> → caller retries</td><td>Second txn blocks until the first commits/rolls back</td></tr>
+<tr><td>Concurrency</td><td>High (no blocking)</td><td>Lower (serialized on the row)</td></tr>
+<tr><td>Risk</td><td>Wasted work on retry under high contention</td><td>Deadlocks &amp; reduced throughput; lock timeouts</td></tr>
+<tr><td>Best for</td><td>Read-heavy, low-contention (most web apps)</td><td>Hot rows, financial ledgers, short critical sections</td></tr>
+</tbody></table>
+<h4>Optimistic: <code>@Version</code></h4>
+<p>Add a version field; Hibernate appends <code>WHERE version = ?</code> to every UPDATE and increments it. If zero rows match (someone else already bumped the version), it throws <code>OptimisticLockException</code> (Spring wraps it as <code>ObjectOptimisticLockingFailureException</code>).</p>
+<pre><code class="hljs language-java"><span class="hljs-meta">@Entity</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Account</span> {
+    <span class="hljs-meta">@Id</span> Long id;
+    <span class="hljs-meta">@Version</span> Long version;      <span class="hljs-comment">// managed by Hibernate; never set it manually</span>
+    BigDecimal balance;
+}
+<span class="hljs-comment">// Generated on update:</span>
+<span class="hljs-comment">// UPDATE account SET balance=?, version=version+1 WHERE id=? AND version=?</span>
+<span class="hljs-comment">//   -&gt; 0 rows updated =&gt; OptimisticLockException (someone changed it first)</span></code></pre>
+<h4>Handling the exception with a retry strategy</h4>
+<p>Optimistic conflicts are expected, not exceptional — the correct response is usually to <b>reload and retry</b> a bounded number of times, then surface a <code>409 Conflict</code> if it keeps failing.</p>
+<pre><code class="hljs language-java"><span class="hljs-comment">// Option A: Spring Retry, declaratively</span>
+<span class="hljs-meta">@Retryable(retryFor = ObjectOptimisticLockingFailureException.class,
+           maxAttempts = 3, backoff = @Backoff(delay = 50, multiplier = 2))</span>
+<span class="hljs-meta">@Transactional</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">withdraw</span><span class="hljs-params">(Long accountId, BigDecimal amount)</span> {
+    <span class="hljs-type">Account</span> <span class="hljs-variable">acc</span> <span class="hljs-operator">=</span> accountRepo.findById(accountId).orElseThrow();
+    acc.setBalance(acc.getBalance().subtract(amount));   <span class="hljs-comment">// version checked at commit</span>
+}
+
+<span class="hljs-meta">@Recover</span>  <span class="hljs-comment">// called when all retries are exhausted</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">recover</span><span class="hljs-params">(ObjectOptimisticLockingFailureException ex, Long accountId, BigDecimal amount)</span> {
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ConflictException</span>(<span class="hljs-string">"Account "</span> + accountId + <span class="hljs-string">" is busy, please retry"</span>);
+}</code></pre>
+<pre><code class="hljs language-java"><span class="hljs-comment">// Option B: pessimistic lock when contention is genuinely high</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">AccountRepository</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">JpaRepository</span>&lt;Account, Long&gt; {
+    <span class="hljs-meta">@Lock(LockModeType.PESSIMISTIC_WRITE)</span>   <span class="hljs-comment">// SELECT ... FOR UPDATE</span>
+    <span class="hljs-meta">@Query("select a from Account a where a.id = :id")</span>
+    Optional&lt;Account&gt; <span class="hljs-title function_">findByIdForUpdate</span><span class="hljs-params">(<span class="hljs-meta">@Param("id")</span> Long id)</span>;
+}</code></pre>
+<div class="callout note"><b>Rule of thumb:</b> default to <b>optimistic</b> (<code>@Version</code>) — it scales and avoids held locks. Reach for <b>pessimistic</b> only for genuinely hot rows or when a retry storm would be worse than blocking. Each retry must run in a <em>fresh</em> transaction with a fresh entity read, or you'll just re-throw on the same stale version.</div>
+
+<h3>20.6 @TransactionalEventListener phases</h3>
+<p>A plain <code>@EventListener</code> runs <b>synchronously inside</b> the publisher's transaction — so if you publish an "order placed" event and a listener sends an email or enqueues a Kafka message, that side effect fires <em>before the transaction commits</em>. If the transaction then rolls back, you've emailed the customer about an order that doesn't exist. <code>@TransactionalEventListener</code> binds the listener to a <b>transaction phase</b> instead.</p>
+<table>
+<tbody><tr><th>Phase</th><th>Fires</th><th>Typical use</th></tr>
+<tr><td><code>BEFORE_COMMIT</code></td><td>Just before commit (still in the tx)</td><td>Last-chance validation / extra writes that must be part of the same commit</td></tr>
+<tr><td><b><code>AFTER_COMMIT</code></b> (default)</td><td>Only after a successful commit</td><td><b>Async side effects</b>: publish to Kafka, send email/SMS, invalidate cache, call another service</td></tr>
+<tr><td><code>AFTER_ROLLBACK</code></td><td>After the tx rolls back</td><td>Compensation, failure metrics, alerting</td></tr>
+<tr><td><code>AFTER_COMPLETION</code></td><td>After commit <em>or</em> rollback</td><td>Cleanup that must run either way (release resources)</td></tr>
+</tbody></table>
+<pre><code class="hljs language-java"><span class="hljs-meta">@Service</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">OrderService</span> {
+    <span class="hljs-meta">@Transactional</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">placeOrder</span><span class="hljs-params">(Order order)</span> {
+        orderRepo.save(order);
+        events.publishEvent(<span class="hljs-keyword">new</span> <span class="hljs-title class_">OrderPlacedEvent</span>(order.getId())); <span class="hljs-comment">// published, not yet delivered</span>
+    }
+}
+
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">OrderEventListener</span> {
+    <span class="hljs-comment">// Fires ONLY if the order transaction actually committed -&gt; safe to trigger external effects.</span>
+    <span class="hljs-meta">@Async</span>
+    <span class="hljs-meta">@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onCommitted</span><span class="hljs-params">(OrderPlacedEvent e)</span> {
+        kafkaTemplate.send(<span class="hljs-string">"orders"</span>, e.orderId());   <span class="hljs-comment">// no phantom messages on rollback</span>
+        mailService.sendConfirmation(e.orderId());
+    }
+}</code></pre>
+<div class="callout warn"><b>Why AFTER_COMMIT matters:</b> it is the clean fix for the <b>dual-write problem</b> in its simplest form — you never publish an event for data that didn't persist. For at-least-once guarantees against a broker outage, combine it with the <b>outbox pattern</b> (write the event to an outbox table in the same transaction, relay it separately). Note: work started in <code>AFTER_COMMIT</code> runs <em>outside</em> the original transaction — if you need to write to the DB there, open a new one (and prefer <code>@Async</code> so you don't block the caller).</div>
+
+<div class="qa">
+<div class="q">When use REQUIRES_NEW?</div>
+<div class="a">When an inner operation must commit independently regardless of the outer transaction — e.g. audit logging that should persist even if the main business transaction rolls back.</div>
+</div>
+<div class="callout gotcha"><b>🐛 Production Gotchas — Transactions.</b> Frequent offenders: (1) <b>@Transactional silently not applied</b> — self-invocation, a non-public method, or a missing proxy; (2) a <b>checked exception that didn't roll back</b> because you forgot <code>rollbackFor</code>; (3) a long transaction spanning an external HTTP call, holding a DB connection and causing pool exhaustion; (4) publishing a Kafka message inside the tx (should be <code>AFTER_COMMIT</code>); (5) <code>REQUIRES_NEW</code> deadlocking against its own parent transaction on the same row. <em>(Your war story: __________________________ — symptom, root cause, fix.)</em></div>
+
+<h2 id="s21">21. Spring Security <span class="tag adv">Advanced</span> <a class="backtop" href="#toc">↑ Contents</a></h2>
+
+<h3>21.1 Authentication vs Authorization</h3>
+<table>
+<tbody><tr><th>Authentication (AuthN)</th><th>Authorization (AuthZ)</th></tr>
+<tr><td>Who are you?</td><td>What can you do?</td></tr>
+<tr><td>Login / credentials / token</td><td>Roles / permissions / scopes</td></tr>
+</tbody></table>
+
+<h3>21.2 Architecture</h3>
+<p>Security is a chain of <b>servlet filters</b>. Key pieces:</p>
+<ul>
+<li><b>SecurityFilterChain</b> — ordered filters intercepting every request.</li>
+<li><b>AuthenticationManager → AuthenticationProvider</b> — validate credentials.</li>
+<li><b>UserDetailsService</b> — load user + roles.</li>
+<li><b>PasswordEncoder</b> — <code>BCryptPasswordEncoder</code> (never store plaintext).</li>
+<li><b>SecurityContextHolder</b> — holds the authenticated principal (ThreadLocal).</li>
+</ul>
+<pre><code class="hljs language-java"><span class="hljs-meta">@Bean</span>
+SecurityFilterChain <span class="hljs-title function_">chain</span><span class="hljs-params">(HttpSecurity http)</span> <span class="hljs-keyword">throws</span> Exception {
+    http.csrf(c -&gt; c.disable())                       <span class="hljs-comment">// stateless API</span>
+        .authorizeHttpRequests(a -&gt; a
+            .requestMatchers(<span class="hljs-string">"/api/public/**"</span>).permitAll()
+            .requestMatchers(<span class="hljs-string">"/api/admin/**"</span>).hasRole(<span class="hljs-string">"ADMIN"</span>)
+            .anyRequest().authenticated())
+        .sessionManagement(s -&gt; s.sessionCreationPolicy(STATELESS))
+        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+    <span class="hljs-keyword">return</span> http.build();
+}</code></pre>
+
+<h3>21.3 JWT vs session</h3>
+<table>
+<tbody><tr><th></th><th>Session-based</th><th>JWT (token)</th></tr>
+<tr><td>State</td><td>Server stores session</td><td>Stateless (claims in token)</td></tr>
+<tr><td>Scaling</td><td>Needs sticky/shared session</td><td>Scales horizontally</td></tr>
+<tr><td>Revocation</td><td>Easy (delete session)</td><td>Hard (needs blacklist/short TTL)</td></tr>
+</tbody></table>
+<div class="callout note"><b>JWT structure:</b> <code>header.payload.signature</code> (Base64URL). Server verifies the signature with its secret/public key — no DB lookup needed. Keep access tokens short-lived; use refresh tokens.</div>
+
+<h3>21.4 Method security &amp; common protections</h3>
+<ul>
+<li><code>@PreAuthorize("hasRole('ADMIN')")</code>, <code>@PostAuthorize</code>, <code>@Secured</code> after <code>@EnableMethodSecurity</code>.</li>
+<li><b>CSRF</b> — enable for browser/session apps; disable for stateless token APIs.</li>
+<li><b>CORS</b> — configure allowed origins for cross-domain calls.</li>
+<li><b>OAuth2 / OIDC</b> — delegated auth via providers (Google, Keycloak); Spring offers resource-server &amp; client support.</li>
+</ul>
+
+
+<h2 id="s22">22. WebSockets with Spring <span class="tag adv">Advanced</span> <span class="tag new">New</span> <a class="backtop" href="#toc">↑ Contents</a></h2>
+<p>HTTP is request/response; <b>WebSockets</b> upgrade a single TCP connection to <b>full-duplex</b>, letting the server push to the client without polling — the backbone of chat, live dashboards, notifications, and collaborative editing.</p>
+
+<h3>22.1 Raw WebSocket vs STOMP / SockJS</h3>
+<table>
+<tbody><tr><th></th><th>Raw WebSocket</th><th>STOMP over WebSocket</th></tr>
+<tr><td>Level</td><td>Low-level byte/text frames</td><td>Messaging sub-protocol (frames, destinations, subscriptions)</td></tr>
+<tr><td>Routing</td><td>You parse messages &amp; route manually</td><td>Destination-based (<code>/topic</code>, <code>/queue</code>, <code>/app</code>) with a message broker</td></tr>
+<tr><td>Pub/Sub</td><td>DIY</td><td>Built in (subscribe to destinations)</td></tr>
+<tr><td>Fallback</td><td>None</td><td><b>SockJS</b> falls back to HTTP streaming/long-polling when WS is blocked</td></tr>
+<tr><td>Use when</td><td>Simple, custom binary protocol</td><td>App messaging, broadcast, per-user queues (the common choice)</td></tr>
+</tbody></table>
+<div class="callout note"><b>STOMP</b> (Simple Text-Oriented Messaging Protocol) gives you a message broker model on top of WebSocket: clients <em>subscribe</em> to destinations and the server <em>publishes</em> to them — far less plumbing than raw frames. <b>SockJS</b> is the graceful-degradation layer for networks/proxies that block WebSockets.</div>
+
+<h3>22.2 Configuration &amp; a STOMP endpoint</h3>
+<pre><code class="hljs language-java"><span class="hljs-meta">@Configuration</span>
+<span class="hljs-meta">@EnableWebSocketMessageBroker</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">WsConfig</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">WebSocketMessageBrokerConfigurer</span> {
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">registerStompEndpoints</span><span class="hljs-params">(StompEndpointRegistry registry)</span> {
+        registry.addEndpoint(<span class="hljs-string">"/ws"</span>)          <span class="hljs-comment">// handshake URL</span>
+                .setAllowedOriginPatterns(<span class="hljs-string">"*"</span>)
+                .withSockJS();               <span class="hljs-comment">// enable SockJS fallback</span>
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">configureMessageBroker</span><span class="hljs-params">(MessageBrokerRegistry registry)</span> {
+        registry.setApplicationDestinationPrefixes(<span class="hljs-string">"/app"</span>); <span class="hljs-comment">// client -&gt; @MessageMapping</span>
+        registry.enableSimpleBroker(<span class="hljs-string">"/topic"</span>, <span class="hljs-string">"/queue"</span>);    <span class="hljs-comment">// in-memory broker (dev)</span>
+        registry.setUserDestinationPrefix(<span class="hljs-string">"/user"</span>);         <span class="hljs-comment">// per-user messaging</span>
+    }
+}</code></pre>
+
+<h3>22.3 Handling &amp; broadcasting messages</h3>
+<pre><code class="hljs language-java"><span class="hljs-meta">@Controller</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ChatController</span> {
+
+    <span class="hljs-comment">// Client SENDs to /app/chat.send ; return value is broadcast to /topic/room</span>
+    <span class="hljs-meta">@MessageMapping("/chat.send")</span>
+    <span class="hljs-meta">@SendTo("/topic/room")</span>
+    <span class="hljs-keyword">public</span> ChatMessage <span class="hljs-title function_">handle</span><span class="hljs-params">(ChatMessage in)</span> {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ChatMessage</span>(in.user(), in.text(), Instant.now());
+    }
+
+    <span class="hljs-comment">// Push to a single user's private queue (/user/{name}/queue/notifications)</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> SimpMessagingTemplate template;
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">ChatController</span><span class="hljs-params">(SimpMessagingTemplate template)</span>{ <span class="hljs-built_in">this</span>.template = template; }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">notifyUser</span><span class="hljs-params">(String username, Notification n)</span> {
+        template.convertAndSendToUser(username, <span class="hljs-string">"/queue/notifications"</span>, n);
+    }
+
+    <span class="hljs-comment">// Broadcast from anywhere (e.g. a scheduled job) to all subscribers</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">broadcast</span><span class="hljs-params">(PriceTick tick)</span> {
+        template.convertAndSend(<span class="hljs-string">"/topic/prices"</span>, tick);
+    }
+}</code></pre>
+
+<h3>22.4 Scaling across instances <span class="tag crit">Critical</span></h3>
+<p>The <code>enableSimpleBroker</code> in-memory broker keeps subscriptions in the JVM heap — fine for one node, broken across many. If User A is connected to instance 1 and User B to instance 2, a message broadcast on instance 1 never reaches B.</p>
+<ul>
+<li><b>External STOMP broker relay</b> — point Spring at RabbitMQ or ActiveMQ (<code>enableStompBrokerRelay("/topic","/queue")</code>). All instances share the broker, so subscriptions and broadcasts span the cluster.</li>
+<li><b>Redis pub/sub relay</b> — a lighter option: publish messages to Redis and have every instance fan them out to its local WebSocket sessions.</li>
+<li><b>Sticky sessions</b> at the load balancer keep a client pinned to the instance holding its socket; combine with a shared broker for cross-instance delivery.</li>
+<li>WebSockets are stateful connections — plan for <b>connection limits per node</b>, graceful drain on deploy, and reconnection/heartbeat (STOMP heartbeats) on the client.</li>
+</ul>
+<pre><code class="hljs language-java"><span class="hljs-comment">// Cluster-ready: replace the simple broker with an external relay</span>
+<span class="hljs-meta">@Override</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">configureMessageBroker</span><span class="hljs-params">(MessageBrokerRegistry registry)</span> {
+    registry.setApplicationDestinationPrefixes(<span class="hljs-string">"/app"</span>);
+    registry.enableStompBrokerRelay(<span class="hljs-string">"/topic"</span>, <span class="hljs-string">"/queue"</span>)
+            .setRelayHost(<span class="hljs-string">"rabbitmq"</span>).setRelayPort(<span class="hljs-number">61613</span>)
+            .setClientLogin(<span class="hljs-string">"guest"</span>).setClientPasscode(<span class="hljs-string">"guest"</span>);
+}</code></pre>
+
+<div class="qa">
+<div class="q">Why choose STOMP+SockJS over a raw WebSocket?</div>
+<div class="a">STOMP gives you a destination-based pub/sub model (subscribe to <code>/topic/...</code>, send to <code>/app/...</code>, per-user <code>/user/queue/...</code>) and integrates with a message broker — so you write almost no routing code. SockJS adds automatic fallback to HTTP streaming/long-polling when proxies or firewalls block WebSockets, improving reach. Use raw WebSocket only for a simple, custom protocol.</div>
+</div>
+<div class="qa">
+<div class="q">How do WebSockets scale beyond one server?</div>
+<div class="a">The default in-memory simple broker is per-JVM. Use an external broker relay (RabbitMQ/ActiveMQ) or a Redis pub/sub relay so all instances share subscriptions, and enable sticky sessions so each client stays on the node holding its socket. Broadcasts then reach subscribers on every instance.</div>
+</div>
+
+
+<h2 id="s23">23. gRPC with Spring Boot <span class="tag adv">Advanced</span> <span class="tag new">New</span> <a class="backtop" href="#toc">↑ Contents</a></h2>
+<p><b>gRPC</b> is a high-performance RPC framework using <b>Protocol Buffers</b> (protobuf) for a compact binary contract and <b>HTTP/2</b> for multiplexed, streaming transport. It shines for low-latency, strongly-typed <b>internal service-to-service</b> communication.</p>
+
+<h3>23.1 The protobuf contract</h3>
+<p>You define the service and messages once in a <code>.proto</code> file; the protobuf compiler generates strongly-typed stubs for every language. The contract is the single source of truth.</p>
+<pre><code class="plain">syntax = "proto3";
+package inventory;
+option java_package = "com.app.grpc";
+
+service InventoryService {
+  rpc GetStock (StockRequest) returns (StockReply);              // unary
+  rpc WatchStock (StockRequest) returns (stream StockReply);      // server streaming
+}
+
+message StockRequest { string sku = 1; }
+message StockReply   { string sku = 1; int32 quantity = 2; }</code></pre>
+
+<h3>23.2 grpc-spring-boot-starter</h3>
+<p>The community <code>grpc-spring-boot-starter</code> auto-configures an embedded gRPC server, registers <code>@GrpcService</code> beans, and lets you inject stubs as clients — so gRPC feels like ordinary Spring.</p>
+<pre><code class="hljs language-java"><span class="hljs-comment">// Server: implement the generated base class, expose it as a Spring bean</span>
+<span class="hljs-meta">@GrpcService</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">InventoryGrpcService</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">InventoryServiceGrpc</span>.InventoryServiceImplBase {
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">getStock</span><span class="hljs-params">(StockRequest req, StreamObserver&lt;StockReply&gt; obs)</span> {
+        <span class="hljs-type">StockReply</span> <span class="hljs-variable">reply</span> <span class="hljs-operator">=</span> StockReply.newBuilder()
+            .setSku(req.getSku())
+            .setQuantity(lookup(req.getSku()))
+            .build();
+        obs.onNext(reply);   <span class="hljs-comment">// send the single response</span>
+        obs.onCompleted();   <span class="hljs-comment">// close the call</span>
+    }
+}</code></pre>
+<pre><code class="hljs language-java"><span class="hljs-comment">// Client: inject a generated blocking stub and call it like a local method</span>
+<span class="hljs-meta">@Service</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">StockClient</span> {
+    <span class="hljs-meta">@GrpcClient("inventory")</span>
+    <span class="hljs-keyword">private</span> InventoryServiceGrpc.InventoryServiceBlockingStub stub;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">stock</span><span class="hljs-params">(String sku)</span> {
+        <span class="hljs-keyword">return</span> stub.getStock(StockRequest.newBuilder().setSku(sku).build())
+                   .getQuantity();
+    }
+}</code></pre>
+
+<h3>23.3 Unary vs streaming</h3>
+<table>
+<tbody><tr><th>Call type</th><th>Shape</th><th>Use for</th></tr>
+<tr><td><b>Unary</b></td><td>1 request → 1 response</td><td>Ordinary RPC (the REST-equivalent)</td></tr>
+<tr><td><b>Server streaming</b></td><td>1 request → stream of responses</td><td>Live feeds, large result sets, progress updates</td></tr>
+<tr><td><b>Client streaming</b></td><td>Stream of requests → 1 response</td><td>Uploads, batching, telemetry ingestion</td></tr>
+<tr><td><b>Bidirectional</b></td><td>Both stream independently</td><td>Chat, real-time sync, long-lived sessions</td></tr>
+</tbody></table>
+
+<h3>23.4 gRPC vs REST</h3>
+<table>
+<tbody><tr><th></th><th>gRPC</th><th>REST / JSON</th></tr>
+<tr><td>Payload</td><td>Protobuf (binary, small, fast)</td><td>JSON (text, human-readable)</td></tr>
+<tr><td>Transport</td><td>HTTP/2 (multiplexed, streaming)</td><td>Usually HTTP/1.1</td></tr>
+<tr><td>Contract</td><td>Strict <code>.proto</code> (codegen, versioned)</td><td>OpenAPI (looser, optional)</td></tr>
+<tr><td>Streaming</td><td>First-class (4 modes)</td><td>Awkward (SSE/chunked)</td></tr>
+<tr><td>Browser support</td><td>Needs gRPC-Web proxy</td><td>Native</td></tr>
+<tr><td>Best for</td><td>Internal microservice calls, low latency, polyglot</td><td>Public APIs, browser clients, caching, simplicity</td></tr>
+</tbody></table>
+<div class="callout tip"><b>Rule of thumb:</b> gRPC for east-west (service-to-service) traffic where latency and strong contracts matter; REST for north-south (public/browser-facing) APIs where readability, caching, and ubiquity win. Many systems use both — REST at the edge, gRPC between services.</div>
+
+<div class="qa">
+<div class="q">When would you pick gRPC over REST?</div>
+<div class="a">For internal, high-throughput, low-latency service-to-service calls with a strict versioned contract and/or streaming needs. Protobuf over HTTP/2 is smaller and faster than JSON, codegen keeps client/server in lock-step, and streaming is first-class. Keep REST for public and browser-facing APIs where human-readability, caching, and native browser support matter.</div>
+</div>
+
+
+<h2 id="s24">24. Microservices &amp; Resilience <span class="tag adv">Advanced</span> <a class="backtop" href="#toc">↑ Contents</a></h2>
+
+<h3>24.1 Monolith vs Microservices</h3>
+<table>
+<tbody><tr><th></th><th>Monolith</th><th>Microservices</th></tr>
+<tr><td>Deploy</td><td>One unit</td><td>Independent services</td></tr>
+<tr><td>Scaling</td><td>Whole app</td><td>Per service</td></tr>
+<tr><td>Tech</td><td>Single stack</td><td>Polyglot</td></tr>
+<tr><td>Complexity</td><td>Lower ops, higher coupling</td><td>Higher ops, distributed challenges</td></tr>
+<tr><td>Data</td><td>Shared DB</td><td>DB per service</td></tr>
+</tbody></table>
+
+<h3>24.2 Core building blocks</h3>
+<table>
+<tbody><tr><th>Concern</th><th>Component (Spring Cloud)</th></tr>
+<tr><td>Service discovery</td><td>Eureka / Consul / Kubernetes DNS</td></tr>
+<tr><td>API gateway</td><td>Spring Cloud Gateway (routing, auth, rate-limit)</td></tr>
+<tr><td>Config management</td><td>Spring Cloud Config Server</td></tr>
+<tr><td>Inter-service calls</td><td>OpenFeign / RestClient / WebClient</td></tr>
+<tr><td>Load balancing</td><td>Spring Cloud LoadBalancer</td></tr>
+<tr><td>Resilience</td><td>Resilience4j (circuit breaker, retry, bulkhead, time limiter)</td></tr>
+<tr><td>Distributed tracing</td><td>Micrometer Tracing + Zipkin/Jaeger</td></tr>
+</tbody></table>
+
+<h3>24.3 Resilience patterns with Resilience4j</h3>
+<p>Resilience4j is a lightweight, composable fault-tolerance library. The four core decorators each guard a different failure mode — and they <b>compose</b>.</p>
+<table>
+<tbody><tr><th>Pattern</th><th>Guards against</th><th>Key config</th></tr>
+<tr><td><b>Circuit Breaker</b></td><td>Cascading failure from a sick dependency</td><td>failure-rate-threshold, wait-duration, sliding window (<code>CLOSED → OPEN → HALF-OPEN</code>)</td></tr>
+<tr><td><b>Retry</b></td><td>Transient blips (only for idempotent ops)</td><td>max-attempts, exponential backoff + jitter</td></tr>
+<tr><td><b>Bulkhead</b></td><td>One slow dependency exhausting all threads</td><td>max-concurrent-calls (isolate resource pools)</td></tr>
+<tr><td><b>TimeLimiter</b></td><td>Slow calls hanging indefinitely</td><td>timeout-duration; cancels the running future</td></tr>
+<tr><td>Rate Limiter</td><td>Overloading a dependency / self-throttling</td><td>limit-for-period, refresh-period</td></tr>
+</tbody></table>
+<h4>Composed example (TimeLimiter + CircuitBreaker + Retry + Bulkhead)</h4>
+<p><b>TimeLimiter</b> works on a <code>CompletableFuture</code>, so the method returns one. Order matters: Retry wraps CircuitBreaker wraps TimeLimiter wraps Bulkhead wraps the call — a timed-out or failed call trips the breaker and can be retried.</p>
+<pre><code class="hljs language-java"><span class="hljs-meta">@Service</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">InventoryClient</span> {
+
+    <span class="hljs-meta">@TimeLimiter(name = "inventory")</span>                          <span class="hljs-comment">// cancel if too slow</span>
+    <span class="hljs-meta">@CircuitBreaker(name = "inventory", fallbackMethod = "fallback")</span>
+    <span class="hljs-meta">@Retry(name = "inventory")</span>                                <span class="hljs-comment">// retry transient failures</span>
+    <span class="hljs-meta">@Bulkhead(name = "inventory", type = Bulkhead.Type.SEMAPHORE)</span>
+    <span class="hljs-keyword">public</span> CompletableFuture&lt;Stock&gt; <span class="hljs-title function_">check</span><span class="hljs-params">(String sku)</span> {
+        <span class="hljs-keyword">return</span> CompletableFuture.supplyAsync(() -&gt; client.getStock(sku));
+    }
+
+    <span class="hljs-comment">// Fallback signature: original args + the Throwable; must return the same type.</span>
+    <span class="hljs-keyword">private</span> CompletableFuture&lt;Stock&gt; <span class="hljs-title function_">fallback</span><span class="hljs-params">(String sku, Throwable t)</span> {
+        <span class="hljs-keyword">return</span> CompletableFuture.completedFuture(Stock.unknown(sku));
+    }
+}</code></pre>
+<pre><code class="plain"># application.yml
+resilience4j:
+  timelimiter:
+    instances:
+      inventory:
+        timeout-duration: 2s
+        cancel-running-future: true
+  circuitbreaker:
+    instances:
+      inventory:
+        sliding-window-size: 20
+        failure-rate-threshold: 50        # open when &gt;=50% of last 20 calls fail
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 3
+  retry:
+    instances:
+      inventory:
+        max-attempts: 3
+        wait-duration: 200ms
+        enable-exponential-backoff: true
+  bulkhead:
+    instances:
+      inventory:
+        max-concurrent-calls: 25</code></pre>
+<div class="callout note"><b>TimeLimiter vs a plain timeout:</b> a bare <code>future.get(2, SECONDS)</code> throws on the caller but leaves the underlying work running. The Resilience4j TimeLimiter can <em>cancel the running future</em>, freeing the thread — and because it emits a failure, that timeout counts toward the circuit breaker's failure rate. Only <b>retry idempotent operations</b>, and add jitter so retries don't synchronize into a thundering herd.</div>
+
+<h3>24.4 Distributed data patterns</h3>
+<ul>
+<li><b>Saga</b> — manage distributed transactions via a sequence of local transactions + compensating actions (choreography or orchestration).</li>
+<li><b>CQRS</b> — separate read &amp; write models.</li>
+<li><b>Event Sourcing</b> — store state as a log of events.</li>
+<li><b>Outbox pattern</b> — reliably publish events with DB writes (avoids dual-write problem).</li>
+<li><b>API Composition / BFF</b> — aggregate data for clients.</li>
+</ul>
+
+<h3>24.5 The CAP theorem</h3>
+<p>A distributed store can guarantee only two of <b>C</b>onsistency, <b>A</b>vailability, <b>P</b>artition tolerance. Since partitions are unavoidable, you choose CP or AP. Many microservice systems favour <b>AP + eventual consistency</b>.</p>
+
+<div class="callout warn"><b>Distributed pitfalls (fallacies):</b> network is reliable, latency is zero, bandwidth is infinite, topology never changes. Design for failure, timeouts, idempotency, and eventual consistency.</div>
+
+<div class="qa">
+<div class="q">How do services find each other?</div>
+<div class="a">Via a service registry (Eureka/Consul) or platform DNS (Kubernetes). The client (or a load balancer/gateway) resolves a logical service name to one of the healthy instances.</div>
+</div>
+
+
+<h2 id="s25">25. Caching <span class="tag inter">Intermediate</span> <a class="backtop" href="#toc">↑ Contents</a></h2>
+<p>Caching stores expensive results to cut latency &amp; load. Spring's cache abstraction is provider-agnostic.</p>
+<pre><code class="hljs language-java"><span class="hljs-meta">@EnableCaching</span>
+<span class="hljs-meta">@Service</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ProductService</span> {
+    <span class="hljs-meta">@Cacheable(value="products", key="#id")</span>
+    <span class="hljs-keyword">public</span> Product <span class="hljs-title function_">get</span><span class="hljs-params">(Long id)</span>{ <span class="hljs-comment">/* slow DB call */</span> }
+
+    <span class="hljs-meta">@CachePut(value="products", key="#p.id")</span>     <span class="hljs-comment">// update cache</span>
+    <span class="hljs-keyword">public</span> Product <span class="hljs-title function_">save</span><span class="hljs-params">(Product p)</span>{ ... }
+
+    <span class="hljs-meta">@CacheEvict(value="products", key="#id")</span>      <span class="hljs-comment">// remove on delete</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">delete</span><span class="hljs-params">(Long id)</span>{ ... }
+}</code></pre>
+<table>
+<tbody><tr><th>Annotation</th><th>Effect</th></tr>
+<tr><td>@Cacheable</td><td>Return cached value if present, else compute &amp; store</td></tr>
+<tr><td>@CachePut</td><td>Always execute &amp; update cache</td></tr>
+<tr><td>@CacheEvict</td><td>Remove entry (or <code>allEntries=true</code>)</td></tr>
+</tbody></table>
+<h3>Strategies &amp; concerns</h3>
+<table>
+<tbody><tr><th>Pattern</th><th>How</th></tr>
+<tr><td>Cache-aside</td><td>App checks cache, loads DB on miss (most common)</td></tr>
+<tr><td>Read-through / Write-through</td><td>Cache layer handles DB sync</td></tr>
+<tr><td>Write-behind</td><td>Async write to DB</td></tr>
+</tbody></table>
+<div class="callout warn"><b>Cache problems:</b> <b>stampede</b> (many misses at once → lock/early refresh), <b>penetration</b> (queries for nonexistent keys → cache nulls), <b>avalanche</b> (mass simultaneous expiry → jittered TTLs). Always set TTLs &amp; an eviction policy (LRU/LFU).</div>
+<div class="callout note"><b>Redis</b> is the typical distributed cache for Spring (also used for sessions, rate limiting, locks, leaderboards). Local cache: Caffeine.</div>
+
+<h2 id="s26">26. Messaging (Kafka / RabbitMQ) <span class="tag adv">Advanced</span> <a class="backtop" href="#toc">↑ Contents</a></h2>
+
+<h3>26.1 Why messaging</h3>
+<p>Asynchronous, decoupled communication — improves resilience, scalability, and buffering. Producers and consumers evolve independently.</p>
+
+<h3>26.2 Kafka vs RabbitMQ</h3>
+<table>
+<tbody><tr><th></th><th>Kafka</th><th>RabbitMQ</th></tr>
+<tr><td>Model</td><td>Distributed commit log</td><td>Message broker (queues)</td></tr>
+<tr><td>Retention</td><td>Persisted log, replayable</td><td>Removed after ack</td></tr>
+<tr><td>Throughput</td><td>Very high (millions/s)</td><td>High</td></tr>
+<tr><td>Ordering</td><td>Per partition</td><td>Per queue</td></tr>
+<tr><td>Routing</td><td>Topic + partition</td><td>Exchanges (direct/topic/fanout)</td></tr>
+<tr><td>Best for</td><td>Event streaming, analytics, replay</td><td>Task queues, complex routing, RPC</td></tr>
+</tbody></table>
+
+<h3>26.3 Kafka core concepts</h3>
+<ul>
+<li><b>Topic</b> → split into <b>partitions</b> (unit of parallelism &amp; ordering).</li>
+<li><b>Producer</b> writes; <b>consumer groups</b> read — each partition consumed by one consumer in a group.</li>
+<li><b>Offset</b> — consumer's position; commit it to track progress.</li>
+<li><b>Replication factor</b> — copies of a partition for fault tolerance.</li>
+</ul>
+<pre><code class="hljs language-java"><span class="hljs-meta">@KafkaListener(topics = "orders", groupId = "billing")</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">consume</span><span class="hljs-params">(OrderEvent event)</span>{ billingService.process(event); }
+
+kafkaTemplate.send(<span class="hljs-string">"orders"</span>, order.getId(), event);  <span class="hljs-comment">// key -&gt; same partition</span></code></pre>
+
+<h3>26.4 Delivery semantics &amp; reliability</h3>
+<table>
+<tbody><tr><th>Guarantee</th><th>Meaning</th></tr>
+<tr><td>At-most-once</td><td>May lose, never duplicate</td></tr>
+<tr><td>At-least-once</td><td>Never lose, may duplicate (most common)</td></tr>
+<tr><td>Exactly-once</td><td>No loss, no dup (Kafka transactions/idempotent producer)</td></tr>
+</tbody></table>
+<div class="callout warn"><b>Make consumers idempotent</b> (dedup by event ID) since at-least-once delivery can replay messages. Use a <b>dead-letter queue/topic (DLQ)</b> for poison messages, and the <b>outbox pattern</b> to avoid the dual-write problem.</div>
+<div class="callout gotcha"><b>🐛 Production Gotchas — Kafka.</b> Recurring pain: (1) <b>consumer lag</b> creeping up because processing is slower than production — scale partitions/consumers or speed up the handler; (2) <b>rebalancing storms</b> when <code>max.poll.interval.ms</code> is exceeded by slow processing, kicking consumers out of the group; (3) <b>duplicate side effects</b> from at-least-once redelivery with a non-idempotent consumer; (4) <b>ordering broken</b> by using the wrong (or null) partition key; (5) poison messages retried forever with no DLQ. <em>(Your war story: __________________________ — the lag/duplicate symptom, root cause, fix (idempotency key, DLQ, key strategy, tuning).)</em></div>
+
+
+<h2 id="s27">27. Testing <span class="tag inter">Intermediate</span> <a class="backtop" href="#toc">↑ Contents</a></h2>
+
+<h3>27.1 The testing pyramid</h3>
+<pre><code class="plain">      /\      E2E / UI       (few, slow, brittle)
+     /  \     Integration    (some - DB, web layer)
+    /____\    Unit tests     (many, fast, isolated)</code></pre>
+
+<h3>27.2 Unit testing with JUnit 5 + Mockito</h3>
+<pre><code class="hljs language-java"><span class="hljs-meta">@ExtendWith(MockitoExtension.class)</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">OrderServiceTest</span> {
+    <span class="hljs-meta">@Mock</span> PaymentGateway gateway;
+    <span class="hljs-meta">@InjectMocks</span> OrderService service;
+
+    <span class="hljs-meta">@Test</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">placesOrder</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">when</span>(gateway.charge(any())).thenReturn(Receipt.ok());
+        <span class="hljs-type">var</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> service.place(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Order</span>(...));
+        assertThat(result.isPaid()).isTrue();
+        verify(gateway).charge(any());
+    }
+}</code></pre>
+<table>
+<tbody><tr><th>Mockito</th><th>Use</th></tr>
+<tr><td><code>mock()</code> / <code>@Mock</code></td><td>Create a fake collaborator</td></tr>
+<tr><td><code>when().thenReturn()</code></td><td>Stub behaviour</td></tr>
+<tr><td><code>verify()</code></td><td>Assert interaction happened</td></tr>
+<tr><td><code>@Spy</code></td><td>Partial real object</td></tr>
+<tr><td><code>ArgumentCaptor</code></td><td>Capture &amp; assert passed args</td></tr>
+</tbody></table>
+
+<h3>27.3 Spring Boot test slices</h3>
+<table>
+<tbody><tr><th>Annotation</th><th>Loads</th></tr>
+<tr><td><code>@SpringBootTest</code></td><td>Full context (integration)</td></tr>
+<tr><td><code>@WebMvcTest</code></td><td>Web layer only (controllers + MockMvc)</td></tr>
+<tr><td><code>@DataJpaTest</code></td><td>JPA layer + in-memory/Testcontainers DB</td></tr>
+<tr><td><code>@MockBean</code></td><td>Replace a bean in the context with a mock</td></tr>
+</tbody></table>
+<div class="callout tip"><b>Best practices:</b> Use <b>Testcontainers</b> for real DB/Kafka in integration tests (not H2 quirks). Follow <b>AAA</b> (Arrange-Act-Assert), one logical assertion per test, descriptive names. Don't mock what you don't own — wrap it.</div>
+
+<div class="qa">
+<div class="q">Mock vs Stub vs Spy?</div>
+<div class="a">A <b>stub</b> returns canned answers. A <b>mock</b> additionally lets you verify interactions. A <b>spy</b> wraps a real object, calling real methods unless stubbed.</div>
+</div>
+
+
+<h2 id="s28">28. Actuator &amp; Observability <span class="tag inter">Intermediate</span> <a class="backtop" href="#toc">↑ Contents</a></h2>
+<p>Spring Boot Actuator exposes production-ready endpoints for monitoring &amp; management over HTTP/JMX.</p>
+<table>
+<tbody><tr><th>Endpoint</th><th>Provides</th></tr>
+<tr><td>/actuator/health</td><td>Liveness/readiness (DB, disk, custom indicators)</td></tr>
+<tr><td>/actuator/metrics</td><td>JVM, HTTP, custom metrics (Micrometer)</td></tr>
+<tr><td>/actuator/info</td><td>Build/app info</td></tr>
+<tr><td>/actuator/env, /configprops</td><td>Config &amp; properties</td></tr>
+<tr><td>/actuator/loggers</td><td>View/change log levels at runtime</td></tr>
+<tr><td>/actuator/prometheus</td><td>Scrape endpoint for Prometheus</td></tr>
+</tbody></table>
+<ul>
+<li><b>Micrometer</b> = vendor-neutral metrics facade → Prometheus, Datadog, etc. (the "SLF4J of metrics").</li>
+<li><b>Three pillars of observability:</b> metrics, logs, traces. Correlate with trace IDs.</li>
+<li><b>Secure</b> actuator endpoints — expose only what's needed (<code>management.endpoints.web.exposure.include</code>) and protect them.</li>
+</ul>
+<div class="callout note"><b>K8s probes:</b> map <code>/health/liveness</code> &amp; <code>/health/readiness</code> groups to Kubernetes liveness/readiness probes for graceful rollouts.</div>
+
+
+<h2 id="s29">29. Docker &amp; Deployment <span class="tag inter">Intermediate</span> <a class="backtop" href="#toc">↑ Contents</a></h2>
+
+<h3>29.1 Why containers</h3>
+<p>Package the app + its dependencies into a portable, immutable image — consistent across dev/test/prod ("works on my machine" solved). Lighter than VMs (share the host kernel).</p>
+
+<h3>29.2 Multi-stage Dockerfile for Spring Boot</h3>
+<pre><code class="hljs language-dockerfile"><span class="hljs-comment"># --- build stage ---</span>
+<span class="hljs-keyword">FROM</span> eclipse-temurin:<span class="hljs-number">21</span>-jdk AS build
+<span class="hljs-keyword">WORKDIR</span><span class="language-bash"> /app</span>
+<span class="hljs-keyword">COPY</span><span class="language-bash"> . .</span>
+<span class="hljs-keyword">RUN</span><span class="language-bash"> ./mvnw -q clean package -DskipTests</span>
+
+<span class="hljs-comment"># --- runtime stage (small) ---</span>
+<span class="hljs-keyword">FROM</span> eclipse-temurin:<span class="hljs-number">21</span>-jre
+<span class="hljs-keyword">WORKDIR</span><span class="language-bash"> /app</span>
+<span class="hljs-keyword">COPY</span><span class="language-bash"> --from=build /app/target/*.jar app.jar</span>
+<span class="hljs-keyword">EXPOSE</span> <span class="hljs-number">8080</span>
+<span class="hljs-keyword">ENTRYPOINT</span><span class="language-bash"> [<span class="hljs-string">"java"</span>,<span class="hljs-string">"-jar"</span>,<span class="hljs-string">"app.jar"</span>]</span></code></pre>
+<ul>
+<li><b>Multi-stage</b> keeps the final image small (no JDK/build tools).</li>
+<li><b>Layered JARs / jib / buildpacks</b> (<code>spring-boot:build-image</code>) optimize caching — deps layer rarely changes.</li>
+<li>Run as a <b>non-root user</b>; set JVM memory awareness (<code>-XX:MaxRAMPercentage</code>).</li>
+</ul>
+
+<h3>29.3 Key commands &amp; concepts</h3>
+<table>
+<tbody><tr><th>Concept</th><th>Note</th></tr>
+<tr><td>Image vs Container</td><td>Image = blueprint; container = running instance</td></tr>
+<tr><td><code>docker build / run / ps / logs</code></td><td>Build, run, list, inspect</td></tr>
+<tr><td>docker-compose</td><td>Multi-container local stacks (app + db + redis)</td></tr>
+<tr><td>Volumes</td><td>Persist data outside container lifecycle</td></tr>
+<tr><td>Kubernetes</td><td>Orchestrate at scale (pods, deployments, services, HPA)</td></tr>
+</tbody></table>
+<div class="callout tip"><b>12-factor reminders:</b> config via env vars, stateless processes, logs to stdout, graceful shutdown (Spring Boot supports it), one concern per container.</div>
+
+<h2 id="s30">30. Common Interview Scenarios <span class="tag adv">Advanced</span> <a class="backtop" href="#toc">↑ Contents</a></h2>
+
+<h3>30.1 System / API design</h3>
+<div class="qa">
+<div class="q">Design a URL shortener / rate limiter / notification service.</div>
+<div class="a">Talk through: requirements → API contract → data model → ID generation (base62, Snowflake) → storage (SQL vs NoSQL) → caching (Redis) → scaling (sharding, replication) → rate limiting (token bucket) → bottlenecks &amp; trade-offs. Always state assumptions and capacity estimates.</div>
+</div>
+<div class="qa">
+<div class="q">How would you make an endpoint idempotent?</div>
+<div class="a">Accept an <code>Idempotency-Key</code> header, store its result keyed by that ID, and on retry return the stored response instead of reprocessing. Use unique DB constraints to prevent duplicate side effects. See the two-layer pattern (Redis SETNX + DB unique constraint) in section 16.6.</div>
+</div>
+
+<h3>30.2 Performance &amp; debugging</h3>
+<div class="qa">
+<div class="q">An API is slow in production — how do you diagnose it?</div>
+<div class="a">Check metrics/traces (Actuator, APM) to localize: DB (slow queries, N+1, missing index), external calls (timeouts), GC pauses (heap), thread pool exhaustion, locks. Reproduce, profile (async-profiler), fix the actual bottleneck, add caching/pagination where appropriate.</div>
+</div>
+<div class="qa">
+<div class="q">App throws OutOfMemoryError — steps?</div>
+<div class="a">Enable <code>-XX:+HeapDumpOnOutOfMemoryError</code>, analyze the dump (Eclipse MAT) for dominator/retained sets, find the leak (unbounded cache/collection, ThreadLocal, listener). Fix the leak or right-size the heap.</div>
+</div>
+
+<h3>30.3 Concurrency scenarios</h3>
+<div class="qa">
+<div class="q">Two users update the same record simultaneously — how do you handle it?</div>
+<div class="a"><b>Optimistic locking</b> (JPA <code>@Version</code>) — the second commit fails with <code>OptimisticLockException</code>, prompting retry; good for low contention. <b>Pessimistic locking</b> (<code>SELECT ... FOR UPDATE</code>) — lock the row up front; good for high contention but reduces concurrency. See section 20.5 for the full comparison and retry strategy.</div>
+</div>
+<div class="qa">
+<div class="q">Implement a thread-safe singleton cache that loads lazily.</div>
+<div class="a">Use the initialization-on-demand holder idiom, or a <code>ConcurrentHashMap</code> with <code>computeIfAbsent</code> for per-key lazy loading without locking the whole map.</div>
+</div>
+
+<h3>30.4 Spring "gotcha" questions</h3>
+<table>
+<tbody><tr><th>Question</th><th>Key answer</th></tr>
+<tr><td>Why didn't my @Transactional work?</td><td>Self-invocation bypasses the proxy; or method not public; or checked exception didn't roll back</td></tr>
+<tr><td>Why one prototype instance in my singleton?</td><td>Injected once at creation — use ObjectProvider / @Lookup</td></tr>
+<tr><td>Two beans of same type — injection fails?</td><td>Use @Primary or @Qualifier</td></tr>
+<tr><td>LazyInitializationException in controller?</td><td>Session closed; fetch in tx / map to DTO / entity graph</td></tr>
+<tr><td>@Async / @Cacheable not working?</td><td>Same proxy self-invocation issue; missing @EnableAsync/@EnableCaching</td></tr>
+</tbody></table>
+
+<hr>
+
+<h2 id="cheat" style="page-break-before:always;">Quick Revision Cheat-Sheet <a class="backtop" href="#toc">↑ Contents</a></h2>
+<table>
+<tbody><tr><th>Topic</th><th>One-liner to remember</th></tr>
+<tr><td>DI</td><td>Prefer constructor injection (final, testable)</td></tr>
+<tr><td>Bean default scope</td><td>Singleton — keep it stateless</td></tr>
+<tr><td>@SpringBootApplication</td><td>Config + AutoConfig + ComponentScan</td></tr>
+<tr><td>AOP/Tx self-invocation</td><td>Same-class call skips the proxy</td></tr>
+<tr><td>@Transactional rollback</td><td>Only unchecked by default</td></tr>
+<tr><td>Optimistic vs pessimistic</td><td>@Version + retry vs SELECT ... FOR UPDATE</td></tr>
+<tr><td>@TransactionalEventListener</td><td>AFTER_COMMIT for safe async side effects</td></tr>
+<tr><td>N+1</td><td>Fix with JOIN FETCH / @EntityGraph</td></tr>
+<tr><td>Idempotency</td><td>Redis SETNX (fast) + DB unique constraint (backstop)</td></tr>
+<tr><td>JWT</td><td>Stateless, signed, short-lived</td></tr>
+<tr><td>WebSockets</td><td>STOMP+SockJS; external broker relay to scale</td></tr>
+<tr><td>gRPC</td><td>Protobuf/HTTP2; internal, streaming, typed</td></tr>
+<tr><td>Circuit breaker</td><td>CLOSED → OPEN → HALF-OPEN</td></tr>
+<tr><td>TimeLimiter</td><td>Cancels slow futures; timeout feeds the breaker</td></tr>
+<tr><td>CAP</td><td>Pick 2; partitions force CP or AP</td></tr>
+<tr><td>Kafka</td><td>Replayable log; partitions = ordering+parallelism</td></tr>
+<tr><td>Idempotent consumer</td><td>Dedup by event ID (at-least-once)</td></tr>
+</tbody></table>
+
+<div class="callout tip"><b>Interview delivery tips:</b> (1) State assumptions before answering design questions. (2) Always pair a concept with a concrete example/trade-off. (3) For "which is better", answer "it depends on..." and give the criteria. (4) Admit unknowns and reason out loud — interviewers assess thinking, not memorization.</div>
+
+<hr>
+<p style="text-align:center;color:#777;font-size:.85rem;">End of notes — Spring &amp; Spring Boot Interview Preparation • Beginner to Advanced • See the companion Core Java notes for language fundamentals</p>
+
+</div>
+</body>
+</html>

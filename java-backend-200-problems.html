@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>200 Java Backend Interview Problems</title>
+<style>
+  :root{
+    --ink:#1a1a1a; --muted:#555; --accent:#334155; --accent2:#1e293b;
+    --code-bg:#f6f8fa; --code-ink:#24292e; --border:#d8dee4;
+    --tip:#0a7d3c; --warn:#b54708; --note:#1f6feb;
+  }
+  *{box-sizing:border-box;}
+  html{font-size:13px;}
+  body{
+    font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); line-height:1.5; margin:0; padding:0 0 40px;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .page{max-width:900px; margin:0 auto; padding:0 24px;}
+  h1,h2,h3,h4{line-height:1.25; font-weight:700;}
+  h1{font-size:2.0rem; color:var(--accent2); margin:0 0 .2em;}
+  h2{font-size:1.42rem; color:var(--accent2); border-bottom:3px solid var(--accent);
+     padding-bottom:.2em; margin:2.0em 0 .7em;}
+  h3{font-size:1.1rem; color:#222; margin:1.4em 0 .4em;
+     border-left:4px solid var(--accent); padding-left:.5em;}
+  p{margin:.5em 0;}
+  ul,ol{margin:.4em 0 .7em; padding-left:1.4em;}
+  li{margin:.2em 0;}
+  code{font-family:"Cascadia Code",Consolas,"Courier New",monospace; font-size:.85em;
+       background:var(--code-bg); color:#b5266a; padding:.1em .35em; border-radius:4px;}
+  pre{background:var(--code-bg); border:1px solid var(--border); border-radius:8px;
+      padding:10px 12px; overflow:auto; margin:.6em 0; line-height:1.4;}
+  pre code{background:none; color:var(--code-ink); padding:0; font-size:.79rem; white-space:pre;}
+  table{border-collapse:collapse; width:100%; margin:.7em 0; font-size:.84rem;}
+  th,td{border:1px solid var(--border); padding:5px 8px; text-align:left; vertical-align:top;}
+  th{background:#e8ecf1; color:#1e293b; font-weight:600;}
+  tr:nth-child(even) td{background:#fafbfc;}
+  td.n{width:34px; text-align:center; font-weight:700; color:#475569;}
+  td.p{width:42px; text-align:center; white-space:nowrap;}
+  .prob{font-weight:600; color:#1e293b;}
+  .star{color:#d97706; letter-spacing:-1px;}
+  .callout{border-radius:8px; padding:9px 13px; margin:.7em 0; border-left:5px solid;}
+  .callout.tip{background:#eaf7ef; border-color:var(--tip);}
+  .callout.warn{background:#fff3e6; border-color:var(--warn);}
+  .callout.note{background:#eaf1fb; border-color:var(--note);}
+  .callout b{display:inline-block; margin-bottom:.1em;}
+  .toc{columns:2; column-gap:28px; font-size:.84rem; margin:1em 0 0;}
+  .toc a{text-decoration:none; color:#1e293b;}
+  .toc ol{padding-left:1.3em; margin:.15em 0;}
+  .cover{text-align:center; padding:58px 0 18px;}
+  .cover .sub{color:var(--muted); font-size:1.08rem; margin-top:.4em;}
+  .cover .meta{color:var(--muted); font-size:.85rem; margin-top:1.3em;}
+  hr{border:none; border-top:1px solid var(--border); margin:2.2em 0;}
+  .legend span{display:inline-block; margin-right:14px; font-size:.85rem;}
+  @media print{
+    h2{page-break-after:avoid;} h3{page-break-after:avoid;}
+    pre,.callout{page-break-inside:avoid;}
+    tr{page-break-inside:avoid;}
+    .toc{columns:2;}
+    .pagebreak{page-break-before:always;}
+  }
+  @page{margin:14mm 12mm;}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="cover">
+  <h1>200 Java Backend Interview Problems</h1>
+  <div class="sub">The Curated Master List &mdash; Beginner to Advanced</div>
+  <div class="meta">Real questions asked at product-based companies &bull; Prioritized &amp; progressive &bull; Approach, follow-ups, trade-offs &amp; tips for each</div>
+</div>
+
+<div class="callout note" style="margin-top:26px;">
+<b>How to use this list.</b> 200 problems organized by topic and ordered beginner&rarr;advanced. Each has a concise <b>approach</b>, common <b>follow-ups</b>, and a priority rating. This is a <em>question bank &amp; revision tracker</em> &mdash; for deep explanations of any topic, see the companion deep-dive notes (Java/Spring Boot, Kafka, CS Fundamentals, Keycloak, Git, System Design, DSA, DevOps). Master the ★★★ first.
+</div>
+
+<div class="callout tip legend">
+<b>Priority legend:</b>
+<span><span class="star">★★★</span> Must-know (asked in almost every interview)</span>
+<span><span class="star">★★</span> Important (frequently asked)</span>
+<span><span class="star">★</span> Good-to-know (differentiator / senior)</span>
+</div>
+
+<h2 style="page-break-before:avoid;">Topic Index</h2>
+<div class="toc">
+<ol>
+<li><a href="#t1">Java Core &amp; OOP</a> (1&ndash;20)</li>
+<li><a href="#t2">Collections</a> (21&ndash;31)</li>
+<li><a href="#t3">Exception Handling</a> (32&ndash;36)</li>
+<li><a href="#t4">Multithreading &amp; Concurrency</a> (37&ndash;52)</li>
+<li><a href="#t5">JVM &amp; Memory</a> (53&ndash;61)</li>
+<li><a href="#t6">Streams &amp; Java 8+</a> (62&ndash;70)</li>
+<li><a href="#t7">Design Patterns</a> (71&ndash;77)</li>
+<li><a href="#t8">Spring &amp; Spring Boot</a> (78&ndash;97)</li>
+<li><a href="#t9">Microservices &amp; Distributed</a> (98&ndash;112)</li>
+<li><a href="#t10">SQL &amp; DBMS</a> (113&ndash;127)</li>
+<li><a href="#t11">LLD (Low-Level Design)</a> (128&ndash;135)</li>
+<li><a href="#t12">HLD / System Design</a> (136&ndash;148)</li>
+<li><a href="#t13">Operating Systems</a> (149&ndash;156)</li>
+<li><a href="#t14">Computer Networks</a> (157&ndash;164)</li>
+<li><a href="#t15">Kafka &amp; Messaging</a> (165&ndash;172)</li>
+<li><a href="#t16">Redis &amp; Caching</a> (173&ndash;179)</li>
+<li><a href="#t17">Docker &amp; Kubernetes</a> (180&ndash;187)</li>
+<li><a href="#t18">AWS / Cloud</a> (188&ndash;191)</li>
+<li><a href="#t19">Security &amp; Keycloak</a> (192&ndash;196)</li>
+<li><a href="#t20">Git &amp; CI/CD</a> (197&ndash;200)</li>
+</ol>
+</div>
+
+<h2 id="t1" class="pagebreak">1. Java Core &amp; OOP <span style="font-size:.7em;color:#64748b;">(1&ndash;20)</span></h2>
+<table>
+<tr><th class="n">#</th><th class="p">Pri</th><th>Problem &amp; approach / follow-ups</th></tr>
+<tr><td class="n">1</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Explain the 4 pillars of OOP with real examples.</span> Encapsulation (private + getters), Abstraction (interface), Inheritance (extends), Polymorphism (override/overload). <i>Follow-up:</i> give a code example of each; abstraction vs encapsulation difference.</td></tr>
+<tr><td class="n">2</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">== vs equals(); the equals/hashCode contract.</span> == compares references (identity); equals compares logical value. If equals is true, hashCode must match. <i>Follow-up:</i> what breaks if you override equals but not hashCode? (HashMap lookups fail.)</td></tr>
+<tr><td class="n">3</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Why is String immutable? String vs StringBuilder vs StringBuffer.</span> Immutability &rarr; security, thread-safety, string-pool caching. Builder = mutable/unsynchronized; Buffer = synchronized. <i>Follow-up:</i> why concatenation in a loop is O(n&sup2;).</td></tr>
+<tr><td class="n">4</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Abstract class vs Interface &mdash; when to use which?</span> Abstract = shared state/partial impl, single inheritance ("is-a"); interface = capability/contract, multiple ("can-do"). <i>Follow-up:</i> default methods (Java 8); diamond problem resolution.</td></tr>
+<tr><td class="n">5</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Overloading vs Overriding.</span> Overload = same name/diff params, compile-time (static binding); override = same signature parent&rarr;child, runtime (dynamic dispatch via vtable). <i>Follow-up:</i> can you override static/private? (No &mdash; hidden.)</td></tr>
+<tr><td class="n">6</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Is Java pass-by-value or pass-by-reference?</span> Always pass-by-value; for objects the reference value is copied (can mutate state, can't reassign caller's var). <i>Follow-up:</i> demonstrate with a swap method.</td></tr>
+<tr><td class="n">7</td><td class="p"><span class="star">★★</span></td><td><span class="prob">final, finally, finalize.</span> final = constant/non-overridable/non-extendable; finally = always-run cleanup; finalize = deprecated GC hook. <i>Follow-up:</i> can finally be skipped? (System.exit / JVM crash.)</td></tr>
+<tr><td class="n">8</td><td class="p"><span class="star">★★</span></td><td><span class="prob">static keyword &mdash; variables, methods, blocks, nested classes.</span> Belongs to class not instance; shared; can't access instance members or <code>this</code>. <i>Follow-up:</i> static block init order; why main is static.</td></tr>
+<tr><td class="n">9</td><td class="p"><span class="star">★★</span></td><td><span class="prob">SOLID principles with examples.</span> SRP, Open/Closed, Liskov, Interface Segregation, Dependency Inversion. <i>Follow-up:</i> show an OCP violation (big switch) &amp; fix with polymorphism.</td></tr>
+<tr><td class="n">10</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Composition vs Inheritance &mdash; why "favour composition"?</span> Inheritance = tight coupling, fragile base class; composition = flexible has-a, testable. <i>Follow-up:</i> a case where inheritance is right.</td></tr>
+<tr><td class="n">11</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Autoboxing/unboxing &amp; the Integer cache.</span> Auto conversion int&harr;Integer; cache -128..127 so <code>==</code> on small Integers is true but not large. <i>Follow-up:</i> always use equals for wrappers; NPE on unboxing null.</td></tr>
+<tr><td class="n">12</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Can you achieve multiple inheritance in Java?</span> Not via classes (diamond problem); yes via multiple interfaces. Same default method &rarr; must override, use <code>Interface.super.m()</code>.</td></tr>
+<tr><td class="n">13</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Method/field hiding vs overriding.</span> Static methods &amp; fields are hidden (resolved by reference type, static binding); instance methods are overridden (dynamic). <i>Follow-up:</i> trick output question.</td></tr>
+<tr><td class="n">14</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Marker, functional &amp; sealed interfaces.</span> Marker = no methods (Serializable); functional = 1 abstract method (lambda target); sealed (17) = restricts implementers. <i>Follow-up:</i> @FunctionalInterface.</td></tr>
+<tr><td class="n">15</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Records (Java 16) &mdash; what &amp; why.</span> Immutable data carriers; auto equals/hashCode/toString/accessors. <i>Follow-up:</i> records vs Lombok @Data; can records have methods?</td></tr>
+<tr><td class="n">16</td><td class="p"><span class="star">★</span></td><td><span class="prob">Shallow vs deep copy; clone() pitfalls.</span> Shallow shares nested refs; deep copies them. <i>Follow-up:</i> copy constructor / serialization for deep copy.</td></tr>
+<tr><td class="n">17</td><td class="p"><span class="star">★</span></td><td><span class="prob">Object class methods.</span> equals, hashCode, toString, getClass, clone, wait/notify. <i>Follow-up:</i> why wait/notify are on Object not Thread.</td></tr>
+<tr><td class="n">18</td><td class="p"><span class="star">★</span></td><td><span class="prob">Generics &amp; type erasure; PECS.</span> Compile-time safety, erased at runtime. Producer-Extends, Consumer-Super. <i>Follow-up:</i> why no <code>new T()</code> / <code>T[]</code>.</td></tr>
+<tr><td class="n">19</td><td class="p"><span class="star">★</span></td><td><span class="prob">Immutable class design.</span> final class, final private fields, no setters, defensive copies of mutable fields, init via constructor. <i>Follow-up:</i> why immutability aids concurrency.</td></tr>
+<tr><td class="n">20</td><td class="p"><span class="star">★</span></td><td><span class="prob">var (10), text blocks (15), switch expressions, pattern matching (21).</span> Local type inference; multiline strings; <code>switch</code> returns value + patterns. <i>Follow-up:</i> when var hurts readability.</td></tr>
+</table>
+<div class="callout tip"><b>Flagship deep-dive (Q2):</b> The equals/hashCode contract is the #1 OOP gotcha. <pre><code>@Override public boolean equals(Object o){
+  if(this==o) return true;
+  if(!(o instanceof User u)) return false;
+  return id==u.id &amp;&amp; Objects.equals(email, u.email);
+}
+@Override public int hashCode(){ return Objects.hash(id, email); }</code></pre> Break it &rarr; objects "lost" in HashMap/HashSet. Always override both, use the same fields in each.</div>
+
+
+<h2 id="t2">2. Collections <span style="font-size:.7em;color:#64748b;">(21&ndash;31)</span></h2>
+<table>
+<tr><th class="n">#</th><th class="p">Pri</th><th>Problem &amp; approach / follow-ups</th></tr>
+<tr><td class="n">21</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Internal working of HashMap (Java 8+).</span> Array of buckets; index = (n-1)&amp;hash; collisions chained, treeify to red-black tree at &gt;8 (table&ge;64); load factor 0.75 &rarr; resize doubles. <i>Follow-up:</i> why capacity is a power of 2; why keys should be immutable.</td></tr>
+<tr><td class="n">22</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">ArrayList vs LinkedList.</span> Array (O(1) get, O(n) mid-insert, grows ~50%) vs doubly-linked (O(1) insert with ref, O(n) get). <i>Follow-up:</i> which for a queue? When is LinkedList actually better? (rarely.)</td></tr>
+<tr><td class="n">23</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">HashMap vs ConcurrentHashMap vs Hashtable.</span> Not thread-safe vs bin-level locking (CAS+synchronized) vs fully-synchronized legacy. <i>Follow-up:</i> why CHM doesn't allow null keys; segment evolution.</td></tr>
+<tr><td class="n">24</td><td class="p"><span class="star">★★</span></td><td><span class="prob">HashMap vs LinkedHashMap vs TreeMap.</span> No order / insertion(or access) order / sorted (red-black, O(log n)). <i>Follow-up:</i> LinkedHashMap access-order for LRU.</td></tr>
+<tr><td class="n">25</td><td class="p"><span class="star">★★</span></td><td><span class="prob">fail-fast vs fail-safe iterators.</span> modCount &rarr; ConcurrentModificationException vs snapshot/copy (CopyOnWrite, CHM). <i>Follow-up:</i> safely remove during iteration (Iterator.remove / removeIf).</td></tr>
+<tr><td class="n">26</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Comparable vs Comparator.</span> compareTo (natural, in-class) vs compare (external, multiple orders). <i>Follow-up:</i> <code>Comparator.comparing().thenComparing().reversed()</code>.</td></tr>
+<tr><td class="n">27</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Set implementations &amp; how HashSet works.</span> HashSet backed by HashMap; LinkedHashSet ordered; TreeSet sorted. <i>Follow-up:</i> dedup logic relies on equals/hashCode.</td></tr>
+<tr><td class="n">28</td><td class="p"><span class="star">★★</span></td><td><span class="prob">How does HashMap resize &amp; what's the cost?</span> When size&gt;cap&times;0.75, new array 2&times;, rehash entries. <i>Follow-up:</i> pre-size to avoid rehashing; amortized O(1).</td></tr>
+<tr><td class="n">29</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Queue/Deque: ArrayDeque vs LinkedList vs PriorityQueue vs Stack.</span> Use ArrayDeque for stack/queue; PriorityQueue = heap. <i>Follow-up:</i> why avoid legacy Stack/Vector.</td></tr>
+<tr><td class="n">30</td><td class="p"><span class="star">★</span></td><td><span class="prob">BlockingQueue &amp; producer-consumer.</span> ArrayBlockingQueue/LinkedBlockingQueue; put/take block. <i>Follow-up:</i> bounded vs unbounded; back-pressure.</td></tr>
+<tr><td class="n">31</td><td class="p"><span class="star">★</span></td><td><span class="prob">Iterator vs ListIterator vs Enumeration; Collections.unmodifiable/synchronized.</span> Bidirectional, legacy, wrappers. <i>Follow-up:</i> immutable List.of vs unmodifiableList.</td></tr>
+</table>
+
+<h2 id="t3">3. Exception Handling <span style="font-size:.7em;color:#64748b;">(32&ndash;36)</span></h2>
+<table>
+<tr><th class="n">#</th><th class="p">Pri</th><th>Problem &amp; approach / follow-ups</th></tr>
+<tr><td class="n">32</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Checked vs unchecked exceptions; the hierarchy.</span> Throwable&rarr;Error/Exception; checked = compile-time recoverable (IOException), unchecked = RuntimeException (bugs). <i>Follow-up:</i> why not catch Error/Throwable.</td></tr>
+<tr><td class="n">33</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">try-with-resources &amp; finally semantics.</span> Auto-closes AutoCloseable in reverse order; suppressed exceptions. <i>Follow-up:</i> exception in both try &amp; finally &mdash; which wins?</td></tr>
+<tr><td class="n">34</td><td class="p"><span class="star">★★</span></td><td><span class="prob">throw vs throws; custom exceptions; wrapping with cause.</span> throw=instance, throws=declaration. Always preserve cause. <i>Follow-up:</i> domain exception design.</td></tr>
+<tr><td class="n">35</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Common mistakes in exception handling.</span> Swallowing, catching broad Exception, return in finally, logging+rethrowing both, exceptions for control flow. <i>Follow-up:</i> fail-fast.</td></tr>
+<tr><td class="n">36</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Global exception handling in Spring.</span> @RestControllerAdvice + @ExceptionHandler &rarr; consistent error schema; ProblemDetail (RFC 7807). <i>Follow-up:</i> handling validation errors.</td></tr>
+</table>
+
+<h2 id="t4">4. Multithreading &amp; Concurrency <span style="font-size:.7em;color:#64748b;">(37&ndash;52)</span></h2>
+<table>
+<tr><th class="n">#</th><th class="p">Pri</th><th>Problem &amp; approach / follow-ups</th></tr>
+<tr><td class="n">37</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Process vs thread; ways to create threads.</span> Own memory vs shared heap+own stack. Thread/Runnable/Callable+Future. <i>Follow-up:</i> start() vs run(); why Runnable preferred.</td></tr>
+<tr><td class="n">38</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">synchronized vs volatile vs Atomic.</span> Mutual exclusion+visibility vs visibility-only (not atomic i++) vs lock-free CAS. <i>Follow-up:</i> why volatile fails for counters.</td></tr>
+<tr><td class="n">39</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Deadlock &mdash; causes, detection, prevention.</span> 4 Coffman conditions; break circular wait via lock ordering / tryLock timeout. <i>Follow-up:</i> detect with jstack thread dump.</td></tr>
+<tr><td class="n">40</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">ExecutorService &amp; thread pools.</span> Reuse threads; fixed/cached/scheduled; core/max/queue/rejection. <i>Follow-up:</i> why prefer custom ThreadPoolExecutor over Executors factories.</td></tr>
+<tr><td class="n">41</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Java Memory Model: happens-before &amp; visibility.</span> Without sync, threads may see stale cached values; synchronized/volatile establish happens-before. <i>Follow-up:</i> double-checked locking needs volatile.</td></tr>
+<tr><td class="n">42</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Thread lifecycle &amp; states.</span> NEW, RUNNABLE, BLOCKED, WAITING, TIMED_WAITING, TERMINATED. <i>Follow-up:</i> wait vs sleep vs join.</td></tr>
+<tr><td class="n">43</td><td class="p"><span class="star">★★</span></td><td><span class="prob">wait/notify/notifyAll; why on Object; spurious wakeups.</span> Must hold monitor; loop on condition. <i>Follow-up:</i> notify vs notifyAll.</td></tr>
+<tr><td class="n">44</td><td class="p"><span class="star">★★</span></td><td><span class="prob">ReentrantLock vs synchronized; ReadWriteLock.</span> tryLock/timeout/fairness/interruptible; many readers OR one writer. <i>Follow-up:</i> always unlock in finally.</td></tr>
+<tr><td class="n">45</td><td class="p"><span class="star">★★</span></td><td><span class="prob">CompletableFuture &amp; async composition.</span> supplyAsync/thenApply/thenCompose/thenCombine; non-blocking. <i>Follow-up:</i> exceptionally/handle; custom executor.</td></tr>
+<tr><td class="n">46</td><td class="p"><span class="star">★★</span></td><td><span class="prob">CountDownLatch vs CyclicBarrier vs Semaphore.</span> Wait-for-N (one-shot) / threads-wait-each-other (reusable) / permit-limited access. <i>Follow-up:</i> a use case for each.</td></tr>
+<tr><td class="n">47</td><td class="p"><span class="star">★★</span></td><td><span class="prob">ConcurrentHashMap internals.</span> Java 8: per-bin CAS+synchronized, no global lock; concurrent reads. <i>Follow-up:</i> vs Collections.synchronizedMap.</td></tr>
+<tr><td class="n">48</td><td class="p"><span class="star">★★</span></td><td><span class="prob">ThreadLocal &mdash; use &amp; leak risk.</span> Per-thread value; leaks in pools &rarr; always remove(). <i>Follow-up:</i> use in request-scoped context.</td></tr>
+<tr><td class="n">49</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Producer-consumer implementation.</span> BlockingQueue or wait/notify with bounded buffer. <i>Follow-up:</i> handle shutdown/poison pill.</td></tr>
+<tr><td class="n">50</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Race condition &amp; how to fix a non-thread-safe counter.</span> read-modify-write interleaving; fix with AtomicInteger/lock/synchronized. <i>Follow-up:</i> show the bug.</td></tr>
+<tr><td class="n">51</td><td class="p"><span class="star">★</span></td><td><span class="prob">Virtual threads (Java 21, Loom).</span> Lightweight JVM-scheduled threads; millions; great for blocking I/O. <i>Follow-up:</i> vs reactive; pinning.</td></tr>
+<tr><td class="n">52</td><td class="p"><span class="star">★</span></td><td><span class="prob">Fork/Join &amp; parallel streams.</span> Work-stealing common pool, divide-and-conquer. <i>Follow-up:</i> when parallelStream hurts (small data, I/O, shared state).</td></tr>
+</table>
+<div class="callout tip"><b>Flagship (Q39): explain a deadlock &amp; fix it.</b> <pre><code>// Two threads lock A,B in opposite order -> deadlock
+T1: synchronized(A){ synchronized(B){...} }
+T2: synchronized(B){ synchronized(A){...} }
+// FIX: global lock ordering (always A before B) OR tryLock with timeout + backoff</code></pre> Interviewers love the follow-up "how would you detect it in prod?" &rarr; thread dump (<code>jstack</code>) shows "Found one Java-level deadlock".</div>
+
+<h2 id="t5">5. JVM &amp; Memory Management <span style="font-size:.7em;color:#64748b;">(53&ndash;61)</span></h2>
+<table>
+<tr><th class="n">#</th><th class="p">Pri</th><th>Problem &amp; approach / follow-ups</th></tr>
+<tr><td class="n">53</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">JVM memory areas: heap, stack, metaspace.</span> Heap (objects, shared, GC), stack (per-thread frames), metaspace (class metadata, off-heap since 8). <i>Follow-up:</i> what causes StackOverflow vs OutOfMemory.</td></tr>
+<tr><td class="n">54</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">How does Garbage Collection work? Generations.</span> Young (Eden+survivors, minor GC) &rarr; promote to Old (major/full GC); generational hypothesis. <i>Follow-up:</i> G1 vs ZGC; stop-the-world.</td></tr>
+<tr><td class="n">55</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Memory leak in Java &mdash; how can it happen &amp; how to debug?</span> Static collections, unremoved listeners, ThreadLocal in pools, unclosed resources. Heap dump + Eclipse MAT. <i>Follow-up:</i> -XX:+HeapDumpOnOutOfMemoryError.</td></tr>
+<tr><td class="n">56</td><td class="p"><span class="star">★★</span></td><td><span class="prob">JDK vs JRE vs JVM.</span> Develop / run libs / execute bytecode. <i>Follow-up:</i> why Java is platform-independent but JVM isn't.</td></tr>
+<tr><td class="n">57</td><td class="p"><span class="star">★★</span></td><td><span class="prob">ClassLoader &amp; parent-delegation model.</span> Bootstrap&rarr;Platform&rarr;App; delegate up first. <i>Follow-up:</i> why delegation (security, no dup core classes).</td></tr>
+<tr><td class="n">58</td><td class="p"><span class="star">★★</span></td><td><span class="prob">JIT compilation.</span> Interpret &rarr; profile hot methods &rarr; compile to native (inlining, escape analysis). <i>Follow-up:</i> warm-up effect.</td></tr>
+<tr><td class="n">59</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Strong/Soft/Weak/Phantom references.</span> Normal / cache (cleared under pressure) / WeakHashMap / post-finalization cleanup. <i>Follow-up:</i> use of WeakHashMap.</td></tr>
+<tr><td class="n">60</td><td class="p"><span class="star">★</span></td><td><span class="prob">How do you tune JVM / diagnose high GC / high CPU?</span> Heap sizing, GC logs, thread dumps, profilers (async-profiler, JFR). <i>Follow-up:</i> -Xms/-Xmx, MaxRAMPercentage in containers.</td></tr>
+<tr><td class="n">61</td><td class="p"><span class="star">★</span></td><td><span class="prob">PermGen vs Metaspace; escape analysis &amp; stack allocation.</span> Fixed PermGen replaced by auto-growing native Metaspace (8). <i>Follow-up:</i> object that never escapes can be scalar-replaced.</td></tr>
+</table>
+
+<h2 id="t6">6. Streams &amp; Java 8+ <span style="font-size:.7em;color:#64748b;">(62&ndash;70)</span></h2>
+<table>
+<tr><th class="n">#</th><th class="p">Pri</th><th>Problem &amp; approach / follow-ups</th></tr>
+<tr><td class="n">62</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Stream pipeline: intermediate vs terminal; laziness.</span> filter/map/sorted (lazy) + collect/reduce/forEach (eager trigger). Nothing runs until terminal. <i>Follow-up:</i> short-circuiting (findFirst/limit).</td></tr>
+<tr><td class="n">63</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">map vs flatMap.</span> One-to-one transform vs flatten nested streams (Stream&lt;List&lt;X&gt;&gt;&rarr;Stream&lt;X&gt;). <i>Follow-up:</i> flatten a list of lists.</td></tr>
+<tr><td class="n">64</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Collectors: groupingBy, counting, toMap, joining, partitioningBy.</span> Group employees by dept, count per group, etc. <i>Follow-up:</i> downstream collectors; toMap merge function for dup keys.</td></tr>
+<tr><td class="n">65</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Optional &mdash; correct usage.</span> map/orElse/orElseThrow/ifPresent; avoid get() &amp; using as fields/params. <i>Follow-up:</i> Optional vs null.</td></tr>
+<tr><td class="n">66</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Functional interfaces: Function/Predicate/Consumer/Supplier.</span> + BiFunction, UnaryOperator. <i>Follow-up:</i> compose/andThen.</td></tr>
+<tr><td class="n">67</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Lambda &amp; method references; effectively-final capture.</span> 4 method-ref forms. <i>Follow-up:</i> why captured vars must be (effectively) final.</td></tr>
+<tr><td class="n">68</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Common stream coding tasks.</span> 2nd highest, frequency map, dedup, group+sum, find duplicates, sort by multiple keys. <i>Follow-up:</i> do it without streams too.</td></tr>
+<tr><td class="n">69</td><td class="p"><span class="star">★</span></td><td><span class="prob">reduce vs collect; parallel stream pitfalls.</span> Immutable fold vs mutable accumulation. <i>Follow-up:</i> shared mutable state in parallel.</td></tr>
+<tr><td class="n">70</td><td class="p"><span class="star">★</span></td><td><span class="prob">java.time API; default methods.</span> LocalDate/Instant/Duration immutable &amp; thread-safe; interface evolution. <i>Follow-up:</i> why old Date/Calendar were bad.</td></tr>
+</table>
+
+<h2 id="t7">7. Design Patterns <span style="font-size:.7em;color:#64748b;">(71&ndash;77)</span></h2>
+<table>
+<tr><th class="n">#</th><th class="p">Pri</th><th>Problem &amp; approach / follow-ups</th></tr>
+<tr><td class="n">71</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Singleton &mdash; thread-safe implementations.</span> Holder idiom / enum / double-checked locking (volatile). <i>Follow-up:</i> how reflection/serialization/clone break it; enum fix.</td></tr>
+<tr><td class="n">72</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Factory &amp; Abstract Factory.</span> Defer instantiation; create families. <i>Follow-up:</i> vs Builder; Spring BeanFactory.</td></tr>
+<tr><td class="n">73</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Strategy vs State.</span> Client picks algorithm vs object changes own behaviour as state transitions. <i>Follow-up:</i> payment strategy; vending-machine state.</td></tr>
+<tr><td class="n">74</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Builder pattern.</span> Step-by-step immutable construction; fluent API. <i>Follow-up:</i> Lombok @Builder; telescoping-constructor problem.</td></tr>
+<tr><td class="n">75</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Observer; Decorator; Proxy.</span> Pub/sub; add behaviour dynamically; access control/lazy. <i>Follow-up:</i> Spring events; AOP proxy; BufferedReader.</td></tr>
+<tr><td class="n">76</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Patterns used in Spring.</span> Singleton (beans), Factory, Proxy (AOP/tx), Template (JdbcTemplate), Strategy, Observer (events), Front Controller (DispatcherServlet). <i>Follow-up:</i> name one per layer.</td></tr>
+<tr><td class="n">77</td><td class="p"><span class="star">★</span></td><td><span class="prob">Adapter, Facade, Template Method, Chain of Responsibility, Command.</span> Interface convert / simplify / skeleton+steps / handler chain / encapsulate request. <i>Follow-up:</i> servlet filter chain.</td></tr>
+</table>
+
+<h2 id="t8" class="pagebreak">8. Spring &amp; Spring Boot <span style="font-size:.7em;color:#64748b;">(78&ndash;97)</span></h2>
+<table>
+<tr><th class="n">#</th><th class="p">Pri</th><th>Problem &amp; approach / follow-ups</th></tr>
+<tr><td class="n">78</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">IoC &amp; Dependency Injection; types of DI.</span> Container creates/wires beans; constructor (preferred) / setter / field. <i>Follow-up:</i> why constructor injection (final, testable, fail-fast).</td></tr>
+<tr><td class="n">79</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Bean lifecycle &amp; scopes.</span> Instantiate&rarr;populate&rarr;aware&rarr;BPP&rarr;@PostConstruct&rarr;use&rarr;@PreDestroy; singleton(default)/prototype/request/session. <i>Follow-up:</i> prototype-in-singleton problem.</td></tr>
+<tr><td class="n">80</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">@SpringBootApplication &amp; auto-configuration.</span> @Configuration+@EnableAutoConfiguration+@ComponentScan; conditional beans (@ConditionalOnClass/Missing). <i>Follow-up:</i> how to override an auto-config bean.</td></tr>
+<tr><td class="n">81</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">@Transactional &mdash; propagation, isolation, rollback rules.</span> AOP proxy; REQUIRED default; rolls back on unchecked only. <i>Follow-up:</i> self-invocation bypasses proxy; only public methods.</td></tr>
+<tr><td class="n">82</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">How does Spring AOP work? Self-invocation pitfall.</span> JDK/CGLIB proxy wraps bean; advice in proxy. Calling advised method from same class skips it. <i>Follow-up:</i> @Transactional/@Async not working.</td></tr>
+<tr><td class="n">83</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">REST controller: @PathVariable/@RequestParam/@RequestBody/ResponseEntity.</span> Map URI/query/body; full response control. <i>Follow-up:</i> @Controller vs @RestController; return DTOs not entities.</td></tr>
+<tr><td class="n">84</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">The N+1 query problem &amp; fixes.</span> Lazy assoc &rarr; one query per parent; fix with JOIN FETCH / @EntityGraph / @BatchSize. <i>Follow-up:</i> LazyInitializationException.</td></tr>
+<tr><td class="n">85</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Resolving bean ambiguity: @Qualifier, @Primary, @Profile.</span> By type then name; pick specific / default / per-env. <i>Follow-up:</i> circular dependency &amp; @Lazy.</td></tr>
+<tr><td class="n">86</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Bean validation (@Valid, JSR-380).</span> @NotNull/@Size/@Email; @Valid triggers + cascades; handle MethodArgumentNotValidException. <i>Follow-up:</i> custom constraint; @Validated groups.</td></tr>
+<tr><td class="n">87</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Spring Data JPA repositories.</span> JpaRepository, derived queries, @Query JPQL/native, Pageable. <i>Follow-up:</i> save vs saveAndFlush; when SQL fires.</td></tr>
+<tr><td class="n">88</td><td class="p"><span class="star">★★</span></td><td><span class="prob">JPA entity states &amp; persistence context.</span> Transient/managed/detached/removed; first-level cache; dirty checking. <i>Follow-up:</i> flush vs commit.</td></tr>
+<tr><td class="n">89</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Lazy vs Eager fetching; FetchType defaults.</span> @ManyToOne EAGER, @OneToMany LAZY. <i>Follow-up:</i> fix LazyInitException (DTO projection, fetch join).</td></tr>
+<tr><td class="n">90</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Optimistic vs pessimistic locking.</span> @Version (retry on conflict) vs SELECT FOR UPDATE. <i>Follow-up:</i> high vs low contention choice.</td></tr>
+<tr><td class="n">91</td><td class="p"><span class="star">★★</span></td><td><span class="prob">application.properties/yml, profiles, @ConfigurationProperties.</span> Externalized config; type-safe binding; precedence (CLI&gt;env&gt;profile&gt;file). <i>Follow-up:</i> @Value vs @ConfigurationProperties.</td></tr>
+<tr><td class="n">92</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Filter vs Interceptor vs AOP.</span> Servlet-level / Spring MVC handler-level / method-level. <i>Follow-up:</i> where to put auth/logging.</td></tr>
+<tr><td class="n">93</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Spring Security architecture; JWT vs session.</span> Filter chain, AuthenticationManager, UserDetailsService, SecurityContext; stateless token vs server session. <i>Follow-up:</i> @PreAuthorize; CSRF for stateless API.</td></tr>
+<tr><td class="n">94</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Actuator &amp; production readiness.</span> /health, /metrics (Micrometer), /info, liveness/readiness. <i>Follow-up:</i> secure endpoints; K8s probes.</td></tr>
+<tr><td class="n">95</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Testing: @SpringBootTest, @WebMvcTest, @DataJpaTest, @MockBean, MockMvc.</span> Slices vs full context. <i>Follow-up:</i> Testcontainers vs H2.</td></tr>
+<tr><td class="n">96</td><td class="p"><span class="star">★</span></td><td><span class="prob">Caching with @Cacheable/@CachePut/@CacheEvict.</span> Provider-agnostic; Redis/Caffeine backends. <i>Follow-up:</i> self-invocation caveat; key/condition.</td></tr>
+<tr><td class="n">97</td><td class="p"><span class="star">★</span></td><td><span class="prob">@Async, scheduling, and Spring Boot startup internals.</span> @EnableAsync + executor; @Scheduled cron; SpringApplication.run flow. <i>Follow-up:</i> why @Async on same-class call fails.</td></tr>
+</table>
+<div class="callout tip"><b>Flagship (Q81/Q82): the self-invocation trap.</b> <pre><code>@Service class OrderService {
+  @Transactional public void outer(){ inner(); }   // inner's @Transactional is IGNORED
+  @Transactional public void inner(){ ... }          // bypassed: same-object call skips the proxy
+}</code></pre> Fix: move <code>inner()</code> to another bean, or self-inject the proxy. This single concept explains most "my @Transactional/@Async/@Cacheable isn't working" bugs &mdash; a top product-company favourite.</div>
+
+<h2 id="t9">9. Microservices &amp; Distributed Systems <span style="font-size:.7em;color:#64748b;">(98&ndash;112)</span></h2>
+<table>
+<tr><th class="n">#</th><th class="p">Pri</th><th>Problem &amp; approach / follow-ups</th></tr>
+<tr><td class="n">98</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Monolith vs microservices &mdash; trade-offs; when NOT to use micro.</span> Independent deploy/scale + DB-per-service vs distributed complexity. <i>Follow-up:</i> start monolith, split when justified.</td></tr>
+<tr><td class="n">99</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">How do services communicate? Sync vs async.</span> REST/gRPC vs events/queues. <i>Follow-up:</i> when to choose each; chatty calls.</td></tr>
+<tr><td class="n">100</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Circuit breaker, retry, timeout, bulkhead (Resilience4j).</span> Fail fast on failing dep (CLOSED&rarr;OPEN&rarr;HALF-OPEN); retry idempotent only. <i>Follow-up:</i> fallback; exponential backoff+jitter.</td></tr>
+<tr><td class="n">101</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Distributed transactions: Saga pattern; the dual-write problem.</span> Local txns + compensations (choreography/orchestration); outbox pattern for reliable events. <i>Follow-up:</i> 2PC drawbacks.</td></tr>
+<tr><td class="n">102</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">CAP theorem (and PACELC).</span> Under partition choose C or A; CP vs AP examples. <i>Follow-up:</i> latency-vs-consistency even without partitions.</td></tr>
+<tr><td class="n">103</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Idempotency &mdash; how to make an API idempotent.</span> Idempotency-Key + stored result; unique constraints. <i>Follow-up:</i> safe retries; PUT vs POST.</td></tr>
+<tr><td class="n">104</td><td class="p"><span class="star">★★</span></td><td><span class="prob">API Gateway &amp; service discovery.</span> Single entry (routing/auth/rate-limit); Eureka/Consul/K8s DNS. <i>Follow-up:</i> client- vs server-side LB.</td></tr>
+<tr><td class="n">105</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Consistency models &amp; eventual consistency.</span> Strong vs eventual vs read-your-writes; BASE. <i>Follow-up:</i> quorum (W+R&gt;N).</td></tr>
+<tr><td class="n">106</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Centralized config &amp; secrets management.</span> Config server; Vault/Secrets Manager; never in code. <i>Follow-up:</i> rotate secrets.</td></tr>
+<tr><td class="n">107</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Distributed tracing &amp; observability.</span> Trace IDs, Micrometer/OpenTelemetry + Zipkin/Jaeger; metrics/logs/traces. <i>Follow-up:</i> correlate logs across services.</td></tr>
+<tr><td class="n">108</td><td class="p"><span class="star">★★</span></td><td><span class="prob">CQRS &amp; event sourcing.</span> Separate read/write models; state as event log. <i>Follow-up:</i> when worth the complexity.</td></tr>
+<tr><td class="n">109</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Distributed locking &amp; leader election.</span> Redis (SETNX+TTL/Redlock), ZooKeeper/etcd (Raft). <i>Follow-up:</i> lock expiry/fencing tokens.</td></tr>
+<tr><td class="n">110</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Consistent hashing.</span> Keys+nodes on a ring; minimal remap on node change; virtual nodes. <i>Follow-up:</i> vs hash%N for caches/sharding.</td></tr>
+<tr><td class="n">111</td><td class="p"><span class="star">★</span></td><td><span class="prob">Service mesh (Istio/Envoy).</span> Sidecar handles mTLS, retries, traffic-splitting, telemetry. <i>Follow-up:</i> when worth it.</td></tr>
+<tr><td class="n">112</td><td class="p"><span class="star">★</span></td><td><span class="prob">Distributed unique IDs.</span> Snowflake (time+machine+seq), UUID, ticket server. <i>Follow-up:</i> roughly time-ordered IDs.</td></tr>
+</table>
+
+<h2 id="t10">10. SQL &amp; DBMS <span style="font-size:.7em;color:#64748b;">(113&ndash;127)</span></h2>
+<table>
+<tr><th class="n">#</th><th class="p">Pri</th><th>Problem &amp; approach / follow-ups</th></tr>
+<tr><td class="n">113</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Joins: inner/left/right/full/self.</span> Matching vs all-left+matched etc. <i>Follow-up:</i> draw with sample rows; when self-join.</td></tr>
+<tr><td class="n">114</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">2nd (Nth) highest salary.</span> Subquery (MAX&lt;MAX) or DENSE_RANK window =2. <i>Follow-up:</i> handle ties &amp; per-department (PARTITION BY).</td></tr>
+<tr><td class="n">115</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">ACID &amp; isolation levels.</span> Atomicity/Consistency/Isolation/Durability; READ UNCOMMITTED&rarr;SERIALIZABLE vs dirty/non-repeatable/phantom. <i>Follow-up:</i> MVCC.</td></tr>
+<tr><td class="n">116</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Indexing &mdash; how it speeds queries; when it hurts.</span> B+ tree O(log n); slows writes, extra space. <i>Follow-up:</i> clustered vs non-clustered; composite leftmost-prefix; functions kill index use.</td></tr>
+<tr><td class="n">117</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">WHERE vs HAVING; GROUP BY; SQL execution order.</span> Row vs group filter; FROM&rarr;WHERE&rarr;GROUP&rarr;HAVING&rarr;SELECT&rarr;ORDER. <i>Follow-up:</i> why alias unusable in WHERE.</td></tr>
+<tr><td class="n">118</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Normalization (1NF&ndash;3NF/BCNF) &amp; when to denormalize.</span> Remove redundancy/anomalies; denormalize for read-heavy. <i>Follow-up:</i> trade-offs.</td></tr>
+<tr><td class="n">119</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">SQL vs NoSQL &mdash; when to choose which.</span> Relations/transactions vs scale/flexible schema. <i>Follow-up:</i> NoSQL types &amp; use cases.</td></tr>
+<tr><td class="n">120</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Window functions: ROW_NUMBER/RANK/DENSE_RANK/LAG/LEAD.</span> Per-partition ranking/running totals. <i>Follow-up:</i> RANK vs DENSE_RANK gaps.</td></tr>
+<tr><td class="n">121</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Optimize a slow query.</span> EXPLAIN plan, add/fix index, avoid SELECT *, sargable predicates, reduce joins, pagination. <i>Follow-up:</i> N+1 from ORM.</td></tr>
+<tr><td class="n">122</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Pessimistic vs optimistic locking; handling concurrent updates.</span> SELECT FOR UPDATE vs version column. <i>Follow-up:</i> deadlock from lock ordering.</td></tr>
+<tr><td class="n">123</td><td class="p"><span class="star">★★</span></td><td><span class="prob">DELETE vs TRUNCATE vs DROP; primary vs unique vs foreign key.</span> Row(logged, rollback) / fast empty / structure. Identity vs alt key vs referential. <i>Follow-up:</i> ON DELETE CASCADE.</td></tr>
+<tr><td class="n">124</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Replication &amp; sharding.</span> Read replicas (scale reads/HA) vs partition by shard key (scale writes). <i>Follow-up:</i> good shard key; cross-shard joins.</td></tr>
+<tr><td class="n">125</td><td class="p"><span class="star">★</span></td><td><span class="prob">CTE &amp; recursive CTE; subquery vs join.</span> Readability/recursion (hierarchies). <i>Follow-up:</i> performance.</td></tr>
+<tr><td class="n">126</td><td class="p"><span class="star">★</span></td><td><span class="prob">Find/delete duplicate rows; group-wise max.</span> GROUP BY HAVING COUNT&gt;1; window or correlated subquery. <i>Follow-up:</i> keep one copy.</td></tr>
+<tr><td class="n">127</td><td class="p"><span class="star">★</span></td><td><span class="prob">Connection pooling &amp; zero-downtime migrations.</span> HikariCP; expand-contract migrations (Flyway/Liquibase). <i>Follow-up:</i> never drop/rename live.</td></tr>
+</table>
+
+<h2 id="t11" class="pagebreak">11. LLD (Low-Level / Object-Oriented Design) <span style="font-size:.7em;color:#64748b;">(128&ndash;135)</span></h2>
+<table>
+<tr><th class="n">#</th><th class="p">Pri</th><th>Problem &amp; approach / follow-ups</th></tr>
+<tr><td class="n">128</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Design a Parking Lot.</span> ParkingLot(Singleton)&rarr;Floor&rarr;Spot; Vehicle/Spot hierarchies; FeeStrategy(Strategy); Factory. <i>Follow-up:</i> concurrency on spot allocation; efficient free-spot lookup.</td></tr>
+<tr><td class="n">129</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Design a Vending Machine / ATM.</span> State pattern (NoMoney&rarr;HasMoney&rarr;Dispense; Idle&rarr;CardInserted&rarr;Auth&rarr;Txn); Chain of Responsibility for cash dispensing. <i>Follow-up:</i> atomic dispense+debit.</td></tr>
+<tr><td class="n">130</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Design BookMyShow / movie booking.</span> City&rarr;Theatre&rarr;Screen&rarr;Show; seat lock+TTL to prevent double-booking (DB row lock / Redis). <i>Follow-up:</i> the exact concurrency mechanism.</td></tr>
+<tr><td class="n">131</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Design an Elevator system.</span> ElevatorCar + State (Idle/Moving/DoorOpen) + scheduling Strategy (LOOK/nearest-car). <i>Follow-up:</i> multi-car dispatch.</td></tr>
+<tr><td class="n">132</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Design Splitwise.</span> User/Group/Expense + SplitStrategy (equal/exact/percent); net-balance debt simplification. <i>Follow-up:</i> cents to avoid rounding errors.</td></tr>
+<tr><td class="n">133</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Design a rate limiter (LLD) / LRU cache.</span> Token bucket; LRU = HashMap + doubly-linked list (O(1)). <i>Follow-up:</i> thread safety.</td></tr>
+<tr><td class="n">134</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Design Tic-Tac-Toe / Chess / Snake&amp;Ladder.</span> Board+Player+Game loop; Chess uses polymorphic Piece.canMove(); board=HashMap jumps. <i>Follow-up:</i> O(1) win check.</td></tr>
+<tr><td class="n">135</td><td class="p"><span class="star">★</span></td><td><span class="prob">Design a Notification/Logger/Pub-Sub (LLD).</span> Observer + Strategy (channels) + Factory. <i>Follow-up:</i> extensible new channels (Open/Closed).</td></tr>
+</table>
+<div class="callout tip"><b>LLD interview method:</b> Clarify requirements &rarr; find entities (nouns) &amp; behaviours (verbs) &rarr; relationships &amp; multiplicities &rarr; class APIs (SOLID) &rarr; apply patterns (Strategy/State/Factory) &rarr; code key classes &rarr; discuss concurrency &amp; extensibility. Interviewers grade clean OOP &amp; the right pattern, not lines of code. (See the System Design notes for full diagrams.)</div>
+
+<h2 id="t12">12. HLD / System Design <span style="font-size:.7em;color:#64748b;">(136&ndash;147)</span></h2>
+<table>
+<tr><th class="n">#</th><th class="p">Pri</th><th>Problem &amp; approach / follow-ups</th></tr>
+<tr><td class="n">136</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Design a URL shortener (TinyURL).</span> Counter+Base62 / hash; KV store; cache hot URLs; 301 vs 302. <i>Follow-up:</i> distributed unique ID; custom alias; analytics.</td></tr>
+<tr><td class="n">137</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Design a rate limiter (HLD/distributed).</span> Token bucket in Redis (atomic Lua), 429+Retry-After. <i>Follow-up:</i> per-node vs centralized; sliding window boundary.</td></tr>
+<tr><td class="n">138</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Design a Notification system.</span> API&rarr;queue&rarr;per-channel workers (email/SMS/push); retries+DLQ; preferences; dedup. <i>Follow-up:</i> avoid duplicates (idempotency).</td></tr>
+<tr><td class="n">139</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Design WhatsApp / a chat system.</span> WebSocket + presence registry; message store (Cassandra) partitioned by chat; offline delivery+push. <i>Follow-up:</i> ordering, receipts, group fan-out.</td></tr>
+<tr><td class="n">140</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Design a news feed (Instagram/Twitter).</span> Fan-out on write vs read; hybrid for the celebrity problem. <i>Follow-up:</i> ranking; pagination.</td></tr>
+<tr><td class="n">141</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Design YouTube/Netflix (video).</span> Upload&rarr;transcode pipeline (queue+workers)&rarr;chunks&rarr;CDN; adaptive bitrate. <i>Follow-up:</i> storage tiers; recommendations.</td></tr>
+<tr><td class="n">142</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Design Uber (nearby drivers/matching).</span> Geohash/Quadtree spatial index; high-freq location writes; matching by ETA. <i>Follow-up:</i> surge; trip state machine.</td></tr>
+<tr><td class="n">143</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Design a distributed cache / Typeahead.</span> Consistent hashing + replicas + LRU; trie with cached top-k. <i>Follow-up:</i> hot keys; freshness.</td></tr>
+<tr><td class="n">144</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Scalability fundamentals: vertical vs horizontal, stateless services.</span> Externalize state; LB + auto-scaling. <i>Follow-up:</i> sticky sessions vs shared store.</td></tr>
+<tr><td class="n">145</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Load balancing (L4 vs L7, algorithms).</span> Round-robin/least-conn/hash; health checks; HA LB. <i>Follow-up:</i> SSL termination.</td></tr>
+<tr><td class="n">146</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Caching strategies &amp; problems.</span> Cache-aside/write-through; stampede/penetration/avalanche; invalidation. <i>Follow-up:</i> keep cache+DB consistent.</td></tr>
+<tr><td class="n">147</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Back-of-envelope estimation.</span> DAU&rarr;QPS, read/write ratio, storage/bandwidth. <i>Follow-up:</i> infer target complexity from scale.</td></tr>
+<tr><td class="n">148</td><td class="p"><span class="star">★</span></td><td><span class="prob">Design a payment system / distributed job scheduler / web crawler.</span> Idempotency+ledger+outbox; queue+workers+leader election; frontier+dedup(Bloom). <i>Follow-up:</i> exactly-once money handling.</td></tr>
+</table>
+<div class="callout tip"><b>HLD interview framework:</b> Requirements (FR+NFR) &rarr; Estimation (QPS/storage) &rarr; API &rarr; Data model (SQL/NoSQL) &rarr; High-level architecture (LB, services, cache, DB, queue, CDN) &rarr; deep-dive 1&ndash;2 components &rarr; scale &amp; bottlenecks &rarr; trade-offs. Always state assumptions and articulate the C-vs-A / latency-vs-consistency trade-off. (Full case studies in the System Design notes.)</div>
+
+<h2 id="t13" class="pagebreak">13. Operating Systems <span style="font-size:.7em;color:#64748b;">(149&ndash;156)</span></h2>
+<table>
+<tr><th class="n">#</th><th class="p">Pri</th><th>Problem &amp; approach / follow-ups</th></tr>
+<tr><td class="n">149</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Process vs thread; context switch.</span> Own memory vs shared heap; save/restore state. <i>Follow-up:</i> why threads are "lightweight".</td></tr>
+<tr><td class="n">150</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Deadlock: 4 conditions, prevention/avoidance/detection.</span> Mutual-exclusion, hold&amp;wait, no-preempt, circular-wait; lock ordering; Banker's. <i>Follow-up:</i> vs livelock/starvation.</td></tr>
+<tr><td class="n">151</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Synchronization: mutex/semaphore/monitor; critical section.</span> Mutual exclusion, progress, bounded waiting. <i>Follow-up:</i> mutex vs semaphore; producer-consumer.</td></tr>
+<tr><td class="n">152</td><td class="p"><span class="star">★★</span></td><td><span class="prob">CPU scheduling algorithms.</span> FCFS/SJF/RR/Priority; preemptive vs not; starvation&rarr;aging. <i>Follow-up:</i> compute avg waiting time.</td></tr>
+<tr><td class="n">153</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Virtual memory, paging, page faults; thrashing.</span> Pages&rarr;frames, TLB; too much paging&rarr;working set. <i>Follow-up:</i> LRU; Belady's anomaly.</td></tr>
+<tr><td class="n">154</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Paging vs segmentation; internal vs external fragmentation.</span> Fixed vs variable blocks. <i>Follow-up:</i> compaction.</td></tr>
+<tr><td class="n">155</td><td class="p"><span class="star">★</span></td><td><span class="prob">User vs kernel mode; system calls; IPC.</span> Privileged switch via trap; pipes/shm/sockets/signals. <i>Follow-up:</i> what happens during a syscall.</td></tr>
+<tr><td class="n">156</td><td class="p"><span class="star">★</span></td><td><span class="prob">Diagnose a slow/high-CPU Linux server.</span> top/free/df/iostat/ss; localize bottleneck before acting. <i>Follow-up:</i> SIGTERM vs SIGKILL.</td></tr>
+</table>
+
+<h2 id="t14">14. Computer Networks <span style="font-size:.7em;color:#64748b;">(157&ndash;164)</span></h2>
+<table>
+<tr><th class="n">#</th><th class="p">Pri</th><th>Problem &amp; approach / follow-ups</th></tr>
+<tr><td class="n">157</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">What happens when you type a URL &amp; press enter?</span> DNS&rarr;TCP handshake&rarr;TLS&rarr;HTTP request&rarr;server&rarr;render. <i>Follow-up:</i> drill into any step.</td></tr>
+<tr><td class="n">158</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">TCP vs UDP; TCP 3-way handshake.</span> Reliable/ordered vs fast/best-effort; SYN/SYN-ACK/ACK. <i>Follow-up:</i> why 3-way not 2; flow vs congestion control.</td></tr>
+<tr><td class="n">159</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">HTTP: methods, status codes, idempotency; HTTP/1.1 vs 2 vs 3; HTTPS/TLS.</span> Verbs, 2xx-5xx, stateless. <i>Follow-up:</i> how HTTPS stops MITM.</td></tr>
+<tr><td class="n">160</td><td class="p"><span class="star">★★</span></td><td><span class="prob">OSI / TCP-IP layers &amp; encapsulation.</span> 7 layers; where routers/switches/LBs sit (L3/L2/L4-L7). <i>Follow-up:</i> L4 vs L7 LB.</td></tr>
+<tr><td class="n">161</td><td class="p"><span class="star">★★</span></td><td><span class="prob">DNS resolution; record types.</span> Recursive lookup; A/AAAA/CNAME/MX; TTL/caching. <i>Follow-up:</i> DNS over UDP/TCP.</td></tr>
+<tr><td class="n">162</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Cookies vs sessions vs tokens; CORS.</span> Where state lives; cross-origin policy. <i>Follow-up:</i> JWT revocation.</td></tr>
+<tr><td class="n">163</td><td class="p"><span class="star">★</span></td><td><span class="prob">IP/subnetting/CIDR; NAT; public vs private IP.</span> /24 masks; NAT conserves IPv4. <i>Follow-up:</i> VPC design.</td></tr>
+<tr><td class="n">164</td><td class="p"><span class="star">★</span></td><td><span class="prob">WebSocket vs polling vs SSE; long-poll.</span> Persistent bidirectional vs repeated requests vs server push. <i>Follow-up:</i> use in chat/feeds.</td></tr>
+</table>
+
+<h2 id="t15">15. Kafka &amp; Messaging <span style="font-size:.7em;color:#64748b;">(165&ndash;172)</span></h2>
+<table>
+<tr><th class="n">#</th><th class="p">Pri</th><th>Problem &amp; approach / follow-ups</th></tr>
+<tr><td class="n">165</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">What is Kafka &amp; how does it work?</span> Distributed durable replayable log; topics&rarr;partitions; producers/consumer-groups; offsets. <i>Follow-up:</i> why it's fast (sequential I/O, page cache, zero-copy).</td></tr>
+<tr><td class="n">166</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Partitions, ordering &amp; consumer groups.</span> Order per partition; same key&rarr;same partition; each partition&rarr;one consumer in group. <i>Follow-up:</i> max consumers = partitions.</td></tr>
+<tr><td class="n">167</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Delivery semantics &amp; exactly-once.</span> At-most/least/exactly-once; idempotent producer + transactions; make consumers idempotent. <i>Follow-up:</i> EOS is Kafka-to-Kafka.</td></tr>
+<tr><td class="n">168</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Durability: acks, replication, ISR, min.insync.replicas.</span> acks=all + RF3 + min.insync=2 &rarr; no loss, tolerate 1 broker. <i>Follow-up:</i> unclean leader election.</td></tr>
+<tr><td class="n">169</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Consumer offset management &amp; rebalancing.</span> commit after processing; auto vs manual; cooperative rebalance. <i>Follow-up:</i> reprocessing &amp; slow-consumer rebalance bug.</td></tr>
+<tr><td class="n">170</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Kafka vs RabbitMQ vs SQS.</span> Replayable log vs broker queues vs managed queue. <i>Follow-up:</i> when each fits.</td></tr>
+<tr><td class="n">171</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Handling failures: DLQ, retries, poison messages, outbox.</span> Retry+backoff, DLQ, dedup; outbox avoids dual-write. <i>Follow-up:</i> ordering after retries.</td></tr>
+<tr><td class="n">172</td><td class="p"><span class="star">★</span></td><td><span class="prob">Retention &amp; log compaction; when to use messaging.</span> delete vs compact (latest per key, tombstones); decouple/buffer/async. <i>Follow-up:</i> sync vs async choice.</td></tr>
+</table>
+
+<h2 id="t16">16. Redis &amp; Caching <span style="font-size:.7em;color:#64748b;">(173&ndash;179)</span></h2>
+<table>
+<tr><th class="n">#</th><th class="p">Pri</th><th>Problem &amp; approach / follow-ups</th></tr>
+<tr><td class="n">173</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Why &amp; where to cache; cache-aside pattern.</span> Cut latency/DB load; app checks cache, loads DB on miss, populates. <i>Follow-up:</i> read/write-through/back.</td></tr>
+<tr><td class="n">174</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Cache invalidation &amp; keeping cache+DB consistent.</span> Write+invalidate (delete key), short TTL, write-through for strict. <i>Follow-up:</i> the hard problem.</td></tr>
+<tr><td class="n">175</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Cache stampede / penetration / avalanche.</span> Lock/early-refresh; cache nulls/Bloom; jittered TTL. <i>Follow-up:</i> thundering herd fix.</td></tr>
+<tr><td class="n">176</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Redis data structures &amp; use cases.</span> String/Hash/List/Set/ZSet/Stream; sessions, rate-limit, leaderboard, lock, queue. <i>Follow-up:</i> ZSet for leaderboard.</td></tr>
+<tr><td class="n">177</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Eviction policies &amp; TTL.</span> LRU/LFU/TTL; maxmemory-policy. <i>Follow-up:</i> Redis single-threaded model.</td></tr>
+<tr><td class="n">178</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Distributed lock with Redis.</span> SETNX+TTL / Redlock; fencing tokens. <i>Follow-up:</i> lock-expiry pitfalls.</td></tr>
+<tr><td class="n">179</td><td class="p"><span class="star">★</span></td><td><span class="prob">Redis persistence (RDB/AOF) &amp; HA (replication/Sentinel/Cluster).</span> Snapshot vs append-log; failover &amp; sharding. <i>Follow-up:</i> durability vs perf.</td></tr>
+</table>
+
+<h2 id="t17">17. Docker &amp; Kubernetes <span style="font-size:.7em;color:#64748b;">(180&ndash;187)</span></h2>
+<table>
+<tr><th class="n">#</th><th class="p">Pri</th><th>Problem &amp; approach / follow-ups</th></tr>
+<tr><td class="n">180</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Container vs VM; how Docker isolation works.</span> Shares kernel via namespaces+cgroups vs full OS. <i>Follow-up:</i> image vs container; layers.</td></tr>
+<tr><td class="n">181</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Dockerfile best practices &amp; multi-stage builds.</span> Small base, layer caching (deps before code), non-root, .dockerignore. <i>Follow-up:</i> why huge/slow image.</td></tr>
+<tr><td class="n">182</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Kubernetes architecture &amp; core objects.</span> API server/etcd/scheduler/controllers; Pod/Deployment/Service/Ingress/ConfigMap. <i>Follow-up:</i> what happens on kubectl apply.</td></tr>
+<tr><td class="n">183</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Deployment vs StatefulSet; Service types; probes.</span> Stateless vs stable identity; ClusterIP/NodePort/LB/Ingress; liveness/readiness. <i>Follow-up:</i> CrashLoopBackOff debug.</td></tr>
+<tr><td class="n">184</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Persisting data &amp; config in containers/K8s.</span> Volumes/PV/PVC; ConfigMap/Secret. <i>Follow-up:</i> stateful workloads.</td></tr>
+<tr><td class="n">185</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Zero-downtime deployment strategies.</span> Rolling/blue-green/canary + health checks + backward-compatible migrations. <i>Follow-up:</i> instant rollback.</td></tr>
+<tr><td class="n">186</td><td class="p"><span class="star">★</span></td><td><span class="prob">Helm; scaling (HPA); resource requests/limits.</span> Charts+values; autoscale on metrics; avoid OOMKills/noisy-neighbour. <i>Follow-up:</i> why set limits.</td></tr>
+<tr><td class="n">187</td><td class="p"><span class="star">★</span></td><td><span class="prob">Docker Compose vs Kubernetes.</span> Single-host multi-container vs cluster orchestration. <i>Follow-up:</i> dev vs prod.</td></tr>
+</table>
+
+<h2 id="t18">18. AWS / Cloud <span style="font-size:.7em;color:#64748b;">(188&ndash;191)</span></h2>
+<table>
+<tr><th class="n">#</th><th class="p">Pri</th><th>Problem &amp; approach / follow-ups</th></tr>
+<tr><td class="n">188</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Core services &amp; service models (IaaS/PaaS/SaaS/FaaS).</span> EC2/S3/RDS/Lambda/SQS/EKS; what you manage. <i>Follow-up:</i> serverless trade-offs.</td></tr>
+<tr><td class="n">189</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Region vs AZ; designing for HA &amp; DR.</span> Multi-AZ for HA, multi-region for DR/latency. <i>Follow-up:</i> RPO/RTO.</td></tr>
+<tr><td class="n">190</td><td class="p"><span class="star">★★</span></td><td><span class="prob">VPC, security groups vs NACLs, IAM least-privilege.</span> Subnets/firewalls; stateful SG vs stateless NACL; roles over keys. <i>Follow-up:</i> shared responsibility model.</td></tr>
+<tr><td class="n">191</td><td class="p"><span class="star">★</span></td><td><span class="prob">Auto-scaling, load balancing &amp; cost optimization.</span> ASG+ALB; spot/reserved; right-sizing. <i>Follow-up:</i> S3 + CloudFront for static/media.</td></tr>
+</table>
+
+<h2 id="t19">19. Security &amp; Keycloak <span style="font-size:.7em;color:#64748b;">(192&ndash;196)</span></h2>
+<table>
+<tr><th class="n">#</th><th class="p">Pri</th><th>Problem &amp; approach / follow-ups</th></tr>
+<tr><td class="n">192</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Authentication vs authorization; OAuth2 vs OIDC; JWT.</span> Who vs what; authz vs authn (ID token); signed claims, verify via JWKS. <i>Follow-up:</i> access vs ID vs refresh token.</td></tr>
+<tr><td class="n">193</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">Common web vulnerabilities (OWASP): SQLi, XSS, CSRF.</span> Parameterized queries; output encoding/CSP; CSRF tokens/SameSite. <i>Follow-up:</i> XSS vs CSRF.</td></tr>
+<tr><td class="n">194</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Password storage; hashing vs encryption; salt.</span> bcrypt/Argon2 + per-user salt; one-way vs reversible. <i>Follow-up:</i> why salt defeats rainbow tables.</td></tr>
+<tr><td class="n">195</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Keycloak: SSO, realms/clients, grant types, token validation.</span> IAM with OIDC/SAML; Authorization Code+PKCE; validate sig+exp+iss+aud. <i>Follow-up:</i> public vs confidential client.</td></tr>
+<tr><td class="n">196</td><td class="p"><span class="star">★</span></td><td><span class="prob">Symmetric vs asymmetric crypto; TLS; secrets management.</span> Shared key vs key-pair; hybrid in TLS; Vault, rotate, never in code. <i>Follow-up:</i> how a leaked secret is handled.</td></tr>
+</table>
+
+<h2 id="t20">20. Git &amp; CI/CD <span style="font-size:.7em;color:#64748b;">(197&ndash;200)</span></h2>
+<table>
+<tr><th class="n">#</th><th class="p">Pri</th><th>Problem &amp; approach / follow-ups</th></tr>
+<tr><td class="n">197</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">merge vs rebase; the golden rule.</span> Preserve history vs linear (rewrite); never rebase shared/pushed branches. <i>Follow-up:</i> interactive rebase to squash.</td></tr>
+<tr><td class="n">198</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Undoing changes: reset vs revert vs restore; recover lost commits.</span> Move pointer vs new undo-commit vs file restore; reflog. <i>Follow-up:</i> undo a pushed commit safely (revert).</td></tr>
+<tr><td class="n">199</td><td class="p"><span class="star">★★</span></td><td><span class="prob">Branching strategies &amp; resolving conflicts.</span> Git Flow / GitHub Flow / trunk-based; resolve markers, add, commit. <i>Follow-up:</i> match strategy to release cadence.</td></tr>
+<tr><td class="n">200</td><td class="p"><span class="star">★★★</span></td><td><span class="prob">CI/CD pipeline &amp; deployment; walk from commit to production.</span> Build&rarr;test&rarr;scan&rarr;image&rarr;deploy(canary/blue-green)&rarr;monitor&rarr;rollback. <i>Follow-up:</i> CI vs CD vs continuous deployment; secure the pipeline.</td></tr>
+</table>
+
+<hr>
+<h2>Interview Strategy &amp; Final Tips</h2>
+<div class="callout tip"><b>How to crack the interview, not just the question:</b>
+<ul style="margin-top:.3em;">
+<li><b>Clarify before answering</b> &mdash; restate the question, ask about scope/constraints. Interviewers reward this.</li>
+<li><b>State the trade-off</b> &mdash; "X improves throughput at the cost of consistency." There's rarely one right answer; reasoning wins.</li>
+<li><b>Go breadth-first, then depth</b> &mdash; give the headline answer, then offer to go deeper. Don't ramble.</li>
+<li><b>Tie to a real example</b> &mdash; pair every concept with where you'd use it / a framework that does it.</li>
+<li><b>Think out loud &amp; draw</b> &mdash; especially for LLD/HLD; structure the answer as a flow.</li>
+<li><b>Admit unknowns &amp; reason</b> &mdash; "I'm not sure, but I'd reason it as..." beats bluffing.</li>
+</ul></div>
+<div class="callout note"><b>Suggested study order:</b> Master all <span class="star">★★★</span> first (the "almost-always-asked" core), then <span class="star">★★</span>, then <span class="star">★</span>. Within each topic the list runs beginner&rarr;advanced. Use this as a checklist &mdash; tick each problem when you can answer it <em>and</em> its follow-up out loud. Pair with the companion deep-dive PDFs for any topic you're shaky on.</div>
+<div class="callout warn"><b>The 80/20:</b> if time is short, the highest-ROI must-knows are &mdash; equals/hashCode, HashMap internals, synchronized/volatile/Atomic, deadlock, thread pools, GC &amp; memory leaks, Streams+Optional, Singleton/Strategy/State, DI &amp; bean lifecycle, @Transactional self-invocation, N+1, REST design, ACID/isolation/indexing, joins &amp; 2nd-highest-salary, CAP, idempotency, circuit breaker, URL shortener &amp; rate limiter design, Kafka delivery semantics, caching+invalidation, container vs VM, K8s core objects, OAuth2/OIDC/JWT, and merge-vs-rebase + CI/CD flow.</div>
+
+<hr>
+<p style="text-align:center;color:#777;font-size:.85rem;">End &mdash; 200 Java Backend Interview Problems &bull; Curated &amp; Prioritized &bull; Master the ★★★ first</p>
+<!--CONTENT-->
+
+</div>
+</body>
+</html>

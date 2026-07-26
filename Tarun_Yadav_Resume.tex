@@ -1,0 +1,100 @@
+\documentclass[10pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[a4paper,top=0.42in,bottom=0.42in,left=0.52in,right=0.52in]{geometry}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{accent}{HTML}{1F5A54}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+% Hand-rolled section heading (avoids the titlesec + tabularx package conflict)
+\newcommand{\ressection}[1]{%
+  \vspace{5pt}\noindent{\bfseries\color{accent}\MakeUppercase{#1}}\\[1pt]%
+  \noindent\textcolor{gray!55}{\rule{\linewidth}{0.7pt}}\\[2pt]%
+}
+
+\setlist[itemize]{nosep, leftmargin=12pt, itemsep=0.8pt, topsep=0pt, parsep=0pt, label=\textbullet}
+
+% ---------------------------------------------------------------
+%  EDIT ME: replace the LinkedIn URL below with your real profile
+% ---------------------------------------------------------------
+\newcommand{\linkedinurl}{https://www.linkedin.com/in/tarunfullstack}
+
+\begin{document}
+\small
+
+\begin{center}
+  {\Large\bfseries TARUN YADAV}\\[1pt]
+  {\color{accent}\bfseries\small Senior Software Engineer --- Backend (Java / Spring Boot)}\\[3pt]
+  {\footnotesize
+    +91~70605~71358 \;\textbar\; \href{mailto:ytarun303@gmail.com}{ytarun303@gmail.com} \;\textbar\; Meerut, UP, India \;\textbar\;
+    \href{\linkedinurl}{LinkedIn} \;\textbar\;
+    \href{https://github.com/Tarunyadavvvvv}{GitHub} \;\textbar\;
+    \href{https://tarun-portfolio.app}{tarun-portfolio.app}
+  }
+\end{center}
+
+\ressection{Summary}
+Senior Backend Engineer with \textbf{3.5+ years} building \textbf{Java / Spring Boot microservices} for BFSI and SaaS platforms. Specialised in \textbf{event-driven architecture (Kafka)}, distributed systems, \textbf{PostgreSQL performance tuning}, and \textbf{OAuth2/SSO security}. Consistent track record of improving API latency, system availability, and deployment reliability in production environments.
+
+\ressection{Technical Skills}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}l @{\hspace{6pt}}X@{}}
+Languages \& Frameworks: & Java 17, Spring Boot, Spring Security, Spring Data JPA, Hibernate, RESTful APIs, Microservices \\
+Messaging \& Async: & Kafka (producer/consumer), Redis Pub/Sub, async processing, event-driven architecture \\
+Databases: & PostgreSQL, MySQL, Oracle, MongoDB, Redis (caching \& sessions) \\
+Security: & OAuth2, OpenID Connect, Keycloak, Okta, Azure AD (SSO/RBAC), JWT, AES-256 \\
+Testing \& Quality: & JUnit, Mockito, Postman, unit \& integration testing \\
+Cloud \& DevOps: & AWS (EC2, S3, CloudWatch), Docker, Kubernetes, Jenkins, GitLab CI/CD, Linux \\
+Reliability \& Observability: & Resilience4j (circuit breaker, retry), Spring Actuator, structured logging, distributed tracing \\
+Tools: & Camunda BPM, Git, Jira, Agile/Scrum \\
+\end{tabularx}
+
+\ressection{Work Experience}
+
+\textbf{ACT21 Software Pvt. Ltd., Noida} \hfill \textit{Oct 2022 -- Present}
+
+\vspace{2pt}
+\textbf{Senior Software Engineer} \hfill \textit{Apr 2025 -- Present}\\
+{\color{accent}\footnotesize Java 17, Spring Boot, Kafka, Camunda BPM, Docker, AWS, PostgreSQL, Redis}
+\begin{itemize}
+\item Architected distributed microservices for the HyperTrack SaaS platform exposing versioned RESTful APIs consumed by 10+ internal services; deployed on AWS EC2 with artefacts in S3 and health monitored via CloudWatch alarms.
+\item Designed a rules-driven timesheet engine with configurable validation rules, hierarchical task mapping, and async aggregation using CompletableFuture --- reducing manual reconciliation effort by \textasciitilde40\%.
+\item Integrated Kafka producer/consumer pipelines for asynchronous event processing between microservices, ensuring fault-tolerant, idempotent consumers with dead-letter queue handling for failed events.
+\item Applied Resilience4j circuit breakers and retry policies on all third-party service calls, enabling graceful degradation and preventing cascading failures under peak load.
+\item Optimised PostgreSQL queries (covering indexes, partial indexes, EXPLAIN ANALYZE) powering real-time dashboards; reduced average query latency by \textasciitilde35\%.
+\item Designed multi-level approval workflows using Camunda BPM with RBAC, audit trails, compensating transactions, and escalation paths; established GitLab CI/CD pipelines with zero-downtime deployments and automated rollback.
+\item Strengthened release confidence by writing unit and integration tests with JUnit and Mockito for core service logic, catching regressions before deployment.
+\item Led Docker containerisation of legacy Linux services and implemented a centralised monitoring service (Spring Actuator health checks, structured logging, automated alerts) --- cutting environment incidents by \textasciitilde60\%.
+\end{itemize}
+
+\vspace{3pt}
+\textbf{Software Engineer} \hfill \textit{Oct 2022 -- Apr 2025}\\
+{\color{accent}\footnotesize Java, Spring Boot, OAuth2, Keycloak, MySQL, Oracle}
+\begin{itemize}
+\item Delivered high-throughput RESTful microservices for BFSI workflows under strict SLA requirements, serving as core services within a multi-team product platform processing large transactional volumes.
+\item Reduced API latency by 30\% via multi-level Redis caching, N+1 elimination through JPA batch fetching, connection-pool tuning, and async processing for non-blocking background tasks.
+\item Hardened platform security by integrating SSO and RBAC using OAuth2, OpenID Connect, Keycloak, Okta, and Azure AD --- centralising token validation and eliminating duplicated per-service auth logic across 8+ microservices.
+\item Implemented AES-256 payload encryption for third-party banking integrations and engineered Oracle stored procedures supporting high-volume batch processing and scheduled reconciliation pipelines.
+\item Mentored 2 junior engineers via code reviews and architecture walkthroughs; built React JS admin dashboards surfacing operational metrics and reducing ops team resolution time.
+\end{itemize}
+
+\ressection{Projects}
+\textbf{Distributed Property Rental Platform} \textbar\ {\footnotesize Java, Spring Boot, Kafka, AWS S3, PostgreSQL, Redis, Docker}
+\begin{itemize}
+\item Designed event-driven microservices (listings, search, booking) with Kafka async communication for eventual consistency; applied distributed locking for concurrent reservation conflict resolution, Redis caching on search results, and Resilience4j circuit breakers on downstream calls.
+\end{itemize}
+
+\ressection{Education}
+\textbf{Meerut Institute of Engineering \& Technology (MIET)} \hfill \textit{Aug 2019 -- May 2023}\\
+B.Tech --- Computer Science \& Engineering, Meerut, India
+
+\end{document}

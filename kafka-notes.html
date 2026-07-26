@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apache Kafka Interview Notes</title>
+<style>
+  :root{
+    --ink:#1a1a1a; --muted:#555; --accent:#d9461f; --accent2:#a8330f;
+    --code-bg:#f6f8fa; --code-ink:#24292e; --border:#d8dee4;
+    --tip:#0a7d3c; --warn:#b54708; --note:#1f6feb; --plainc:#0e7490;
+  }
+  *{box-sizing:border-box;}
+  html{font-size:13.5px;}
+  body{
+    font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); line-height:1.55; margin:0; padding:0 0 40px;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .page{max-width:880px; margin:0 auto; padding:0 26px;}
+  h1,h2,h3,h4{line-height:1.25; font-weight:700;}
+  h1{font-size:2.1rem; color:var(--accent2); margin:0 0 .2em;}
+  h2{font-size:1.55rem; color:var(--accent2); border-bottom:3px solid var(--accent);
+     padding-bottom:.2em; margin:2.2em 0 .8em; scroll-margin-top:12px;}
+  h3{font-size:1.2rem; color:#222; margin:1.6em 0 .5em;
+     border-left:4px solid var(--accent); padding-left:.5em; scroll-margin-top:12px;}
+  h4{font-size:1.02rem; color:#333; margin:1.2em 0 .4em;}
+  p{margin:.55em 0;}
+  ul,ol{margin:.5em 0 .8em; padding-left:1.5em;}
+  li{margin:.25em 0;}
+  code{font-family:"Cascadia Code",Consolas,"Courier New",monospace; font-size:.86em;
+       background:var(--code-bg); color:#b5266a; padding:.1em .35em; border-radius:4px;}
+  pre{background:var(--code-bg); border:1px solid var(--border); border-radius:8px;
+      padding:12px 14px; overflow:auto; margin:.7em 0; line-height:1.45;}
+  pre code{background:none; color:var(--code-ink); padding:0; font-size:.83rem; white-space:pre;}
+  pre code.hljs{padding:0;}
+  table{border-collapse:collapse; width:100%; margin:.9em 0; font-size:.9rem;}
+  th,td{border:1px solid var(--border); padding:7px 10px; text-align:left; vertical-align:top;}
+  th{background:#fdeee9; color:#a8330f; font-weight:600;}
+  tr:nth-child(even) td{background:#fafbfc;}
+  .tag{display:inline-block; font-size:.7rem; font-weight:700; padding:.12em .55em;
+       border-radius:20px; vertical-align:middle; margin-left:.4em;}
+  .tag.basic{background:#e6f4ea; color:#0a7d3c;}
+  .tag.inter{background:#fff4e5; color:#b54708;}
+  .tag.adv{background:#fde8ef; color:#b5266a;}
+  .tag.new{background:#e7f0ff; color:#0b4f9e; border:1px solid #b9d3ff;}
+  .callout{border-radius:8px; padding:10px 14px; margin:.8em 0; border-left:5px solid;}
+  .callout.tip{background:#eaf7ef; border-color:var(--tip);}
+  .callout.warn{background:#fff3e6; border-color:var(--warn);}
+  .callout.note{background:#eaf1fb; border-color:var(--note);}
+  .callout.analogy{background:#e8f6f9; border-color:var(--plainc);}
+  .callout.analogy > b:first-child{color:var(--plainc);}
+  .callout.placeholder{background:#f4f0ff; border-color:#7c3aed; border-style:dashed;}
+  .callout b{display:inline-block; margin-bottom:.1em;}
+  .qa{margin:.7em 0; padding:10px 14px 10px 16px; background:#fff7f4;
+      border:1px solid #f6cbbd; border-left:5px solid var(--accent); border-radius:8px;}
+  .qa .q{font-weight:700; color:var(--accent2);}
+  .qa .q::before{content:"Q. "; color:var(--accent);}
+  .qa .a{margin-top:.3em;}
+  .qa .a::before{content:"A. "; font-weight:700; color:var(--tip);}
+  .toc{columns:2; column-gap:34px; font-size:.92rem; margin:1em 0 0;}
+  .toc a{text-decoration:none; color:#a8330f;}
+  .toc a:hover{text-decoration:underline;}
+  .toc ol{padding-left:1.3em; margin:.2em 0;}
+  .toc b{display:block; margin-top:.6em;}
+  .cover{text-align:center; padding:70px 0 24px;}
+  .cover .sub{color:var(--muted); font-size:1.1rem; margin-top:.4em;}
+  .cover .meta{color:var(--muted); font-size:.9rem; margin-top:1.5em;}
+  .lead{font-size:1.02rem; color:#333;}
+  hr{border:none; border-top:1px solid var(--border); margin:2.5em 0;}
+  .pillset span{display:inline-block; background:#fdeee9; color:#a8330f; border:1px solid #f6cbbd;
+     border-radius:20px; padding:.15em .7em; margin:.15em .2em; font-size:.82rem;}
+  .backtop{font-size:.72rem; font-weight:600; color:#c9a99e; text-decoration:none; float:right; margin-top:.5em;}
+  .backtop:hover{color:var(--accent);}
+  @media print{
+    h2{page-break-after:avoid;} h3,h4{page-break-after:avoid;}
+    pre,table,.qa,.callout{page-break-inside:avoid;}
+    .toc{columns:2;}
+    .pagebreak{page-break-before:always;}
+    .backtop{display:none;}
+    a{color:inherit;}
+  }
+  @page{margin:16mm 14mm;}
+  pre code.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 1em
+}
+code.hljs {
+  padding: 3px 5px
+}
+/*!
+  Theme: GitHub
+  Description: Light theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-light
+  Current colors taken from GitHub's CSS
+*/
+.hljs {
+  color: #24292e;
+  background: #ffffff
+}
+.hljs-doctag,
+.hljs-keyword,
+.hljs-meta .hljs-keyword,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-type,
+.hljs-variable.language_ {
+  /* prettylights-syntax-keyword */
+  color: #d73a49
+}
+.hljs-title,
+.hljs-title.class_,
+.hljs-title.class_.inherited__,
+.hljs-title.function_ {
+  /* prettylights-syntax-entity */
+  color: #6f42c1
+}
+.hljs-attr,
+.hljs-attribute,
+.hljs-literal,
+.hljs-meta,
+.hljs-number,
+.hljs-operator,
+.hljs-variable,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-selector-id {
+  /* prettylights-syntax-constant */
+  color: #005cc5
+}
+.hljs-regexp,
+.hljs-string,
+.hljs-meta .hljs-string {
+  /* prettylights-syntax-string */
+  color: #032f62
+}
+.hljs-built_in,
+.hljs-symbol {
+  /* prettylights-syntax-variable */
+  color: #e36209
+}
+.hljs-comment,
+.hljs-code,
+.hljs-formula {
+  /* prettylights-syntax-comment */
+  color: #6a737d
+}
+.hljs-name,
+.hljs-quote,
+.hljs-selector-tag,
+.hljs-selector-pseudo {
+  /* prettylights-syntax-entity-tag */
+  color: #22863a
+}
+.hljs-subst {
+  /* prettylights-syntax-storage-modifier-import */
+  color: #24292e
+}
+.hljs-section {
+  /* prettylights-syntax-markup-heading */
+  color: #005cc5;
+  font-weight: bold
+}
+.hljs-bullet {
+  /* prettylights-syntax-markup-list */
+  color: #735c0f
+}
+.hljs-emphasis {
+  /* prettylights-syntax-markup-italic */
+  color: #24292e;
+  font-style: italic
+}
+.hljs-strong {
+  /* prettylights-syntax-markup-bold */
+  color: #24292e;
+  font-weight: bold
+}
+.hljs-addition {
+  /* prettylights-syntax-markup-inserted */
+  color: #22863a;
+  background-color: #f0fff4
+}
+.hljs-deletion {
+  /* prettylights-syntax-markup-deleted */
+  color: #b31d28;
+  background-color: #ffeef0
+}
+.hljs-char.escape_,
+.hljs-link,
+.hljs-params,
+.hljs-property,
+.hljs-punctuation,
+.hljs-tag {
+  /* purposely ignored */
+  
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="cover">
+  <h1>Apache Kafka</h1>
+  <div class="sub">Complete Interview Preparation Notes &mdash; Beginner to Advanced</div>
+  <div class="meta">A Senior Kafka Architect's Guide &bull; Architecture, Internals, Producers/Consumers, Streams, Connect, Performance, Security &amp; more</div>
+</div>
+
+<div class="callout analogy" style="max-width:640px;margin:1.5em auto;">
+<b>&#128269; How this guide is written.</b> Kafka is full of intimidating jargon. Wherever a hard concept appears, you'll find an <b>"In plain terms"</b> box (like this teal one) that restates it in everyday language <em>before</em> we get into configs and trade-offs. Read the plain-terms box first, then the technical detail will click.
+</div>
+
+<h2 id="toc" style="page-break-before:avoid;">Table of Contents</h2>
+<div class="toc">
+<b>Part I &mdash; Foundations</b>
+<ol>
+<li><a href="#s1">Introduction &amp; Why Kafka</a></li>
+<li><a href="#s2">Core Architecture &amp; Components</a></li>
+<li><a href="#s3">Topics, Partitions &amp; Offsets</a></li>
+<li><a href="#s4">Producers In Depth</a></li>
+<li><a href="#s5">Consumers &amp; Consumer Groups</a></li>
+</ol>
+<b>Part II &mdash; Internals</b>
+<ol start="6">
+<li><a href="#s6">Replication, ISR &amp; Leader Election</a></li>
+<li><a href="#s7">Storage Internals &amp; Log</a></li>
+<li><a href="#s8">Retention &amp; Log Compaction</a></li>
+<li><a href="#s9">Delivery Semantics &amp; Transactions</a></li>
+<li><a href="#s10">Message Ordering &amp; Keys</a></li>
+</ol>
+<b>Part III &mdash; Ecosystem</b>
+<ol start="11">
+<li><a href="#s11">Kafka Connect</a></li>
+<li><a href="#s12">Kafka Streams</a></li>
+<li><a href="#s13">ksqlDB</a></li>
+<li><a href="#s14">Schema Registry &amp; Serialization</a></li>
+</ol>
+<b>Part IV &mdash; Operations &amp; Advanced</b>
+<ol start="15">
+<li><a href="#s15">Performance &amp; Tuning</a></li>
+<li><a href="#s16">Reliability, HA &amp; Monitoring</a></li>
+<li><a href="#s17">Spring Kafka <span class="tag new">New</span></a></li>
+<li><a href="#s18">Security</a></li>
+<li><a href="#s19">KRaft (ZooKeeper Removal)</a></li>
+<li><a href="#s20">Patterns &amp; Real-World Use Cases</a></li>
+<li><a href="#s21">Kafka vs Other Systems</a></li>
+<li><a href="#s22">Interview Scenarios &amp; Cheat-Sheet</a></li>
+</ol>
+</div>
+
+<h1 id="part1" class="pagebreak">Part I &mdash; Foundations</h1>
+
+<h2 id="s1">1. Introduction &amp; Why Kafka <span class="tag basic">Basic</span> <a class="backtop" href="#toc">&uarr; Contents</a></h2>
+
+<h3>1.1 What is Apache Kafka?</h3>
+<p>Apache Kafka is a <b>distributed event streaming platform</b> &mdash; a high-throughput, fault-tolerant, durable system for publishing, storing, and processing streams of records (events) in real time. Originally built at LinkedIn, it acts as a <b>distributed, append-only, replicated commit log</b>.</p>
+<p>Think of Kafka as the <b>central nervous system</b> for data: producers write events, Kafka durably stores them in order, and many independent consumers read them at their own pace.</p>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> a "commit log" is just a notebook you can only <em>add</em> to &mdash; you write each new event on the next line and never erase or insert in the middle. Kafka is that notebook, but copied across several machines for safety, and readers each keep their own bookmark so they can read at their own speed and even flip back to re-read.</div>
+
+<h3>1.2 The problem it solves</h3>
+<p>Without Kafka, N source systems talking to M target systems need N&times;M point-to-point integrations &mdash; brittle, tightly coupled, and hard to scale. Kafka decouples them: every source writes once to Kafka, every target reads from Kafka.</p>
+<pre><code class="plain">Before:  Sources --+--+--+--> Targets   (N x M spaghetti integrations)
+After:   Sources --> [ KAFKA ] --> Targets   (N + M, fully decoupled)</code></pre>
+
+<h3>1.3 Messaging models &mdash; where Kafka fits</h3>
+<p>There are two classic ways to deliver messages, and a common interview trap is thinking you must pick one. The distinction below matters because it decides <em>who gets which message</em> &mdash; and Kafka's clever trick is that it does both, chosen simply by how you group your consumers.</p>
+<table>
+<tr><th>Model</th><th>Behaviour</th><th>Kafka equivalent</th></tr>
+<tr><td>Queue (point-to-point)</td><td>One message consumed by one consumer</td><td>Consumers in the <em>same</em> group</td></tr>
+<tr><td>Pub/Sub (topic)</td><td>Each subscriber gets every message</td><td>Consumers in <em>different</em> groups</td></tr>
+</table>
+<div class="callout note"><b>Kafka unifies both:</b> within a consumer group it behaves like a queue (load balanced); across groups it behaves like pub/sub (broadcast). The data stays on disk so consumers can replay.</div>
+
+<h3>1.4 Key characteristics</h3>
+<div class="pillset"><span>High throughput</span><span>Horizontally scalable</span><span>Durable (disk)</span><span>Fault-tolerant (replication)</span><span>Distributed</span><span>Replayable</span><span>Low latency</span></div>
+
+<h3>1.5 Real-world use cases</h3>
+<p>The reason Kafka shows up in so many architectures is that "a durable, replayable stream of events" is a shape that fits a surprising number of problems. Each row below is really the same idea &mdash; write events once, let many systems react &mdash; applied to a different domain.</p>
+<table>
+<tr><th>Use case</th><th>Description</th></tr>
+<tr><td>Messaging / decoupling</td><td>Backbone between microservices</td></tr>
+<tr><td>Activity tracking</td><td>Clicks, page views, user events (original LinkedIn use)</td></tr>
+<tr><td>Log aggregation</td><td>Collect logs from many services into one pipeline</td></tr>
+<tr><td>Stream processing</td><td>Real-time aggregation, fraud detection, alerting</td></tr>
+<tr><td>Event sourcing</td><td>Store state changes as an immutable event log</td></tr>
+<tr><td>Metrics &amp; monitoring</td><td>Centralized telemetry pipelines</td></tr>
+<tr><td>CDC (Change Data Capture)</td><td>Stream DB changes to other systems (via Connect/Debezium)</td></tr>
+</table>
+
+<h3>1.6 Advantages &amp; disadvantages</h3>
+<p>Kafka is powerful but not free &mdash; it earns its keep at scale and becomes overkill for small, simple needs. The table pairs each strength with the cost that comes with it, so you can judge whether Kafka is the right tool rather than just a fashionable one.</p>
+<table>
+<tr><th>Advantages</th><th>Disadvantages / costs</th></tr>
+<tr><td>Massive throughput (millions msg/s)</td><td>Operational complexity (cluster, tuning)</td></tr>
+<tr><td>Durable &amp; replayable storage</td><td>Not ideal for tiny/low-volume needs</td></tr>
+<tr><td>Horizontal scalability via partitions</td><td>No per-message priority; limited routing</td></tr>
+<tr><td>Strong ordering per partition</td><td>No global ordering across partitions</td></tr>
+<tr><td>Rich ecosystem (Connect, Streams)</td><td>Steep learning curve; needs careful capacity planning</td></tr>
+</table>
+
+<div class="qa">
+<div class="q">Is Kafka a message queue or a database?</div>
+<div class="a">Neither exactly &mdash; it's a distributed, durable commit log. It behaves like a queue/pub-sub for delivery, but unlike a traditional queue it retains messages on disk for a configured time and lets multiple consumers replay them independently.</div>
+</div>
+<div class="qa">
+<div class="q">Why is Kafka so fast despite writing to disk?</div>
+<div class="a">Sequential disk I/O (append-only log) is nearly as fast as memory; the OS page cache serves reads; <b>zero-copy</b> (<code>sendfile</code>) sends data from page cache to socket without copying into user space; batching and compression reduce overhead.</div>
+</div>
+
+
+<h2 id="s2">2. Core Architecture &amp; Components <span class="tag basic">Basic</span> <a class="backtop" href="#toc">&uarr; Contents</a></h2>
+
+<h3>2.1 The big picture</h3>
+<pre><code class="plain">   Producers
+      |  (push records)
+      v
++----------------------------- Kafka Cluster -----------------------------+
+|  Broker 1          Broker 2          Broker 3        (+ Controller)      |
+|  [Topic-A P0,P1]   [Topic-A P2]      [Topic-B P0]                        |
+|  replicas spread + replicated across brokers                            |
++------------------------------------------------------------------------+
+      ^
+      |  (pull records)
+   Consumer Groups</code></pre>
+
+<h3>2.2 Key terminology</h3>
+<p>These terms recur constantly, so it pays to anchor them early. The three that carry the most weight are <b>broker</b> (a server), <b>partition</b> (an ordered log), and <b>offset</b> (a position in that log) &mdash; almost every other Kafka concept is ultimately defined in terms of these three.</p>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td><b>Broker</b></td><td>A Kafka server that stores data &amp; serves clients. A cluster = many brokers.</td></tr>
+<tr><td><b>Cluster</b></td><td>Group of brokers working together.</td></tr>
+<tr><td><b>Topic</b></td><td>A named, logical stream/category of records (like a table/folder).</td></tr>
+<tr><td><b>Partition</b></td><td>An ordered, immutable, append-only log; the unit of parallelism &amp; ordering.</td></tr>
+<tr><td><b>Offset</b></td><td>Sequential ID of a record within a partition.</td></tr>
+<tr><td><b>Producer</b></td><td>Client that publishes records to topics.</td></tr>
+<tr><td><b>Consumer</b></td><td>Client that reads records from topics.</td></tr>
+<tr><td><b>Consumer Group</b></td><td>Set of consumers sharing the work of a topic's partitions.</td></tr>
+<tr><td><b>Record / Event / Message</b></td><td>Key + value + timestamp + headers.</td></tr>
+<tr><td><b>Controller</b></td><td>A broker elected to manage partition leadership &amp; cluster metadata.</td></tr>
+<tr><td><b>ZooKeeper / KRaft</b></td><td>Metadata &amp; coordination layer (KRaft replaces ZooKeeper).</td></tr>
+</table>
+
+<h3>2.3 Anatomy of a record</h3>
+<table>
+<tr><th>Field</th><th>Purpose</th></tr>
+<tr><td>Key (optional)</td><td>Determines partition; groups related events; basis for compaction</td></tr>
+<tr><td>Value</td><td>The actual payload (bytes &mdash; JSON, Avro, Protobuf...)</td></tr>
+<tr><td>Timestamp</td><td>Event or append time</td></tr>
+<tr><td>Headers</td><td>Optional metadata key-value pairs (e.g. trace IDs)</td></tr>
+<tr><td>Partition &amp; Offset</td><td>Assigned location once written</td></tr>
+</table>
+
+<h3>2.4 The role of the Controller</h3>
+<ul>
+<li>One broker is elected <b>controller</b>; it manages partition leader elections, tracks broker liveness, and propagates metadata.</li>
+<li>If the controller fails, a new one is elected (via ZooKeeper, or the KRaft quorum in newer versions).</li>
+</ul>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> the controller is the cluster's "shift manager." The other brokers do the actual work of storing and serving data; the controller just keeps the org chart up to date &mdash; who's alive, who's the leader of each partition &mdash; and reshuffles duties when someone leaves. There's exactly one on duty at a time.</div>
+
+<div class="qa">
+<div class="q">What exactly does a broker do?</div>
+<div class="a">It receives records from producers, assigns offsets, persists them to the partition log on disk, replicates them, and serves fetch requests to consumers. Brokers are stateless about consumers &mdash; consumers track their own offsets.</div>
+</div>
+
+<h2 id="s3">3. Topics, Partitions &amp; Offsets <span class="tag inter">Intermediate</span> <a class="backtop" href="#toc">&uarr; Contents</a></h2>
+
+<h3>3.1 Partitions = parallelism + ordering</h3>
+<p>A topic is split into <b>partitions</b>. Each partition is an ordered, append-only sequence of records identified by a monotonically increasing <b>offset</b>. Partitions are how Kafka scales (spread across brokers) and how it parallelizes consumption.</p>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> a topic is a highway; partitions are its lanes. Cars (records) stay in strict order <em>within</em> a lane, but across lanes there's no guaranteed order. Adding lanes lets more traffic flow at once (parallelism) &mdash; and the "offset" is just the position of a car counted from the start of its own lane.</div>
+<pre><code class="plain">Topic "orders" with 3 partitions:
+P0: [0][1][2][3][4]                 <- offsets per partition (NOT global)
+P1: [0][1][2]
+P2: [0][1][2][3]
+Order is guaranteed WITHIN a partition, NOT across partitions.</code></pre>
+
+<h3>3.2 Producer partitioning</h3>
+<p>How a record is assigned to a partition is one of the most consequential decisions in Kafka, because <b>the partition choice decides ordering</b>: records that must stay in order have to land in the same partition. The table shows the four ways that choice is made.</p>
+<table>
+<tr><th>Scenario</th><th>Partition chosen by</th></tr>
+<tr><td>Key present</td><td><code>hash(key) % numPartitions</code> &mdash; same key &rarr; same partition (stable ordering)</td></tr>
+<tr><td>No key</td><td>Sticky partitioner (batches to one partition, rotates) for efficiency</td></tr>
+<tr><td>Explicit partition</td><td>Producer specifies the partition number directly</td></tr>
+<tr><td>Custom</td><td>Implement a <code>Partitioner</code></td></tr>
+</table>
+<div class="callout warn"><b>Pitfall:</b> Increasing partition count later <b>changes key&rarr;partition mapping</b> (because of the modulo), breaking ordering guarantees for existing keys. Plan partition count up front.</div>
+
+<h3>3.3 Choosing partition count</h3>
+<ul>
+<li>More partitions &rarr; more parallelism &amp; throughput, but also more open file handles, more memory, longer leader-election/recovery, and more end-to-end latency.</li>
+<li>Rough rule: target throughput &divide; per-partition throughput; and partitions &ge; max expected consumers in a group.</li>
+<li><b>Max useful consumers in a group = number of partitions</b> (extra consumers sit idle).</li>
+</ul>
+
+<h3>3.4 Offsets &amp; positions</h3>
+<p>Kafka tracks several different "offsets" and interviewers love to see if you can keep them straight. They matter because together they answer three separate questions: <em>where does new data go</em> (LEO), <em>how far can I safely read</em> (high watermark), and <em>how far have I gotten</em> (committed offset / position).</p>
+<table>
+<tr><th>Term</th><th>Meaning</th></tr>
+<tr><td>Log-end offset (LEO)</td><td>Offset of the next record to be written</td></tr>
+<tr><td>High watermark (HW)</td><td>Highest offset replicated to all in-sync replicas; consumers can only read up to HW</td></tr>
+<tr><td>Committed offset</td><td>Last offset a consumer group acknowledged processing</td></tr>
+<tr><td>Current position</td><td>Next offset the consumer will read</td></tr>
+</table>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> imagine a book being written live. The <b>log-end offset</b> is the blank page the author is about to write next. The <b>high watermark</b> is the last page the publisher has confirmed is safely printed in every copy &mdash; you're only allowed to read up to there. Your <b>committed offset</b> is the bookmark you've saved, and your <b>position</b> is the page you're actually on right now.</div>
+<div class="callout note"><b>Where are consumer offsets stored?</b> In an internal compacted topic <code>__consumer_offsets</code> (not in ZooKeeper since modern versions).</div>
+
+
+<h2 id="s4">4. Producers In Depth <span class="tag inter">Intermediate</span> <a class="backtop" href="#toc">&uarr; Contents</a></h2>
+
+<h3>4.1 Producer write flow</h3>
+<pre><code class="plain">send() -> Serializer -> Partitioner -> RecordAccumulator (per-partition batches in memory)
+       -> Sender (I/O) thread -> broker (partition leader) -> ack back</code></pre>
+<p>Records are buffered and sent in <b>batches</b> per partition, optionally compressed, by a background I/O thread. This batching is key to Kafka's throughput.</p>
+
+<h3>4.2 The acks setting (durability vs latency)</h3>
+<p>The <code>acks</code> setting is the single biggest knob for the "safety vs speed" trade-off: it decides <em>how many copies must confirm a write before the producer calls it done</em>. Turn it down for raw speed and accept possible loss; turn it up for safety and accept some latency. This one setting underlies most "how do I avoid losing data?" answers.</p>
+<table>
+<tr><th>acks</th><th>Guarantee</th><th>Trade-off</th></tr>
+<tr><td><code>acks=0</code></td><td>Fire-and-forget; no ack</td><td>Fastest, can lose data</td></tr>
+<tr><td><code>acks=1</code></td><td>Leader wrote it</td><td>Lost if leader dies before replication</td></tr>
+<tr><td><code>acks=all</code> (-1)</td><td>Leader + all in-sync replicas</td><td>Strongest durability, higher latency</td></tr>
+</table>
+<div class="callout note"><b>For durability use <code>acks=all</code> + <code>min.insync.replicas=2</code> + replication factor &ge; 3.</b> Then a write succeeds only if at least 2 replicas have it &mdash; you can lose one broker without data loss. (See the fully worked example in &sect;6.2.)</div>
+
+<h3>4.3 Key producer configs</h3>
+<p>The configs below cluster around two goals: <em>throughput</em> (batching and compression) and <em>correctness</em> (ordering and dedup on retry). Knowing which lever does which is what separates "I set acks=all" from actually understanding producer behaviour.</p>
+<table>
+<tr><th>Config</th><th>Effect</th></tr>
+<tr><td><code>batch.size</code></td><td>Max bytes per partition batch</td></tr>
+<tr><td><code>linger.ms</code></td><td>Wait time to fill a batch (small delay &rarr; bigger batches &rarr; more throughput)</td></tr>
+<tr><td><code>compression.type</code></td><td>none / gzip / snappy / lz4 / zstd</td></tr>
+<tr><td><code>buffer.memory</code></td><td>Total producer buffer; blocks/throws when full</td></tr>
+<tr><td><code>max.in.flight.requests.per.connection</code></td><td>Unacked requests per connection (affects ordering on retry)</td></tr>
+<tr><td><code>retries</code> / <code>delivery.timeout.ms</code></td><td>Retry behaviour on transient failures</td></tr>
+<tr><td><code>enable.idempotence</code></td><td>Exactly-once-per-partition writes (dedup on retry)</td></tr>
+</table>
+
+<h3>4.4 Idempotent producer</h3>
+<p>With <code>enable.idempotence=true</code> (default in modern Kafka), each producer gets a <b>Producer ID (PID)</b> and per-partition sequence numbers. The broker rejects duplicates from retries, preventing duplicate records caused by network retries &mdash; <b>exactly-once semantics per partition</b> without losing ordering.</p>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> it's like numbering every letter you mail ("#1, #2, #3..."). If the post office isn't sure your letter #2 arrived and you send it again, the recipient sees it's a duplicate of #2 and throws the copy away. You never worry that a re-send created two identical letters.</div>
+<pre><code class="hljs language-java"><span class="hljs-type">Properties</span> <span class="hljs-variable">p</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Properties</span>();
+p.put(<span class="hljs-string">&quot;bootstrap.servers&quot;</span>, <span class="hljs-string">&quot;broker:9092&quot;</span>);
+p.put(<span class="hljs-string">&quot;key.serializer&quot;</span>, StringSerializer.class.getName());
+p.put(<span class="hljs-string">&quot;value.serializer&quot;</span>, StringSerializer.class.getName());
+p.put(<span class="hljs-string">&quot;acks&quot;</span>, <span class="hljs-string">&quot;all&quot;</span>);
+p.put(<span class="hljs-string">&quot;enable.idempotence&quot;</span>, <span class="hljs-literal">true</span>);
+p.put(<span class="hljs-string">&quot;linger.ms&quot;</span>, <span class="hljs-number">5</span>);
+p.put(<span class="hljs-string">&quot;compression.type&quot;</span>, <span class="hljs-string">&quot;lz4&quot;</span>);
+
+<span class="hljs-keyword">try</span> (KafkaProducer&lt;String,String&gt; producer = <span class="hljs-keyword">new</span> <span class="hljs-title class_">KafkaProducer</span>&lt;&gt;(p)) {
+    ProducerRecord&lt;String,String&gt; rec =
+        <span class="hljs-keyword">new</span> <span class="hljs-title class_">ProducerRecord</span>&lt;&gt;(<span class="hljs-string">&quot;orders&quot;</span>, order.getId(), order.toJson());
+    producer.send(rec, (meta, ex) -&gt; {
+        <span class="hljs-keyword">if</span> (ex != <span class="hljs-literal">null</span>) log.error(<span class="hljs-string">&quot;send failed&quot;</span>, ex);
+        <span class="hljs-keyword">else</span> log.info(<span class="hljs-string">&quot;sent to {}-{}@{}&quot;</span>, meta.topic(), meta.partition(), meta.offset());
+    });
+}  <span class="hljs-comment">// close() flushes pending records</span></code></pre>
+
+<h3>4.5 Sync vs async send</h3>
+<ul>
+<li><b>Fire-and-forget:</b> <code>send(rec)</code> &mdash; fastest, may lose on failure.</li>
+<li><b>Async with callback:</b> <code>send(rec, callback)</code> &mdash; recommended; non-blocking with error handling.</li>
+<li><b>Synchronous:</b> <code>send(rec).get()</code> &mdash; blocks, lowest throughput, used when strict per-record confirmation is needed.</li>
+</ul>
+
+<h3>4.6 Retries &amp; ordering &mdash; a walkthrough</h3>
+<p>This is subtle enough to deserve a full walkthrough, because it surprises people: <b>plain retries can silently reorder your records.</b> Suppose the producer is allowed several unacknowledged (in-flight) requests at once for higher throughput, and one of them fails and is retried.</p>
+<div class="callout warn"><b>Before &mdash; without idempotence</b> (<code>max.in.flight.requests=5</code>, a transient failure on the first batch):
+<pre><code class="plain">Producer sends two batches to partition P, back to back:
+   Batch B1  (records that should occupy offsets 100,101,102)
+   Batch B2  (records that should occupy offsets 103,104,105)
+
+   B1 hits a transient network error  -> queued for RETRY
+   B2 was already in flight            -> succeeds first, written at 100,101,102
+   B1 is retried                       -> written AFTER B2, at 103,104,105
+
+On disk, by offset:  [B2 records][B1 records]   <-  ORDER FLIPPED
+(If B1 had also partly succeeded before the error, you could even get DUPLICATES.)</code></pre></div>
+<div class="callout tip"><b>After &mdash; with <code>enable.idempotence=true</code></b> (the modern default):
+<pre><code class="plain">Every record carries a Producer ID (PID) + a per-partition SEQUENCE number.
+The broker will only accept sequences in order and rejects duplicates.
+
+   B2 (sequences 3,4,5) arrives before B1 (sequences 0,1,2)
+   -> broker sees a gap (expected seq 0 next), REJECTS B2 as out-of-order
+   -> B1 is retried and accepted (seq 0,1,2)
+   -> B2 is re-accepted right after (seq 3,4,5)
+
+On disk, by offset:  [B1 records][B2 records]   <-  ORDER PRESERVED, no duplicates
+Kafka safely allows up to 5 in-flight requests while still guaranteeing order.</code></pre></div>
+<p>So the fix is simply to leave idempotence on. Without it, the only way to guarantee order under retries is <code>max.in.flight.requests.per.connection=1</code>, which throttles throughput.</p>
+
+<div class="callout tip"><b>Best practices:</b> tune <code>linger.ms</code> (5&ndash;100ms) + <code>batch.size</code> for throughput; enable compression (lz4/zstd); always handle the send callback; reuse a single producer instance (thread-safe).</div>
+
+<div class="qa">
+<div class="q">How does a producer decide the partition?</div>
+<div class="a">If a partition is set explicitly, it uses that. Else if a key is present, <code>hash(key) % partitions</code>. Else the sticky partitioner picks one partition per batch and rotates, maximizing batching efficiency.</div>
+</div>
+
+<h2 id="s5">5. Consumers &amp; Consumer Groups <span class="tag inter">Intermediate</span> <a class="backtop" href="#toc">&uarr; Contents</a></h2>
+
+<h3>5.1 Consumer groups &amp; partition assignment</h3>
+<p>Consumers label themselves with a <code>group.id</code>. Kafka divides a topic's partitions among the consumers in a group so <b>each partition is read by exactly one consumer in that group</b>. Different groups each get the full stream independently.</p>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> a consumer group is a team splitting up a pile of to-do lists (partitions). Each list is handled by exactly one teammate so no work is done twice. Add teammates and the lists get redistributed; if there are more teammates than lists, the extras have nothing to do. A <em>different</em> team gets its own full copy of every list.</div>
+<pre><code class="plain">Topic with 4 partitions (P0..P3), Group "billing" with 2 consumers:
+  Consumer A -> P0, P1
+  Consumer B -> P2, P3
+Add Consumer C (3 consumers): A->P0,P1  B->P2  C->P3
+Add 5th consumer with 4 partitions -> 1 consumer stays IDLE.</code></pre>
+<div class="callout note"><b>Pull model:</b> Consumers <em>poll</em> brokers for data (<code>consumer.poll()</code>), controlling their own rate (back-pressure friendly) &mdash; brokers don't push.</div>
+
+<h3>5.2 Offset management &amp; commit strategies</h3>
+<p>"Committing an offset" is how a consumer bookmarks its progress so that after a restart or rebalance it resumes from the right place. The strategy you pick is really a choice about <em>when</em> you save that bookmark relative to doing the work &mdash; and that timing decides whether a crash causes lost messages or duplicate processing.</p>
+<table>
+<tr><th>Strategy</th><th>How</th><th>Risk</th></tr>
+<tr><td>Auto commit</td><td><code>enable.auto.commit=true</code>, periodic</td><td>Can lose or reprocess (commits before/after processing)</td></tr>
+<tr><td>Manual sync</td><td><code>commitSync()</code> after processing</td><td>Blocking, but reliable; at-least-once</td></tr>
+<tr><td>Manual async</td><td><code>commitAsync()</code></td><td>Faster, no retry on failure</td></tr>
+</table>
+<pre><code class="hljs language-java">props.put(<span class="hljs-string">&quot;group.id&quot;</span>, <span class="hljs-string">&quot;billing&quot;</span>);
+props.put(<span class="hljs-string">&quot;enable.auto.commit&quot;</span>, <span class="hljs-string">&quot;false&quot;</span>);        <span class="hljs-comment">// commit manually</span>
+props.put(<span class="hljs-string">&quot;auto.offset.reset&quot;</span>, <span class="hljs-string">&quot;earliest&quot;</span>);        <span class="hljs-comment">// where to start if no offset</span>
+
+<span class="hljs-keyword">try</span> (KafkaConsumer&lt;String,String&gt; consumer = <span class="hljs-keyword">new</span> <span class="hljs-title class_">KafkaConsumer</span>&lt;&gt;(props)) {
+    consumer.subscribe(List.of(<span class="hljs-string">&quot;orders&quot;</span>));
+    <span class="hljs-keyword">while</span> (running) {
+        ConsumerRecords&lt;String,String&gt; records = consumer.poll(Duration.ofMillis(<span class="hljs-number">500</span>));
+        <span class="hljs-keyword">for</span> (ConsumerRecord&lt;String,String&gt; r : records) {
+            process(r);                            <span class="hljs-comment">// do work FIRST</span>
+        }
+        consumer.commitSync();                     <span class="hljs-comment">// then commit -&gt; at-least-once</span>
+    }
+}</code></pre>
+
+<h3>5.3 auto.offset.reset</h3>
+<table>
+<tr><th>Value</th><th>Behaviour when no committed offset exists</th></tr>
+<tr><td><code>earliest</code></td><td>Start from the beginning of the partition</td></tr>
+<tr><td><code>latest</code> (default)</td><td>Start from new messages only</td></tr>
+<tr><td><code>none</code></td><td>Throw an exception</td></tr>
+</table>
+
+<h3>5.4 Rebalancing <span class="tag adv">Important</span></h3>
+<p>A <b>rebalance</b> reassigns partitions among group members. Triggered when a consumer joins/leaves, crashes, or partitions change.</p>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> a rebalance is the team pausing to re-divide the to-do lists when someone joins or leaves. The old way made <em>everyone</em> stop and drop everything before re-dividing (a jarring pause); the modern way only hands over the few lists that actually need to change hands, so most people never stop working.</div>
+<ul>
+<li><b>Stop-the-world (eager):</b> all consumers stop, revoke everything, then reassign &mdash; causes a pause.</li>
+<li><b>Cooperative/incremental rebalancing</b> (modern default): only the affected partitions move; the rest keep processing &mdash; minimal disruption.</li>
+<li><b>Static membership</b> (<code>group.instance.id</code>): avoids rebalances on transient restarts/timeouts.</li>
+</ul>
+
+<h4>5.4.1 What actually happens to your app during a rebalance</h4>
+<p>Abstract descriptions of rebalancing rarely stick. Here is a concrete timeline: group <code>billing</code> reads a topic with 6 partitions; consumers A and B each own 3; a third consumer C starts up.</p>
+<pre><code class="plain">t0  STEADY STATE
+    A owns P0,P1,P2   B owns P3,P4,P5   -> both polling & processing normally
+
+t1  C starts and sends a "JoinGroup" request to the group coordinator (a broker).
+
+t2  REBALANCE BEGINS (cooperative/incremental protocol)
+    Coordinator decides B should hand P5 to C. ONLY P5 is affected:
+      - B is told to revoke P5 -> B runs onPartitionsRevoked(P5) and
+        commits its latest offset for P5 (so C can resume from the right spot)
+      - A keeps processing P0,P1,P2 the ENTIRE time  (never pauses)
+      - B keeps processing P3,P4 the ENTIRE time     (only P5 paused)
+
+t3  REASSIGNMENT
+    C is assigned P5 -> C runs onPartitionsAssigned(P5) and starts reading P5
+    from B's last committed offset. Processing on P5 resumes.
+
+t4  NEW STEADY STATE
+    A owns P0,P1,P2   B owns P3,P4   C owns P5   -> all three processing.
+
+Only P5 experienced a brief pause (t2->t3). Everything else kept flowing.
+
+--- Contrast: the OLD "eager" protocol at t2 ---
+    ALL of A, B, (and C) revoke ALL their partitions and stop processing,
+    then wait for a brand-new assignment before anyone resumes.
+    That full "stop-the-world" pause is exactly what cooperative rebalancing avoids.</code></pre>
+
+<div class="callout warn"><b>Don't confuse two different "reassignments."</b> A <b>consumer group rebalance</b> (this section) moves <em>ownership of partitions among consumers</em> in a group &mdash; it's a client-side event that happens routinely whenever consumers join/leave, and no data moves between machines. <b>Partition reassignment</b> (via <code>kafka-reassign-partitions</code>) moves <em>partition replicas among brokers</em> &mdash; a server-side, admin-triggered operation done when you add/remove brokers or fix data skew, and it physically copies partition data across machines. Same word "reassign," completely different mechanisms &mdash; interviewers love when you separate them cleanly.</div>
+
+<table>
+<tr><th>Assignor</th><th>Strategy</th></tr>
+<tr><td>RangeAssignor</td><td>Per-topic ranges (can imbalance)</td></tr>
+<tr><td>RoundRobin</td><td>Even spread across all partitions</td></tr>
+<tr><td>StickyAssignor / CooperativeSticky</td><td>Minimize movement, keep assignments stable</td></tr>
+</table>
+
+<h3>5.5 Liveness: heartbeats &amp; poll</h3>
+<p>Kafka has to tell the difference between "this consumer is busy" and "this consumer is dead," and it uses two independent clocks to do it: a background <em>heartbeat</em> that proves the consumer is alive, and the gap between <code>poll()</code> calls that proves it's actually making progress. Understanding both is the key to diagnosing the endless-rebalance bug below.</p>
+<table>
+<tr><th>Config</th><th>Meaning</th></tr>
+<tr><td><code>session.timeout.ms</code></td><td>No heartbeat within this &rarr; consumer considered dead</td></tr>
+<tr><td><code>heartbeat.interval.ms</code></td><td>How often heartbeats are sent (background thread)</td></tr>
+<tr><td><code>max.poll.interval.ms</code></td><td>Max gap between <code>poll()</code> calls before being kicked out</td></tr>
+<tr><td><code>max.poll.records</code></td><td>Max records per poll (control batch size/processing time)</td></tr>
+</table>
+<div class="callout warn"><b>Classic bug:</b> slow processing exceeds <code>max.poll.interval.ms</code> &rarr; consumer is removed &rarr; rebalance &rarr; messages reprocessed (duplicates). Fix by reducing <code>max.poll.records</code>, speeding up processing, or offloading to worker threads.</div>
+
+<h3>5.6 How consumer lag is actually calculated</h3>
+<p>"Consumer lag" is the single most important health metric, and it's simpler than it sounds. For each partition it's just one subtraction: how far the log has been written minus how far this group has confirmed reading.</p>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> lag is the size of your unread backlog &mdash; like unread emails. If new mail arrives as fast as you read it, your unread count holds steady (keeping up). If it climbs, you're falling behind. If it's near zero, you're caught up.</div>
+<pre><code class="plain">Per-partition lag = Log-End Offset (LEO)  -  Consumer's committed offset
+
+Worked example, partition orders-0:
+   Log-End Offset (newest record produced) = 10,000
+   Consumer group's committed offset        =  9,850
+   ------------------------------------------------------
+   Lag on orders-0                          =    150 records  (backlog)
+
+Total group lag = sum of per-partition lag across every partition the group owns.
+
+You can see all three numbers with:
+   kafka-consumer-groups --bootstrap-server broker:9092 \
+       --describe --group billing
+   ->  TOPIC   PARTITION   CURRENT-OFFSET   LOG-END-OFFSET   LAG
+       orders  0           9850             10000            150</code></pre>
+<p>What matters is the <em>trend</em>, not the absolute number: steady lag means you're keeping pace; steadily rising lag means consumers can't keep up and you need more partitions/consumers, faster processing, or a fix downstream.</p>
+
+<div class="qa">
+<div class="q">Can two consumers in the same group read the same partition?</div>
+<div class="a">No. Within a group, each partition is owned by exactly one consumer. To have multiple readers of the same data, put them in different consumer groups.</div>
+</div>
+<div class="qa">
+<div class="q">How do you achieve more parallelism than partitions allow?</div>
+<div class="a">You can't increase group parallelism beyond the partition count &mdash; extra consumers idle. Either add partitions (carefully, it remaps keys) or process records concurrently within a consumer (worker threads), managing offset commits carefully.</div>
+</div>
+<div class="callout tip"><b>Best practices:</b> commit <em>after</em> processing for at-least-once; design idempotent consumers; keep processing fast or raise <code>max.poll.interval.ms</code>; prefer CooperativeSticky assignor; use static membership for rolling restarts.</div>
+
+
+<h1 id="part2" class="pagebreak">Part II &mdash; Internals</h1>
+
+<h2 id="s6">6. Replication, ISR &amp; Leader Election <span class="tag adv">Advanced</span> <a class="backtop" href="#toc">&uarr; Contents</a></h2>
+
+<h3>6.1 Replication basics</h3>
+<p>Each partition has a <b>replication factor</b> (e.g. 3). One replica is the <b>leader</b>; the rest are <b>followers</b>. All reads &amp; writes go through the leader; followers replicate by fetching from the leader. If the leader fails, a follower is promoted.</p>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> replication is keeping identical photocopies of each partition on several brokers so one machine dying doesn't lose your data. One copy is "in charge" (the leader) and handles all reads and writes; the others (followers) just keep copying it, ready to take over.</div>
+<pre><code class="plain">Partition orders-0, RF=3:
+  Broker1: LEADER   <- producers/consumers talk here
+  Broker2: follower <- fetches from leader
+  Broker3: follower <- fetches from leader</code></pre>
+
+<h3>6.2 ISR (In-Sync Replicas)</h3>
+<p>The <b>ISR</b> is the set of replicas (including the leader) that are fully caught up with the leader (within <code>replica.lag.time.max.ms</code>). Only ISR members are eligible to become leader (with clean leader election).</p>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> the ISR is the list of copies that are <em>actually up to date right now</em>. Picture a group chat: the "in-sync" members are the ones who have read every message. Only they are allowed to take over as leader, because only they know the whole story. Anyone who falls behind (slow or offline) quietly drops off the list until they catch back up.</div>
+<ul>
+<li><code>acks=all</code> requires all <b>ISR</b> members (not all replicas) to ack.</li>
+<li><code>min.insync.replicas</code> &mdash; minimum ISR size for a write to succeed; if ISR shrinks below it, producers with <code>acks=all</code> get an error (fail closed, preserving durability).</li>
+</ul>
+<div class="callout note"><b>Durability formula:</b> RF=3 + <code>min.insync.replicas=2</code> + <code>acks=all</code> tolerates 1 broker failure with zero data loss while staying available.</div>
+
+<h4>6.2.1 A fully worked example of the durability formula</h4>
+<p>Let's make that formula concrete by following one specific write through one specific broker failure. Setup: partition <code>orders-0</code> with <b>RF=3</b> &mdash; replicas on Broker1 (leader), Broker2, Broker3. Config: <code>min.insync.replicas=2</code>, producer uses <code>acks=all</code>. Initially ISR = {B1, B2, B3}.</p>
+<pre><code class="plain">STEP 1 - the write arrives
+  Producer sends record R (acks=all) -> leader B1 appends R at offset 500.
+
+STEP 2 - replication
+  Followers B2 and B3 fetch R and append it to their logs.
+
+STEP 3 - acknowledgement
+  acks=all means the leader waits until all IN-SYNC replicas have R.
+  Once B2 and B3 confirm, B1 acknowledges to the producer.
+  R is now "committed" and visible to consumers (at/under the high watermark).
+
+NOW Broker3 dies.
+  - ISR shrinks from {B1,B2,B3} to {B1,B2}.
+  - ISR size = 2, which still meets min.insync.replicas=2  -> writes continue.
+  - R is safe: it lives on B1 and B2. ZERO data loss, cluster stays AVAILABLE.
+  => This is the "tolerate 1 broker failure" the formula promises.
+
+NOW Broker1 (the leader) ALSO dies (a second, simultaneous failure).
+  - Clean election promotes B2 (it's in the ISR and has R) to leader.
+    R SURVIVES, because a committed record is guaranteed to be on every ISR member.
+  - But ISR is now just {B2}, size 1 < min.insync.replicas=2.
+    -> New acks=all writes are REJECTED with NotEnoughReplicas
+       until another replica catches up.
+    -> Kafka chooses to STOP accepting writes rather than risk losing them
+       ("fail closed").</code></pre>
+<p><b>Takeaway:</b> RF=3 + <code>min.insync.replicas=2</code> + <code>acks=all</code> survives <em>one</em> broker failure with zero loss <em>and</em> continued availability. A second simultaneous failure still preserves every already-committed record, but pauses <em>new</em> writes until the cluster heals &mdash; Kafka deliberately trades a bit of availability to guarantee it never loses acknowledged data. That's the durability-vs-availability trade-off, made concrete.</p>
+
+<h3>6.3 Leader election &amp; unclean elections</h3>
+<p>When a leader broker dies, someone has to take over &mdash; and <em>who</em> is allowed to take over is the whole ballgame for data safety. The table contrasts the safe default with the risky option.</p>
+<table>
+<tr><th></th><th>Clean election</th><th>Unclean election</th></tr>
+<tr><td>New leader from</td><td>ISR only</td><td>Any replica (even out-of-sync)</td></tr>
+<tr><td>Data loss</td><td>None</td><td>Possible</td></tr>
+<tr><td>Availability</td><td>May be unavailable if no ISR</td><td>Stays available</td></tr>
+</table>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> think of a relay race. In a <b>clean</b> election, if the runner holding the baton trips, only a teammate who was running right alongside (an in-sync replica) can pick it up &mdash; no distance lost. An <b>unclean</b> election lets a runner who was way behind grab the baton: the race keeps going (stays available), but you've thrown away all the ground the leader was ahead by (lost data).</div>
+<div class="callout warn"><b><code>unclean.leader.election.enable</code></b> defaults to <code>false</code> (favour consistency). Setting it <code>true</code> trades possible data loss for higher availability &mdash; avoid for critical data.</div>
+
+<h3>6.4 High watermark &amp; consistency</h3>
+<p>Consumers can only read up to the <b>high watermark</b> (offsets replicated to all ISR). This guarantees consumers never read records that could be lost in a leader failover.</p>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> the high watermark is the "safe to serve" line. Records above it exist on the leader but haven't been copied to all the in-sync replicas yet, so they could still vanish if the leader dies. Kafka simply hides them from you &mdash; like a shop only putting an item on the shelf once it's fully paid for and logged, so you can never "buy" something that might later be retracted.</div>
+
+<div class="qa">
+<div class="q">What's the difference between replication factor and ISR?</div>
+<div class="a">Replication factor is the total number of copies configured. ISR is the dynamic subset of those copies currently caught up with the leader. ISR can shrink (slow/dead follower) and grow (follower catches up).</div>
+</div>
+<div class="qa">
+<div class="q">Why can't consumers read past the high watermark?</div>
+<div class="a">Records above the HW aren't yet on all in-sync replicas, so they could vanish if the leader fails. Hiding them guarantees that everything a consumer reads is durably committed.</div>
+</div>
+
+<h2 id="s7">7. Storage Internals &amp; the Log <span class="tag adv">Advanced</span> <a class="backtop" href="#toc">&uarr; Contents</a></h2>
+
+<h3>7.1 Segments &amp; on-disk layout</h3>
+<p>Each partition is a directory of <b>segment</b> files. The newest segment is "active" (being written); older ones are immutable. This makes deletion (drop a whole segment file) and sequential reads cheap.</p>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> a partition isn't one giant file &mdash; it's a series of fixed-size "chapters" (segments). Only the latest chapter is being written; the rest are sealed. Deleting old data is then as cheap as tossing an entire finished chapter, instead of erasing lines from the middle of one huge file.</div>
+<pre><code class="plain">/kafka-logs/orders-0/
+  00000000000000000000.log     <- records (the actual data)
+  00000000000000000000.index   <- offset -> physical position
+  00000000000000000000.timeindex <- timestamp -> offset
+  00000000000000170243.log     <- next segment...</code></pre>
+<table>
+<tr><th>Config</th><th>Effect</th></tr>
+<tr><td><code>log.segment.bytes</code></td><td>Roll a new segment after this size (default 1 GB)</td></tr>
+<tr><td><code>log.segment.ms</code></td><td>Roll a new segment after this time</td></tr>
+<tr><td><code>log.index.interval.bytes</code></td><td>How densely the offset index is populated</td></tr>
+</table>
+
+<h3>7.2 Why Kafka is fast (performance internals)</h3>
+<p>Kafka's speed isn't magic &mdash; it's a stack of well-known systems tricks that each remove a layer of overhead. The reason they matter to you: they explain why Kafka wants <em>RAM for the OS, fast disks, and batching</em> rather than a giant JVM heap, which directly shapes how you size and tune brokers.</p>
+<table>
+<tr><th>Technique</th><th>Benefit</th></tr>
+<tr><td><b>Sequential I/O</b></td><td>Append-only writes; disk throughput rivals memory</td></tr>
+<tr><td><b>OS page cache</b></td><td>Reads served from RAM; Kafka leans on the OS, not a JVM cache</td></tr>
+<tr><td><b>Zero-copy (sendfile)</b></td><td>Data goes disk &rarr; NIC without user-space copies</td></tr>
+<tr><td><b>Batching</b></td><td>Amortizes network &amp; I/O overhead</td></tr>
+<tr><td><b>Compression</b></td><td>Whole batches compressed end-to-end</td></tr>
+<tr><td><b>Binary protocol</b></td><td>Compact, efficient wire format</td></tr>
+</table>
+<div class="callout tip"><b>Implication:</b> Give the OS plenty of RAM for page cache; don't over-size the JVM heap. Use fast disks (SSD/NVMe) and separate disks for logs.</div>
+
+
+<h2 id="s8">8. Retention &amp; Log Compaction <span class="tag inter">Intermediate</span> <a class="backtop" href="#toc">&uarr; Contents</a></h2>
+
+<h3>8.1 Two cleanup policies</h3>
+<p>Because Kafka keeps data on disk, it needs a rule for what to eventually throw away &mdash; and it offers two fundamentally different rules. The choice matters because it reflects what your topic <em>is</em>: a time-bounded stream of events, or a living snapshot of current state per key.</p>
+<table>
+<tr><th>Policy</th><th>Keeps</th><th>Use case</th></tr>
+<tr><td><code>delete</code> (default)</td><td>All records until time/size limit, then drops old segments</td><td>Event streams, logs</td></tr>
+<tr><td><code>compact</code></td><td>The latest value per key forever</td><td>Changelogs, state snapshots</td></tr>
+<tr><td><code>compact,delete</code></td><td>Both combined</td><td>Compacted but also time-bounded</td></tr>
+</table>
+
+<h3>8.2 Time/size-based retention</h3>
+<table>
+<tr><th>Config</th><th>Meaning</th></tr>
+<tr><td><code>retention.ms</code></td><td>Delete records older than this (default 7 days)</td></tr>
+<tr><td><code>retention.bytes</code></td><td>Max partition size before old segments are dropped</td></tr>
+</table>
+<div class="callout note">Retention is enforced at the <b>segment</b> level &mdash; a segment is deleted only once <em>all</em> its records are past the limit. Data is removed regardless of whether consumers read it.</div>
+
+<h3>8.3 Log compaction</h3>
+<p>Compaction guarantees Kafka retains <b>at least the last known value for each key</b>. Old values for a key are eventually removed, keeping a compacted topic as a snapshot of latest state.</p>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> compaction keeps only the <em>most recent</em> value for each key and discards the older ones &mdash; exactly like your phone's contacts app storing each person's <em>current</em> number, not the history of every number they've ever had. The topic stops being a full history of changes and becomes a live snapshot of "the current value for every key."</div>
+<pre><code class="plain">Before compaction (key=value):
+  k1=A  k2=X  k1=B  k3=Z  k2=Y  k1=C
+After compaction (latest per key kept):
+  k3=Z  k2=Y  k1=C</code></pre>
+<ul>
+<li>A record with a <b>null value</b> is a <b>tombstone</b> &mdash; marks the key for deletion.</li>
+<li>Used by <code>__consumer_offsets</code> and Kafka Streams state-store changelogs.</li>
+</ul>
+
+<div class="qa">
+<div class="q">If a topic is compacted, can I still lose the latest value for a key?</div>
+<div class="a">No &mdash; compaction always preserves the most recent value per key (until a tombstone + delete.retention window expires). Only superseded older values are removed.</div>
+</div>
+
+
+<h2 id="s9">9. Delivery Semantics &amp; Transactions <span class="tag adv">Advanced</span> <a class="backtop" href="#toc">&uarr; Contents</a></h2>
+
+<h3>9.1 The three guarantees</h3>
+<p>Every messaging system has to answer "what happens if something fails mid-delivery?" &mdash; and there are exactly three possible promises. The one you pick is a trade-off between the pain of <em>losing</em> a message and the pain of <em>seeing it twice</em>.</p>
+<table>
+<tr><th>Semantic</th><th>Meaning</th><th>How</th></tr>
+<tr><td><b>At-most-once</b></td><td>May lose, never duplicate</td><td>Commit offset before processing; acks=0/1</td></tr>
+<tr><td><b>At-least-once</b></td><td>Never lose, may duplicate (most common)</td><td>Process then commit; retries on</td></tr>
+<tr><td><b>Exactly-once (EOS)</b></td><td>No loss, no duplicate</td><td>Idempotent producer + transactions</td></tr>
+</table>
+<p>"Exactly-once" sounds like the obvious winner, but it's the hardest and costliest to achieve, and it's widely misunderstood. The rest of this section builds it up one step at a time so you can see <em>exactly</em> what each piece fixes.</p>
+
+<h3>9.2 Step (a): the duplicate-message problem, in plain terms</h3>
+<p>Duplicates come from <b>two completely separate places</b>, and conflating them is the root of most confusion:</p>
+<ul>
+<li><b>Producer-side duplicates.</b> A producer sends "charge $10." Kafka writes it, but the acknowledgement is lost on the way back. The producer doesn't know it succeeded, so it retries &mdash; and now "charge $10" is in the log <em>twice</em>.</li>
+<li><b>Consumer-side duplicates.</b> A consumer reads a batch, processes it, but crashes <em>before</em> committing its offset. On restart it re-reads the same records from the last committed offset and processes them <em>again</em>.</li>
+</ul>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> a duplicate is "the same thing done twice by accident." It can happen because the <em>sender</em> wasn't sure the message got through and re-sent it, or because the <em>receiver</em> did the work but forgot to check it off and did it again after a restart. Fixing one does nothing for the other.</div>
+
+<h3>9.3 Step (b &amp; c): the idempotent producer &mdash; what it fixes, what it doesn't</h3>
+<p><b>(b) What it fixes.</b> Turning on <code>enable.idempotence=true</code> gives the producer a <b>Producer ID (PID)</b> and stamps every record with a <b>per-partition sequence number</b>. If a retry re-sends a record the broker already has (same PID + sequence), the broker silently drops the copy. This eliminates <em>producer-side</em> duplicates from retries &mdash; and it's on by default in modern Kafka, for free.</p>
+<div class="callout warn"><b>(c) What's still broken.</b> Idempotence only dedups <em>one</em> producer session writing to <em>one</em> partition. It does nothing about:
+<ul>
+<li>the <b>consumer-side</b> duplicate (reprocessing after a crash);</li>
+<li>writing atomically across <b>multiple partitions/topics</b>;</li>
+<li>tying an output write to the <b>consumer's offset commit</b>.</li>
+</ul>
+So a typical read &rarr; process &rarr; write app (read topic A, produce to topic B, commit A's offset) can still crash between "write to B" and "commit A," causing the record to be reprocessed and re-written to B. Idempotence alone can't close that gap.</div>
+
+<h3>9.4 Step (d): transactions close the gap</h3>
+<p>Kafka <b>transactions</b> let a producer bundle several actions into one all-or-nothing unit: write to multiple partitions/topics <em>and</em> commit the consumer's input offsets together. Either the whole bundle becomes visible at once (commit), or none of it does (abort). This is precisely the <b>read-process-write</b> pattern that idempotence couldn't handle. Consumers set <code>isolation.level=read_committed</code> so they never see records from an aborted or still-in-progress transaction.</p>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> a transaction is like moving money between bank accounts &mdash; the debit and the credit must both happen or neither does. Kafka does the same for "write my output(s) and check off my input" so a crash can never leave you half-done (output written but input not checked off, or vice versa).</div>
+<pre><code class="hljs language-java">producer.initTransactions();
+<span class="hljs-keyword">try</span> {
+    producer.beginTransaction();
+    producer.send(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ProducerRecord</span>&lt;&gt;(<span class="hljs-string">&quot;out&quot;</span>, key, value));
+    <span class="hljs-comment">// atomically commit the input offsets within the same transaction</span>
+    producer.sendOffsetsToTransaction(offsets, consumerGroupMetadata);
+    producer.commitTransaction();
+} <span class="hljs-keyword">catch</span> (KafkaException e) {
+    producer.abortTransaction();   <span class="hljs-comment">// nothing becomes visible</span>
+}</code></pre>
+
+<h3>9.5 Step (e): where Kafka's guarantee ends and your app begins</h3>
+<p>Here is the line interviewers want you to draw clearly. Everything above gives exactly-once <b>within Kafka</b> &mdash; Kafka topics in, Kafka topics out. The instant a side effect leaves Kafka &mdash; writing to a database, calling a REST API, sending an email &mdash; Kafka can no longer make it atomic, because it doesn't control that external system.</p>
+<p>At that boundary the responsibility becomes <b>your application's</b>. The usual ways to complete end-to-end exactly-once are:</p>
+<ul>
+<li>make the external write <b>idempotent</b> (e.g. upsert by a business/event key, so re-applying it changes nothing);</li>
+<li>use the <b>transactional outbox</b> pattern (write the event to your DB in the same transaction as the data, then relay it &mdash; see &sect;20.2);</li>
+<li>store the <b>processed offset in the same DB transaction</b> as the data it produced, so re-processing is detectable and safe.</li>
+</ul>
+<div class="callout warn"><b>Pitfall:</b> Exactly-once applies <em>within Kafka</em> (Kafka-to-Kafka). End-to-end EOS to an external system (DB, REST) still needs idempotent writes or the transactional outbox pattern on your side.</div>
+<div class="callout tip"><b>Practical default:</b> Most systems use <b>at-least-once + idempotent consumers</b> (dedup by a business/event ID). Full EOS adds latency &amp; complexity &mdash; use it only when duplicates are truly unacceptable (e.g. financial ledgers).</div>
+
+<div class="qa">
+<div class="q">Why is at-least-once the most common choice?</div>
+<div class="a">It's simple and never loses data. Duplicates are handled by making consumers idempotent (e.g. upsert by primary key, dedup table), which is cheaper and more robust than full transactional exactly-once across systems.</div>
+</div>
+
+
+<h2 id="s10">10. Message Ordering &amp; Keys <span class="tag inter">Intermediate</span> <a class="backtop" href="#toc">&uarr; Contents</a></h2>
+<p>Ordering is one of the most misunderstood Kafka guarantees, so state it precisely: Kafka orders records <em>within a partition</em>, never across partitions. Everything about keeping related events in order flows from that one fact.</p>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> ordering is per-lane, not per-highway. If two events must be processed in order, you have to put them in the <em>same</em> lane (partition) &mdash; and the way you do that is by giving them the <em>same key</em>. Different keys may go to different lanes and race each other.</div>
+<ul>
+<li><b>Ordering is per-partition only.</b> Kafka guarantees order within a partition, never across partitions.</li>
+<li>To keep related events ordered, give them the <b>same key</b> &rarr; same partition (e.g. key by <code>userId</code> or <code>orderId</code>).</li>
+<li>Global ordering requires a single partition &mdash; which destroys parallelism, so avoid unless truly needed.</li>
+</ul>
+<div class="callout warn"><b>Ordering breakers:</b> (1) adding partitions remaps keys; (2) producer retries with multiple in-flight requests (use idempotence); (3) consumer processing records concurrently across threads. Design around these.</div>
+
+<div class="qa">
+<div class="q">How do you guarantee all events for one customer are processed in order?</div>
+<div class="a">Use the customer ID as the message key so all their events land in the same partition, and let a single consumer in the group own that partition. Keep producer idempotence on to preserve order across retries.</div>
+</div>
+
+<h1 id="part3" class="pagebreak">Part III &mdash; Ecosystem</h1>
+
+<h2 id="s11">11. Kafka Connect <span class="tag inter">Intermediate</span> <a class="backtop" href="#toc">&uarr; Contents</a></h2>
+<p>A framework for <b>streaming data between Kafka and external systems</b> without writing custom producer/consumer code &mdash; via reusable, config-driven connectors.</p>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> Connect is the "plug-and-play adapters" for Kafka. Instead of hand-coding a program to copy a database into Kafka (or Kafka into Elasticsearch), you fill in a config file for a ready-made connector and it handles the copying, retries, and progress-tracking for you.</div>
+<table>
+<tr><th>Type</th><th>Direction</th><th>Examples</th></tr>
+<tr><td><b>Source connector</b></td><td>External &rarr; Kafka</td><td>Debezium (CDC), JDBC source, file source</td></tr>
+<tr><td><b>Sink connector</b></td><td>Kafka &rarr; external</td><td>JDBC sink, Elasticsearch, S3, BigQuery</td></tr>
+</table>
+<ul>
+<li><b>Workers</b> run connectors; <b>distributed mode</b> gives scalability &amp; fault tolerance (tasks rebalanced across workers).</li>
+<li><b>SMT (Single Message Transforms)</b> &mdash; lightweight per-record transformations (mask, rename, route) in the pipeline.</li>
+<li><b>Converters</b> handle (de)serialization (e.g. Avro + Schema Registry).</li>
+<li><b>CDC with Debezium</b> turns database changes into Kafka events &mdash; a cornerstone of the outbox/CQRS patterns.</li>
+</ul>
+<div class="callout tip"><b>When to use Connect vs custom code:</b> use Connect for standard system integrations (it handles offsets, retries, scaling, schema). Write custom apps only for business logic / stream processing.</div>
+
+
+<h2 id="s12">12. Kafka Streams <span class="tag adv">Advanced</span> <a class="backtop" href="#toc">&uarr; Contents</a></h2>
+<p>A <b>client library</b> (just a JAR in your app &mdash; no separate cluster) for building real-time stream processing applications on top of Kafka. Input topics &rarr; processing topology &rarr; output topics.</p>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> Kafka Streams lets you write "for each event, do X, then aggregate, then output" as ordinary Java in your own app &mdash; no extra cluster to run. It's a library you import, not a system you deploy.</div>
+
+<h3>12.1 Core abstractions</h3>
+<table>
+<tr><th>Abstraction</th><th>Represents</th></tr>
+<tr><td><b>KStream</b></td><td>An unbounded stream of records (event stream)</td></tr>
+<tr><td><b>KTable</b></td><td>A changelog &mdash; latest value per key (table view)</td></tr>
+<tr><td><b>GlobalKTable</b></td><td>Fully replicated table on every instance (for joins)</td></tr>
+</table>
+<div class="callout note"><b>Stream-table duality:</b> a stream of updates can be folded into a table (latest per key); a table's changes can be emitted as a stream. KStream &harr; KTable.</div>
+
+<h3>12.2 Operations</h3>
+<ul>
+<li><b>Stateless:</b> map, filter, flatMap, branch, foreach.</li>
+<li><b>Stateful:</b> aggregate, count, reduce, joins &mdash; backed by local <b>state stores</b> (RocksDB) with changelog topics for fault tolerance.</li>
+<li><b>Windowing:</b> tumbling, hopping, sliding, session windows for time-based aggregations.</li>
+<li><b>Joins:</b> stream-stream (windowed), stream-table, table-table.</li>
+</ul>
+<pre><code class="hljs language-java"><span class="hljs-type">StreamsBuilder</span> <span class="hljs-variable">builder</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">StreamsBuilder</span>();
+builder.&lt;String,String&gt;stream(<span class="hljs-string">&quot;orders&quot;</span>)
+       .filter((k, v) -&gt; v.contains(<span class="hljs-string">&quot;PAID&quot;</span>))
+       .groupByKey()
+       .count()                       <span class="hljs-comment">// stateful aggregation</span>
+       .toStream()
+       .to(<span class="hljs-string">&quot;paid-order-counts&quot;</span>);
+<span class="hljs-keyword">new</span> <span class="hljs-title class_">KafkaStreams</span>(builder.build(), props).start();</code></pre>
+
+<h3>12.3 Time semantics</h3>
+<table>
+<tr><th>Time</th><th>Meaning</th></tr>
+<tr><td>Event time</td><td>When the event actually occurred (in the record)</td></tr>
+<tr><td>Ingestion time</td><td>When Kafka received it</td></tr>
+<tr><td>Processing time</td><td>When the stream app processed it</td></tr>
+</table>
+<div class="callout warn"><b>Late/out-of-order data:</b> use a <b>grace period</b> on windows to admit late events; very late events are dropped. Event-time processing is essential for correct aggregations.</div>
+
+<h3>12.4 Exactly-once in Streams</h3>
+<p>Set <code>processing.guarantee=exactly_once_v2</code> &mdash; Streams uses transactions under the hood so state updates and output are atomic with input-offset commits.</p>
+
+<div class="qa">
+<div class="q">Kafka Streams vs Spark/Flink?</div>
+<div class="a">Streams is a lightweight library embedded in your app (no cluster, per-record low latency, tightly Kafka-coupled). Spark/Flink are separate cluster frameworks for heavier, multi-source batch+stream workloads. Choose Streams for Kafka-native microservice-style processing.</div>
+</div>
+
+
+<h2 id="s13">13. ksqlDB <span class="tag inter">Intermediate</span> <a class="backtop" href="#toc">&uarr; Contents</a></h2>
+<p>A streaming SQL engine on top of Kafka Streams &mdash; write stream processing as SQL instead of Java.</p>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> ksqlDB lets you do stream processing by writing SQL &mdash; the same <code>SELECT ... GROUP BY</code> you already know &mdash; except the query never ends; it keeps producing results as new events arrive.</div>
+<pre><code class="hljs language-sql"><span class="hljs-keyword">CREATE</span> STREAM orders (id <span class="hljs-type">VARCHAR</span>, amount <span class="hljs-keyword">DOUBLE</span>)
+  <span class="hljs-keyword">WITH</span> (kafka_topic<span class="hljs-operator">=</span><span class="hljs-string">&#x27;orders&#x27;</span>, value_format<span class="hljs-operator">=</span><span class="hljs-string">&#x27;JSON&#x27;</span>);
+
+<span class="hljs-keyword">CREATE TABLE</span> paid_totals <span class="hljs-keyword">AS</span>
+  <span class="hljs-keyword">SELECT</span> id, <span class="hljs-built_in">SUM</span>(amount) <span class="hljs-keyword">AS</span> total
+  <span class="hljs-keyword">FROM</span> orders <span class="hljs-keyword">WHERE</span> status<span class="hljs-operator">=</span><span class="hljs-string">&#x27;PAID&#x27;</span>
+  <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> id EMIT CHANGES;</code></pre>
+<ul>
+<li><b>STREAM</b> = unbounded events; <b>TABLE</b> = latest state per key (mirrors KStream/KTable).</li>
+<li><b>Push queries</b> (<code>EMIT CHANGES</code>) stream continuous results; <b>pull queries</b> fetch current state point-in-time.</li>
+<li>Great for rapid prototyping &amp; analysts; for complex logic, drop to Kafka Streams.</li>
+</ul>
+
+
+<h2 id="s14">14. Schema Registry &amp; Serialization <span class="tag inter">Intermediate</span> <a class="backtop" href="#toc">&uarr; Contents</a></h2>
+<p>Kafka stores raw bytes &mdash; it doesn't know or enforce a schema. The <b>Schema Registry</b> (Confluent) centrally stores Avro/Protobuf/JSON Schemas and enforces <b>compatibility</b> as schemas evolve, preventing producers from breaking consumers.</p>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> Kafka only sees bytes, like envelopes it never opens. The Schema Registry is a shared rulebook for what's inside those envelopes, and a bouncer that stops a producer from changing the format in a way that would break every consumer downstream.</div>
+
+<h3>14.1 How it works</h3>
+<pre><code class="plain">Producer -> register/lookup schema in Registry -> writes [magic byte][schema ID][payload]
+Consumer -> reads schema ID -> fetches schema from Registry -> deserializes</code></pre>
+<p>Only a small <b>schema ID</b> travels with each message (not the whole schema), keeping payloads compact.</p>
+
+<h3>14.2 Serialization formats</h3>
+<p>The format you choose is a trade-off between being easy for humans to read and being cheap for machines to move and evolve safely. That's why high-volume production systems usually leave JSON behind for Avro or Protobuf despite JSON's convenience.</p>
+<table>
+<tr><th>Format</th><th>Pros</th><th>Cons</th></tr>
+<tr><td>JSON</td><td>Human-readable, simple</td><td>Verbose, no enforced schema</td></tr>
+<tr><td>Avro</td><td>Compact, rich schema evolution, Registry-native</td><td>Not human-readable</td></tr>
+<tr><td>Protobuf</td><td>Compact, cross-language, gRPC-friendly</td><td>Tooling needed</td></tr>
+</table>
+
+<h3>14.3 Schema compatibility modes</h3>
+<p>Compatibility modes exist so producers and consumers can be deployed <em>independently</em> without a coordinated big-bang release. Each mode answers "whose old code must keep working when the schema changes?" &mdash; which is really about the order in which you can safely roll out updates.</p>
+<table>
+<tr><th>Mode</th><th>Allows</th></tr>
+<tr><td>BACKWARD (default)</td><td>New schema reads old data (add optional fields, remove fields)</td></tr>
+<tr><td>FORWARD</td><td>Old schema reads new data</td></tr>
+<tr><td>FULL</td><td>Both backward &amp; forward</td></tr>
+<tr><td>NONE</td><td>No checks (risky)</td></tr>
+</table>
+<div class="callout tip"><b>Best practice:</b> Use Avro/Protobuf + Schema Registry with BACKWARD/FULL compatibility. Add fields with defaults; never rename/retype in place. This lets producers &amp; consumers deploy independently.</div>
+
+<div class="qa">
+<div class="q">Why not just use JSON everywhere?</div>
+<div class="a">JSON has no enforced contract, is verbose (no schema ID dedup), and offers no compatibility guarantees &mdash; one producer change can silently break every consumer. Avro/Protobuf + Registry give compact payloads and safe, governed evolution.</div>
+</div>
+
+<h1 id="part4" class="pagebreak">Part IV &mdash; Operations &amp; Advanced</h1>
+
+<h2 id="s15">15. Performance &amp; Tuning <span class="tag adv">Advanced</span> <a class="backtop" href="#toc">&uarr; Contents</a></h2>
+
+<h3>15.1 The throughput levers</h3>
+<p>There's no single "make it fast" switch &mdash; tuning always means optimizing for one goal (throughput, latency, or durability) at some cost to the others. The table groups the knobs by <em>which goal</em> they serve, so you can pick the row that matches your use case instead of cargo-culting configs.</p>
+<table>
+<tr><th>Goal</th><th>Tune</th></tr>
+<tr><td>Producer throughput</td><td>&uarr;<code>batch.size</code>, &uarr;<code>linger.ms</code>, compression (lz4/zstd), &uarr;<code>buffer.memory</code></td></tr>
+<tr><td>Low latency</td><td>&darr;<code>linger.ms</code> (0&ndash;5), smaller batches, <code>acks=1</code> (if durability allows)</td></tr>
+<tr><td>Consumer throughput</td><td>&uarr;<code>fetch.min.bytes</code>, &uarr;<code>max.poll.records</code>, more partitions+consumers</td></tr>
+<tr><td>Durability</td><td><code>acks=all</code>, RF&ge;3, <code>min.insync.replicas=2</code></td></tr>
+<tr><td>Parallelism</td><td>More partitions (within reason)</td></tr>
+</table>
+
+<h3>15.2 Throughput vs latency vs durability</h3>
+<div class="callout note">These three pull against each other. Bigger batches &amp; more replicas raise throughput &amp; durability but add latency. Decide per use case (e.g. logs &rarr; throughput; payments &rarr; durability; alerts &rarr; latency).</div>
+
+<h3>15.3 Broker / OS tuning</h3>
+<ul>
+<li>Leave lots of RAM for the <b>OS page cache</b>; keep the JVM heap modest (e.g. 6&ndash;8 GB) to avoid long GC pauses.</li>
+<li>Fast disks (NVMe/SSD), XFS/ext4, separate disk for logs; multiple <code>log.dirs</code>.</li>
+<li>Adequate file descriptors &amp; network threads (<code>num.io.threads</code>, <code>num.network.threads</code>).</li>
+<li>Monitor <b>partition skew</b> &amp; <b>consumer lag</b> &mdash; the two biggest real-world issues.</li>
+</ul>
+
+<h3>15.4 Common bottlenecks</h3>
+<p>Most Kafka performance incidents fall into a handful of recurring shapes. Learning to map a <em>symptom</em> straight to a likely <em>cause</em> is exactly what "operational experience" means in an interview.</p>
+<table>
+<tr><th>Symptom</th><th>Likely cause</th></tr>
+<tr><td>High consumer lag</td><td>Slow processing, too few partitions/consumers, GC, downstream slow</td></tr>
+<tr><td>Uneven load</td><td>Hot key / bad partitioning (data skew)</td></tr>
+<tr><td>Frequent rebalances</td><td>Slow poll loop exceeding <code>max.poll.interval.ms</code></td></tr>
+<tr><td>Producer throttling</td><td>Buffer full, slow broker, ISR shrink</td></tr>
+</table>
+
+
+<h2 id="s16">16. Reliability, HA &amp; Monitoring <span class="tag inter">Intermediate</span> <a class="backtop" href="#toc">&uarr; Contents</a></h2>
+
+<h3>16.1 Designing for no data loss</h3>
+<p>"No data loss" isn't one setting &mdash; it's a chain of choices across producer, broker, and consumer, and the weakest link decides the outcome. The checklist below hardens all three tiers together; skip one and the guarantee leaks.</p>
+<ul>
+<li>Producer: <code>acks=all</code>, <code>enable.idempotence=true</code>, sufficient retries/<code>delivery.timeout.ms</code>.</li>
+<li>Broker: RF&ge;3, <code>min.insync.replicas=2</code>, <code>unclean.leader.election.enable=false</code>.</li>
+<li>Consumer: commit <em>after</em> processing; idempotent handling; handle rebalance via <code>ConsumerRebalanceListener</code>.</li>
+<li>Spread replicas across <b>racks/AZs</b> (<code>broker.rack</code>) for failure-domain isolation.</li>
+</ul>
+
+<h3>16.2 Dead Letter Queue (DLQ) &amp; retries</h3>
+<p>For "poison" messages that repeatedly fail, route them to a <b>dead-letter topic</b> after N retries so the main pipeline keeps flowing. Spring Kafka offers <code>DeadLetterPublishingRecoverer</code> + non-blocking retry topics.</p>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> a DLQ is the "put it aside and deal with it later" bin. If one broken message keeps failing, you don't let it block the whole line &mdash; you move it to a side topic so everything else keeps flowing, and a human or a separate job inspects the rejects later.</div>
+
+<h3>16.3 Key metrics to monitor</h3>
+<p>You could graph hundreds of Kafka metrics, but a few tell you almost everything about cluster health. Consumer lag answers "are we keeping up?"; the replication metrics answer "are we still safe?" &mdash; watch these first and the rest are supporting detail.</p>
+<table>
+<tr><th>Metric</th><th>Why it matters</th></tr>
+<tr><td><b>Consumer lag</b></td><td>#1 health signal &mdash; are consumers keeping up?</td></tr>
+<tr><td>Under-replicated partitions</td><td>Replication/broker problems</td></tr>
+<tr><td>ISR shrink/expand rate</td><td>Slow followers, instability</td></tr>
+<tr><td>Active controller count (=1)</td><td>Should be exactly one</td></tr>
+<tr><td>Request latency, throughput (bytes in/out)</td><td>Capacity &amp; saturation</td></tr>
+<tr><td>Offline partitions</td><td>Unavailable data &mdash; critical alert</td></tr>
+</table>
+<div class="callout tip"><b>Tooling:</b> JMX &rarr; Prometheus + Grafana; Kafka exporter / Burrow for lag; Confluent Control Center, Conduktor, AKHQ, Cruise Control (auto-rebalancing).</div>
+
+
+<h2 id="s17">17. Spring Kafka <span class="tag inter">Intermediate</span> <span class="tag new">New</span> <a class="backtop" href="#toc">&uarr; Contents</a></h2>
+<p>In a Spring Boot app you rarely use the raw <code>KafkaProducer</code>/<code>KafkaConsumer</code> loops shown earlier. The <b>Spring for Apache Kafka</b> (<code>spring-kafka</code>) project wraps them in familiar Spring idioms &mdash; a template for sending and an annotation-driven listener for receiving &mdash; while still exposing all the underlying concepts (offsets, commits, retries) you've already learned.</p>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> Spring Kafka is a comfortable steering wheel bolted onto the raw Kafka client. You still drive the same car (same partitions, offsets, commits), but you push events with a one-line <code>KafkaTemplate.send(...)</code> and receive them by just annotating a method with <code>@KafkaListener</code> &mdash; Spring runs the poll loop for you.</div>
+
+<h3>17.1 Producing with KafkaTemplate</h3>
+<p><code>KafkaTemplate</code> is the send side &mdash; the Spring equivalent of holding a <code>KafkaProducer</code> and calling <code>send()</code>, returning a future you can chain callbacks onto.</p>
+<pre><code class="hljs language-java"><span class="hljs-meta">@Service</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">OrderProducer</span> {
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> KafkaTemplate&lt;String, String&gt; kafkaTemplate;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">OrderProducer</span><span class="hljs-params">(KafkaTemplate&lt;String, String&gt; kafkaTemplate)</span> {
+        <span class="hljs-built_in">this</span>.kafkaTemplate = kafkaTemplate;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">publish</span><span class="hljs-params">(Order order)</span> {
+        <span class="hljs-comment">// key = order id -&gt; all events for one order share a partition (ordering)</span>
+        kafkaTemplate.send(<span class="hljs-string">&quot;orders&quot;</span>, order.getId(), order.toJson())
+            .whenComplete((result, ex) -&gt; {
+                <span class="hljs-keyword">if</span> (ex != <span class="hljs-literal">null</span>) log.error(<span class="hljs-string">&quot;send failed&quot;</span>, ex);
+                <span class="hljs-keyword">else</span> log.info(<span class="hljs-string">&quot;sent to offset {}&quot;</span>, result.getRecordMetadata().offset());
+            });
+    }
+}</code></pre>
+
+<h3>17.2 Consuming with @KafkaListener</h3>
+<p><code>@KafkaListener</code> replaces the entire hand-written <code>while (true) { poll(); ... }</code> loop from &sect;5.2 &mdash; Spring runs the poll loop in a container and simply calls your method for each record (or batch).</p>
+<pre><code class="hljs language-java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">OrderConsumer</span> {
+
+    <span class="hljs-meta">@KafkaListener(topics = &quot;orders&quot;, groupId = &quot;billing&quot;)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onMessage</span><span class="hljs-params">(ConsumerRecord&lt;String, String&gt; record, Acknowledgment ack)</span> {
+        billingService.process(record.value());   <span class="hljs-comment">// do the work FIRST</span>
+        ack.acknowledge();                         <span class="hljs-comment">// then commit -&gt; at-least-once</span>
+    }
+}</code></pre>
+
+<h3>17.3 Ack modes &mdash; mapping back to commitSync / commitAsync</h3>
+<p>The manual commit concepts from &sect;5.2 don't disappear in Spring &mdash; they're selected through the container's <b>ack mode</b>. This table connects the Spring setting to the raw-client behaviour you already know, so you're not learning a new idea, just a new dial for the same one.</p>
+<table>
+<tr><th>Spring <code>AckMode</code></th><th>What it does</th><th>Raw-client equivalent</th></tr>
+<tr><td><code>RECORD</code></td><td>Commit after each record's listener returns</td><td>A <code>commitSync</code> per record</td></tr>
+<tr><td><code>BATCH</code> (default)</td><td>Commit once after the whole <code>poll()</code> batch is processed</td><td><code>commitSync()</code> after the batch loop</td></tr>
+<tr><td><code>TIME</code> / <code>COUNT</code></td><td>Commit every N ms / N records</td><td>Periodic <code>commitAsync()</code></td></tr>
+<tr><td><code>MANUAL</code></td><td>You call <code>ack.acknowledge()</code>; queued, committed on next poll</td><td>Your own <code>commitAsync()</code></td></tr>
+<tr><td><code>MANUAL_IMMEDIATE</code></td><td><code>ack.acknowledge()</code> commits right away</td><td>Your own <code>commitSync()</code></td></tr>
+</table>
+<pre><code class="hljs language-properties"><span class="hljs-comment"># Switch off auto-commit and use manual acks (matches the listener above)</span>
+<span class="hljs-attr">spring.kafka.consumer.enable-auto-commit</span>=<span class="hljs-string">false</span>
+<span class="hljs-attr">spring.kafka.listener.ack-mode</span>=<span class="hljs-string">MANUAL_IMMEDIATE</span>
+<span class="hljs-attr">spring.kafka.consumer.auto-offset-reset</span>=<span class="hljs-string">earliest</span>
+<span class="hljs-attr">spring.kafka.consumer.group-id</span>=<span class="hljs-string">billing</span>
+<span class="hljs-attr">spring.kafka.producer.acks</span>=<span class="hljs-string">all</span>
+<span class="hljs-attr">spring.kafka.producer.properties.enable.idempotence</span>=<span class="hljs-string">true</span></code></pre>
+
+<h3>17.4 Error handling &amp; non-blocking retries</h3>
+<p>By default a listener that throws will retry and, if it keeps failing, can hand the record to a recoverer. The modern default error handler is <code>DefaultErrorHandler</code>, which retries with a back-off and then routes the "poison" record to a dead-letter topic (tying back to the DLQ idea in &sect;16.2).</p>
+<pre><code class="hljs language-java"><span class="hljs-meta">@Bean</span>
+<span class="hljs-keyword">public</span> DefaultErrorHandler <span class="hljs-title function_">errorHandler</span><span class="hljs-params">(KafkaTemplate&lt;String, String&gt; template)</span> {
+    <span class="hljs-comment">// On repeated failure, publish the record to &quot;&lt;topic&gt;.DLT&quot;</span>
+    <span class="hljs-type">var</span> <span class="hljs-variable">recoverer</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DeadLetterPublishingRecoverer</span>(template);
+    <span class="hljs-comment">// Retry 3 times, 1s apart, THEN send to the DLT</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DefaultErrorHandler</span>(recoverer, <span class="hljs-keyword">new</span> <span class="hljs-title class_">FixedBackOff</span>(<span class="hljs-number">1000L</span>, <span class="hljs-number">3L</span>));
+}</code></pre>
+<p>Those retries are <b>blocking</b> (they hold up the partition). For <b>non-blocking</b> retries &mdash; where failed records go to separate timed retry topics so the main flow never stalls &mdash; use <code>@RetryableTopic</code>:</p>
+<pre><code class="hljs language-java"><span class="hljs-meta">@RetryableTopic(
+    attempts = &quot;4&quot;,
+    backoff = @Backoff(delay = 1000, multiplier = 2.0),   // 1s, 2s, 4s ...
+    dltStrategy = DltStrategy.FAIL_ON_ERROR)</span>              <span class="hljs-comment">// give up -&gt; DLT</span>
+<span class="hljs-meta">@KafkaListener(topics = &quot;orders&quot;, groupId = &quot;billing&quot;)</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onMessage</span><span class="hljs-params">(String payload)</span> {
+    billingService.process(payload);   <span class="hljs-comment">// failures flow to orders-retry-0, -1, ... then orders-dlt</span>
+}</code></pre>
+
+<div class="callout placeholder"><b>&#128204; Your project's usage (fill this in).</b> Drop in your own service's Spring Kafka setup here so this section doubles as your team's reference:
+<ul>
+<li>Topics &amp; consumer <code>group.id</code>s you own: __________________________</li>
+<li>Ack mode &amp; why (throughput vs at-least-once safety): __________________________</li>
+<li>Serializers / Schema Registry config (Avro? JSON?): __________________________</li>
+<li>Retry + DLT policy (blocking vs <code>@RetryableTopic</code>, how many attempts): __________________________</li>
+<li>Any custom <code>ConsumerRebalanceListener</code> / manual offset handling: __________________________</li>
+</ul></div>
+
+<div class="qa">
+<div class="q">In Spring Kafka, how do you get at-least-once with manual commits?</div>
+<div class="a">Disable auto-commit, set the container ack mode to <code>MANUAL</code>/<code>MANUAL_IMMEDIATE</code>, do the work inside the <code>@KafkaListener</code> method, and only then call <code>ack.acknowledge()</code>. That mirrors "process, then <code>commitSync()</code>" from the raw client &mdash; a crash before the ack simply reprocesses, so keep the handler idempotent.</div>
+</div>
+
+
+<h2 id="s18">18. Security <span class="tag adv">Advanced</span> <a class="backtop" href="#toc">&uarr; Contents</a></h2>
+<p>Kafka security is best understood as three separate questions layered on top of each other: <em>is the connection private?</em> (encryption), <em>who are you?</em> (authentication), and <em>what are you allowed to touch?</em> (authorization). The table maps each question to its mechanism.</p>
+<table>
+<tr><th>Pillar</th><th>Mechanism</th></tr>
+<tr><td><b>Encryption (in transit)</b></td><td>TLS/SSL between clients &amp; brokers</td></tr>
+<tr><td><b>Authentication</b></td><td>SSL mutual auth or SASL (PLAIN, SCRAM, GSSAPI/Kerberos, OAUTHBEARER)</td></tr>
+<tr><td><b>Authorization</b></td><td>ACLs (read/write/create per topic/group) via an Authorizer; or RBAC</td></tr>
+<tr><td><b>Audit</b></td><td>Log access &amp; admin operations</td></tr>
+</table>
+<ul>
+<li><b>SASL/SCRAM</b> is a common username/password choice; <b>SASL/GSSAPI</b> for enterprise Kerberos.</li>
+<li>ACLs answer "which principal may do what on which resource."</li>
+<li>Encryption at rest is handled by disk-level/volume encryption (Kafka doesn't encrypt stored data itself).</li>
+</ul>
+<div class="callout warn"><b>Pitfall:</b> Enabling TLS adds CPU &amp; breaks zero-copy on the broker (data must be encrypted in user space), reducing throughput. Budget for it in capacity planning.</div>
+
+
+<h2 id="s19">19. KRaft &mdash; ZooKeeper Removal <span class="tag adv">Advanced</span> <a class="backtop" href="#toc">&uarr; Contents</a></h2>
+
+<h3>19.1 Why did Kafka need ZooKeeper at all?</h3>
+<p>Before appreciating KRaft, it helps to understand the problem it replaced. A Kafka cluster is many independent brokers that must nonetheless <b>agree</b> on things no single broker can decide alone: which broker is the controller, who leads each partition, which brokers are currently alive, and what all the topic and ACL configs are. Reaching reliable agreement among distributed machines (<b>consensus</b>) is genuinely hard to build correctly, so early Kafka didn't build it &mdash; it outsourced it to <b>ZooKeeper</b>, a separate, battle-tested coordination service that acted as the cluster's single source of truth and referee.</p>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> the brokers are workers who are great at storing and serving data but need an impartial "records office" to agree on who's in charge and who's on duty. ZooKeeper was that external records office. It worked &mdash; but now you had to run, secure, and tune a <em>second</em> distributed system just to keep the first one organized.</div>
+<p>That arrangement had real costs: two systems to operate instead of one; slow controller failover (a newly elected controller had to reload <em>all</em> partition metadata from ZooKeeper before the cluster was healthy again); and a ceiling on how many partitions a cluster could manage. Those pain points are exactly what the next section fixes &mdash; which is why the contrast makes KRaft's value obvious.</p>
+
+<h3>19.2 KRaft</h3>
+<p>Historically Kafka used <b>ZooKeeper</b> for metadata, controller election, and ACLs. <b>KRaft</b> (Kafka Raft, KIP-500) replaces ZooKeeper with a built-in Raft-based consensus quorum of <b>controller</b> nodes &mdash; metadata is itself stored in an internal Kafka log.</p>
+<div class="callout analogy"><b>&#128269; In plain terms:</b> KRaft moves the "records office" <em>inside</em> Kafka. Instead of phoning an external service to agree on cluster state, a small group of Kafka controller nodes votes among themselves (Raft consensus) and writes the agreed metadata into an ordinary Kafka log &mdash; one system, keeping its own minutes.</div>
+<table>
+<tr><th></th><th>ZooKeeper mode</th><th>KRaft mode</th></tr>
+<tr><td>Metadata store</td><td>External ZooKeeper ensemble</td><td>Internal <code>__cluster_metadata</code> log</td></tr>
+<tr><td>Components</td><td>Kafka + ZooKeeper (two systems)</td><td>Kafka only</td></tr>
+<tr><td>Scalability</td><td>Limited (~200k partitions)</td><td>Millions of partitions</td></tr>
+<tr><td>Failover</td><td>Slower controller failover</td><td>Much faster</td></tr>
+<tr><td>Status</td><td>Deprecated</td><td>Default / production-ready (Kafka 3.3+; ZK removed in 4.0)</td></tr>
+</table>
+<div class="callout note"><b>Why it matters:</b> KRaft simplifies operations (one system to run), speeds up recovery, and scales metadata massively. New clusters should use KRaft.</div>
+
+<div class="qa">
+<div class="q">What did ZooKeeper do for Kafka, and what replaced it?</div>
+<div class="a">It stored cluster metadata, managed controller election, tracked broker membership, and held ACLs/configs. KRaft replaces all of that with an internal Raft quorum of controllers, removing the external dependency.</div>
+</div>
+
+<h2 id="s20">20. Patterns &amp; Real-World Use Cases <span class="tag adv">Advanced</span> <a class="backtop" href="#toc">&uarr; Contents</a></h2>
+
+<h3>20.1 Event-driven microservices</h3>
+<p>Services communicate via events instead of synchronous calls &mdash; loose coupling, resilience, and replayability. A service publishes domain events; others react independently.</p>
+
+<h3>20.2 Transactional Outbox (the dual-write fix)</h3>
+<p><b>Problem:</b> writing to your DB <em>and</em> publishing to Kafka in one operation isn't atomic &mdash; one can fail. <b>Solution:</b> in the same DB transaction, write the event to an <code>outbox</code> table; a CDC connector (Debezium) tails that table and publishes to Kafka reliably.</p>
+<pre><code class="hljs language-sql"><span class="hljs-keyword">BEGIN</span>;
+  <span class="hljs-keyword">INSERT INTO</span> orders(...);
+  <span class="hljs-keyword">INSERT INTO</span> outbox(aggregate, type, payload) <span class="hljs-keyword">VALUES</span>(...);  <span class="hljs-comment">-- same tx</span>
+<span class="hljs-keyword">COMMIT</span>;
+<span class="hljs-comment">-- Debezium reads the outbox table -&gt; Kafka topic (guaranteed, no dual write)</span></code></pre>
+
+<h3>20.3 Saga pattern (distributed transactions)</h3>
+<p>A business transaction spanning services is modeled as a series of local transactions linked by events, with <b>compensating actions</b> to undo on failure. Two styles: <b>choreography</b> (services react to each other's events) and <b>orchestration</b> (a central coordinator drives steps).</p>
+
+<h3>20.4 CQRS &amp; Event Sourcing</h3>
+<ul>
+<li><b>Event Sourcing:</b> store state as an append-only log of events; rebuild state by replaying &mdash; Kafka is a natural fit.</li>
+<li><b>CQRS:</b> separate write model (commands &rarr; events) from read models (materialized views built by consuming events).</li>
+</ul>
+
+<h3>20.5 Other patterns</h3>
+<table>
+<tr><th>Pattern</th><th>Idea</th></tr>
+<tr><td>Log aggregation</td><td>Central pipeline for all service logs</td></tr>
+<tr><td>Stream enrichment</td><td>Join event stream with reference data (KTable/GlobalKTable)</td></tr>
+<tr><td>Fan-out</td><td>One event &rarr; many independent consumer groups</td></tr>
+<tr><td>Materialized view</td><td>Consume topic &rarr; build a queryable read store</td></tr>
+<tr><td>Backpressure buffer</td><td>Kafka absorbs spikes between fast producers &amp; slow consumers</td></tr>
+</table>
+
+
+<h2 id="s21">21. Kafka vs Other Systems <span class="tag inter">Intermediate</span> <a class="backtop" href="#toc">&uarr; Contents</a></h2>
+<p>The point of comparing Kafka to other brokers isn't to crown a winner &mdash; it's to recognize when Kafka is the <em>wrong</em> tool. The core difference is that Kafka <b>retains and replays</b> a log, whereas a traditional queue deletes on consume; that one distinction drives almost every row below.</p>
+<table>
+<tr><th></th><th>Kafka</th><th>RabbitMQ</th><th>Pulsar</th></tr>
+<tr><td>Model</td><td>Distributed log</td><td>Broker / queues</td><td>Log + tiered storage</td></tr>
+<tr><td>Retention</td><td>Persisted, replayable</td><td>Removed after ack</td><td>Persisted, tiered</td></tr>
+<tr><td>Throughput</td><td>Very high</td><td>High</td><td>Very high</td></tr>
+<tr><td>Routing</td><td>Topic + partition (simple)</td><td>Rich (exchanges)</td><td>Topic + subscriptions</td></tr>
+<tr><td>Ordering</td><td>Per partition</td><td>Per queue</td><td>Per partition</td></tr>
+<tr><td>Best for</td><td>Streaming, replay, analytics</td><td>Task queues, complex routing, RPC</td><td>Multi-tenant streaming + queuing</td></tr>
+</table>
+<table>
+<tr><th>Kafka vs traditional Message Queue</th></tr>
+<tr><td>Pull (consumer-driven) vs push; data <b>retained</b> &amp; <b>replayable</b> vs deleted on consume; scales via partitions; multiple independent consumer groups read the same data.</td></tr>
+</table>
+
+<div class="qa">
+<div class="q">When would you pick RabbitMQ over Kafka?</div>
+<div class="a">When you need complex routing, per-message priority, request/reply (RPC), or relatively low message volume with simple task-queue semantics. Pick Kafka for high-throughput event streaming, replay, log retention, and stream processing.</div>
+</div>
+
+
+<h2 id="s22">22. Interview Scenarios &amp; Cheat-Sheet <span class="tag adv">Advanced</span> <a class="backtop" href="#toc">&uarr; Contents</a></h2>
+
+<h3>22.1 Scenario questions</h3>
+<div class="qa">
+<div class="q">Consumers are lagging badly &mdash; how do you fix it?</div>
+<div class="a">Diagnose: is it processing speed, partition count, or downstream? Options: add partitions + consumers (up to partition count), optimize/parallelize processing, increase <code>max.poll.records</code>/fetch sizes, check for hot partitions (key skew), scale downstream sinks, and watch GC. Confirm with the consumer-lag metric.</div>
+</div>
+<div class="qa">
+<div class="q">How do you guarantee no message loss end to end?</div>
+<div class="a">Producer <code>acks=all</code> + idempotence + retries; broker RF&ge;3, <code>min.insync.replicas=2</code>, no unclean elections; consumer commits only after successful processing with idempotent handling; DLQ for poison messages.</div>
+</div>
+<div class="qa">
+<div class="q">You need exactly-once from Kafka to a database &mdash; how?</div>
+<div class="a">Kafka's EOS is Kafka-to-Kafka. To a DB, make the write idempotent (upsert by event/business key) under at-least-once, or use the transactional outbox + CDC, or store the processed offset in the same DB transaction as the data.</div>
+</div>
+<div class="qa">
+<div class="q">A consumer keeps rebalancing &mdash; why?</div>
+<div class="a">Processing takes longer than <code>max.poll.interval.ms</code>, so the broker thinks it's dead. Reduce <code>max.poll.records</code>, speed up or offload processing, increase the interval, and use static membership + cooperative rebalancing.</div>
+</div>
+<div class="qa">
+<div class="q">How would you reprocess historical data after a bug fix?</div>
+<div class="a">Reset the consumer group's offsets to <code>earliest</code> (or a timestamp) with <code>kafka-consumer-groups --reset-offsets</code>, or run a new consumer group from the beginning &mdash; possible precisely because Kafka retains data.</div>
+</div>
+
+<hr>
+<h3 style="page-break-before:always;">22.2 Quick Revision Cheat-Sheet</h3>
+<table>
+<tr><th>Concept</th><th>One-liner to remember</th></tr>
+<tr><td>Kafka</td><td>Distributed, durable, replayable commit log</td></tr>
+<tr><td>Partition</td><td>Unit of ordering + parallelism; ordered append-only log</td></tr>
+<tr><td>Ordering</td><td>Per partition only; same key &rarr; same partition</td></tr>
+<tr><td>Offset</td><td>Per-partition position; stored in <code>__consumer_offsets</code></td></tr>
+<tr><td>Consumer group</td><td>Each partition &rarr; one consumer; groups = pub/sub</td></tr>
+<tr><td>Max consumers</td><td>= number of partitions (rest idle)</td></tr>
+<tr><td>Consumer lag</td><td>Log-end offset &minus; committed offset (the backlog)</td></tr>
+<tr><td>acks=all + ISR</td><td>min.insync.replicas=2, RF=3 &rarr; no loss, tolerate 1 failure</td></tr>
+<tr><td>ISR</td><td>Replicas caught up with leader; only they can lead (clean)</td></tr>
+<tr><td>High watermark</td><td>Consumers read only up to fully-replicated offset</td></tr>
+<tr><td>Idempotent producer</td><td>PID + sequence &rarr; no duplicate on retry</td></tr>
+<tr><td>Transactions</td><td>Atomic multi-partition write + offset commit (EOS)</td></tr>
+<tr><td>EOS boundary</td><td>Exactly-once is Kafka-to-Kafka; external writes are your job</td></tr>
+<tr><td>Delivery</td><td>At-least-once + idempotent consumer = practical default</td></tr>
+<tr><td>Retention</td><td>delete (time/size) vs compact (latest per key)</td></tr>
+<tr><td>Tombstone</td><td>null value &rarr; delete key in compacted topic</td></tr>
+<tr><td>Why fast</td><td>Sequential I/O + page cache + zero-copy + batching</td></tr>
+<tr><td>Rebalance</td><td>Reassign partitions to consumers; prefer cooperative + static membership</td></tr>
+<tr><td>Rebalance &ne; reassignment</td><td>Group rebalance (consumers) vs partition reassignment (brokers)</td></tr>
+<tr><td>KStream vs KTable</td><td>Event stream vs latest-value table (duality)</td></tr>
+<tr><td>Connect</td><td>Config-driven source/sink integration (Debezium = CDC)</td></tr>
+<tr><td>Spring Kafka</td><td>KafkaTemplate + @KafkaListener; ack modes map to commitSync/Async</td></tr>
+<tr><td>Schema Registry</td><td>Avro/Protobuf + compatibility for safe evolution</td></tr>
+<tr><td>KRaft</td><td>Replaces ZooKeeper; internal Raft metadata quorum</td></tr>
+<tr><td>#1 metric</td><td>Consumer lag</td></tr>
+</table>
+
+<div class="callout tip"><b>Interview delivery tips:</b> (1) Anchor every answer to partitions, offsets, and replication &mdash; they explain almost everything. (2) For durability questions, recite the <code>acks=all + RF3 + min.insync=2</code> trio. (3) For "exactly-once", clarify Kafka-to-Kafka vs end-to-end. (4) Always mention the trade-off (throughput vs latency vs durability).</div>
+
+<hr>
+<p style="text-align:center;color:#777;font-size:.85rem;">End of notes &mdash; Apache Kafka Interview Preparation &bull; Beginner to Advanced</p>
+
+</div>
+</body>
+</html>

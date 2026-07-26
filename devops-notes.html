@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevOps Interview Notes</title>
+<style>
+  :root{
+    --ink:#1a1a1a; --muted:#555; --accent:#be123c; --accent2:#881337;
+    --code-bg:#f6f8fa; --code-ink:#24292e; --border:#d8dee4;
+    --tip:#0a7d3c; --warn:#b54708; --note:#1f6feb;
+  }
+  *{box-sizing:border-box;}
+  html{font-size:13.5px;}
+  body{
+    font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); line-height:1.55; margin:0; padding:0 0 40px;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .page{max-width:880px; margin:0 auto; padding:0 26px;}
+  h1,h2,h3,h4{line-height:1.25; font-weight:700;}
+  h1{font-size:2.0rem; color:var(--accent2); margin:0 0 .2em;}
+  h2{font-size:1.5rem; color:var(--accent2); border-bottom:3px solid var(--accent);
+     padding-bottom:.2em; margin:2.2em 0 .8em;}
+  h3{font-size:1.16rem; color:#222; margin:1.6em 0 .5em;
+     border-left:4px solid var(--accent); padding-left:.5em;}
+  h4{font-size:1.0rem; color:#333; margin:1.2em 0 .4em;}
+  p{margin:.55em 0;}
+  ul,ol{margin:.5em 0 .8em; padding-left:1.5em;}
+  li{margin:.22em 0;}
+  code{font-family:"Cascadia Code",Consolas,"Courier New",monospace; font-size:.86em;
+       background:var(--code-bg); color:#b5266a; padding:.1em .35em; border-radius:4px;}
+  pre{background:var(--code-bg); border:1px solid var(--border); border-radius:8px;
+      padding:11px 13px; overflow:auto; margin:.7em 0; line-height:1.42;}
+  pre code{background:none; color:var(--code-ink); padding:0; font-size:.8rem; white-space:pre;}
+  table{border-collapse:collapse; width:100%; margin:.9em 0; font-size:.87rem;}
+  th,td{border:1px solid var(--border); padding:6px 9px; text-align:left; vertical-align:top;}
+  th{background:#fce7ec; color:#881337; font-weight:600;}
+  tr:nth-child(even) td{background:#fafbfc;}
+  .tag{display:inline-block; font-size:.68rem; font-weight:700; padding:.12em .55em;
+       border-radius:20px; vertical-align:middle; margin-left:.4em;}
+  .tag.basic{background:#e6f4ea; color:#0a7d3c;}
+  .tag.inter{background:#fff4e5; color:#b54708;}
+  .tag.adv{background:#fde8ef; color:#b5266a;}
+  .callout{border-radius:8px; padding:9px 13px; margin:.8em 0; border-left:5px solid;}
+  .callout.tip{background:#eaf7ef; border-color:var(--tip);}
+  .callout.warn{background:#fff3e6; border-color:var(--warn);}
+  .callout.note{background:#eaf1fb; border-color:var(--note);}
+  .callout b{display:inline-block; margin-bottom:.1em;}
+  .qa{margin:.7em 0; padding:9px 13px; background:#f7f9fc; border:1px solid var(--border); border-radius:8px;}
+  .qa .q{font-weight:700; color:var(--accent2);}
+  .qa .q::before{content:"Q. "; color:var(--accent);}
+  .qa .a{margin-top:.25em;}
+  .qa .a::before{content:"A. "; font-weight:700; color:var(--tip);}
+  .toc{columns:2; column-gap:30px; font-size:.84rem; margin:1em 0 0;}
+  .toc a{text-decoration:none; color:#881337;}
+  .toc ol{padding-left:1.3em; margin:.2em 0;}
+  .toc b{display:block; margin-top:.5em;}
+  .cover{text-align:center; padding:60px 0 20px;}
+  .cover .sub{color:var(--muted); font-size:1.1rem; margin-top:.4em;}
+  .cover .meta{color:var(--muted); font-size:.86rem; margin-top:1.4em;}
+  .lead{font-size:1.0rem; color:#333;}
+  hr{border:none; border-top:1px solid var(--border); margin:2.4em 0;}
+  .pillset span{display:inline-block; background:#fce7ec; color:#881337; border:1px solid #f6c9d4;
+     border-radius:20px; padding:.15em .7em; margin:.15em .2em; font-size:.8rem;}
+  @media print{
+    h2{page-break-after:avoid;} h3,h4{page-break-after:avoid;}
+    pre,table,.qa,.callout{page-break-inside:avoid;}
+    .toc{columns:2;}
+    .pagebreak{page-break-before:always;}
+  }
+  @page{margin:15mm 13mm;}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="cover">
+  <h1>DevOps Engineering</h1>
+  <div class="sub">Complete Interview Preparation Notes &mdash; Beginner to Advanced</div>
+  <div class="meta">Linux &bull; CI/CD &bull; Docker &bull; Kubernetes &bull; Terraform &bull; Ansible &bull; Cloud &bull; Observability &bull; DevSecOps &bull; SRE</div>
+</div>
+
+<h2 style="page-break-before:avoid;">Table of Contents</h2>
+<div class="toc">
+<b>Part I &mdash; Foundations</b>
+<ol>
+<li><a href="#s1">DevOps Culture, SDLC &amp; Metrics</a></li>
+<li><a href="#s2">Linux Fundamentals</a></li>
+<li><a href="#s3">Shell Scripting</a></li>
+</ol>
+<b>Part II &mdash; Source &amp; Build</b>
+<ol start="4">
+<li><a href="#s4">Git &amp; Build Tools</a></li>
+</ol>
+<b>Part III &mdash; CI/CD</b>
+<ol start="5">
+<li><a href="#s5">CI/CD Concepts</a></li>
+<li><a href="#s6">Jenkins</a></li>
+<li><a href="#s7">GitHub Actions &amp; GitLab CI</a></li>
+</ol>
+<b>Part IV &mdash; Containers</b>
+<ol start="8">
+<li><a href="#s8">Docker</a></li>
+<li><a href="#s9">Docker Compose</a></li>
+<li><a href="#s10">Kubernetes</a></li>
+<li><a href="#s11">Helm</a></li>
+</ol>
+<b>Part V &mdash; Cloud &amp; IaC</b>
+<ol start="12">
+<li><a href="#s12">Cloud Platforms</a></li>
+<li><a href="#s13">Terraform (IaC)</a></li>
+<li><a href="#s14">Ansible (Config Mgmt)</a></li>
+</ol>
+<b>Part VI &mdash; Networking &amp; Web</b>
+<ol start="15">
+<li><a href="#s15">Networking Essentials</a></li>
+<li><a href="#s16">Web Servers &amp; Reverse Proxies</a></li>
+</ol>
+<b>Part VII &mdash; Observability &amp; Security</b>
+<ol start="17">
+<li><a href="#s17">Monitoring, Logging &amp; Observability</a></li>
+<li><a href="#s18">Security &amp; DevSecOps</a></li>
+</ol>
+<b>Part VIII &mdash; Data &amp; Architecture</b>
+<ol start="19">
+<li><a href="#s19">Databases, Caching &amp; Messaging</a></li>
+<li><a href="#s20">Microservices &amp; Distributed Systems</a></li>
+<li><a href="#s21">SRE Concepts</a></li>
+</ol>
+<b>Part IX &mdash; Interview</b>
+<ol start="22">
+<li><a href="#s22">Scenarios &amp; Cheat-Sheet</a></li>
+</ol>
+</div>
+
+<h1 id="part1" class="pagebreak">Part I &mdash; Foundations</h1>
+
+<h2 id="s1">1. DevOps Culture, SDLC &amp; Metrics <span class="tag basic">Basic</span></h2>
+
+<h3>1.1 What is DevOps?</h3>
+<p>DevOps is a <b>culture + set of practices</b> that unites Development and Operations to deliver software faster, more reliably, and continuously. It breaks down silos via <b>automation, collaboration, and feedback loops</b>.</p>
+<div class="callout note"><b>Core idea:</b> "You build it, you run it." DevOps is not a tool or a job title alone &mdash; it's a way of working that emphasizes shared ownership and automating everything repeatable.</div>
+
+<h3>1.2 The DevOps lifecycle (infinity loop)</h3>
+<pre><code>Plan -> Code -> Build -> Test -> Release -> Deploy -> Operate -> Monitor
+  ▲                                                                │
+  └──────────────────── continuous feedback ──────────────────────┘</code></pre>
+
+<h3>1.3 CALMS &amp; the Three Ways</h3>
+<table>
+<tr><th>CALMS</th><th>Meaning</th></tr>
+<tr><td>Culture</td><td>Collaboration, shared responsibility</td></tr>
+<tr><td>Automation</td><td>Automate builds, tests, deploys, infra</td></tr>
+<tr><td>Lean</td><td>Eliminate waste, small batches</td></tr>
+<tr><td>Measurement</td><td>Metrics drive decisions</td></tr>
+<tr><td>Sharing</td><td>Knowledge &amp; feedback across teams</td></tr>
+</table>
+<p><b>The Three Ways:</b> (1) Flow/Systems thinking, (2) Amplify feedback loops, (3) Continuous experimentation &amp; learning.</p>
+
+<h3>1.4 DORA metrics (how DevOps performance is measured)</h3>
+<table>
+<tr><th>Metric</th><th>Measures</th></tr>
+<tr><td><b>Deployment Frequency</b></td><td>How often you deploy to prod</td></tr>
+<tr><td><b>Lead Time for Changes</b></td><td>Commit &rarr; production time</td></tr>
+<tr><td><b>Change Failure Rate</b></td><td>% deploys causing failures</td></tr>
+<tr><td><b>MTTR</b></td><td>Mean time to restore after an incident</td></tr>
+</table>
+<div class="callout tip"><b>Interview gold:</b> the first two measure <em>velocity</em>; the last two measure <em>stability</em>. Elite teams score high on both &mdash; speed and stability aren't a trade-off when automation is strong.</div>
+
+<h3>1.5 Related concepts</h3>
+<ul>
+<li><b>Agile</b> = iterative dev methodology; <b>DevOps</b> extends it through to operations.</li>
+<li><b>CI/CD</b> &mdash; continuous integration / delivery / deployment (the automation backbone).</li>
+<li><b>Shift-left</b> &mdash; move testing &amp; security earlier in the lifecycle.</li>
+<li><b>GitOps</b> &mdash; Git as the single source of truth for infra &amp; deployments (declarative, auto-reconciled).</li>
+</ul>
+
+<div class="qa">
+<div class="q">Is DevOps a tool, a role, or a culture?</div>
+<div class="a">Primarily a culture and set of practices enabled by tools. Tools (Jenkins, Docker, K8s) implement DevOps, but without the cultural shift &mdash; shared ownership, automation mindset, blameless feedback &mdash; the tools alone don't deliver DevOps outcomes.</div>
+</div>
+
+
+<h2 id="s2">2. Linux Fundamentals <span class="tag basic">Basic &mdash; essential</span></h2>
+
+<h3>2.1 Filesystem hierarchy</h3>
+<table>
+<tr><th>Path</th><th>Purpose</th></tr>
+<tr><td>/etc</td><td>Config files</td></tr>
+<tr><td>/var</td><td>Logs, variable data (/var/log)</td></tr>
+<tr><td>/home</td><td>User home directories</td></tr>
+<tr><td>/bin, /usr/bin</td><td>Executables</td></tr>
+<tr><td>/tmp</td><td>Temporary files</td></tr>
+<tr><td>/proc, /sys</td><td>Kernel/process virtual filesystems</td></tr>
+</table>
+
+<h3>2.2 Essential commands by category</h3>
+<table>
+<tr><th>Category</th><th>Commands</th></tr>
+<tr><td>Navigation</td><td><code>ls, cd, pwd, find, locate</code></td></tr>
+<tr><td>Files</td><td><code>cp, mv, rm, mkdir, touch, ln</code></td></tr>
+<tr><td>View/edit</td><td><code>cat, less, head, tail -f, nano, vim</code></td></tr>
+<tr><td>Search</td><td><code>grep, awk, sed, cut, sort, uniq, wc</code></td></tr>
+<tr><td>Permissions</td><td><code>chmod, chown, chgrp, umask</code></td></tr>
+<tr><td>Processes</td><td><code>ps, top, htop, kill, nice, jobs, &amp;, nohup</code></td></tr>
+<tr><td>System</td><td><code>df, du, free, uname, uptime, systemctl</code></td></tr>
+<tr><td>Network</td><td><code>curl, wget, ping, netstat, ss, dig, ip, ssh, scp</code></td></tr>
+<tr><td>Archives</td><td><code>tar, gzip, zip, unzip</code></td></tr>
+<tr><td>Packages</td><td><code>apt, yum, dnf, rpm, dpkg</code></td></tr>
+</table>
+
+<h3>2.3 File permissions (a favourite interview topic)</h3>
+<pre><code>-rwxr-xr--   1 user group ...
+ │└┬┘└┬┘└┬┘
+ │ │  │  └ others: r-- (read)
+ │ │  └─── group:  r-x (read, execute)
+ │ └────── owner:  rwx (read, write, execute)
+ └──────── type:   - file, d dir, l link
+
+Numeric: r=4, w=2, x=1  ->  chmod 754 file   (rwx r-x r--)
+chmod 755 script.sh    # common for executables
+chmod 644 file.txt     # common for regular files
+chown user:group file  # change owner/group</code></pre>
+
+<h3>2.4 Pipes, redirection &amp; chaining</h3>
+<pre><code>cmd1 | cmd2          # pipe stdout of cmd1 into cmd2
+cmd &gt; file           # redirect stdout (overwrite)
+cmd &gt;&gt; file          # append
+cmd 2&gt; err.log       # redirect stderr
+cmd &gt; out 2&gt;&amp;1       # both stdout+stderr to out
+cat access.log | grep "500" | awk '{print $1}' | sort | uniq -c | sort -rn | head
+# ^ top IPs causing HTTP 500s — a classic real-world one-liner</code></pre>
+
+<h3>2.5 Process &amp; resource troubleshooting</h3>
+<table>
+<tr><th>Need</th><th>Command</th></tr>
+<tr><td>What's using CPU/mem?</td><td><code>top</code> / <code>htop</code></td></tr>
+<tr><td>What's listening on a port?</td><td><code>ss -tlnp</code> / <code>netstat -tlnp</code></td></tr>
+<tr><td>Disk full?</td><td><code>df -h</code>, then <code>du -sh *</code> to find culprits</td></tr>
+<tr><td>Kill a process</td><td><code>kill -9 &lt;pid&gt;</code> (SIGKILL); prefer <code>kill -15</code> (graceful)</td></tr>
+<tr><td>Follow logs live</td><td><code>tail -f /var/log/app.log</code></td></tr>
+<tr><td>Service status</td><td><code>systemctl status nginx</code></td></tr>
+</table>
+
+<div class="qa">
+<div class="q">A server is slow &mdash; how do you investigate from Linux?</div>
+<div class="a">Check CPU/load (<code>top</code>, <code>uptime</code>), memory (<code>free -h</code> &mdash; is it swapping?), disk (<code>df -h</code>, <code>iostat</code>), I/O wait, network (<code>ss</code>), and the offending process. Then logs (<code>journalctl</code>, <code>/var/log</code>). Localize the bottleneck before acting.</div>
+</div>
+<div class="qa">
+<div class="q">Difference between SIGTERM (15) and SIGKILL (9)?</div>
+<div class="a">SIGTERM asks a process to shut down gracefully (it can clean up/flush). SIGKILL forcibly terminates it immediately &mdash; no cleanup, can't be caught. Always try SIGTERM first; SIGKILL is the last resort.</div>
+</div>
+
+
+<h2 id="s3">3. Shell Scripting <span class="tag inter">Intermediate</span></h2>
+
+<h3>3.1 Script basics</h3>
+<pre><code>#!/bin/bash            # shebang - interpreter
+set -euo pipefail      # safety: exit on error, undefined vars, pipe failures
+
+NAME="world"           # variable (no spaces around =)
+echo "Hello, $NAME"
+echo "Args: $1 $2  count=$#  all=$@"   # positional args
+result=$(date +%F)     # command substitution
+</code></pre>
+
+<h3>3.2 Conditionals &amp; loops</h3>
+<pre><code>if [ -f "$file" ]; then echo "exists"; elif [ -d "$dir" ]; then echo "dir"; else echo "no"; fi
+
+for f in *.log; do echo "$f"; done
+for i in {1..5}; do echo "$i"; done
+while read line; do echo "$line"; done &lt; input.txt
+
+case "$1" in
+  start) echo "starting";;
+  stop)  echo "stopping";;
+  *)     echo "usage: $0 {start|stop}";;
+esac</code></pre>
+<table>
+<tr><th>Test</th><th>Meaning</th></tr>
+<tr><td><code>-f</code> / <code>-d</code> / <code>-e</code></td><td>file / dir / exists</td></tr>
+<tr><td><code>-z</code> / <code>-n</code></td><td>string empty / non-empty</td></tr>
+<tr><td><code>-eq -ne -lt -gt</code></td><td>numeric comparisons</td></tr>
+<tr><td><code>==</code> / <code>!=</code></td><td>string comparisons</td></tr>
+</table>
+
+<h3>3.3 Functions &amp; exit codes</h3>
+<pre><code>deploy() {
+  local env="$1"
+  echo "Deploying to $env"
+  return 0
+}
+deploy "prod" || { echo "failed"; exit 1; }
+echo "last exit code: $?"     # 0 = success, non-zero = failure</code></pre>
+
+<div class="callout tip"><b>Best practices:</b> always <code>set -euo pipefail</code>; quote variables (<code>"$var"</code>) to avoid word-splitting; use <code>shellcheck</code> to lint; prefer <code>$(...)</code> over backticks; handle errors &amp; exit codes; make scripts idempotent.</div>
+<div class="callout warn"><b>Pitfalls:</b> unquoted variables breaking on spaces; using <code>rm -rf $VAR</code> when VAR is empty (catastrophic &mdash; <code>rm -rf /</code>); not checking exit codes; assuming <code>cd</code> succeeds.</div>
+
+<div class="qa">
+<div class="q">What does <code>set -e</code> do and why use it?</div>
+<div class="a">It makes the script exit immediately if any command returns a non-zero (error) status, preventing the script from blindly continuing after a failure. Combined with <code>-u</code> (error on undefined variables) and <code>-o pipefail</code> (catch failures in pipelines), it makes scripts fail fast and safely.</div>
+</div>
+
+<h1 id="part2" class="pagebreak">Part II &mdash; Source &amp; Build</h1>
+
+<h2 id="s4">4. Git &amp; Build Tools <span class="tag inter">Intermediate</span></h2>
+<div class="callout note"><b>Note:</b> Git, GitHub &amp; GitLab are covered in depth in the dedicated <em>Git/GitHub/GitLab</em> notes (internals, branching strategies, merge vs rebase, workflows). This is a quick DevOps-context recap.</div>
+
+<h3>4.1 Git recap for DevOps</h3>
+<table>
+<tr><th>Concept</th><th>One-liner</th></tr>
+<tr><td>Distributed VCS</td><td>Every clone is a full repo</td></tr>
+<tr><td>3 areas</td><td>Working dir &rarr; staging &rarr; repo</td></tr>
+<tr><td>Branching strategies</td><td>Git Flow, GitHub Flow, Trunk-based</td></tr>
+<tr><td>merge vs rebase</td><td>Preserve history vs linear (never rebase shared)</td></tr>
+<tr><td>GitOps</td><td>Git as source of truth for infra/deploys</td></tr>
+</table>
+
+<h3>4.2 Build tools</h3>
+<table>
+<tr><th>Tool</th><th>Ecosystem</th><th>Build file</th></tr>
+<tr><td>Maven</td><td>Java</td><td>pom.xml</td></tr>
+<tr><td>Gradle</td><td>Java/Kotlin/Android</td><td>build.gradle</td></tr>
+<tr><td>npm / yarn / pnpm</td><td>JavaScript</td><td>package.json</td></tr>
+<tr><td>pip / poetry</td><td>Python</td><td>requirements.txt / pyproject</td></tr>
+<tr><td>Make</td><td>C/general</td><td>Makefile</td></tr>
+</table>
+<p><b>Build lifecycle (Maven example):</b> <code>validate &rarr; compile &rarr; test &rarr; package &rarr; verify &rarr; install &rarr; deploy</code>.</p>
+
+<h3>4.3 Artifact management</h3>
+<ul>
+<li><b>Artifact repositories:</b> Nexus, JFrog Artifactory, GitHub/GitLab Packages &mdash; store versioned build outputs (JARs, npm, Docker images).</li>
+<li><b>Semantic versioning:</b> <code>MAJOR.MINOR.PATCH</code> (breaking.feature.fix).</li>
+<li><b>Dependency caching</b> in CI speeds builds dramatically.</li>
+</ul>
+
+<div class="qa">
+<div class="q">Why use an artifact repository instead of rebuilding each time?</div>
+<div class="a">To get reproducible, immutable, versioned artifacts: build once, promote the <em>same</em> artifact through dev&rarr;staging&rarr;prod. It avoids "works in staging, breaks in prod" caused by rebuilding, and caches dependencies for speed.</div>
+</div>
+
+
+<h1 id="part3" class="pagebreak">Part III &mdash; CI/CD</h1>
+
+<h2 id="s5">5. CI/CD Concepts <span class="tag inter">Intermediate &mdash; core</span></h2>
+
+<h3>5.1 The three terms</h3>
+<table>
+<tr><th>Term</th><th>Meaning</th></tr>
+<tr><td><b>Continuous Integration</b></td><td>Merge &amp; auto build+test on every commit &mdash; catch issues early</td></tr>
+<tr><td><b>Continuous Delivery</b></td><td>Every passing build is release-ready; deploy to staging auto, prod with a manual approval</td></tr>
+<tr><td><b>Continuous Deployment</b></td><td>Every passing change auto-deploys to prod (no manual gate)</td></tr>
+</table>
+
+<h3>5.2 A typical pipeline</h3>
+<pre><code>Commit -> [Checkout] -> [Build] -> [Unit Tests] -> [Static Analysis/Lint]
+       -> [Security Scan] -> [Package/Image] -> [Push to Registry]
+       -> [Deploy to Staging] -> [Integration/E2E Tests] -> [Approve] -> [Deploy to Prod]</code></pre>
+
+<h3>5.3 Deployment strategies <span class="tag adv">Important</span></h3>
+<table>
+<tr><th>Strategy</th><th>How</th><th>Trade-off</th></tr>
+<tr><td><b>Rolling</b></td><td>Replace instances gradually</td><td>No downtime; mixed versions briefly</td></tr>
+<tr><td><b>Blue-Green</b></td><td>Two identical envs; switch traffic</td><td>Instant rollback; needs 2&times; resources</td></tr>
+<tr><td><b>Canary</b></td><td>Release to small % first, then ramp</td><td>Limits blast radius; more complex routing</td></tr>
+<tr><td><b>Recreate</b></td><td>Stop old, start new</td><td>Simple; causes downtime</td></tr>
+<tr><td><b>A/B / Feature flags</b></td><td>Toggle features per user</td><td>Decouple deploy from release</td></tr>
+</table>
+
+<div class="qa">
+<div class="q">Blue-green vs canary deployment?</div>
+<div class="a">Blue-green keeps two full environments and switches all traffic at once (instant rollback by switching back). Canary gradually shifts a small percentage of traffic to the new version, monitors, then ramps up &mdash; limiting the blast radius of a bad release. Canary needs finer traffic control; blue-green needs double resources.</div>
+</div>
+<div class="qa">
+<div class="q">How do you achieve zero-downtime deployment?</div>
+<div class="a">Rolling/blue-green/canary + health checks + readiness probes so traffic only hits ready instances; backward-compatible DB migrations (expand-contract); graceful shutdown (drain connections); and load-balancer integration to add/remove instances cleanly.</div>
+</div>
+
+
+<h2 id="s6">6. Jenkins <span class="tag inter">Intermediate</span></h2>
+
+<h3>6.1 Architecture</h3>
+<pre><code>[Controller (master)] --- schedules jobs, UI, plugins
+      │
+   [Agent 1] [Agent 2] [Agent 3]   <- run builds (distributed)
+Triggers: SCM webhook, poll, cron, manual, upstream job</code></pre>
+<ul>
+<li><b>Controller</b> orchestrates; <b>agents/nodes</b> execute builds (scale horizontally).</li>
+<li><b>Plugins</b> extend everything (Git, Docker, K8s, Slack...).</li>
+<li><b>Pipeline as code:</b> <code>Jenkinsfile</code> (Declarative or Scripted) checked into the repo.</li>
+</ul>
+
+<h3>6.2 Declarative Jenkinsfile example</h3>
+<pre><code>pipeline {
+  agent any
+  environment { IMAGE = "myapp:${env.BUILD_NUMBER}" }
+  stages {
+    stage('Build')  { steps { sh './mvnw -B package' } }
+    stage('Test')   { steps { sh './mvnw test' }
+                      post { always { junit 'target/surefire-reports/*.xml' } } }
+    stage('Docker') { steps { sh 'docker build -t $IMAGE .' } }
+    stage('Deploy') {
+      when { branch 'main' }
+      steps { sh './deploy.sh $IMAGE' }
+    }
+  }
+  post { failure { mail to: 'team@x.com', subject: 'Build failed' } }
+}</code></pre>
+<table>
+<tr><th>Concept</th><th>Meaning</th></tr>
+<tr><td>Stage / Step</td><td>Logical phase / individual task</td></tr>
+<tr><td>Agent</td><td>Where the stage runs</td></tr>
+<tr><td>Credentials</td><td>Secrets stored in Jenkins, injected securely</td></tr>
+<tr><td>Shared libraries</td><td>Reusable pipeline code across projects</td></tr>
+<tr><td>Webhook trigger</td><td>Git push auto-starts the pipeline</td></tr>
+</table>
+<div class="callout warn"><b>Pitfalls:</b> storing secrets in the Jenkinsfile (use the Credentials store); running everything on the controller (use agents); no cleanup of workspace/old builds (disk fills); flaky tests blocking the pipeline.</div>
+
+<div class="qa">
+<div class="q">Declarative vs Scripted pipeline?</div>
+<div class="a">Declarative is structured, opinionated, and easier to read/validate (the recommended default). Scripted is full Groovy &mdash; more flexible for complex logic but harder to maintain. Most teams use Declarative with shared libraries for reusable logic.</div>
+</div>
+
+
+<h2 id="s7">7. GitHub Actions &amp; GitLab CI <span class="tag inter">Intermediate</span></h2>
+
+<h3>7.1 GitHub Actions</h3>
+<pre><code># .github/workflows/ci.yml
+name: CI
+on:
+  push: { branches: [main] }
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: 'npm' }
+      - run: npm ci
+      - run: npm test
+      - name: Build &amp; push image
+        run: docker build -t ghcr.io/org/app:${{ github.sha }} .
+        env: { TOKEN: ${{ secrets.GHCR_TOKEN }} }</code></pre>
+<table>
+<tr><th>Term</th><th>Meaning</th></tr>
+<tr><td>Workflow</td><td>YAML file of automated jobs</td></tr>
+<tr><td>Job</td><td>Set of steps on one runner (parallel by default)</td></tr>
+<tr><td>Step / Action</td><td>A command / reusable unit</td></tr>
+<tr><td>Runner</td><td>Machine executing the job (hosted or self-hosted)</td></tr>
+<tr><td>Secrets</td><td>Encrypted credentials</td></tr>
+<tr><td>Matrix</td><td>Run across versions/OSes in parallel</td></tr>
+</table>
+
+<h3>7.2 GitLab CI</h3>
+<pre><code># .gitlab-ci.yml
+stages: [build, test, deploy]
+variables: { IMAGE: "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA" }
+build:
+  stage: build
+  script: [ "docker build -t $IMAGE .", "docker push $IMAGE" ]
+test:
+  stage: test
+  script: [ "npm ci", "npm test" ]
+deploy:
+  stage: deploy
+  script: [ "./deploy.sh $IMAGE" ]
+  only: [ main ]
+  environment: production</code></pre>
+<div class="callout note"><b>GitLab Runners</b> execute jobs (shell/docker/k8s executors). GitLab CI is built into the platform; GitHub Actions has a huge marketplace of reusable actions. Both keep secrets in the platform's secret store &mdash; never in YAML.</div>
+
+<div class="qa">
+<div class="q">Jenkins vs GitHub Actions/GitLab CI &mdash; when to choose?</div>
+<div class="a">Jenkins: self-hosted, plugin-rich, maximum flexibility, good for complex/legacy/on-prem needs &mdash; but more ops overhead. GitHub Actions/GitLab CI: tightly integrated with the repo, YAML-native, less infra to manage, great for cloud-native teams. Many orgs are migrating from Jenkins to the integrated CI of their SCM.</div>
+</div>
+
+<h1 id="part4" class="pagebreak">Part IV &mdash; Containers &amp; Orchestration</h1>
+
+<h2 id="s8">8. Docker <span class="tag adv">Advanced &mdash; must-know</span></h2>
+
+<h3>8.1 Why containers</h3>
+<p>A container packages an app + its dependencies into a portable, isolated unit that runs identically anywhere. Solves "works on my machine."</p>
+<table>
+<tr><th></th><th>VM</th><th>Container</th></tr>
+<tr><td>Isolation</td><td>Full OS per VM (hypervisor)</td><td>Shares host kernel (namespaces/cgroups)</td></tr>
+<tr><td>Size</td><td>GBs</td><td>MBs</td></tr>
+<tr><td>Startup</td><td>Minutes</td><td>Seconds</td></tr>
+<tr><td>Overhead</td><td>Heavy</td><td>Light</td></tr>
+</table>
+<div class="callout note"><b>How isolation works:</b> Docker uses Linux <b>namespaces</b> (isolate PID, network, mount, users) and <b>cgroups</b> (limit CPU/memory). Containers are processes, not mini-VMs &mdash; that's why they're lightweight.</div>
+
+<h3>8.2 Key concepts</h3>
+<table>
+<tr><th>Concept</th><th>Meaning</th></tr>
+<tr><td>Image</td><td>Read-only template (layers) &mdash; the blueprint</td></tr>
+<tr><td>Container</td><td>A running instance of an image</td></tr>
+<tr><td>Dockerfile</td><td>Recipe to build an image</td></tr>
+<tr><td>Registry</td><td>Image store (Docker Hub, ECR, GHCR)</td></tr>
+<tr><td>Layers</td><td>Each instruction = a cached layer</td></tr>
+<tr><td>Volume</td><td>Persistent storage outside container lifecycle</td></tr>
+<tr><td>Network</td><td>bridge (default), host, none, overlay</td></tr>
+</table>
+
+<h3>8.3 Essential commands</h3>
+<pre><code>docker build -t app:1.0 .          # build image from Dockerfile
+docker run -d -p 8080:80 --name web app:1.0   # run detached, map ports
+docker ps / docker ps -a           # running / all containers
+docker logs -f web                 # follow logs
+docker exec -it web sh             # shell into a running container
+docker stop/start/rm web           # lifecycle
+docker images / docker rmi app:1.0 # list / remove images
+docker push/pull ghcr.io/org/app   # registry
+docker system prune -a             # clean up everything unused</code></pre>
+
+<h3>8.4 Multi-stage Dockerfile (best practice)</h3>
+<pre><code># Stage 1: build (heavy tooling)
+FROM node:20 AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci                         # cached unless deps change
+COPY . .
+RUN npm run build
+
+# Stage 2: runtime (small, no build tools)
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 80
+HEALTHCHECK CMD wget -qO- localhost || exit 1
+CMD ["nginx", "-g", "daemon off;"]</code></pre>
+<div class="callout tip"><b>Image best practices:</b> use small base images (alpine/distroless); multi-stage builds; order layers least&rarr;most-changing for caching (copy deps before code); one process per container; run as non-root; use <code>.dockerignore</code>; pin versions; never bake secrets into images.</div>
+
+<h3>8.5 CMD vs ENTRYPOINT, COPY vs ADD</h3>
+<table>
+<tr><th></th><th>Difference</th></tr>
+<tr><td>CMD vs ENTRYPOINT</td><td>CMD = default args (overridable); ENTRYPOINT = the executable (fixed). Often combined.</td></tr>
+<tr><td>COPY vs ADD</td><td>COPY = plain copy (preferred); ADD also untars &amp; fetches URLs (use sparingly)</td></tr>
+<tr><td>Volume vs bind mount</td><td>Managed by Docker vs maps a host path</td></tr>
+</table>
+
+<div class="qa">
+<div class="q">Why are my Docker builds slow / images huge?</div>
+<div class="a">Likely poor layer caching (copying all code before installing deps invalidates the cache on every change) and a fat base image with build tools. Fix: copy dependency manifests first &amp; install (cached), then copy source; use multi-stage builds and a slim runtime base; add <code>.dockerignore</code>.</div>
+</div>
+<div class="qa">
+<div class="q">How do you persist data in a container?</div>
+<div class="a">Containers are ephemeral &mdash; their writable layer is lost on removal. Use <b>volumes</b> (Docker-managed, portable) or <b>bind mounts</b> (host path) to persist databases/uploads outside the container lifecycle.</div>
+</div>
+
+
+<h2 id="s9">9. Docker Compose <span class="tag inter">Intermediate</span></h2>
+<p>Define &amp; run <b>multi-container</b> apps with a single YAML file &mdash; ideal for local dev &amp; small stacks.</p>
+<pre><code># docker-compose.yml
+services:
+  web:
+    build: .
+    ports: ["8080:80"]
+    depends_on: [db, redis]
+    environment:
+      - DB_URL=postgres://db:5432/app
+  db:
+    image: postgres:16
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    environment: { POSTGRES_PASSWORD: secret }
+  redis:
+    image: redis:7
+volumes:
+  pgdata:</code></pre>
+<pre><code>docker compose up -d        # start all services
+docker compose ps / logs -f # status / logs
+docker compose down -v      # stop &amp; remove (with volumes)</code></pre>
+<div class="callout note"><b>Service discovery:</b> Compose puts services on one network; they reach each other by <b>service name</b> as hostname (e.g. <code>db:5432</code>). <code>depends_on</code> controls start order (but not readiness &mdash; use healthchecks for that).</div>
+
+<div class="qa">
+<div class="q">Docker Compose vs Kubernetes?</div>
+<div class="a">Compose is for defining multi-container apps on a <em>single host</em> (great for local dev). Kubernetes orchestrates containers across a <em>cluster</em> of machines with scaling, self-healing, rolling updates, and service discovery at scale. Compose for dev; K8s for production at scale.</div>
+</div>
+
+
+<h2 id="s10">10. Kubernetes <span class="tag adv">Advanced &mdash; heavily tested</span></h2>
+
+<h3>10.1 Why Kubernetes</h3>
+<p>K8s is a container <b>orchestration</b> platform that automates deployment, scaling, self-healing, networking, and rollouts of containers across a cluster.</p>
+
+<h3>10.2 Architecture</h3>
+<pre><code>┌──────────── Control Plane (master) ────────────┐
+│ API Server (front door) · etcd (cluster state) │
+│ Scheduler (places pods) · Controller Manager   │
+│ Cloud Controller Manager                        │
+└─────────────────────────────────────────────────┘
+        │ (kubectl / API)
+┌──────── Worker Nodes ────────┐  (many)
+│ kubelet (node agent)          │
+│ kube-proxy (networking)       │
+│ container runtime (containerd)│
+│  └─ Pods └─ Containers        │
+└────────────────────────────────┘</code></pre>
+<table>
+<tr><th>Component</th><th>Role</th></tr>
+<tr><td><b>API Server</b></td><td>Central management endpoint (all ops go through it)</td></tr>
+<tr><td><b>etcd</b></td><td>Distributed key-value store = cluster's source of truth</td></tr>
+<tr><td><b>Scheduler</b></td><td>Assigns pods to nodes (resources, affinity, taints)</td></tr>
+<tr><td><b>Controller Manager</b></td><td>Reconciles desired vs actual state</td></tr>
+<tr><td><b>kubelet</b></td><td>Node agent; runs &amp; reports pods</td></tr>
+<tr><td><b>kube-proxy</b></td><td>Implements Service networking/load balancing</td></tr>
+</table>
+
+<h3>10.3 Core objects</h3>
+<table>
+<tr><th>Object</th><th>Purpose</th></tr>
+<tr><td><b>Pod</b></td><td>Smallest unit; 1+ containers sharing network/storage</td></tr>
+<tr><td><b>ReplicaSet</b></td><td>Maintains N pod replicas</td></tr>
+<tr><td><b>Deployment</b></td><td>Manages ReplicaSets; rolling updates &amp; rollback</td></tr>
+<tr><td><b>StatefulSet</b></td><td>Stable identity/storage (databases)</td></tr>
+<tr><td><b>DaemonSet</b></td><td>One pod per node (agents/logging)</td></tr>
+<tr><td><b>Service</b></td><td>Stable network endpoint + load balancing for pods</td></tr>
+<tr><td><b>Ingress</b></td><td>HTTP routing into the cluster (host/path)</td></tr>
+<tr><td><b>ConfigMap / Secret</b></td><td>Config / sensitive data injection</td></tr>
+<tr><td><b>Namespace</b></td><td>Logical cluster partition</td></tr>
+<tr><td><b>PV / PVC</b></td><td>Persistent storage provisioning &amp; claims</td></tr>
+<tr><td><b>HPA</b></td><td>Horizontal Pod Autoscaler (scale on metrics)</td></tr>
+</table>
+
+<h3>10.4 Service types</h3>
+<table>
+<tr><th>Type</th><th>Exposes</th></tr>
+<tr><td>ClusterIP (default)</td><td>Internal-only virtual IP</td></tr>
+<tr><td>NodePort</td><td>Port on every node</td></tr>
+<tr><td>LoadBalancer</td><td>Cloud LB with external IP</td></tr>
+<tr><td>Ingress</td><td>L7 HTTP routing (host/path) to services</td></tr>
+</table>
+
+<h3>10.5 A Deployment + Service manifest</h3>
+<pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata: { name: web }
+spec:
+  replicas: 3
+  selector: { matchLabels: { app: web } }
+  template:
+    metadata: { labels: { app: web } }
+    spec:
+      containers:
+        - name: web
+          image: ghcr.io/org/app:1.2.0
+          ports: [{ containerPort: 8080 }]
+          resources:
+            requests: { cpu: "100m", memory: "128Mi" }
+            limits:   { cpu: "500m", memory: "256Mi" }
+          readinessProbe: { httpGet: { path: /health, port: 8080 } }
+          livenessProbe:  { httpGet: { path: /health, port: 8080 } }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: web }
+spec:
+  selector: { app: web }
+  ports: [{ port: 80, targetPort: 8080 }]
+  type: ClusterIP</code></pre>
+
+<h3>10.6 kubectl essentials</h3>
+<pre><code>kubectl get pods/svc/deploy -n ns       # list resources
+kubectl describe pod &lt;name&gt;              # detailed state + events (debug!)
+kubectl logs -f &lt;pod&gt; [-c container]     # logs
+kubectl exec -it &lt;pod&gt; -- sh             # shell in
+kubectl apply -f manifest.yaml           # declarative create/update
+kubectl rollout status/undo deploy/web   # check / rollback a rollout
+kubectl scale deploy/web --replicas=5    # scale
+kubectl get events --sort-by=.lastTimestamp   # cluster events</code></pre>
+
+<h3>10.7 Probes &amp; self-healing</h3>
+<table>
+<tr><th>Probe</th><th>Purpose</th></tr>
+<tr><td><b>Liveness</b></td><td>Is the app alive? Fail &rarr; restart the pod</td></tr>
+<tr><td><b>Readiness</b></td><td>Ready for traffic? Fail &rarr; remove from Service endpoints</td></tr>
+<tr><td><b>Startup</b></td><td>For slow-starting apps; gates the other probes</td></tr>
+</table>
+<div class="callout warn"><b>Common K8s pitfalls:</b> no resource requests/limits (noisy-neighbour, OOMKills); missing readiness probe (traffic to not-ready pods); using <code>latest</code> tag (no reproducibility); storing secrets in ConfigMaps; <code>CrashLoopBackOff</code> from bad config; ignoring pod <code>describe</code> events when debugging.</div>
+
+<div class="qa">
+<div class="q">What happens when you run <code>kubectl apply</code>?</div>
+<div class="a">kubectl sends the desired state to the API Server, which persists it in etcd. Controllers notice the diff between desired and actual state and reconcile &mdash; the Deployment controller creates a ReplicaSet, which creates Pods; the Scheduler assigns them to nodes; kubelets pull images and run containers. K8s continuously reconciles to keep actual = desired.</div>
+</div>
+<div class="qa">
+<div class="q">Pod is in CrashLoopBackOff &mdash; how do you debug?</div>
+<div class="a"><code>kubectl describe pod</code> (events: image pull error? OOMKilled?), <code>kubectl logs &lt;pod&gt; --previous</code> (crash output), check resource limits, config/secret mounts, and the liveness probe. CrashLoopBackOff means the container keeps exiting and K8s keeps restarting with backoff.</div>
+</div>
+<div class="qa">
+<div class="q">Deployment vs StatefulSet?</div>
+<div class="a">Deployment is for stateless apps &mdash; interchangeable pods, any can be replaced. StatefulSet gives stable network identities (pod-0, pod-1), stable persistent storage per pod, and ordered rollout/scaling &mdash; needed for databases, Kafka, etc.</div>
+</div>
+
+
+<h2 id="s11">11. Helm <span class="tag inter">Intermediate</span></h2>
+<p>Helm is the <b>package manager for Kubernetes</b> &mdash; bundles related manifests into a versioned, parameterized <b>chart</b>.</p>
+<table>
+<tr><th>Concept</th><th>Meaning</th></tr>
+<tr><td>Chart</td><td>A package of K8s templates</td></tr>
+<tr><td>values.yaml</td><td>Default config (overridable per environment)</td></tr>
+<tr><td>Template</td><td>Manifest with <code>{{ .Values.x }}</code> placeholders</td></tr>
+<tr><td>Release</td><td>An installed instance of a chart</td></tr>
+<tr><td>Repository</td><td>Collection of charts</td></tr>
+</table>
+<pre><code>helm install myapp ./chart -f values-prod.yaml   # install with prod values
+helm upgrade myapp ./chart --set image.tag=1.3   # upgrade
+helm rollback myapp 1                             # roll back to revision 1
+helm list / helm uninstall myapp</code></pre>
+<div class="callout note"><b>Why Helm:</b> avoids copy-pasting near-identical YAML per environment. One templated chart + different <code>values</code> files = dev/staging/prod. Supports versioning, rollback, and sharing (e.g. install Prometheus via a community chart in one command).</div>
+
+<div class="qa">
+<div class="q">Helm vs Kustomize?</div>
+<div class="a">Helm uses templating + a values file and a package/release model with rollback &mdash; powerful for complex, reusable, distributable apps. Kustomize uses overlays to patch base manifests without templating (built into kubectl) &mdash; simpler for environment variations. Many teams use Kustomize for in-house apps and Helm for third-party packages.</div>
+</div>
+
+<h1 id="part5" class="pagebreak">Part V &mdash; Cloud &amp; Infrastructure as Code</h1>
+
+<h2 id="s12">12. Cloud Platforms <span class="tag inter">Intermediate</span></h2>
+
+<h3>12.1 Cloud service models</h3>
+<table>
+<tr><th>Model</th><th>You manage</th><th>Example</th></tr>
+<tr><td><b>IaaS</b></td><td>OS, runtime, app (rent VMs/network)</td><td>EC2, Compute Engine</td></tr>
+<tr><td><b>PaaS</b></td><td>Just the app</td><td>App Engine, Elastic Beanstalk</td></tr>
+<tr><td><b>SaaS</b></td><td>Nothing (just use it)</td><td>Gmail, Salesforce</td></tr>
+<tr><td><b>FaaS / Serverless</b></td><td>Just functions; no servers</td><td>AWS Lambda, Cloud Functions</td></tr>
+</table>
+
+<h3>12.2 Core service categories (AWS-centric, with equivalents)</h3>
+<table>
+<tr><th>Category</th><th>AWS</th><th>Azure</th><th>GCP</th></tr>
+<tr><td>Compute (VM)</td><td>EC2</td><td>VM</td><td>Compute Engine</td></tr>
+<tr><td>Serverless</td><td>Lambda</td><td>Functions</td><td>Cloud Functions</td></tr>
+<tr><td>Containers (managed K8s)</td><td>EKS</td><td>AKS</td><td>GKE</td></tr>
+<tr><td>Object storage</td><td>S3</td><td>Blob</td><td>Cloud Storage</td></tr>
+<tr><td>Relational DB</td><td>RDS</td><td>SQL DB</td><td>Cloud SQL</td></tr>
+<tr><td>NoSQL</td><td>DynamoDB</td><td>Cosmos DB</td><td>Firestore</td></tr>
+<tr><td>Networking</td><td>VPC</td><td>VNet</td><td>VPC</td></tr>
+<tr><td>Load balancer</td><td>ELB/ALB</td><td>Load Balancer</td><td>Cloud LB</td></tr>
+<tr><td>CDN</td><td>CloudFront</td><td>CDN</td><td>Cloud CDN</td></tr>
+<tr><td>IAM</td><td>IAM</td><td>Entra ID</td><td>Cloud IAM</td></tr>
+<tr><td>Secrets</td><td>Secrets Manager</td><td>Key Vault</td><td>Secret Manager</td></tr>
+<tr><td>Queue/Stream</td><td>SQS/Kinesis</td><td>Service Bus</td><td>Pub/Sub</td></tr>
+</table>
+
+<h3>12.3 Key cloud concepts</h3>
+<ul>
+<li><b>Regions &amp; Availability Zones</b> &mdash; deploy across AZs for HA; across regions for DR/latency.</li>
+<li><b>VPC</b> &mdash; isolated virtual network; subnets (public/private), route tables, security groups (instance firewall), NACLs.</li>
+<li><b>IAM</b> &mdash; users, roles, policies; <b>least privilege</b>; prefer roles over long-lived keys.</li>
+<li><b>Auto Scaling Groups + Load Balancer</b> &mdash; elastic, self-healing compute.</li>
+<li><b>Shared Responsibility Model</b> &mdash; cloud secures "of the cloud", you secure "in the cloud".</li>
+</ul>
+<div class="callout tip"><b>Cost &amp; reliability:</b> right-size instances, use spot/reserved for savings, set budgets/alerts, design for failure across AZs, tag resources, and automate teardown of non-prod.</div>
+
+<div class="qa">
+<div class="q">Region vs Availability Zone?</div>
+<div class="a">A region is a geographic area (e.g. us-east-1). An AZ is an isolated datacenter within a region. Spreading instances across multiple AZs survives a datacenter failure (high availability); spreading across regions handles regional outages and reduces latency for global users.</div>
+</div>
+<div class="qa">
+<div class="q">Security Group vs NACL?</div>
+<div class="a">Security Groups are stateful instance-level firewalls (return traffic auto-allowed; allow rules only). NACLs are stateless subnet-level firewalls (allow + deny rules, evaluated in order, return traffic must be explicitly allowed). SGs are the primary control; NACLs add a coarse subnet layer.</div>
+</div>
+
+
+<h2 id="s13">13. Terraform (Infrastructure as Code) <span class="tag adv">Advanced</span></h2>
+
+<h3>13.1 What &amp; why IaC</h3>
+<p><b>Infrastructure as Code</b> = define infrastructure in version-controlled files instead of clicking consoles. Benefits: reproducible, reviewable, auditable, automatable. <b>Terraform</b> is the leading <b>declarative, cloud-agnostic</b> IaC tool.</p>
+
+<h3>13.2 Core workflow</h3>
+<pre><code>terraform init      # download providers, set up backend
+terraform plan      # preview changes (dry run) — review before applying!
+terraform apply     # create/update infra to match config
+terraform destroy   # tear down</code></pre>
+
+<h3>13.3 Example configuration (HCL)</h3>
+<pre><code>provider "aws" { region = "us-east-1" }
+
+resource "aws_instance" "web" {
+  ami           = var.ami_id
+  instance_type = "t3.micro"
+  tags = { Name = "web-${var.env}" }
+}
+
+variable "env" { type = string; default = "dev" }
+output "public_ip" { value = aws_instance.web.public_ip }</code></pre>
+<table>
+<tr><th>Concept</th><th>Meaning</th></tr>
+<tr><td>Provider</td><td>Plugin for a platform (aws, azure, k8s...)</td></tr>
+<tr><td>Resource</td><td>An infra object to create</td></tr>
+<tr><td>Variable / Output</td><td>Inputs / exported values</td></tr>
+<tr><td>Module</td><td>Reusable group of resources</td></tr>
+<tr><td><b>State</b></td><td>Maps config to real resources (terraform.tfstate)</td></tr>
+</table>
+
+<h3>13.4 State &mdash; the critical concept</h3>
+<div class="callout warn"><b>Terraform state</b> tracks what it has created. <b>Store it remotely</b> (S3 + DynamoDB lock, or Terraform Cloud) for team use &mdash; never commit it to Git (it can contain secrets) and never edit it by hand. Use <b>state locking</b> to prevent concurrent applies corrupting it.</div>
+
+<h3>13.5 Declarative vs imperative; Terraform vs Ansible</h3>
+<table>
+<tr><th></th><th>Terraform</th><th>Ansible</th></tr>
+<tr><td>Purpose</td><td>Provision infra (declarative)</td><td>Configure servers (procedural-ish)</td></tr>
+<tr><td>State</td><td>Tracks state</td><td>Stateless (idempotent tasks)</td></tr>
+<tr><td>Strength</td><td>Cloud resource lifecycle</td><td>App/OS config, orchestration</td></tr>
+<tr><td>Often used</td><td>Together: TF provisions, Ansible configures</td></tr>
+</table>
+
+<div class="qa">
+<div class="q">What's the difference between <code>plan</code> and <code>apply</code>, and why does plan matter?</div>
+<div class="a"><code>plan</code> computes and shows the diff between desired config and current state without changing anything &mdash; a safety review. <code>apply</code> executes those changes. Always review the plan (especially "destroy" actions) before applying, ideally in a PR/CI gate.</div>
+</div>
+<div class="qa">
+<div class="q">How do you manage multiple environments (dev/staging/prod) in Terraform?</div>
+<div class="a">Use separate state per environment (workspaces or separate backends/directories) + variable files (<code>dev.tfvars</code>, <code>prod.tfvars</code>) + reusable modules. This keeps environments isolated and consistent. Many teams use a directory-per-env layout for clearer separation.</div>
+</div>
+
+
+<h2 id="s14">14. Ansible (Configuration Management) <span class="tag inter">Intermediate</span></h2>
+<p>Ansible automates server configuration, app deployment, and orchestration. <b>Agentless</b> (uses SSH), <b>idempotent</b>, and uses simple YAML <b>playbooks</b>.</p>
+<table>
+<tr><th>Concept</th><th>Meaning</th></tr>
+<tr><td>Inventory</td><td>List of target hosts (grouped)</td></tr>
+<tr><td>Playbook</td><td>YAML file of plays/tasks</td></tr>
+<tr><td>Task</td><td>A single action using a module</td></tr>
+<tr><td>Module</td><td>Unit of work (apt, copy, service, template...)</td></tr>
+<tr><td>Role</td><td>Reusable, structured bundle of tasks/vars/templates</td></tr>
+<tr><td>Handler</td><td>Task triggered by change (e.g. restart on config change)</td></tr>
+</table>
+<pre><code># playbook.yml
+- hosts: webservers
+  become: true                       # sudo
+  tasks:
+    - name: Install nginx
+      apt: { name: nginx, state: present, update_cache: true }
+    - name: Deploy config
+      template: { src: nginx.conf.j2, dest: /etc/nginx/nginx.conf }
+      notify: Restart nginx          # triggers handler
+    - name: Ensure running
+      service: { name: nginx, state: started, enabled: true }
+  handlers:
+    - name: Restart nginx
+      service: { name: nginx, state: restarted }</code></pre>
+<pre><code>ansible-playbook -i inventory playbook.yml
+ansible all -i inventory -m ping     # ad-hoc connectivity check</code></pre>
+<div class="callout note"><b>Idempotency:</b> Ansible modules describe desired state, so re-running a playbook makes no changes if the system already matches &mdash; safe to run repeatedly. Push-based &amp; agentless (only needs SSH + Python on targets).</div>
+
+<div class="qa">
+<div class="q">Why is idempotency important in configuration management?</div>
+<div class="a">It means running the same playbook multiple times always converges to the same state without unintended side effects. You can re-run safely after partial failures or to enforce drift correction, making automation predictable and reliable.</div>
+</div>
+
+<h1 id="part6" class="pagebreak">Part VI &mdash; Networking &amp; Web</h1>
+
+<h2 id="s15">15. Networking Essentials <span class="tag inter">Intermediate</span></h2>
+<div class="callout note"><b>Note:</b> deep networking (OSI, TCP/UDP, DNS, IP) is in the <em>CS Fundamentals</em> notes. Here's the DevOps-focused essentials.</div>
+
+<h3>15.1 Must-know for DevOps</h3>
+<table>
+<tr><th>Concept</th><th>DevOps relevance</th></tr>
+<tr><td>OSI/TCP-IP layers</td><td>Know L4 (TCP) vs L7 (HTTP) for load balancers</td></tr>
+<tr><td>TCP 3-way handshake</td><td>SYN, SYN-ACK, ACK</td></tr>
+<tr><td>DNS</td><td>A, CNAME, MX records; TTL; resolution flow</td></tr>
+<tr><td>Subnets &amp; CIDR</td><td>VPC design (<code>10.0.0.0/16</code> &rarr; subnets)</td></tr>
+<tr><td>Ports</td><td>22 SSH, 80 HTTP, 443 HTTPS, 53 DNS, 3306 MySQL, 5432 PG, 6379 Redis</td></tr>
+<tr><td>NAT / firewall</td><td>Private subnets, security groups</td></tr>
+<tr><td>TLS/SSL</td><td>HTTPS, certificates, termination at LB</td></tr>
+</table>
+
+<h3>15.2 Debugging commands</h3>
+<pre><code>ping host              # reachability (ICMP)
+traceroute host        # path/hops
+dig example.com        # DNS resolution details
+curl -v https://api    # HTTP request with handshake details
+ss -tlnp               # listening sockets/ports
+telnet host 443 / nc -zv host 443   # is a port open?
+tcpdump -i eth0 port 80             # packet capture</code></pre>
+
+<div class="qa">
+<div class="q">A service can't reach another service &mdash; how do you debug the network?</div>
+<div class="a">Work up the stack: is DNS resolving (<code>dig</code>)? Is the host reachable (<code>ping</code>)? Is the port open (<code>nc -zv host port</code>)? Is something listening (<code>ss -tlnp</code> on the target)? Is a firewall/security group/NetworkPolicy blocking it? Check the path (<code>traceroute</code>) and TLS if HTTPS.</div>
+</div>
+
+
+<h2 id="s16">16. Web Servers &amp; Reverse Proxies <span class="tag inter">Intermediate</span></h2>
+
+<h3>16.1 Forward vs reverse proxy</h3>
+<table>
+<tr><th>Forward proxy</th><th>Reverse proxy</th></tr>
+<tr><td>Sits in front of <b>clients</b></td><td>Sits in front of <b>servers</b></td></tr>
+<tr><td>Hides clients from internet</td><td>Hides servers from clients</td></tr>
+<tr><td>e.g. corporate proxy</td><td>e.g. Nginx, HAProxy</td></tr>
+</table>
+
+<h3>16.2 What a reverse proxy does</h3>
+<ul>
+<li><b>Load balancing</b> across backends; <b>SSL/TLS termination</b>; <b>caching</b> &amp; compression; <b>routing</b> by path/host; <b>rate limiting</b> &amp; security (hide backends).</li>
+</ul>
+<pre><code># Nginx reverse proxy + load balancing
+upstream backend {
+    least_conn;                 # algorithm
+    server app1:8080;
+    server app2:8080;
+}
+server {
+    listen 443 ssl;
+    server_name example.com;
+    ssl_certificate     /etc/ssl/cert.pem;
+    ssl_certificate_key /etc/ssl/key.pem;
+    location /api/ {
+        proxy_pass http://backend;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+    location / { root /var/www/html; }   # serve static
+}</code></pre>
+<table>
+<tr><th>Tool</th><th>Strength</th></tr>
+<tr><td>Nginx</td><td>Web server + reverse proxy + LB; very common</td></tr>
+<tr><td>HAProxy</td><td>High-performance L4/L7 load balancer</td></tr>
+<tr><td>Apache HTTP</td><td>Mature web server (.htaccess, modules)</td></tr>
+<tr><td>Traefik / Envoy</td><td>Cloud-native, dynamic config, service mesh</td></tr>
+</table>
+
+<div class="qa">
+<div class="q">Why put Nginx in front of an app server?</div>
+<div class="a">To offload SSL termination, serve static files efficiently, load-balance across app instances, add caching/compression/rate-limiting, and hide/protect the backends. App servers focus on business logic while Nginx handles edge concerns.</div>
+</div>
+
+
+<h1 id="part7" class="pagebreak">Part VII &mdash; Observability &amp; Security</h1>
+
+<h2 id="s17">17. Monitoring, Logging &amp; Observability <span class="tag adv">Advanced</span></h2>
+
+<h3>17.1 The three pillars of observability</h3>
+<table>
+<tr><th>Pillar</th><th>Answers</th><th>Tool</th></tr>
+<tr><td><b>Metrics</b></td><td>What's happening? (numbers over time)</td><td>Prometheus + Grafana</td></tr>
+<tr><td><b>Logs</b></td><td>What happened? (discrete events)</td><td>ELK / Loki</td></tr>
+<tr><td><b>Traces</b></td><td>Where did it slow down? (request path)</td><td>Jaeger / Tempo / OpenTelemetry</td></tr>
+</table>
+<div class="callout note"><b>Monitoring vs Observability:</b> monitoring watches <em>known</em> failure modes (dashboards/alerts you set up). Observability lets you ask <em>new</em> questions about unknown issues from rich telemetry. Monitoring is a subset of observability.</div>
+
+<h3>17.2 Prometheus &amp; Grafana</h3>
+<ul>
+<li><b>Prometheus</b> &mdash; pull-based metrics; scrapes <code>/metrics</code> endpoints; stores time-series; <b>PromQL</b> queries; <b>Alertmanager</b> for alerts.</li>
+<li><b>Grafana</b> &mdash; dashboards/visualization over Prometheus (and other sources).</li>
+<li><b>Exporters</b> (node_exporter, etc.) expose system/app metrics.</li>
+</ul>
+<pre><code># PromQL examples
+rate(http_requests_total[5m])                    # request rate
+histogram_quantile(0.95, rate(latency_bucket[5m]))   # p95 latency
+sum(rate(http_requests_total{status=~"5.."}[5m]))    # error rate</code></pre>
+
+<h3>17.3 Logging (ELK / EFK)</h3>
+<pre><code>App logs -> [Filebeat/Fluentd] -> [Logstash] -> [Elasticsearch] -> [Kibana]
+                                  (parse/enrich)  (store/index)   (search/visualize)</code></pre>
+<div class="callout tip"><b>Best practices:</b> structured (JSON) logs; centralized aggregation; correlation IDs / trace IDs to tie logs+traces; sensible log levels; don't log secrets/PII; retention policies. Emit logs to stdout in containers (12-factor).</div>
+
+<h3>17.4 The four golden signals (SRE)</h3>
+<table>
+<tr><th>Signal</th><th>Watch</th></tr>
+<tr><td>Latency</td><td>Response time (p50/p95/p99)</td></tr>
+<tr><td>Traffic</td><td>Requests/sec</td></tr>
+<tr><td>Errors</td><td>Failed-request rate</td></tr>
+<tr><td>Saturation</td><td>How full resources are (CPU/mem/disk)</td></tr>
+</table>
+
+<div class="qa">
+<div class="q">Push vs pull monitoring &mdash; why is Prometheus pull-based?</div>
+<div class="a">Pull (Prometheus scrapes targets) makes targets simpler (just expose <code>/metrics</code>), lets the server control scrape rate, and easily detects "target down". Push suits short-lived jobs (via a Pushgateway) and ephemeral functions. Prometheus chose pull for service-discovery-friendly, reliable scraping.</div>
+</div>
+<div class="qa">
+<div class="q">How do you set up effective alerting without alert fatigue?</div>
+<div class="a">Alert on symptoms that affect users (golden signals / SLO burn rate), not every metric. Make alerts actionable, severity-tiered, and de-duplicated; use multi-window burn-rate alerts; route via Alertmanager; and continuously prune noisy/non-actionable alerts.</div>
+</div>
+
+
+<h2 id="s18">18. Security &amp; DevSecOps <span class="tag adv">Advanced</span></h2>
+
+<h3>18.1 DevSecOps = shift security left</h3>
+<p>Integrate security into every stage of the pipeline (not a final gate). "Security as code", automated scanning, and shared responsibility.</p>
+<pre><code>Code -> [SAST + secret scan] -> Build -> [SCA: dependency scan]
+     -> Image -> [container/image scan] -> Deploy -> [DAST + runtime/policy]</code></pre>
+<table>
+<tr><th>Scan type</th><th>What</th><th>Tools</th></tr>
+<tr><td>SAST</td><td>Static code analysis</td><td>SonarQube, Semgrep, CodeQL</td></tr>
+<tr><td>SCA</td><td>Vulnerable dependencies</td><td>Dependabot, Snyk, Trivy</td></tr>
+<tr><td>Image scanning</td><td>Container vulnerabilities</td><td>Trivy, Clair</td></tr>
+<tr><td>DAST</td><td>Running-app testing</td><td>OWASP ZAP</td></tr>
+<tr><td>Secret scanning</td><td>Leaked credentials</td><td>gitleaks, truffleHog</td></tr>
+<tr><td>IaC scanning</td><td>Misconfigured infra</td><td>tfsec, Checkov</td></tr>
+</table>
+
+<h3>18.2 Secrets management</h3>
+<div class="callout warn"><b>Never</b> hard-code secrets in code, images, or YAML. Use a secrets manager: <b>HashiCorp Vault</b>, AWS Secrets Manager, K8s Secrets (+ encryption at rest / external secrets), or SOPS. Rotate regularly, inject at runtime, audit access, and scan repos for leaks. If leaked &rarr; rotate immediately.</div>
+
+<h3>18.3 Core security principles</h3>
+<ul>
+<li><b>Least privilege</b> (IAM, RBAC), <b>defense in depth</b>, <b>zero trust</b>.</li>
+<li><b>Encrypt</b> in transit (TLS) &amp; at rest.</li>
+<li><b>Patch &amp; update</b> base images/dependencies; minimal images reduce attack surface.</li>
+<li><b>Run containers as non-root</b>; read-only filesystems; drop capabilities; network policies.</li>
+<li><b>Supply chain security</b> &mdash; sign images (cosign), SBOMs, verify provenance.</li>
+<li><b>Audit logging</b> &amp; compliance (CIS benchmarks).</li>
+</ul>
+
+<div class="qa">
+<div class="q">How do you secure a CI/CD pipeline?</div>
+<div class="a">Store secrets in a vault (never in code/logs); use short-lived, least-privilege credentials/OIDC for cloud access; scan code, dependencies, images, and IaC in the pipeline; sign and verify artifacts; protect branches with reviews; isolate runners; and audit every deploy. The pipeline is a high-value target &mdash; treat it like production.</div>
+</div>
+<div class="qa">
+<div class="q">What is shift-left security?</div>
+<div class="a">Moving security checks earlier (left) in the development lifecycle &mdash; into the IDE, commit, and CI stages &mdash; instead of only at the end. Catching vulnerabilities early is cheaper and faster to fix and prevents insecure code from progressing.</div>
+</div>
+
+<h1 id="part8" class="pagebreak">Part VIII &mdash; Data &amp; Architecture</h1>
+<div class="callout note"><b>Note:</b> these areas are covered deeply in the <em>CS Fundamentals</em>, <em>Kafka</em>, and <em>System Design</em> notes. Here's a DevOps-focused recap.</div>
+
+<h2 id="s19">19. Databases, Caching &amp; Messaging <span class="tag inter">Intermediate</span></h2>
+
+<h3>19.1 Databases for DevOps</h3>
+<table>
+<tr><th>Concern</th><th>DevOps angle</th></tr>
+<tr><td>SQL vs NoSQL</td><td>Strong/relational vs flexible/scalable</td></tr>
+<tr><td>Replication</td><td>Primary-replica for read scaling + HA failover</td></tr>
+<tr><td>Backups</td><td>Automated, tested restores; PITR (point-in-time recovery)</td></tr>
+<tr><td>Migrations</td><td>Versioned (Flyway/Liquibase); backward-compatible (expand-contract)</td></tr>
+<tr><td>Connection pooling</td><td>PgBouncer; avoid exhausting DB connections</td></tr>
+<tr><td>Monitoring</td><td>Slow queries, connections, replication lag, disk</td></tr>
+</table>
+<div class="callout warn"><b>Zero-downtime DB migrations:</b> use expand-contract &mdash; add new columns/tables (backward compatible), deploy code that writes both, backfill, switch reads, then remove old. Never drop/rename in a single deploy with live traffic.</div>
+
+<h3>19.2 Caching</h3>
+<ul>
+<li><b>Redis / Memcached</b> &mdash; in-memory cache; sessions, rate limiting, leaderboards, locks.</li>
+<li>Strategies: cache-aside (common), write-through, write-back. Eviction: LRU/LFU/TTL.</li>
+<li><b>CDN</b> caches static/media at the edge.</li>
+</ul>
+
+<h3>19.3 Messaging</h3>
+<table>
+<tr><th>System</th><th>Use</th></tr>
+<tr><td>Kafka</td><td>Event streaming, durable replayable log (see Kafka notes)</td></tr>
+<tr><td>RabbitMQ / SQS</td><td>Task queues, decoupling, retries</td></tr>
+<tr><td>Redis Pub/Sub</td><td>Lightweight messaging</td></tr>
+</table>
+<p>Why: decouple services, absorb spikes, async processing, resilience. Make consumers idempotent (at-least-once delivery); use DLQs.</p>
+
+
+<h2 id="s20">20. Microservices &amp; Distributed Systems <span class="tag adv">Advanced</span></h2>
+<table>
+<tr><th>Concept</th><th>One-liner</th></tr>
+<tr><td>Microservices</td><td>Independently deployable services, DB-per-service</td></tr>
+<tr><td>API Gateway</td><td>Single entry; routing, auth, rate limiting</td></tr>
+<tr><td>Service discovery</td><td>Services find each other dynamically (DNS/registry)</td></tr>
+<tr><td>Service mesh</td><td>Istio/Linkerd &mdash; mTLS, traffic mgmt, observability (sidecars)</td></tr>
+<tr><td>Circuit breaker</td><td>Stop calling a failing dependency (fail fast)</td></tr>
+<tr><td>Saga</td><td>Distributed transactions via compensating steps</td></tr>
+<tr><td>CAP theorem</td><td>Under partition pick consistency or availability</td></tr>
+<tr><td>Idempotency</td><td>Safe retries without duplicate effects</td></tr>
+</table>
+<div class="callout note"><b>Service mesh</b> offloads cross-cutting concerns (retries, mTLS, traffic splitting, telemetry) from app code into infrastructure sidecars (Envoy) &mdash; powerful for canary/observability but adds complexity. Only adopt when you have many services.</div>
+
+<div class="qa">
+<div class="q">When should you NOT use microservices?</div>
+<div class="a">Early-stage products, small teams, or simple domains. Microservices add distributed-systems complexity (networking, data consistency, observability, deployment overhead). Start with a well-structured monolith and split only when scaling, team autonomy, or independent deployment genuinely require it.</div>
+</div>
+
+
+<h2 id="s21">21. SRE Concepts <span class="tag adv">Advanced</span></h2>
+<p><b>Site Reliability Engineering</b> = applying software engineering to operations. "SRE is what happens when you treat operations as a software problem." (Google)</p>
+<table>
+<tr><th>Concept</th><th>Meaning</th></tr>
+<tr><td><b>SLI</b></td><td>Service Level Indicator &mdash; a measured metric (e.g. latency, error rate)</td></tr>
+<tr><td><b>SLO</b></td><td>Objective &mdash; target for an SLI (e.g. 99.9% &lt; 200ms)</td></tr>
+<tr><td><b>SLA</b></td><td>Agreement &mdash; contractual promise to customers (with penalties)</td></tr>
+<tr><td><b>Error budget</b></td><td>Allowed unreliability (100% &minus; SLO); spend it on velocity</td></tr>
+<tr><td><b>Toil</b></td><td>Manual, repetitive ops work &mdash; automate it away</td></tr>
+<tr><td><b>MTTR / MTBF</b></td><td>Mean time to recover / between failures</td></tr>
+</table>
+<div class="callout note"><b>Error budget in action:</b> if your SLO is 99.9%, you have ~43 min/month of allowed downtime. While budget remains, ship features fast. If you burn it, freeze risky releases and focus on reliability. It turns the dev-vs-ops "stability vs speed" fight into a shared, data-driven decision.</div>
+
+<h3>21.1 Reliability practices</h3>
+<ul>
+<li><b>Blameless postmortems</b> &mdash; learn from incidents, fix systems not people.</li>
+<li><b>Incident management</b> &mdash; roles, runbooks, on-call rotations, escalation.</li>
+<li><b>Chaos engineering</b> &mdash; deliberately inject failures to test resilience (Chaos Monkey).</li>
+<li><b>Capacity planning</b>, <b>graceful degradation</b>, <b>redundancy</b>, <b>automate toil</b>.</li>
+</ul>
+
+<div class="qa">
+<div class="q">SLI vs SLO vs SLA?</div>
+<div class="a">SLI is the measurement (e.g. % of requests under 200ms). SLO is your internal target for that SLI (e.g. 99.9%). SLA is the external, contractual commitment to customers (usually looser than the SLO, with penalties). You set SLOs stricter than SLAs to have a safety margin.</div>
+</div>
+<div class="qa">
+<div class="q">What is an error budget and why is it useful?</div>
+<div class="a">It's the acceptable amount of failure (100% minus the SLO). It quantifies the trade-off between reliability and feature velocity: with budget remaining, teams ship aggressively; when it's exhausted, they prioritize stability. It aligns dev and ops on objective data rather than opinion.</div>
+</div>
+
+
+<h1 id="part9" class="pagebreak">Part IX &mdash; Interview Preparation</h1>
+
+<h2 id="s22">22. Scenarios &amp; Cheat-Sheet <span class="tag adv">Essential</span></h2>
+
+<h3>22.1 Scenario questions</h3>
+<div class="qa">
+<div class="q">Walk me through what happens from <code>git push</code> to production.</div>
+<div class="a">Push triggers a CI pipeline (webhook) &rarr; checkout, build, unit tests, lint, security scans &rarr; build &amp; push a container image to a registry &rarr; deploy to staging (Helm/kubectl/Terraform) &rarr; run integration/E2E tests &rarr; manual approval gate &rarr; progressive deploy to prod (canary/blue-green) with health checks &rarr; monitor metrics/logs/traces &rarr; auto-rollback if SLOs breach.</div>
+</div>
+<div class="qa">
+<div class="q">Production is down &mdash; how do you respond?</div>
+<div class="a">Acknowledge &amp; declare an incident; check dashboards/alerts (golden signals) to localize; look at recent changes (a deploy?) &mdash; roll back if so; check logs/traces; mitigate first (restore service) then root-cause; communicate status; afterward run a blameless postmortem and add safeguards (alerts/tests/automation).</div>
+</div>
+<div class="qa">
+<div class="q">How would you design a CI/CD pipeline for a microservices app on Kubernetes?</div>
+<div class="a">Per-service pipelines: build &amp; test &rarr; scan (SAST/SCA/image) &rarr; push image &rarr; update a Helm chart / GitOps repo (Argo CD reconciles) &rarr; deploy to namespaces per env &rarr; canary with metrics-based promotion &rarr; observability + auto-rollback. Use trunk-based dev, immutable images promoted across envs, and secrets from a vault.</div>
+</div>
+<div class="qa">
+<div class="q">How do you reduce a slow Docker build in CI?</div>
+<div class="a">Layer caching (copy deps before code), multi-stage builds, a slim base image, BuildKit cache mounts, caching dependencies between CI runs, and only rebuilding changed services. Also parallelize independent jobs.</div>
+</div>
+
+<hr>
+<h3 style="page-break-before:always;">22.2 Rapid Revision Cheat-Sheet</h3>
+<table>
+<tr><th>Concept</th><th>One-liner</th></tr>
+<tr><td>DevOps</td><td>Culture + automation uniting dev &amp; ops</td></tr>
+<tr><td>CALMS</td><td>Culture, Automation, Lean, Measurement, Sharing</td></tr>
+<tr><td>DORA</td><td>Deploy freq, lead time, change failure, MTTR</td></tr>
+<tr><td>CI / CD</td><td>Auto build+test / auto release/deploy</td></tr>
+<tr><td>Deploy strategies</td><td>Rolling, blue-green, canary</td></tr>
+<tr><td>Container vs VM</td><td>Shares kernel (light) vs full OS (heavy)</td></tr>
+<tr><td>Dockerfile best practice</td><td>Multi-stage, small base, layer caching, non-root</td></tr>
+<tr><td>K8s control plane</td><td>API server, etcd, scheduler, controllers</td></tr>
+<tr><td>Pod</td><td>Smallest deployable unit (1+ containers)</td></tr>
+<tr><td>Deployment vs StatefulSet</td><td>Stateless vs stable identity/storage</td></tr>
+<tr><td>Service types</td><td>ClusterIP, NodePort, LoadBalancer, Ingress</td></tr>
+<tr><td>Probes</td><td>Liveness (restart), readiness (traffic)</td></tr>
+<tr><td>Helm</td><td>K8s package manager (charts + values)</td></tr>
+<tr><td>IaC</td><td>Infra in version-controlled code</td></tr>
+<tr><td>Terraform state</td><td>Maps config to real infra; store remote + lock</td></tr>
+<tr><td>TF vs Ansible</td><td>Provision infra vs configure servers</td></tr>
+<tr><td>Idempotency</td><td>Re-run = same result, no side effects</td></tr>
+<tr><td>Reverse proxy</td><td>Front of servers: LB, TLS, cache, routing</td></tr>
+<tr><td>Observability</td><td>Metrics, logs, traces</td></tr>
+<tr><td>Golden signals</td><td>Latency, traffic, errors, saturation</td></tr>
+<tr><td>Prometheus</td><td>Pull-based metrics + PromQL + Alertmanager</td></tr>
+<tr><td>DevSecOps</td><td>Shift security left; scan everything</td></tr>
+<tr><td>Secrets</td><td>Vault/manager; never in code; rotate</td></tr>
+<tr><td>SLI/SLO/SLA</td><td>Metric / target / contract</td></tr>
+<tr><td>Error budget</td><td>100% &minus; SLO; spend on velocity</td></tr>
+<tr><td>GitOps</td><td>Git as source of truth; auto-reconcile (Argo CD)</td></tr>
+<tr><td>Toil</td><td>Manual repetitive work &mdash; automate it</td></tr>
+</table>
+
+<div class="callout tip"><b>Interview delivery tips:</b> (1) Always tie tools back to <em>why</em> (the problem they solve). (2) For "how would you..." questions, structure the answer as a pipeline/flow. (3) Mention automation, idempotency, and observability &mdash; they signal maturity. (4) For incidents: mitigate first, root-cause later, blameless postmortem. (5) Know the trade-offs (blue-green vs canary, monolith vs microservices, push vs pull). (6) Be hands-on: quote real commands &amp; configs.</div>
+
+<hr>
+<p style="text-align:center;color:#777;font-size:.85rem;">End of notes &mdash; DevOps Engineering &bull; Beginner to Advanced &bull; Industry-level interview prep</p>
+<!--CONTENT-->
+
+</div>
+</body>
+</html>

@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git, GitHub &amp; GitLab Interview Notes</title>
+<style>
+  :root{
+    --ink:#1a1a1a; --muted:#555; --accent:#e8541e; --accent2:#b23a12;
+    --code-bg:#f6f8fa; --code-ink:#24292e; --border:#d8dee4;
+    --tip:#0a7d3c; --warn:#b54708; --note:#1f6feb;
+  }
+  *{box-sizing:border-box;}
+  html{font-size:13.5px;}
+  body{
+    font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); line-height:1.55; margin:0; padding:0 0 40px;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .page{max-width:880px; margin:0 auto; padding:0 26px;}
+  h1,h2,h3,h4{line-height:1.25; font-weight:700;}
+  h1{font-size:2.1rem; color:var(--accent2); margin:0 0 .2em;}
+  h2{font-size:1.5rem; color:var(--accent2); border-bottom:3px solid var(--accent);
+     padding-bottom:.2em; margin:2.2em 0 .8em;}
+  h3{font-size:1.18rem; color:#222; margin:1.6em 0 .5em;
+     border-left:4px solid var(--accent); padding-left:.5em;}
+  h4{font-size:1.02rem; color:#333; margin:1.2em 0 .4em;}
+  p{margin:.55em 0;}
+  ul,ol{margin:.5em 0 .8em; padding-left:1.5em;}
+  li{margin:.25em 0;}
+  code{font-family:"Cascadia Code",Consolas,"Courier New",monospace; font-size:.86em;
+       background:var(--code-bg); color:#b5266a; padding:.1em .35em; border-radius:4px;}
+  pre{background:var(--code-bg); border:1px solid var(--border); border-radius:8px;
+      padding:12px 14px; overflow:auto; margin:.7em 0; line-height:1.45;}
+  pre code{background:none; color:var(--code-ink); padding:0; font-size:.82rem; white-space:pre;}
+  table{border-collapse:collapse; width:100%; margin:.9em 0; font-size:.88rem;}
+  th,td{border:1px solid var(--border); padding:7px 10px; text-align:left; vertical-align:top;}
+  th{background:#fdeae0; color:#b23a12; font-weight:600;}
+  tr:nth-child(even) td{background:#fafbfc;}
+  .tag{display:inline-block; font-size:.7rem; font-weight:700; padding:.12em .55em;
+       border-radius:20px; vertical-align:middle; margin-left:.4em;}
+  .tag.basic{background:#e6f4ea; color:#0a7d3c;}
+  .tag.inter{background:#fff4e5; color:#b54708;}
+  .tag.adv{background:#fde8ef; color:#b5266a;}
+  .callout{border-radius:8px; padding:10px 14px; margin:.8em 0; border-left:5px solid;}
+  .callout.tip{background:#eaf7ef; border-color:var(--tip);}
+  .callout.warn{background:#fff3e6; border-color:var(--warn);}
+  .callout.note{background:#eaf1fb; border-color:var(--note);}
+  .callout b{display:inline-block; margin-bottom:.1em;}
+  .qa{margin:.7em 0; padding:10px 14px; background:#f7f9fc; border:1px solid var(--border); border-radius:8px;}
+  .qa .q{font-weight:700; color:var(--accent2);}
+  .qa .q::before{content:"Q. "; color:var(--accent);}
+  .qa .a{margin-top:.25em;}
+  .qa .a::before{content:"A. "; font-weight:700; color:var(--tip);}
+  .toc{columns:2; column-gap:34px; font-size:.9rem; margin:1em 0 0;}
+  .toc a{text-decoration:none; color:#b23a12;}
+  .toc ol{padding-left:1.3em; margin:.2em 0;}
+  .toc b{display:block; margin-top:.5em;}
+  .cover{text-align:center; padding:70px 0 24px;}
+  .cover .sub{color:var(--muted); font-size:1.1rem; margin-top:.4em;}
+  .cover .meta{color:var(--muted); font-size:.9rem; margin-top:1.5em;}
+  hr{border:none; border-top:1px solid var(--border); margin:2.5em 0;}
+  .pillset span{display:inline-block; background:#fdeae0; color:#b23a12; border:1px solid #f7cdbb;
+     border-radius:20px; padding:.15em .7em; margin:.15em .2em; font-size:.82rem;}
+  @media print{
+    h2{page-break-after:avoid;} h3,h4{page-break-after:avoid;}
+    pre,table,.qa,.callout{page-break-inside:avoid;}
+    .toc{columns:2;}
+    .pagebreak{page-break-before:always;}
+  }
+  @page{margin:16mm 14mm;}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="cover">
+  <h1>Git, GitHub &amp; GitLab</h1>
+  <div class="sub">Complete Interview Preparation Notes &mdash; Beginner to Advanced</div>
+  <div class="meta">Version Control Internals &bull; Commands &bull; Branching &amp; Merging &bull; Workflows &bull; Collaboration &bull; CI/CD &bull; Security &amp; Best Practices</div>
+</div>
+
+<h2 style="page-break-before:avoid;">Table of Contents</h2>
+<div class="toc">
+<b>Part I &mdash; Git Fundamentals</b>
+<ol>
+<li><a href="#s1">Version Control &amp; Git Basics</a></li>
+<li><a href="#s2">Git Internals (How Git Works)</a></li>
+<li><a href="#s3">The Three Areas &amp; Basic Workflow</a></li>
+<li><a href="#s4">Essential Commands Reference</a></li>
+</ol>
+<b>Part II &mdash; Branching &amp; History</b>
+<ol start="5">
+<li><a href="#s5">Branching &amp; Merging</a></li>
+<li><a href="#s6">Merge vs Rebase</a></li>
+<li><a href="#s7">Undoing Changes (reset/revert/restore)</a></li>
+<li><a href="#s8">Stash, Cherry-pick, Tags &amp; Reflog</a></li>
+<li><a href="#s9">Resolving Conflicts</a></li>
+</ol>
+<b>Part III &mdash; Workflows &amp; Collaboration</b>
+<ol start="10">
+<li><a href="#s10">Remotes &amp; Collaboration</a></li>
+<li><a href="#s11">Branching Strategies &amp; Workflows</a></li>
+<li><a href="#s12">Pull/Merge Requests &amp; Code Review</a></li>
+</ol>
+<b>Part IV &mdash; GitHub &amp; GitLab</b>
+<ol start="13">
+<li><a href="#s13">GitHub Platform</a></li>
+<li><a href="#s14">GitLab Platform</a></li>
+<li><a href="#s15">CI/CD (Actions &amp; Pipelines)</a></li>
+<li><a href="#s16">Security &amp; Repository Management</a></li>
+</ol>
+<b>Part V &mdash; Advanced &amp; Interview</b>
+<ol start="17">
+<li><a href="#s17">Advanced Git &amp; Troubleshooting</a></li>
+<li><a href="#s18">Best Practices &amp; Pitfalls</a></li>
+<li><a href="#s19">Interview Scenarios &amp; Cheat-Sheet</a></li>
+</ol>
+</div>
+
+<h1 id="part1" class="pagebreak">Part I &mdash; Git Fundamentals</h1>
+
+<h2 id="s1">1. Version Control &amp; Git Basics <span class="tag basic">Basic</span></h2>
+
+<h3>1.1 What is version control?</h3>
+<p>A <b>Version Control System (VCS)</b> tracks changes to files over time so you can recall specific versions, collaborate, branch, and revert mistakes. <b>Git</b> is a <b>distributed</b> VCS created by Linus Torvalds (2005) for Linux kernel development.</p>
+
+<h3>1.2 Centralized vs Distributed VCS</h3>
+<table>
+<tr><th></th><th>Centralized (SVN, CVS)</th><th>Distributed (Git)</th></tr>
+<tr><td>Repository</td><td>One central server</td><td>Every clone is a full repo (full history)</td></tr>
+<tr><td>Offline work</td><td>Limited</td><td>Full (commit, branch, history offline)</td></tr>
+<tr><td>Single point of failure</td><td>Yes (server)</td><td>No (every clone is a backup)</td></tr>
+<tr><td>Speed</td><td>Network-bound</td><td>Local operations are fast</td></tr>
+</table>
+<div class="callout note"><b>Git vs GitHub/GitLab:</b> <b>Git</b> is the version-control tool (runs locally/CLI). <b>GitHub</b> &amp; <b>GitLab</b> are <em>hosting platforms</em> built around Git that add collaboration, pull/merge requests, issues, CI/CD, and access control. You can use Git without them.</div>
+
+<h3>1.3 First-time setup</h3>
+<pre><code>git config --global user.name  "Alice Dev"
+git config --global user.email "alice@example.com"
+git config --global init.defaultBranch main
+git config --list                 # view config
+git init                          # create a new local repo
+git clone &lt;url&gt;                    # copy a remote repo locally</code></pre>
+
+<div class="qa">
+<div class="q">Why is Git "distributed" and why does it matter?</div>
+<div class="a">Every clone contains the complete history, not just the latest snapshot. This enables full offline work (commits, branches, diffs), removes the single point of failure, makes most operations fast (local), and allows flexible collaboration workflows.</div>
+</div>
+
+
+<h2 id="s2">2. Git Internals (How Git Works) <span class="tag adv">Advanced</span></h2>
+
+<h3>2.1 Git is a content-addressable snapshot store</h3>
+<p>Unlike older systems that store <b>deltas</b> (diffs between versions), Git stores a <b>snapshot</b> of the entire project at each commit. Unchanged files are stored as references to the previous identical content (deduplicated), so snapshots are cheap.</p>
+
+<h3>2.2 The four object types (the <code>.git</code> object database)</h3>
+<table>
+<tr><th>Object</th><th>Stores</th></tr>
+<tr><td><b>Blob</b></td><td>File contents (no name/metadata)</td></tr>
+<tr><td><b>Tree</b></td><td>A directory: names + permissions + pointers to blobs/trees</td></tr>
+<tr><td><b>Commit</b></td><td>Snapshot pointer (root tree) + parent(s) + author + message</td></tr>
+<tr><td><b>Tag</b></td><td>Annotated tag pointing to an object</td></tr>
+</table>
+<pre><code>commit ──points to──> tree (root dir)
+                        ├── blob  (README.md)
+                        └── tree  (src/) ──> blob (App.java)
+each commit also ──> parent commit(s)  => forms the history DAG</code></pre>
+
+<h3>2.3 SHA-1 hashing &amp; integrity</h3>
+<ul>
+<li>Every object is identified by a <b>SHA-1 hash</b> (40 hex chars) of its content &mdash; content-addressable. Identical content &rarr; same hash &rarr; stored once.</li>
+<li>A commit's hash depends on its content <em>and</em> its parent, so history is <b>tamper-evident</b> (changing anything changes all later hashes). (Git is migrating toward SHA-256.)</li>
+</ul>
+
+<h3>2.4 References (branches, HEAD)</h3>
+<ul>
+<li>A <b>branch</b> is just a lightweight, movable <b>pointer to a commit</b> (a file in <code>.git/refs/heads</code>). Creating a branch is O(1) &mdash; just writes a 40-byte hash.</li>
+<li><b>HEAD</b> is a pointer to the current branch (or commit). <b>Detached HEAD</b> = HEAD points directly to a commit, not a branch.</li>
+</ul>
+
+<div class="qa">
+<div class="q">Does Git store diffs or snapshots?</div>
+<div class="a">Conceptually snapshots &mdash; each commit references a complete tree. Unchanged files point to existing blobs (so no duplication). For storage efficiency, Git later packs objects using delta compression in packfiles, but the model you reason about is snapshots.</div>
+</div>
+<div class="qa">
+<div class="q">Why is creating a branch so cheap in Git?</div>
+<div class="a">A branch is just a 40-byte file containing a commit hash. No files are copied &mdash; creating or switching branches only moves a pointer, which is why Git encourages frequent branching.</div>
+</div>
+
+
+<h2 id="s3">3. The Three Areas &amp; Basic Workflow <span class="tag basic">Basic</span></h2>
+
+<h3>3.1 The three states / areas</h3>
+<pre><code>Working Directory ──git add──> Staging Area (Index) ──git commit──> Repository (.git)
+   (your edits)                  (staged snapshot)                  (permanent history)
+        ▲                                                                │
+        └──────────────── git checkout / restore ◄───────────────────────┘</code></pre>
+<table>
+<tr><th>Area</th><th>Meaning</th></tr>
+<tr><td><b>Working directory</b></td><td>Your actual files; where you edit</td></tr>
+<tr><td><b>Staging area (index)</b></td><td>What will go into the next commit (lets you craft commits selectively)</td></tr>
+<tr><td><b>Repository (.git)</b></td><td>Committed history (objects + refs)</td></tr>
+</table>
+<div class="callout note"><b>Why a staging area?</b> It lets you build a commit deliberately &mdash; staging only some files or even some lines (<code>git add -p</code>) &mdash; so each commit is a clean, logical unit rather than "everything I changed."</div>
+
+<h3>3.2 File lifecycle</h3>
+<pre><code>Untracked ──git add──> Staged ──git commit──> Tracked/Unmodified
+                                                     │ (edit)
+                                                     ▼
+                                                 Modified ──git add──> Staged</code></pre>
+
+<h3>3.3 The everyday loop</h3>
+<pre><code>git status                # what changed / staged
+git add file.txt          # stage a file   (git add .  = all)
+git add -p                # stage selectively (hunk by hunk)
+git commit -m "message"   # commit staged changes
+git log --oneline --graph # view history
+git push                  # send commits to remote</code></pre>
+
+<div class="qa">
+<div class="q">Difference between working directory, staging area, and repository?</div>
+<div class="a">The working directory holds your editable files. The staging area is a snapshot you've marked for the next commit. The repository stores committed history permanently. <code>add</code> moves working &rarr; staging; <code>commit</code> moves staging &rarr; repository.</div>
+</div>
+
+<h2 id="s4">4. Essential Commands Reference <span class="tag basic">Basic &rarr; Intermediate</span></h2>
+
+<h3>4.1 Setup &amp; creating repos</h3>
+<table>
+<tr><th>Command</th><th>Purpose</th></tr>
+<tr><td><code>git init</code></td><td>Initialize a new repo in the current folder</td></tr>
+<tr><td><code>git clone &lt;url&gt;</code></td><td>Download a repo + full history</td></tr>
+<tr><td><code>git clone --depth 1 &lt;url&gt;</code></td><td>Shallow clone (latest commit only &mdash; fast, large repos)</td></tr>
+<tr><td><code>git config --global ...</code></td><td>Set identity/preferences</td></tr>
+</table>
+
+<h3>4.2 Snapshotting (the daily core)</h3>
+<table>
+<tr><th>Command</th><th>Purpose / when to use</th></tr>
+<tr><td><code>git status</code></td><td>Show changed/staged/untracked files</td></tr>
+<tr><td><code>git add &lt;file&gt;</code> / <code>git add .</code></td><td>Stage specific / all changes</td></tr>
+<tr><td><code>git add -p</code></td><td>Stage selected hunks &mdash; craft clean commits</td></tr>
+<tr><td><code>git commit -m "msg"</code></td><td>Commit staged changes</td></tr>
+<tr><td><code>git commit -am "msg"</code></td><td>Stage tracked + commit in one step</td></tr>
+<tr><td><code>git commit --amend</code></td><td>Edit the last commit (message/files) &mdash; before pushing</td></tr>
+<tr><td><code>git rm &lt;file&gt;</code> / <code>git mv</code></td><td>Remove / rename &amp; stage</td></tr>
+<tr><td><code>git restore &lt;file&gt;</code></td><td>Discard working-dir changes (modern)</td></tr>
+<tr><td><code>git restore --staged &lt;file&gt;</code></td><td>Unstage (keep edits)</td></tr>
+</table>
+
+<h3>4.3 Inspecting &amp; comparing</h3>
+<table>
+<tr><th>Command</th><th>Purpose</th></tr>
+<tr><td><code>git log --oneline --graph --all</code></td><td>Compact visual history</td></tr>
+<tr><td><code>git log -p</code> / <code>--stat</code></td><td>Show diffs / change stats per commit</td></tr>
+<tr><td><code>git diff</code></td><td>Working dir vs staged</td></tr>
+<tr><td><code>git diff --staged</code></td><td>Staged vs last commit</td></tr>
+<tr><td><code>git show &lt;commit&gt;</code></td><td>Details + diff of a commit</td></tr>
+<tr><td><code>git blame &lt;file&gt;</code></td><td>Who last changed each line</td></tr>
+<tr><td><code>git shortlog -sn</code></td><td>Commit counts per author</td></tr>
+</table>
+
+<h3>4.4 Branching &amp; switching</h3>
+<table>
+<tr><th>Command</th><th>Purpose</th></tr>
+<tr><td><code>git branch</code></td><td>List branches</td></tr>
+<tr><td><code>git branch &lt;name&gt;</code></td><td>Create a branch</td></tr>
+<tr><td><code>git switch &lt;name&gt;</code></td><td>Switch branch (modern)</td></tr>
+<tr><td><code>git switch -c &lt;name&gt;</code></td><td>Create + switch</td></tr>
+<tr><td><code>git checkout &lt;name&gt;</code></td><td>Switch (older, multi-purpose)</td></tr>
+<tr><td><code>git branch -d / -D &lt;name&gt;</code></td><td>Delete (safe / force)</td></tr>
+<tr><td><code>git merge &lt;name&gt;</code></td><td>Merge a branch into current</td></tr>
+<tr><td><code>git rebase &lt;name&gt;</code></td><td>Reapply commits on top of another base</td></tr>
+</table>
+<div class="callout note"><b><code>switch</code>/<code>restore</code> vs <code>checkout</code>:</b> Modern Git split the overloaded <code>checkout</code> into <code>switch</code> (change branches) and <code>restore</code> (restore files). Interviewers like when you mention this clarity improvement.</div>
+
+<h3>4.5 Remotes &amp; syncing</h3>
+<table>
+<tr><th>Command</th><th>Purpose</th></tr>
+<tr><td><code>git remote -v</code></td><td>List remotes</td></tr>
+<tr><td><code>git remote add origin &lt;url&gt;</code></td><td>Link a remote</td></tr>
+<tr><td><code>git fetch</code></td><td>Download remote changes (don't merge)</td></tr>
+<tr><td><code>git pull</code></td><td>Fetch + merge (or rebase) into current branch</td></tr>
+<tr><td><code>git push</code></td><td>Upload commits</td></tr>
+<tr><td><code>git push -u origin &lt;branch&gt;</code></td><td>Push &amp; set upstream tracking</td></tr>
+<tr><td><code>git push --force-with-lease</code></td><td>Safer force push (won't clobber others' work)</td></tr>
+</table>
+
+<h3>4.6 Fetch vs Pull <span class="tag inter">Common Q</span></h3>
+<table>
+<tr><th></th><th>git fetch</th><th>git pull</th></tr>
+<tr><td>Downloads remote commits</td><td>Yes</td><td>Yes</td></tr>
+<tr><td>Modifies your working branch</td><td>No (safe, review first)</td><td>Yes (merges/rebases)</td></tr>
+<tr><td>Formula</td><td>&mdash;</td><td>fetch + merge (or <code>--rebase</code>)</td></tr>
+</table>
+<div class="callout tip"><b>Best practice:</b> <code>git fetch</code> then review (<code>git log origin/main</code>) before integrating, or use <code>git pull --rebase</code> to keep a linear history without merge commits.</div>
+
+<div class="qa">
+<div class="q">git reset vs git checkout vs git revert (quick contrast)?</div>
+<div class="a"><code>reset</code> moves the branch pointer (rewrites history); <code>checkout</code>/<code>switch</code>/<code>restore</code> change what's in the working tree; <code>revert</code> creates a <em>new</em> commit that undoes a previous one (safe for shared history). Covered in depth in &sect;7.</div>
+</div>
+
+<h1 id="part2" class="pagebreak">Part II &mdash; Branching &amp; History</h1>
+
+<h2 id="s5">5. Branching &amp; Merging <span class="tag inter">Intermediate</span></h2>
+
+<h3>5.1 What a branch really is</h3>
+<p>A branch is a movable pointer to a commit. Commits form a <b>DAG</b> (directed acyclic graph) via parent links. Branching lets parallel lines of work proceed independently, then merge.</p>
+<pre><code>      A───B───C  (main)
+               \
+                D───E  (feature)
+git merge feature  ->  creates merge commit F with parents C and E</code></pre>
+
+<h3>5.2 Types of merges</h3>
+<table>
+<tr><th>Merge type</th><th>When</th><th>Result</th></tr>
+<tr><td><b>Fast-forward</b></td><td>Target hasn't diverged</td><td>Pointer just moves forward; no merge commit</td></tr>
+<tr><td><b>3-way merge</b></td><td>Both branches advanced</td><td>New merge commit with 2 parents</td></tr>
+<tr><td><b><code>--no-ff</code></b></td><td>Force a merge commit even if FF possible</td><td>Preserves feature-branch grouping in history</td></tr>
+<tr><td><b>Squash merge</b></td><td>Combine all feature commits into one</td><td>Clean single commit on target</td></tr>
+</table>
+<pre><code>git merge feature              # fast-forward if possible, else 3-way
+git merge --no-ff feature      # always create a merge commit
+git merge --squash feature     # stage combined changes as one commit</code></pre>
+
+<div class="qa">
+<div class="q">What is a fast-forward merge and when does it NOT happen?</div>
+<div class="a">When the current branch hasn't diverged, Git just moves its pointer forward to the feature tip &mdash; no merge commit. It can't fast-forward if the base branch has its own new commits (divergence), so Git performs a 3-way merge instead.</div>
+</div>
+
+
+<h2 id="s6">6. Merge vs Rebase <span class="tag adv">Advanced &mdash; very common Q</span></h2>
+<table>
+<tr><th></th><th>Merge</th><th>Rebase</th></tr>
+<tr><td>History</td><td>Preserves true history (merge commits)</td><td>Rewrites &mdash; linear, no merge commits</td></tr>
+<tr><td>Commits</td><td>Keeps original commit hashes</td><td>Creates new commits (new hashes)</td></tr>
+<tr><td>Readability</td><td>Can be noisy with many merges</td><td>Clean, linear log</td></tr>
+<tr><td>Safety</td><td>Safe on shared branches</td><td>Dangerous on shared/pushed branches</td></tr>
+</table>
+<pre><code># Rebase feature onto latest main (replays D,E on top of main's tip)
+git switch feature
+git rebase main
+#   A─B─C (main)            A─B─C
+#        \          =>            \
+#         D─E (feature)            D'─E' (feature, rebased)</code></pre>
+<div class="callout warn"><b>The Golden Rule of Rebasing:</b> <b>Never rebase commits that others have already pulled / that exist on a shared branch.</b> Rebasing rewrites history (new hashes); collaborators' repos diverge, causing painful conflicts. Rebase only <em>local, unpushed</em> work.</div>
+<div class="callout tip"><b>Practical guidance:</b> rebase your feature branch on top of <code>main</code> to keep it current and clean <em>before</em> opening a PR; use merge to integrate the finished feature into <code>main</code>. "Rebase locally, merge publicly."</div>
+
+<h3>6.1 Interactive rebase</h3>
+<pre><code>git rebase -i HEAD~4    # edit last 4 commits
+# in the editor, per commit choose:
+#   pick    keep as-is
+#   reword  change message
+#   edit    pause to amend
+#   squash  fold into previous (keep both messages)
+#   fixup   fold into previous (discard message)
+#   drop    delete the commit</code></pre>
+<p>Used to <b>clean up history before sharing</b> &mdash; squash WIP commits, reorder, fix messages.</p>
+
+<div class="qa">
+<div class="q">When would you rebase instead of merge?</div>
+<div class="a">To keep a clean, linear history &mdash; e.g. updating a local feature branch with the latest main before review, or squashing messy WIP commits. Avoid rebasing shared branches; use merge there to preserve everyone's history.</div>
+</div>
+
+
+<h2 id="s7">7. Undoing Changes (reset / revert / restore) <span class="tag adv">Advanced</span></h2>
+
+<h3>7.1 git reset &mdash; three modes</h3>
+<table>
+<tr><th>Mode</th><th>Moves branch</th><th>Staging</th><th>Working dir</th></tr>
+<tr><td><code>--soft</code></td><td>Yes</td><td>Kept (staged)</td><td>Kept</td></tr>
+<tr><td><code>--mixed</code> (default)</td><td>Yes</td><td>Reset (unstaged)</td><td>Kept</td></tr>
+<tr><td><code>--hard</code></td><td>Yes</td><td>Reset</td><td><b>Discarded</b></td></tr>
+</table>
+<pre><code>git reset --soft  HEAD~1   # undo last commit, keep changes staged
+git reset --mixed HEAD~1   # undo commit + unstage, keep edits
+git reset --hard  HEAD~1   # undo commit AND throw away changes (danger!)</code></pre>
+<div class="callout warn"><b><code>reset --hard</code></b> permanently discards uncommitted work. Committed work can often be recovered via <code>git reflog</code>, but uncommitted changes are gone.</div>
+
+<h3>7.2 revert vs reset</h3>
+<table>
+<tr><th></th><th>git revert</th><th>git reset</th></tr>
+<tr><td>How</td><td>New commit that inverts a previous one</td><td>Moves branch pointer back</td></tr>
+<tr><td>History</td><td>Preserved (safe)</td><td>Rewritten</td></tr>
+<tr><td>Use on shared branches?</td><td>Yes &mdash; recommended</td><td>No (rewrites public history)</td></tr>
+</table>
+<pre><code>git revert &lt;commit&gt;     # safely undo a pushed commit (creates an "undo" commit)</code></pre>
+
+<h3>7.3 restore (modern, file-level)</h3>
+<pre><code>git restore file.txt              # discard working-dir changes
+git restore --staged file.txt     # unstage but keep edits
+git restore --source=HEAD~2 f.txt # restore file from an old commit</code></pre>
+
+<div class="qa">
+<div class="q">A bad commit was already pushed to main &mdash; how do you undo it?</div>
+<div class="a">Use <code>git revert &lt;commit&gt;</code>. It creates a new commit that reverses the change, preserving history so collaborators aren't disrupted. Never <code>reset --hard</code> + force-push a shared branch unless the whole team coordinates.</div>
+</div>
+
+
+<h2 id="s8">8. Stash, Cherry-pick, Tags &amp; Reflog <span class="tag inter">Intermediate</span></h2>
+
+<h3>8.1 git stash &mdash; shelve work temporarily</h3>
+<pre><code>git stash                 # save uncommitted changes, clean working dir
+git stash -u              # include untracked files
+git stash list            # see stashes
+git stash pop             # reapply + remove from stash
+git stash apply           # reapply, keep in stash
+git stash drop            # delete a stash</code></pre>
+<p><b>Use when:</b> you need to switch branches urgently but aren't ready to commit.</p>
+
+<h3>8.2 git cherry-pick &mdash; copy a specific commit</h3>
+<pre><code>git cherry-pick &lt;commit&gt;   # apply one commit from another branch onto current</code></pre>
+<p><b>Use when:</b> applying a hotfix to multiple branches, or grabbing one commit without merging the whole branch.</p>
+
+<h3>8.3 Tags</h3>
+<table>
+<tr><th>Type</th><th>Command</th></tr>
+<tr><td>Lightweight</td><td><code>git tag v1.0</code></td></tr>
+<tr><td>Annotated (recommended for releases)</td><td><code>git tag -a v1.0 -m "Release 1.0"</code></td></tr>
+<tr><td>Push tags</td><td><code>git push origin v1.0</code> / <code>--tags</code></td></tr>
+</table>
+<div class="callout note"><b>Annotated tags</b> store author, date, message, and can be signed &mdash; use them for releases. Lightweight tags are just a name pointing to a commit.</div>
+
+<h3>8.4 git reflog &mdash; the safety net</h3>
+<pre><code>git reflog                 # log of where HEAD has been (even "lost" commits)
+git reset --hard HEAD@{2}   # jump back to a previous state</code></pre>
+<div class="callout tip"><b>Lifesaver:</b> Reflog records every HEAD movement (commits, resets, rebases) for ~90 days. If you "lose" commits via a bad reset/rebase, find them in the reflog and recover &mdash; a favourite interview rescue answer.</div>
+
+<div class="qa">
+<div class="q">You did <code>git reset --hard</code> and lost commits &mdash; can you recover?</div>
+<div class="a">Yes, if they were committed. Use <code>git reflog</code> to find the lost commit's hash, then <code>git reset --hard &lt;hash&gt;</code> or <code>git cherry-pick</code> it. Uncommitted changes, however, are unrecoverable.</div>
+</div>
+
+
+<h2 id="s9">9. Resolving Conflicts <span class="tag inter">Intermediate</span></h2>
+<p>A <b>merge conflict</b> happens when two branches change the same lines (or one edits a file the other deleted) and Git can't auto-merge.</p>
+<pre><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+your current branch's version
+=======
+the incoming branch's version
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature</code></pre>
+<pre><code># Resolve workflow
+git status                # see conflicted files
+# edit files, remove markers, keep the correct content
+git add &lt;resolved-file&gt;    # mark resolved
+git commit                # (merge) or  git rebase --continue
+git merge --abort         # bail out and return to pre-merge state</code></pre>
+<div class="callout tip"><b>Reduce conflicts:</b> pull/rebase frequently, keep branches short-lived &amp; small, communicate on shared files, and use a merge tool. Enable <code>git rerere</code> to auto-reuse recorded conflict resolutions.</div>
+
+<div class="qa">
+<div class="q">How do you resolve a merge conflict?</div>
+<div class="a">Run the merge/rebase, open conflicted files (marked with <code>&lt;&lt;&lt;/===/&gt;&gt;&gt;</code>), manually choose/combine the correct content, remove the markers, <code>git add</code> the files, then commit (or <code>git rebase --continue</code>). Use <code>git merge --abort</code> to back out entirely.</div>
+</div>
+
+<h1 id="part3" class="pagebreak">Part III &mdash; Workflows &amp; Collaboration</h1>
+
+<h2 id="s10">10. Remotes &amp; Collaboration <span class="tag inter">Intermediate</span></h2>
+
+<h3>10.1 Remote-tracking branches</h3>
+<p><code>origin/main</code> is a <b>remote-tracking branch</b> &mdash; your local snapshot of where the remote's <code>main</code> was at your last fetch. Your local <code>main</code> tracks it (upstream).</p>
+<pre><code>git branch -vv             # show tracking relationships
+git push -u origin main    # set upstream so future push/pull need no args</code></pre>
+
+<h3>10.2 Clone vs Fork</h3>
+<table>
+<tr><th></th><th>Clone</th><th>Fork</th></tr>
+<tr><td>What</td><td>Local copy of a repo</td><td>Server-side copy under your account</td></tr>
+<tr><td>Use</td><td>Work on a repo you can push to</td><td>Contribute to repos you can't push to (open source)</td></tr>
+<tr><td>Sync upstream</td><td>via <code>origin</code></td><td>add <code>upstream</code> remote, fetch + merge</td></tr>
+</table>
+<pre><code># Fork workflow: keep your fork in sync with the original ("upstream")
+git remote add upstream &lt;original-repo-url&gt;
+git fetch upstream
+git merge upstream/main        # or: git rebase upstream/main</code></pre>
+
+<h3>10.3 SSH vs HTTPS &amp; .gitignore</h3>
+<ul>
+<li><b>HTTPS</b> &mdash; uses tokens/credentials; works through firewalls. <b>SSH</b> &mdash; key-based, no password each push.</li>
+<li><b>.gitignore</b> &mdash; patterns for files Git should not track (build output, secrets, <code>node_modules</code>, IDE files).</li>
+</ul>
+<div class="callout warn"><b>Pitfall:</b> <code>.gitignore</code> only ignores <em>untracked</em> files. If a file is already tracked, you must <code>git rm --cached &lt;file&gt;</code> to stop tracking it. <b>Never commit secrets</b> &mdash; once pushed, assume they're compromised even if later removed.</div>
+
+
+<h2 id="s11">11. Branching Strategies &amp; Workflows <span class="tag adv">Advanced</span></h2>
+
+<h3>11.1 Common workflows</h3>
+<table>
+<tr><th>Strategy</th><th>Idea</th><th>Best for</th></tr>
+<tr><td><b>Git Flow</b></td><td>Long-lived <code>main</code>+<code>develop</code> + feature/release/hotfix branches</td><td>Scheduled releases, versioned products</td></tr>
+<tr><td><b>GitHub Flow</b></td><td>One <code>main</code> + short feature branches + PR + deploy</td><td>Continuous deployment, web apps</td></tr>
+<tr><td><b>GitLab Flow</b></td><td>Feature branches + environment/release branches</td><td>Balance of the two; env promotion</td></tr>
+<tr><td><b>Trunk-Based</b></td><td>Everyone commits to <code>main</code> (tiny branches), feature flags</td><td>High-velocity CI/CD teams</td></tr>
+</table>
+
+<h3>11.2 Git Flow branches</h3>
+<pre><code>main      ───────●───────────────●──────  (production, tagged releases)
+                  \             /
+develop   ──●───●──●───●───●───●─────────  (integration)
+              \     /     \   /
+feature        ●───●       ●─●            (feature/*, off develop)
+hotfix    ──────────────●──●──────────────(hotfix/*, off main)</code></pre>
+
+<h3>11.3 GitHub Flow (simple &amp; common)</h3>
+<pre><code>1. Branch off main:   git switch -c feature/login
+2. Commit + push:     git push -u origin feature/login
+3. Open a Pull Request -> review + CI checks
+4. Merge to main      -> auto-deploy
+5. Delete the branch</code></pre>
+
+<div class="callout tip"><b>Interview framing:</b> Git Flow = structured, heavier, good for versioned releases. GitHub Flow / Trunk-Based = lightweight, fast, good for continuous delivery. Modern teams trend toward trunk-based + feature flags for speed.</div>
+
+<div class="qa">
+<div class="q">Which branching strategy would you use and why?</div>
+<div class="a">It depends on release cadence. For continuous deployment of a web app, GitHub Flow or trunk-based (short branches, fast PRs, feature flags). For products with scheduled, versioned releases and parallel maintenance, Git Flow (develop/release/hotfix). The key is matching the team's deployment model.</div>
+</div>
+
+
+<h2 id="s12">12. Pull / Merge Requests &amp; Code Review <span class="tag inter">Intermediate</span></h2>
+<p>A <b>Pull Request (GitHub)</b> / <b>Merge Request (GitLab)</b> proposes merging one branch into another, enabling <b>review, discussion, and automated checks</b> before integration.</p>
+
+<h3>12.1 Anatomy of a good PR/MR</h3>
+<ul>
+<li>Small, focused, single-purpose; clear title + description (what &amp; why); linked issue.</li>
+<li>Passing CI (build, tests, lint); required reviewer approvals.</li>
+<li>Resolved conversations before merge.</li>
+</ul>
+
+<h3>12.2 Merge options when closing a PR</h3>
+<table>
+<tr><th>Option</th><th>Result</th><th>Use when</th></tr>
+<tr><td>Merge commit</td><td>Preserves all commits + merge commit</td><td>Want full history</td></tr>
+<tr><td>Squash &amp; merge</td><td>Combines into one commit on main</td><td>Clean linear history (most common)</td></tr>
+<tr><td>Rebase &amp; merge</td><td>Replays commits, no merge commit</td><td>Linear history, keep individual commits</td></tr>
+</table>
+
+<h3>12.3 Code review best practices</h3>
+<ul>
+<li>Review for correctness, readability, security, tests &mdash; not style nitpicks (automate those with linters).</li>
+<li>Be specific and kind; suggest, don't demand; approve small good changes quickly.</li>
+<li>Use <b>draft PRs</b> for early feedback; require <b>branch protection</b> (reviews + green CI) on <code>main</code>.</li>
+</ul>
+
+<div class="qa">
+<div class="q">PR vs MR &mdash; any real difference?</div>
+<div class="a">Functionally the same concept; just different names (GitHub: Pull Request, GitLab: Merge Request). Both propose merging a branch with review and CI gating. GitLab's "Merge Request" name is arguably more accurate (you're requesting a merge).</div>
+</div>
+
+<h1 id="part4" class="pagebreak">Part IV &mdash; GitHub &amp; GitLab</h1>
+
+<h2 id="s13">13. GitHub Platform <span class="tag inter">Intermediate</span></h2>
+
+<h3>13.1 Core features</h3>
+<table>
+<tr><th>Feature</th><th>Purpose</th></tr>
+<tr><td>Repositories</td><td>Host code (public/private)</td></tr>
+<tr><td>Pull Requests</td><td>Review &amp; merge proposals</td></tr>
+<tr><td>Issues &amp; Projects</td><td>Bug/task tracking, kanban boards</td></tr>
+<tr><td>Actions</td><td>CI/CD &amp; automation</td></tr>
+<tr><td>Branch protection rules</td><td>Enforce reviews, CI, no force-push on main</td></tr>
+<tr><td>Releases &amp; Packages</td><td>Versioned artifacts, package registry</td></tr>
+<tr><td>Codeowners</td><td>Auto-request reviews from owners of paths</td></tr>
+<tr><td>Wiki / Pages / Discussions</td><td>Docs, static sites, community</td></tr>
+</table>
+
+<h3>13.2 Authentication</h3>
+<ul>
+<li><b>Personal Access Tokens (PAT)</b> replaced password auth for HTTPS (fine-grained tokens preferred).</li>
+<li><b>SSH keys</b> for passwordless Git over SSH.</li>
+<li><b>Deploy keys</b> (per-repo) and <b>GitHub Apps</b> for automation/CI.</li>
+</ul>
+
+<h3>13.3 Useful files</h3>
+<table>
+<tr><th>File</th><th>Role</th></tr>
+<tr><td><code>README.md</code></td><td>Project overview/landing</td></tr>
+<tr><td><code>.gitignore</code></td><td>Ignore rules</td></tr>
+<tr><td><code>CODEOWNERS</code></td><td>Path &rarr; reviewer mapping</td></tr>
+<tr><td><code>.github/workflows/*.yml</code></td><td>GitHub Actions pipelines</td></tr>
+<tr><td><code>PULL_REQUEST_TEMPLATE.md</code></td><td>Standardize PR descriptions</td></tr>
+<tr><td><code>CONTRIBUTING.md</code> / <code>LICENSE</code></td><td>Contribution rules / licensing</td></tr>
+</table>
+
+
+<h2 id="s14">14. GitLab Platform <span class="tag inter">Intermediate</span></h2>
+<p>GitLab is an integrated <b>DevOps platform</b> &mdash; SCM + CI/CD + registry + security scanning + issue tracking in one product (vs GitHub's more modular ecosystem). Available SaaS or self-managed.</p>
+<table>
+<tr><th>Feature</th><th>Notes</th></tr>
+<tr><td>Merge Requests</td><td>GitLab's PR equivalent</td></tr>
+<tr><td>GitLab CI/CD</td><td>Built-in via <code>.gitlab-ci.yml</code> + Runners</td></tr>
+<tr><td>Container/Package Registry</td><td>Built-in</td></tr>
+<tr><td>Issues, Epics, Boards</td><td>Planning (Epics for grouping)</td></tr>
+<tr><td>Security scanning</td><td>SAST, DAST, dependency &amp; container scanning (built-in)</td></tr>
+<tr><td>Auto DevOps</td><td>Zero-config build/test/deploy pipeline</td></tr>
+<tr><td>Self-managed option</td><td>Strong on-prem story</td></tr>
+</table>
+
+<h3>14.1 GitHub vs GitLab</h3>
+<table>
+<tr><th></th><th>GitHub</th><th>GitLab</th></tr>
+<tr><td>Philosophy</td><td>Largest community + ecosystem/marketplace</td><td>All-in-one DevOps platform</td></tr>
+<tr><td>CI/CD</td><td>GitHub Actions</td><td>GitLab CI/CD (mature, integrated)</td></tr>
+<tr><td>Self-hosting</td><td>GitHub Enterprise Server</td><td>Free self-managed (Community Edition)</td></tr>
+<tr><td>Built-in security</td><td>Add-ons / Advanced Security</td><td>Extensive built-in scanning</td></tr>
+<tr><td>Naming</td><td>Pull Request, Org, Repo</td><td>Merge Request, Group, Project</td></tr>
+</table>
+
+<div class="qa">
+<div class="q">GitHub vs GitLab &mdash; which would you pick?</div>
+<div class="a">GitHub for the largest open-source community, ecosystem, and Actions marketplace. GitLab for an integrated end-to-end DevOps platform with strong built-in CI/CD and security, and a first-class free self-hosted option. The choice often comes down to ecosystem vs all-in-one integration and hosting needs.</div>
+</div>
+
+
+<h2 id="s15">15. CI/CD (Actions &amp; Pipelines) <span class="tag adv">Advanced</span></h2>
+
+<h3>15.1 Concepts</h3>
+<table>
+<tr><th>Term</th><th>Meaning</th></tr>
+<tr><td><b>CI</b> (Continuous Integration)</td><td>Auto build + test every push/PR &mdash; catch issues early</td></tr>
+<tr><td><b>CD</b> (Delivery / Deployment)</td><td>Auto release to staging (delivery) / production (deployment)</td></tr>
+<tr><td>Pipeline</td><td>A sequence of stages/jobs triggered by events</td></tr>
+<tr><td>Runner / Worker</td><td>Machine that executes jobs</td></tr>
+<tr><td>Artifact</td><td>Build output passed between jobs / published</td></tr>
+</table>
+
+<h3>15.2 GitHub Actions example</h3>
+<pre><code>name: CI
+on: [push, pull_request]
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '21' }
+      - run: ./mvnw -B verify          # build + test
+      - uses: actions/upload-artifact@v4
+        with: { name: jar, path: target/*.jar }</code></pre>
+<p><b>Building blocks:</b> workflow &rarr; jobs &rarr; steps; jobs run in parallel by default; use <code>needs:</code> for ordering, <code>secrets</code> for credentials, and <code>matrix</code> to test multiple versions.</p>
+
+<h3>15.3 GitLab CI/CD example</h3>
+<pre><code># .gitlab-ci.yml
+stages: [build, test, deploy]
+build:
+  stage: build
+  script: ./mvnw -B package
+  artifacts: { paths: ["target/*.jar"] }
+test:
+  stage: test
+  script: ./mvnw -B test
+deploy:
+  stage: deploy
+  script: ./deploy.sh
+  only: { refs: [main] }            # deploy only from main</code></pre>
+
+<div class="callout tip"><b>Best practices:</b> fail fast (lint/test early), cache dependencies, keep secrets in the platform's secret store (never in YAML), require green pipeline before merge, use environments + manual approval for production, and make pipelines reproducible.</div>
+
+<div class="qa">
+<div class="q">CI vs CD vs Continuous Deployment?</div>
+<div class="a">CI = automatically build &amp; test every change. Continuous <b>Delivery</b> = every passing build is release-ready and auto-deployed to staging, with a manual approval gate to production. Continuous <b>Deployment</b> goes further &mdash; every passing change auto-deploys to production with no manual gate.</div>
+</div>
+
+
+<h2 id="s16">16. Security &amp; Repository Management <span class="tag adv">Advanced</span></h2>
+<table>
+<tr><th>Control</th><th>Purpose</th></tr>
+<tr><td><b>Branch protection</b></td><td>Require reviews + passing CI; block force-push/deletion of <code>main</code></td></tr>
+<tr><td><b>Signed commits (GPG/SSH)</b></td><td>Verify author authenticity (<code>Verified</code> badge)</td></tr>
+<tr><td><b>Secret scanning</b></td><td>Detect committed credentials/keys</td></tr>
+<tr><td><b>Dependabot / dependency scanning</b></td><td>Flag vulnerable dependencies, auto-PR updates</td></tr>
+<tr><td><b>SAST/DAST</b></td><td>Static/dynamic security testing in CI</td></tr>
+<tr><td><b>CODEOWNERS + required reviews</b></td><td>Enforce expert review per area</td></tr>
+<tr><td><b>Least-privilege tokens</b></td><td>Fine-grained PATs, short-lived CI tokens</td></tr>
+</table>
+
+<h3>16.1 Removing a leaked secret</h3>
+<div class="callout warn"><b>If a secret was committed:</b> (1) <b>rotate/revoke it immediately</b> &mdash; assume it's compromised. (2) Remove it from history with <code>git filter-repo</code> (or BFG Repo-Cleaner) &mdash; <code>filter-branch</code> is deprecated. (3) Force-push the rewritten history and have collaborators re-clone. Removing from history alone is <em>not</em> enough &mdash; rotation is mandatory.</div>
+
+<h3>16.2 Large files &amp; repo hygiene</h3>
+<ul>
+<li><b>Git LFS (Large File Storage)</b> &mdash; store large binaries (videos, datasets, models) outside the main repo via pointers, keeping clones fast.</li>
+<li>Don't commit build artifacts, dependencies, or secrets; use <code>.gitignore</code>.</li>
+<li><b>Monorepo vs polyrepo</b> &mdash; one big repo (shared tooling, atomic cross-project changes) vs many (independent deploys, clear ownership).</li>
+</ul>
+
+<div class="qa">
+<div class="q">How do you completely remove a sensitive file from Git history?</div>
+<div class="a">Rotate the secret first (non-negotiable). Then rewrite history with <code>git filter-repo --path secret.env --invert-paths</code> (or BFG), force-push, and have everyone re-clone. Also clear it from any caches/forks/CI logs. History rewriting changes all subsequent commit hashes.</div>
+</div>
+
+<h1 id="part5" class="pagebreak">Part V &mdash; Advanced &amp; Interview</h1>
+
+<h2 id="s17">17. Advanced Git &amp; Troubleshooting <span class="tag adv">Advanced</span></h2>
+
+<h3>17.1 git bisect &mdash; find the commit that broke it</h3>
+<pre><code>git bisect start
+git bisect bad                 # current commit is broken
+git bisect good v1.0           # this old commit worked
+# Git checks out the midpoint; you test &amp; mark each:
+git bisect good   # or  git bisect bad
+# ... binary search until Git names the first bad commit
+git bisect reset               # finish</code></pre>
+<p><b>Binary search</b> through history &mdash; finds a regression among thousands of commits in ~log&#8322;(n) steps.</p>
+
+<h3>17.2 Other power tools</h3>
+<table>
+<tr><th>Command</th><th>Purpose</th></tr>
+<tr><td><code>git cherry-pick</code></td><td>Apply specific commit(s) elsewhere</td></tr>
+<tr><td><code>git worktree add</code></td><td>Multiple working dirs from one repo (work on 2 branches at once)</td></tr>
+<tr><td><code>git submodule</code></td><td>Embed another repo at a pinned commit</td></tr>
+<tr><td><code>git rebase -i --autosquash</code></td><td>Auto-fold <code>fixup!</code>/<code>squash!</code> commits</td></tr>
+<tr><td><code>git clean -fd</code></td><td>Delete untracked files/dirs (danger)</td></tr>
+<tr><td><code>git reflog</code></td><td>Recover lost commits/HEAD positions</td></tr>
+<tr><td><code>git gc</code> / <code>git fsck</code></td><td>Garbage collect / check integrity</td></tr>
+<tr><td><code>git log --grep / -S</code></td><td>Search messages / "pickaxe" search code changes</td></tr>
+</table>
+
+<h3>17.3 Submodules vs Subtree vs Monorepo</h3>
+<table>
+<tr><th></th><th>Submodule</th><th>Subtree</th></tr>
+<tr><td>Stores</td><td>Pointer to external repo's commit</td><td>Copies external code into your repo</td></tr>
+<tr><td>Clone</td><td>Needs <code>--recurse-submodules</code></td><td>Just works</td></tr>
+<tr><td>Complexity</td><td>Higher (detached HEADs, extra steps)</td><td>Simpler to consume, harder to push back</td></tr>
+</table>
+
+<h3>17.4 Troubleshooting table</h3>
+<table>
+<tr><th>Problem</th><th>Fix</th></tr>
+<tr><td>Committed to wrong branch</td><td><code>git switch correct</code> then <code>git cherry-pick</code>, or move with reset/stash</td></tr>
+<tr><td>Need to undo last commit (keep work)</td><td><code>git reset --soft HEAD~1</code></td></tr>
+<tr><td>Wrong commit message (unpushed)</td><td><code>git commit --amend</code></td></tr>
+<tr><td>Pushed a bad commit (shared)</td><td><code>git revert &lt;commit&gt;</code></td></tr>
+<tr><td>Lost commits after reset/rebase</td><td><code>git reflog</code> + reset/cherry-pick</td></tr>
+<tr><td>Detached HEAD with new commits</td><td><code>git switch -c newbranch</code> to save them</td></tr>
+<tr><td>"Updates were rejected" on push</td><td><code>git pull --rebase</code> then push; never blind <code>--force</code></td></tr>
+<tr><td>Accidentally tracked a file</td><td><code>git rm --cached</code> + add to <code>.gitignore</code></td></tr>
+<tr><td>Detach a big file bloating repo</td><td>migrate to Git LFS / rewrite history</td></tr>
+</table>
+
+<div class="qa">
+<div class="q">How would you find which commit introduced a bug?</div>
+<div class="a"><code>git bisect</code> &mdash; mark a known-good and known-bad commit; Git binary-searches, checking out midpoints for you to test, and pinpoints the first bad commit in logarithmic steps. Automate with <code>git bisect run &lt;test-script&gt;</code>.</div>
+</div>
+
+
+<h2 id="s18">18. Best Practices &amp; Common Pitfalls <span class="tag inter">Intermediate</span></h2>
+
+<h3>18.1 Best practices</h3>
+<ul>
+<li><b>Commit small &amp; often</b>, each a logical unit; write clear messages (imperative mood: "Add login validation").</li>
+<li>Follow <b>Conventional Commits</b> (<code>feat:</code>, <code>fix:</code>, <code>docs:</code>) for automated changelogs/semver.</li>
+<li><b>Branch per feature</b>; keep branches short-lived; pull/rebase frequently.</li>
+<li>Never commit secrets or large binaries; maintain <code>.gitignore</code>.</li>
+<li>Protect <code>main</code> (reviews + CI); use PRs/MRs for all changes.</li>
+<li>Rebase local work, merge shared work; clean up history before sharing.</li>
+</ul>
+
+<h3>18.2 Good commit message format</h3>
+<pre><code>feat(auth): add password strength validation
+
+- enforce min 8 chars, 1 number, 1 symbol
+- show inline error messages
+
+Closes #142</code></pre>
+
+<h3>18.3 Common pitfalls</h3>
+<div class="callout warn"><b>Avoid:</b> <code>git push --force</code> on shared branches (use <code>--force-with-lease</code>); rebasing public history; committing secrets/<code>node_modules</code>; giant "misc fixes" commits; long-lived divergent branches (merge hell); working directly on <code>main</code>; ignoring <code>.gitignore</code> until files are already tracked.</div>
+
+<div class="qa">
+<div class="q">What makes a good commit and commit message?</div>
+<div class="a">A good commit is small, atomic, and self-contained (one logical change, builds &amp; passes tests). A good message has a concise imperative summary line (&le;50 chars), a blank line, then a body explaining <em>why</em> (not just what), and references the issue.</div>
+</div>
+
+
+<h2 id="s19">19. Interview Scenarios &amp; Cheat-Sheet <span class="tag adv">Advanced</span></h2>
+
+<h3>19.1 Scenario questions</h3>
+<div class="qa">
+<div class="q">You accidentally committed a secret and pushed it. What now?</div>
+<div class="a">1) Immediately rotate/revoke the secret (assume compromised). 2) Remove it from history (<code>git filter-repo</code>/BFG). 3) Force-push and have collaborators re-clone. 4) Audit logs/CI caches. Removing from history is not enough &mdash; rotation is the real fix.</div>
+</div>
+<div class="qa">
+<div class="q">Two developers edited the same file and there's a conflict on merge. Walk me through it.</div>
+<div class="a">Run the merge, identify conflicted files via <code>git status</code>, open them and resolve the <code>&lt;&lt;&lt;/===/&gt;&gt;&gt;</code> sections (keep correct content, remove markers), <code>git add</code> the resolved files, then commit. Prevent recurrence with smaller branches and frequent rebasing/pulling.</div>
+</div>
+<div class="qa">
+<div class="q">Your feature branch is 30 commits behind main. How do you update it cleanly?</div>
+<div class="a">If it's local/unshared: <code>git fetch && git rebase origin/main</code> for a clean linear history. If others share the branch: <code>git merge origin/main</code> to avoid rewriting their history. Resolve any conflicts during the operation.</div>
+</div>
+<div class="qa">
+<div class="q">How do you revert a merge that's already on main?</div>
+<div class="a"><code>git revert -m 1 &lt;merge-commit&gt;</code> &mdash; the <code>-m 1</code> specifies which parent is the mainline to keep. Be aware re-merging that branch later needs care (revert the revert or rebase), a classic gotcha.</div>
+</div>
+<div class="qa">
+<div class="q">Explain the difference between reset, revert, and checkout in one breath.</div>
+<div class="a"><code>reset</code> moves the branch pointer (can rewrite history &amp; discard work); <code>revert</code> creates a new commit that undoes a previous one (safe for shared history); <code>checkout</code>/<code>restore</code> change what's in your working tree/which branch you're on.</div>
+</div>
+
+<hr>
+<h3 style="page-break-before:always;">19.2 Rapid Revision Cheat-Sheet</h3>
+<table>
+<tr><th>Concept</th><th>One-liner</th></tr>
+<tr><td>Git</td><td>Distributed VCS; every clone is a full repo</td></tr>
+<tr><td>Git vs GitHub/GitLab</td><td>Tool vs hosting+collaboration platform</td></tr>
+<tr><td>Objects</td><td>blob, tree, commit, tag (SHA-addressed)</td></tr>
+<tr><td>Snapshots</td><td>Git stores snapshots, not diffs</td></tr>
+<tr><td>Branch</td><td>Movable pointer to a commit (cheap)</td></tr>
+<tr><td>HEAD</td><td>Pointer to current branch/commit</td></tr>
+<tr><td>3 areas</td><td>Working dir &rarr; staging &rarr; repository</td></tr>
+<tr><td>add / commit</td><td>Stage changes / save to history</td></tr>
+<tr><td>fetch vs pull</td><td>Download only vs download + merge</td></tr>
+<tr><td>merge vs rebase</td><td>Preserve history vs linear (rewrite)</td></tr>
+<tr><td>Golden rule</td><td>Never rebase shared/pushed history</td></tr>
+<tr><td>reset modes</td><td>soft(keep staged), mixed(unstage), hard(discard)</td></tr>
+<tr><td>revert</td><td>New commit that undoes &mdash; safe on shared</td></tr>
+<tr><td>stash</td><td>Shelve uncommitted work temporarily</td></tr>
+<tr><td>cherry-pick</td><td>Copy a specific commit</td></tr>
+<tr><td>reflog</td><td>Recover lost commits</td></tr>
+<tr><td>bisect</td><td>Binary-search for the bad commit</td></tr>
+<tr><td>tag -a</td><td>Annotated tag for releases</td></tr>
+<tr><td>squash merge</td><td>Combine PR commits into one</td></tr>
+<tr><td>force-with-lease</td><td>Safer than --force</td></tr>
+<tr><td>Git Flow</td><td>main+develop+feature/release/hotfix</td></tr>
+<tr><td>GitHub Flow</td><td>main + short branches + PR + deploy</td></tr>
+<tr><td>Trunk-based</td><td>Tiny branches to main + feature flags</td></tr>
+<tr><td>CI vs CD</td><td>Auto build+test vs auto release/deploy</td></tr>
+<tr><td>Leaked secret</td><td>Rotate first, then rewrite history</td></tr>
+<tr><td>Git LFS</td><td>Large binaries outside main repo</td></tr>
+<tr><td>PR vs MR</td><td>GitHub vs GitLab name; same concept</td></tr>
+</table>
+
+<div class="callout tip"><b>Interview delivery tips:</b> (1) Always distinguish Git (tool) from GitHub/GitLab (platforms). (2) For "undo" questions, pick reset/revert/restore by whether history is shared. (3) Recite the rebase golden rule unprompted. (4) Mention reflog &amp; bisect as recovery/debugging power tools &mdash; they signal real experience. (5) Tie branching strategy to deployment cadence.</div>
+
+<hr>
+<p style="text-align:center;color:#777;font-size:.85rem;">End of notes &mdash; Git, GitHub &amp; GitLab Interview Preparation &bull; Beginner to Advanced</p>
+<!--CONTENT-->
+
+</div>
+</body>
+</html>

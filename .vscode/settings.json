@@ -1,0 +1,11 @@
+{
+  "markdown-pdf.format": "A4",
+  "markdown-pdf.margin.top": "8mm",
+  "markdown-pdf.margin.bottom": "8mm",
+  "markdown-pdf.margin.left": "10mm",
+  "markdown-pdf.margin.right": "10mm",
+  "markdown-pdf.displayHeaderFooter": false,
+  "markdown-pdf.printBackground": true,
+  "markdown-pdf.styles": ["./resume.css"],
+  "markdown-pdf.includeDefaultStyles": false
+}

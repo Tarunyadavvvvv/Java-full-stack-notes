@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CS Fundamentals Interview Notes</title>
+<style>
+  :root{
+    --ink:#1a1a1a; --muted:#555; --accent:#6d28d9; --accent2:#4c1d95;
+    --code-bg:#f6f8fa; --code-ink:#24292e; --border:#d8dee4;
+    --tip:#0a7d3c; --warn:#b54708; --note:#1f6feb;
+  }
+  *{box-sizing:border-box;}
+  html{font-size:13.5px;}
+  body{
+    font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); line-height:1.55; margin:0; padding:0 0 40px;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .page{max-width:880px; margin:0 auto; padding:0 26px;}
+  h1,h2,h3,h4{line-height:1.25; font-weight:700;}
+  h1{font-size:2.1rem; color:var(--accent2); margin:0 0 .2em;}
+  h2{font-size:1.5rem; color:var(--accent2); border-bottom:3px solid var(--accent);
+     padding-bottom:.2em; margin:2.2em 0 .8em;}
+  h3{font-size:1.18rem; color:#222; margin:1.6em 0 .5em;
+     border-left:4px solid var(--accent); padding-left:.5em;}
+  h4{font-size:1.02rem; color:#333; margin:1.2em 0 .4em;}
+  p{margin:.55em 0;}
+  ul,ol{margin:.5em 0 .8em; padding-left:1.5em;}
+  li{margin:.25em 0;}
+  code{font-family:"Cascadia Code",Consolas,"Courier New",monospace; font-size:.86em;
+       background:var(--code-bg); color:#b5266a; padding:.1em .35em; border-radius:4px;}
+  pre{background:var(--code-bg); border:1px solid var(--border); border-radius:8px;
+      padding:12px 14px; overflow:auto; margin:.7em 0; line-height:1.45;}
+  pre code{background:none; color:var(--code-ink); padding:0; font-size:.82rem; white-space:pre;}
+  table{border-collapse:collapse; width:100%; margin:.9em 0; font-size:.89rem;}
+  th,td{border:1px solid var(--border); padding:7px 10px; text-align:left; vertical-align:top;}
+  th{background:#f1ebfb; color:#4c1d95; font-weight:600;}
+  tr:nth-child(even) td{background:#fafbfc;}
+  .tag{display:inline-block; font-size:.7rem; font-weight:700; padding:.12em .55em;
+       border-radius:20px; vertical-align:middle; margin-left:.4em;}
+  .tag.basic{background:#e6f4ea; color:#0a7d3c;}
+  .tag.inter{background:#fff4e5; color:#b54708;}
+  .tag.adv{background:#fde8ef; color:#b5266a;}
+  .callout{border-radius:8px; padding:10px 14px; margin:.8em 0; border-left:5px solid;}
+  .callout.tip{background:#eaf7ef; border-color:var(--tip);}
+  .callout.warn{background:#fff3e6; border-color:var(--warn);}
+  .callout.note{background:#eaf1fb; border-color:var(--note);}
+  .callout b{display:inline-block; margin-bottom:.1em;}
+  .qa{margin:.7em 0; padding:10px 14px; background:#f7f9fc; border:1px solid var(--border); border-radius:8px;}
+  .qa .q{font-weight:700; color:var(--accent2);}
+  .qa .q::before{content:"Q. "; color:var(--accent);}
+  .qa .a{margin-top:.25em;}
+  .qa .a::before{content:"A. "; font-weight:700; color:var(--tip);}
+  .toc{columns:2; column-gap:34px; font-size:.9rem; margin:1em 0 0;}
+  .toc a{text-decoration:none; color:#4c1d95;}
+  .toc ol{padding-left:1.3em; margin:.2em 0;}
+  .toc b{display:block; margin-top:.5em;}
+  .cover{text-align:center; padding:70px 0 24px;}
+  .cover .sub{color:var(--muted); font-size:1.1rem; margin-top:.4em;}
+  .cover .meta{color:var(--muted); font-size:.9rem; margin-top:1.5em;}
+  hr{border:none; border-top:1px solid var(--border); margin:2.5em 0;}
+  .pillset span{display:inline-block; background:#f1ebfb; color:#4c1d95; border:1px solid #ddd0f7;
+     border-radius:20px; padding:.15em .7em; margin:.15em .2em; font-size:.82rem;}
+  @media print{
+    h2{page-break-after:avoid;} h3,h4{page-break-after:avoid;}
+    pre,table,.qa,.callout{page-break-inside:avoid;}
+    .toc{columns:2;}
+    .pagebreak{page-break-before:always;}
+  }
+  @page{margin:16mm 14mm;}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="cover">
+  <h1>CS Fundamentals</h1>
+  <div class="sub">Complete Interview Preparation Notes &mdash; Beginner to Advanced</div>
+  <div class="meta">Operating Systems &bull; Computer Networks &bull; OOP in Java &bull; DBMS &bull; Cyber Security</div>
+</div>
+
+<h2 style="page-break-before:avoid;">Table of Contents</h2>
+<div class="toc">
+<b>Part I &mdash; Operating Systems</b>
+<ol>
+<li><a href="#s1">OS Fundamentals</a></li>
+<li><a href="#s2">Processes &amp; Threads</a></li>
+<li><a href="#s3">CPU Scheduling</a></li>
+<li><a href="#s4">Synchronization &amp; Deadlocks</a></li>
+<li><a href="#s5">Memory Management</a></li>
+<li><a href="#s6">Virtual Memory &amp; Paging</a></li>
+<li><a href="#s7">File Systems &amp; Disk</a></li>
+</ol>
+<b>Part II &mdash; Computer Networks</b>
+<ol start="8">
+<li><a href="#s8">Network Models (OSI / TCP-IP)</a></li>
+<li><a href="#s9">Physical &amp; Data Link Layer</a></li>
+<li><a href="#s10">Network Layer (IP &amp; Routing)</a></li>
+<li><a href="#s11">Transport Layer (TCP / UDP)</a></li>
+<li><a href="#s12">Application Layer (HTTP, DNS...)</a></li>
+</ol>
+<b>Part III &mdash; OOP in Java</b>
+<ol start="13">
+<li><a href="#s13">Object-Oriented Programming in Java</a></li>
+</ol>
+<b>Part IV &mdash; DBMS</b>
+<ol start="14">
+<li><a href="#s14">DBMS Fundamentals</a></li>
+<li><a href="#s15">ER &amp; Relational Model</a></li>
+<li><a href="#s16">Normalization</a></li>
+<li><a href="#s17">SQL</a></li>
+<li><a href="#s18">Transactions &amp; Concurrency Control</a></li>
+<li><a href="#s19">Indexing &amp; Storage</a></li>
+<li><a href="#s20">NoSQL &amp; Scaling</a></li>
+</ol>
+<b>Part V &mdash; Cyber Security</b>
+<ol start="21">
+<li><a href="#s21">Security Fundamentals (CIA)</a></li>
+<li><a href="#s22">Cryptography</a></li>
+<li><a href="#s23">Authentication &amp; Authorization</a></li>
+<li><a href="#s24">Web Security (OWASP)</a></li>
+<li><a href="#s25">Network &amp; System Security</a></li>
+<li><a href="#s26">Interview Scenarios &amp; Cheat-Sheet</a></li>
+</ol>
+</div>
+
+<h1 id="part1" class="pagebreak">Part I &mdash; Operating Systems</h1>
+
+<h2 id="s1">1. OS Fundamentals <span class="tag basic">Basic</span></h2>
+
+<h3>1.1 What is an Operating System?</h3>
+<p>An OS is system software that sits between hardware and applications. It is a <b>resource manager</b> (CPU, memory, I/O, files) and an <b>abstraction layer</b> that gives programs a clean interface (system calls) instead of raw hardware.</p>
+<pre><code>┌─────────────── Applications ───────────────┐
+│        (browsers, editors, your code)       │
+├──────────── System Call Interface ──────────┤
+│         Operating System (Kernel)           │
+│  Process | Memory | File | I/O | Network mgr │
+├─────────────────── Hardware ────────────────┤
+│        CPU · RAM · Disk · Devices            │
+└─────────────────────────────────────────────┘</code></pre>
+
+<h3>1.2 Kernel &amp; modes</h3>
+<ul>
+<li><b>Kernel</b> &mdash; the core of the OS, always in memory, with full hardware access.</li>
+<li><b>User mode vs Kernel mode:</b> user code runs in restricted user mode; privileged operations (I/O, memory mapping) require a switch to kernel mode via a <b>system call</b> (a software interrupt/trap).</li>
+<li><b>Monolithic kernel</b> (Linux) &mdash; all services in kernel space (fast, less isolated). <b>Microkernel</b> (minimal kernel, services in user space) &mdash; more modular &amp; robust, but more context-switch overhead.</li>
+</ul>
+
+<h3>1.3 Key terms</h3>
+<table>
+<tr><th>Term</th><th>Meaning</th></tr>
+<tr><td>System call</td><td>Controlled entry into the kernel (e.g. <code>read</code>, <code>fork</code>, <code>open</code>)</td></tr>
+<tr><td>Interrupt</td><td>Hardware/software signal that diverts the CPU to a handler</td></tr>
+<tr><td>Context switch</td><td>Saving one process/thread's state &amp; loading another's</td></tr>
+<tr><td>Multiprogramming</td><td>Keep CPU busy by switching among jobs</td></tr>
+<tr><td>Multitasking</td><td>Time-sharing the CPU among tasks (illusion of parallelism)</td></tr>
+<tr><td>Multiprocessing</td><td>Multiple CPUs/cores executing truly in parallel</td></tr>
+</table>
+
+<div class="qa">
+<div class="q">What happens during a system call?</div>
+<div class="a">The program executes a trap instruction, the CPU switches to kernel mode, the kernel validates arguments and performs the privileged operation, then returns to user mode with the result. This boundary protects the system from buggy/malicious user code.</div>
+</div>
+
+
+<h2 id="s2">2. Processes &amp; Threads <span class="tag basic">Basic</span></h2>
+
+<h3>2.1 Process vs Thread</h3>
+<table>
+<tr><th></th><th>Process</th><th>Thread</th></tr>
+<tr><td>Definition</td><td>A program in execution</td><td>A lightweight unit within a process</td></tr>
+<tr><td>Memory</td><td>Own address space</td><td>Shares process memory (heap, code)</td></tr>
+<tr><td>Communication</td><td>IPC (pipes, sockets, shared mem)</td><td>Shared variables (needs sync)</td></tr>
+<tr><td>Overhead</td><td>Heavy (separate memory)</td><td>Light (shared memory)</td></tr>
+<tr><td>Crash impact</td><td>Isolated</td><td>Can crash whole process</td></tr>
+</table>
+<div class="callout note"><b>Each thread</b> has its own stack, registers, and program counter, but <b>shares</b> the heap, code, and open files with sibling threads &mdash; which is why shared data needs synchronization.</div>
+
+<h3>2.2 Process states &amp; the PCB</h3>
+<pre><code>NEW -> READY -> RUNNING -> TERMINATED
+        ▲          │
+        │          ▼
+       WAITING (blocked on I/O / event)</code></pre>
+<p>The <b>Process Control Block (PCB)</b> stores per-process state: PID, program counter, registers, memory maps, open files, scheduling info. A context switch saves/restores PCBs.</p>
+
+<h3>2.3 Process creation &amp; special cases</h3>
+<ul>
+<li><code>fork()</code> creates a child (copy of parent); <code>exec()</code> replaces the process image with a new program.</li>
+<li><b>Zombie process</b> &mdash; finished but its exit status not yet reaped by the parent (entry lingers).</li>
+<li><b>Orphan process</b> &mdash; parent died first; adopted by <code>init</code>/<code>systemd</code>.</li>
+</ul>
+
+<h3>2.4 Inter-Process Communication (IPC)</h3>
+<table>
+<tr><th>Mechanism</th><th>Notes</th></tr>
+<tr><td>Pipes / named pipes</td><td>Byte stream between related/unrelated processes</td></tr>
+<tr><td>Message queues</td><td>Discrete messages</td></tr>
+<tr><td>Shared memory</td><td>Fastest; needs synchronization</td></tr>
+<tr><td>Sockets</td><td>Across machines too</td></tr>
+<tr><td>Signals</td><td>Async notifications (e.g. SIGKILL)</td></tr>
+</table>
+
+<h3>2.5 User vs kernel threads</h3>
+<ul>
+<li><b>User-level threads</b> &mdash; managed by a library; fast but one blocking call blocks all (many-to-one).</li>
+<li><b>Kernel-level threads</b> &mdash; scheduled by the OS; true parallelism (one-to-one, the common model today).</li>
+</ul>
+
+<div class="qa">
+<div class="q">Why are threads called "lightweight"?</div>
+<div class="a">Creating a thread and switching between threads is cheaper than for processes because threads share the same address space &mdash; no new memory map to set up and a cheaper context switch.</div>
+</div>
+
+
+<h2 id="s3">3. CPU Scheduling <span class="tag inter">Intermediate</span></h2>
+
+<h3>3.1 Goals &amp; metrics</h3>
+<table>
+<tr><th>Metric</th><th>Meaning (goal)</th></tr>
+<tr><td>CPU utilization</td><td>Keep CPU busy (maximize)</td></tr>
+<tr><td>Throughput</td><td>Processes completed per unit time (max)</td></tr>
+<tr><td>Turnaround time</td><td>Completion &minus; arrival (min)</td></tr>
+<tr><td>Waiting time</td><td>Time in ready queue (min)</td></tr>
+<tr><td>Response time</td><td>First response after submit (min)</td></tr>
+</table>
+<div class="callout note"><b>Preemptive vs non-preemptive:</b> preemptive scheduling can interrupt a running process (better responsiveness); non-preemptive runs a process until it blocks or finishes.</div>
+
+<h3>3.2 Scheduling algorithms</h3>
+<table>
+<tr><th>Algorithm</th><th>Idea</th><th>Pros / Cons</th></tr>
+<tr><td><b>FCFS</b></td><td>First come, first served (queue)</td><td>Simple; convoy effect (long job blocks short ones)</td></tr>
+<tr><td><b>SJF</b></td><td>Shortest job first</td><td>Optimal avg wait; needs burst prediction; starvation</td></tr>
+<tr><td><b>SRTF</b></td><td>Preemptive SJF</td><td>Better response; starvation of long jobs</td></tr>
+<tr><td><b>Round Robin</b></td><td>Time quantum, cyclic</td><td>Fair, responsive; quantum tuning critical</td></tr>
+<tr><td><b>Priority</b></td><td>Highest priority first</td><td>Flexible; starvation &rarr; fix with aging</td></tr>
+<tr><td><b>Multilevel Queue / Feedback</b></td><td>Multiple queues, jobs move between them</td><td>Adapts to behaviour; complex tuning</td></tr>
+</table>
+
+<h3>3.3 Worked example (avg waiting time)</h3>
+<pre><code>FCFS, arrival=0:  P1(burst 24), P2(3), P3(3)
+Gantt: | P1 (0-24) | P2 (24-27) | P3 (27-30) |
+Wait: P1=0, P2=24, P3=27  -> avg = (0+24+27)/3 = 17
+With SJF order P2,P3,P1: wait = 0,3,6 -> avg = 3  (much better!)</code></pre>
+
+<div class="callout warn"><b>Starvation:</b> low-priority/long jobs may never run under SJF or priority scheduling. Fix with <b>aging</b> (gradually raise a waiting process's priority).</div>
+
+<div class="qa">
+<div class="q">How do you choose the Round Robin time quantum?</div>
+<div class="a">Too large &rarr; behaves like FCFS (poor response). Too small &rarr; excessive context-switch overhead. A good rule: quantum slightly larger than the typical CPU burst so most jobs finish within one quantum.</div>
+</div>
+
+<h2 id="s4">4. Synchronization &amp; Deadlocks <span class="tag adv">Advanced</span></h2>
+
+<h3>4.1 The critical section problem</h3>
+<p>When multiple threads access shared data, a <b>race condition</b> can occur. The <b>critical section</b> is the code accessing shared resources; a correct solution must satisfy:</p>
+<ul>
+<li><b>Mutual exclusion</b> &mdash; only one thread in the CS at a time.</li>
+<li><b>Progress</b> &mdash; if no one is in the CS, a waiting thread can enter.</li>
+<li><b>Bounded waiting</b> &mdash; no thread waits forever.</li>
+</ul>
+
+<h3>4.2 Synchronization primitives</h3>
+<table>
+<tr><th>Primitive</th><th>Description</th></tr>
+<tr><td><b>Mutex / Lock</b></td><td>Binary lock; only the owner can unlock</td></tr>
+<tr><td><b>Semaphore</b></td><td>Counter; <code>wait(P)</code> decrements, <code>signal(V)</code> increments. Binary (=mutex) or counting</td></tr>
+<tr><td><b>Monitor</b></td><td>High-level construct bundling lock + condition variables (Java <code>synchronized</code>)</td></tr>
+<tr><td><b>Spinlock</b></td><td>Busy-waits in a loop; good only for very short critical sections</td></tr>
+<tr><td><b>Condition variable</b></td><td>wait/notify on a condition while holding a lock</td></tr>
+</table>
+<pre><code>// Counting semaphore (pseudo)
+wait(S):   while (S <= 0) ; S--;   // P / acquire
+signal(S): S++;                     // V / release</code></pre>
+
+<h3>4.3 Classic problems</h3>
+<ul>
+<li><b>Producer-Consumer (bounded buffer)</b> &mdash; semaphores for empty/full slots + a mutex.</li>
+<li><b>Readers-Writers</b> &mdash; many readers OR one writer.</li>
+<li><b>Dining Philosophers</b> &mdash; deadlock illustration; fix by ordering forks or limiting diners.</li>
+</ul>
+
+<h3>4.4 Deadlock</h3>
+<p>A set of processes each waiting for a resource held by another &mdash; none can proceed. Requires <b>all four</b> Coffman conditions simultaneously:</p>
+<table>
+<tr><th>Condition</th><th>Meaning</th></tr>
+<tr><td>Mutual exclusion</td><td>Resource held in non-shareable mode</td></tr>
+<tr><td>Hold and wait</td><td>Holding one resource, waiting for another</td></tr>
+<tr><td>No preemption</td><td>Can't forcibly take a resource</td></tr>
+<tr><td>Circular wait</td><td>Cycle of processes each waiting on the next</td></tr>
+</table>
+
+<h3>4.5 Handling deadlock</h3>
+<table>
+<tr><th>Strategy</th><th>How</th></tr>
+<tr><td><b>Prevention</b></td><td>Break one Coffman condition (e.g. global lock ordering kills circular wait)</td></tr>
+<tr><td><b>Avoidance</b></td><td>Banker's algorithm &mdash; grant only if system stays in a safe state</td></tr>
+<tr><td><b>Detection &amp; recovery</b></td><td>Detect cycles in resource-allocation graph, then kill/rollback</td></tr>
+<tr><td><b>Ignore (Ostrich)</b></td><td>Assume it's rare; reboot if needed (used by many OSes)</td></tr>
+</table>
+<div class="callout warn"><b>Deadlock vs Livelock vs Starvation:</b> deadlock = stuck waiting forever; livelock = busy but no progress (keep reacting); starvation = perpetually denied resources due to scheduling.</div>
+
+<div class="qa">
+<div class="q">Difference between a mutex and a semaphore?</div>
+<div class="a">A mutex is a locking mechanism with ownership (only the locker unlocks), for mutual exclusion. A semaphore is a signaling mechanism with a counter that any thread can signal &mdash; it can allow N concurrent accesses and coordinate ordering between threads.</div>
+</div>
+
+
+<h2 id="s5">5. Memory Management <span class="tag inter">Intermediate</span></h2>
+
+<h3>5.1 Why &amp; address binding</h3>
+<p>The OS manages allocation of physical RAM to processes and translates <b>logical (virtual) addresses</b> (used by programs) into <b>physical addresses</b> (RAM) via the <b>MMU</b> (Memory Management Unit) at runtime.</p>
+
+<h3>5.2 Contiguous allocation &amp; fragmentation</h3>
+<table>
+<tr><th>Problem</th><th>Meaning</th></tr>
+<tr><td>External fragmentation</td><td>Free memory split into small unusable holes between allocations</td></tr>
+<tr><td>Internal fragmentation</td><td>Allocated block larger than needed; wasted space inside</td></tr>
+</table>
+<p><b>Allocation strategies:</b> First-fit (fast), Best-fit (least waste but slow + tiny holes), Worst-fit. <b>Compaction</b> reduces external fragmentation by relocating.</p>
+
+<h3>5.3 Paging</h3>
+<p>Divide logical memory into fixed-size <b>pages</b> and physical memory into <b>frames</b> of the same size. A <b>page table</b> maps page &rarr; frame. Eliminates external fragmentation (minor internal frag in the last page).</p>
+<pre><code>Logical address = [ page number | offset ]
+        page number -> page table -> frame number
+Physical address = [ frame number | offset ]</code></pre>
+<ul>
+<li><b>TLB (Translation Lookaside Buffer)</b> &mdash; a cache of recent page&rarr;frame translations, so the MMU avoids a memory access for the page table on every lookup.</li>
+<li><b>Multi-level / inverted page tables</b> reduce page-table memory for large address spaces.</li>
+</ul>
+
+<h3>5.4 Segmentation</h3>
+<p>Memory divided into variable-size logical <b>segments</b> (code, stack, heap) matching the program's structure. Suffers external fragmentation. Modern systems often combine segmentation + paging.</p>
+
+<table>
+<tr><th></th><th>Paging</th><th>Segmentation</th></tr>
+<tr><td>Block size</td><td>Fixed (page)</td><td>Variable (segment)</td></tr>
+<tr><td>Fragmentation</td><td>Internal</td><td>External</td></tr>
+<tr><td>View</td><td>Physical</td><td>Logical/programmer</td></tr>
+</table>
+
+<h2 id="s6">6. Virtual Memory &amp; Paging <span class="tag adv">Advanced</span></h2>
+
+<h3>6.1 Virtual memory &amp; demand paging</h3>
+<p><b>Virtual memory</b> lets a process use more memory than physically available by keeping only needed pages in RAM and the rest on disk (swap). With <b>demand paging</b>, a page is loaded only when accessed.</p>
+<ul>
+<li><b>Page fault</b> &mdash; accessing a page not in RAM. The OS traps, fetches it from disk into a free frame (evicting one if needed), updates the page table, and resumes.</li>
+<li><b>Benefits:</b> run large programs, more processes in memory, isolation. <b>Cost:</b> page-fault latency.</li>
+</ul>
+
+<h3>6.2 Page replacement algorithms</h3>
+<table>
+<tr><th>Algorithm</th><th>Evicts</th><th>Notes</th></tr>
+<tr><td><b>FIFO</b></td><td>Oldest loaded page</td><td>Simple; suffers Belady's anomaly</td></tr>
+<tr><td><b>Optimal (OPT)</b></td><td>Page used farthest in future</td><td>Theoretical best; needs future knowledge</td></tr>
+<tr><td><b>LRU</b></td><td>Least recently used</td><td>Good approximation of OPT; costly to track exactly</td></tr>
+<tr><td><b>Clock / Second-chance</b></td><td>Approximate LRU via a reference bit</td><td>Practical, low overhead</td></tr>
+</table>
+<div class="callout warn"><b>Belady's anomaly:</b> with FIFO, adding more frames can <em>increase</em> page faults &mdash; counterintuitive. LRU and OPT (stack algorithms) don't suffer from it.</div>
+
+<h3>6.3 Thrashing</h3>
+<p><b>Thrashing</b> = the system spends more time paging (swapping) than executing, because processes don't have enough frames for their <b>working set</b>. CPU utilization collapses.</p>
+<ul>
+<li><b>Working set model</b> &mdash; track pages used in a recent window; give each process enough frames for its working set.</li>
+<li><b>Fixes:</b> reduce multiprogramming degree, add RAM, use the working-set/PFF (page-fault frequency) policy.</li>
+</ul>
+
+<div class="qa">
+<div class="q">Why does LRU approximate Optimal well?</div>
+<div class="a">By the principle of locality, recently used pages are likely to be used again soon. So evicting the least recently used page is usually close to evicting the one needed farthest in the future.</div>
+</div>
+
+
+<h2 id="s7">7. File Systems &amp; Disk <span class="tag inter">Intermediate</span></h2>
+
+<h3>7.1 File system concepts</h3>
+<ul>
+<li><b>File</b> &mdash; named collection of data; metadata stored in an <b>inode</b> (size, permissions, pointers to data blocks).</li>
+<li><b>Directory</b> &mdash; maps names to inodes.</li>
+<li><b>Allocation methods:</b> contiguous (fast read, fragmentation), linked (no random access), <b>indexed</b> (inode/index block &mdash; the common approach).</li>
+</ul>
+
+<h3>7.2 Disk scheduling algorithms</h3>
+<p>Minimize seek time (head movement) when servicing I/O requests.</p>
+<table>
+<tr><th>Algorithm</th><th>Idea</th></tr>
+<tr><td>FCFS</td><td>Service in arrival order (fair, lots of seeking)</td></tr>
+<tr><td>SSTF</td><td>Shortest seek time first (starvation risk)</td></tr>
+<tr><td>SCAN (elevator)</td><td>Head sweeps to one end then back</td></tr>
+<tr><td>C-SCAN</td><td>Sweeps one direction, jumps back to start (uniform wait)</td></tr>
+<tr><td>LOOK / C-LOOK</td><td>Like SCAN but only goes as far as the last request</td></tr>
+</table>
+<div class="callout note"><b>SSDs</b> have no seek time (no moving head), so these algorithms matter far less; I/O schedulers shift focus to parallelism &amp; wear-leveling.</div>
+
+<h3>7.3 RAID (brief)</h3>
+<table>
+<tr><th>Level</th><th>Technique</th></tr>
+<tr><td>RAID 0</td><td>Striping &mdash; speed, no redundancy</td></tr>
+<tr><td>RAID 1</td><td>Mirroring &mdash; redundancy</td></tr>
+<tr><td>RAID 5</td><td>Striping + distributed parity (1 disk failure)</td></tr>
+<tr><td>RAID 10</td><td>Mirror + stripe (speed + redundancy)</td></tr>
+</table>
+
+<div class="qa">
+<div class="q">What is stored in an inode?</div>
+<div class="a">File metadata: type, permissions, owner, size, timestamps, link count, and pointers to data blocks (direct + single/double/triple indirect). The file name is <em>not</em> in the inode &mdash; it's in the directory entry pointing to the inode.</div>
+</div>
+
+<h1 id="part2" class="pagebreak">Part II &mdash; Computer Networks</h1>
+
+<h2 id="s8">8. Network Models (OSI / TCP-IP) <span class="tag basic">Basic</span></h2>
+
+<h3>8.1 The OSI 7-layer model</h3>
+<table>
+<tr><th>#</th><th>Layer</th><th>Role</th><th>Unit / Examples</th></tr>
+<tr><td>7</td><td>Application</td><td>User-facing protocols</td><td>HTTP, DNS, SMTP, FTP</td></tr>
+<tr><td>6</td><td>Presentation</td><td>Encoding, encryption, compression</td><td>TLS, JPEG, ASCII</td></tr>
+<tr><td>5</td><td>Session</td><td>Sessions, dialog control</td><td>RPC, sockets</td></tr>
+<tr><td>4</td><td>Transport</td><td>End-to-end delivery, reliability</td><td>TCP, UDP (segments)</td></tr>
+<tr><td>3</td><td>Network</td><td>Logical addressing &amp; routing</td><td>IP, ICMP (packets)</td></tr>
+<tr><td>2</td><td>Data Link</td><td>Node-to-node, MAC, framing</td><td>Ethernet, ARP (frames)</td></tr>
+<tr><td>1</td><td>Physical</td><td>Bits over medium</td><td>cables, signals (bits)</td></tr>
+</table>
+<div class="callout note"><b>Mnemonic (7&rarr;1):</b> "All People Seem To Need Data Processing." The TCP/IP model collapses these into 4 layers: Application, Transport, Internet, Link.</div>
+
+<h3>8.2 Encapsulation</h3>
+<pre><code>Data --(App)--> + TCP header = Segment --(IP)--> + IP header = Packet
+     --(Link)--> + frame header/trailer = Frame --(Phy)--> bits on wire
+Each layer adds its own header; the receiver strips them in reverse.</code></pre>
+
+<h3>8.3 OSI vs TCP/IP</h3>
+<table>
+<tr><th></th><th>OSI</th><th>TCP/IP</th></tr>
+<tr><td>Layers</td><td>7 (theoretical/reference)</td><td>4 (practical/implemented)</td></tr>
+<tr><td>Usage</td><td>Teaching model</td><td>The actual Internet</td></tr>
+</table>
+
+<div class="qa">
+<div class="q">Which layer does a router vs a switch operate at?</div>
+<div class="a">A switch operates at Layer 2 (Data Link) using MAC addresses within a LAN. A router operates at Layer 3 (Network) using IP addresses to forward packets between networks.</div>
+</div>
+
+
+<h2 id="s9">9. Physical &amp; Data Link Layer <span class="tag inter">Intermediate</span></h2>
+<ul>
+<li><b>MAC address</b> &mdash; 48-bit hardware address, unique per NIC; used for local delivery within a LAN.</li>
+<li><b>ARP (Address Resolution Protocol)</b> &mdash; resolves an IP address to a MAC address on the local network.</li>
+<li><b>Switch</b> &mdash; learns MAC&rarr;port mappings, forwards frames only to the right port (vs a hub that broadcasts).</li>
+<li><b>Error detection:</b> CRC/checksum in the frame; <b>flow control</b> &amp; <b>MAC protocols</b> (CSMA/CD for Ethernet, CSMA/CA for Wi-Fi) manage shared medium access.</li>
+<li><b>Collision domain vs broadcast domain</b> &mdash; switches separate collision domains; routers/VLANs separate broadcast domains.</li>
+</ul>
+
+
+<h2 id="s10">10. Network Layer (IP &amp; Routing) <span class="tag inter">Intermediate</span></h2>
+
+<h3>10.1 IP addressing</h3>
+<table>
+<tr><th></th><th>IPv4</th><th>IPv6</th></tr>
+<tr><td>Size</td><td>32-bit (~4.3B addresses)</td><td>128-bit (vast)</td></tr>
+<tr><td>Notation</td><td>192.168.1.1</td><td>2001:db8::1</td></tr>
+<tr><td>Config</td><td>DHCP / static, NAT common</td><td>Autoconfig, no NAT needed</td></tr>
+</table>
+<ul>
+<li><b>Public vs private IPs</b> &mdash; private ranges (10.x, 172.16&ndash;31.x, 192.168.x) used internally; <b>NAT</b> translates them to a public IP for internet access.</li>
+<li><b>Subnetting &amp; CIDR</b> &mdash; <code>192.168.1.0/24</code> means 24 network bits, 8 host bits (254 usable hosts). The subnet mask separates network vs host portions.</li>
+</ul>
+<pre><code>CIDR /24 -> mask 255.255.255.0 -> 256 addresses (254 usable)
+CIDR /26 -> mask 255.255.255.192 -> 64 addresses (62 usable)</code></pre>
+
+<h3>10.2 Routing</h3>
+<ul>
+<li><b>Routing</b> determines the path packets take across networks using routing tables.</li>
+<li><b>Protocols:</b> <b>OSPF</b> (link-state, intra-domain), <b>BGP</b> (path-vector, the protocol of the Internet between ASes), RIP (distance-vector, legacy).</li>
+<li><b>ICMP</b> &mdash; control/error messages (used by <code>ping</code>, <code>traceroute</code>).</li>
+</ul>
+
+<div class="qa">
+<div class="q">What is NAT and why is it used?</div>
+<div class="a">Network Address Translation maps many private IPs to one (or few) public IPs by rewriting address/port info. It conserves scarce IPv4 addresses and adds a layer of isolation, but complicates inbound connections (needs port forwarding).</div>
+</div>
+
+
+<h2 id="s11">11. Transport Layer (TCP / UDP) <span class="tag adv">Advanced</span></h2>
+
+<h3>11.1 TCP vs UDP</h3>
+<table>
+<tr><th></th><th>TCP</th><th>UDP</th></tr>
+<tr><td>Connection</td><td>Connection-oriented (handshake)</td><td>Connectionless</td></tr>
+<tr><td>Reliability</td><td>Guaranteed, ordered, retransmits</td><td>Best-effort, may lose/reorder</td></tr>
+<tr><td>Flow/Congestion control</td><td>Yes</td><td>No</td></tr>
+<tr><td>Overhead</td><td>Higher (20+ byte header)</td><td>Low (8-byte header)</td></tr>
+<tr><td>Use cases</td><td>Web, email, file transfer</td><td>Video/voice, gaming, DNS</td></tr>
+</table>
+
+<h3>11.2 TCP 3-way handshake &amp; teardown</h3>
+<pre><code>Connection setup:               Connection teardown:
+Client        Server            Client        Server
+  | --- SYN ----> |               | --- FIN ----> |
+  | <-- SYN/ACK - |               | <-- ACK ----- |
+  | --- ACK ----> |               | <-- FIN ----- |
+  (connected)                     | --- ACK ----> |  (closed)</code></pre>
+
+<h3>11.3 How TCP achieves reliability</h3>
+<ul>
+<li><b>Sequence &amp; acknowledgement numbers</b> &mdash; track bytes, detect loss, reorder.</li>
+<li><b>Retransmission</b> &mdash; resend unacked segments (timeout / fast retransmit on 3 dup ACKs).</li>
+<li><b>Flow control</b> &mdash; the receiver's <b>sliding window</b> prevents overwhelming it.</li>
+<li><b>Congestion control</b> &mdash; slow start, congestion avoidance (AIMD), fast recovery prevent overwhelming the network.</li>
+</ul>
+
+<div class="qa">
+<div class="q">Why does TCP need a 3-way (not 2-way) handshake?</div>
+<div class="a">Both sides must agree on initial sequence numbers and confirm each other's send/receive ability. Two messages can't confirm the client received the server's SYN; the third ACK closes that loop and prevents old duplicate connection requests from causing confusion.</div>
+</div>
+<div class="qa">
+<div class="q">Flow control vs congestion control?</div>
+<div class="a">Flow control protects the <em>receiver</em> from being overrun (receiver-advertised window). Congestion control protects the <em>network</em> from overload (sender adjusts a congestion window based on perceived loss/delay).</div>
+</div>
+
+
+<h2 id="s12">12. Application Layer (HTTP, DNS...) <span class="tag inter">Intermediate</span></h2>
+
+<h3>12.1 What happens when you type a URL? <span class="tag adv">Classic Q</span></h3>
+<pre><code>1. Browser checks cache -> DNS resolves domain to IP (recursive lookup)
+2. TCP 3-way handshake to server IP:443
+3. TLS handshake (certificate, key exchange) for HTTPS
+4. HTTP request sent (GET /)
+5. Server processes, returns HTTP response (HTML)
+6. Browser parses, fetches assets (CSS/JS/img), renders page</code></pre>
+
+<h3>12.2 DNS</h3>
+<p>The Domain Name System maps human names to IPs. Hierarchical: Root &rarr; TLD (.com) &rarr; authoritative name servers. Resolvers cache results (TTL). Record types: A (IPv4), AAAA (IPv6), CNAME (alias), MX (mail), NS, TXT.</p>
+
+<h3>12.3 HTTP essentials</h3>
+<table>
+<tr><th>Aspect</th><th>Notes</th></tr>
+<tr><td>Methods</td><td>GET, POST, PUT, PATCH, DELETE (see REST)</td></tr>
+<tr><td>Status codes</td><td>2xx success, 3xx redirect, 4xx client error, 5xx server error</td></tr>
+<tr><td>Stateless</td><td>Each request independent; state via cookies/tokens/sessions</td></tr>
+<tr><td>HTTPS</td><td>HTTP over TLS &mdash; encryption + integrity + server auth</td></tr>
+<tr><td>HTTP/1.1 vs 2 vs 3</td><td>1.1 keep-alive; 2 multiplexing+binary; 3 over QUIC/UDP</td></tr>
+</table>
+
+<h3>12.4 Cookies vs Sessions vs Tokens</h3>
+<table>
+<tr><th></th><th>Where state lives</th></tr>
+<tr><td>Cookie</td><td>Small data stored in browser, sent each request</td></tr>
+<tr><td>Session</td><td>Server stores state; cookie holds session ID</td></tr>
+<tr><td>Token (JWT)</td><td>Stateless; signed claims held by client</td></tr>
+</table>
+
+<div class="qa">
+<div class="q">Is DNS over TCP or UDP?</div>
+<div class="a">Primarily UDP (port 53) for fast, small queries. It falls back to TCP for large responses (e.g. zone transfers, DNSSEC) or when truncation occurs.</div>
+</div>
+
+<h1 id="part3" class="pagebreak">Part III &mdash; OOP in Java</h1>
+
+<h2 id="s13">13. Object-Oriented Programming in Java <span class="tag basic">Basic &rarr; Advanced</span></h2>
+<p>OOP models software as interacting <b>objects</b> that bundle <b>state</b> (fields) and <b>behaviour</b> (methods). A <b>class</b> is the blueprint; an <b>object</b> is an instance of it.</p>
+
+<h3>13.1 The four pillars</h3>
+<table>
+<tr><th>Pillar</th><th>Definition</th><th>Achieved in Java by</th></tr>
+<tr><td><b>Encapsulation</b></td><td>Bundle data + behaviour; hide internal state</td><td><code>private</code> fields + public getters/setters</td></tr>
+<tr><td><b>Abstraction</b></td><td>Expose <em>what</em> an object does, hide <em>how</em></td><td><code>abstract</code> classes, <code>interface</code>s</td></tr>
+<tr><td><b>Inheritance</b></td><td>Reuse/extend behaviour from a parent</td><td><code>extends</code>, <code>implements</code></td></tr>
+<tr><td><b>Polymorphism</b></td><td>One interface, many forms</td><td>overriding (runtime) &amp; overloading (compile-time)</td></tr>
+</table>
+<pre><code>class Account {                       // encapsulation
+    private double balance;           // hidden state
+    public double getBalance(){ return balance; }
+    public void deposit(double amt){ if(amt>0) balance += amt; }  // controlled access
+}</code></pre>
+
+<h3>13.2 Encapsulation &amp; access modifiers</h3>
+<table>
+<tr><th>Modifier</th><th>Same class</th><th>Same package</th><th>Subclass</th><th>World</th></tr>
+<tr><td><code>private</code></td><td>&#10003;</td><td></td><td></td><td></td></tr>
+<tr><td><i>default</i> (package)</td><td>&#10003;</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td><code>protected</code></td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td></td></tr>
+<tr><td><code>public</code></td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+</table>
+
+<h3>13.3 Inheritance &amp; the diamond problem</h3>
+<ul>
+<li>Java supports <b>single class inheritance</b> (one <code>extends</code>) but <b>multiple interface inheritance</b>.</li>
+<li>Avoids the C++ "diamond problem"; if two interfaces give the same <code>default</code> method, the class must override it (<code>Interface.super.method()</code>).</li>
+<li>Every class implicitly extends <code>Object</code> (root of all classes).</li>
+</ul>
+
+<h3>13.4 Polymorphism: overloading vs overriding</h3>
+<table>
+<tr><th></th><th>Overloading (compile-time)</th><th>Overriding (runtime)</th></tr>
+<tr><td>Where</td><td>Same class</td><td>Parent &rarr; child</td></tr>
+<tr><td>Signature</td><td>Same name, different params</td><td>Same name &amp; params</td></tr>
+<tr><td>Binding</td><td>Static (early)</td><td>Dynamic (late, via vtable)</td></tr>
+</table>
+<pre><code>class Animal { String sound(){ return "..."; } }
+class Dog extends Animal {
+    @Override String sound(){ return "Woof"; }   // overriding
+}
+Animal a = new Dog();
+a.sound();   // "Woof" -> resolved at runtime by the object's real type</code></pre>
+
+<h3>13.5 Abstraction: abstract class vs interface</h3>
+<table>
+<tr><th></th><th>Abstract class</th><th>Interface</th></tr>
+<tr><td>Multiple inheritance</td><td>No</td><td>Yes</td></tr>
+<tr><td>State (fields)</td><td>Instance fields allowed</td><td>Only <code>public static final</code> constants</td></tr>
+<tr><td>Methods</td><td>abstract + concrete</td><td>abstract + <code>default</code>/<code>static</code> (8+) + <code>private</code> (9+)</td></tr>
+<tr><td>Constructor</td><td>Yes</td><td>No</td></tr>
+<tr><td>Use when</td><td>Shared base state ("is-a")</td><td>Capability/contract ("can-do")</td></tr>
+</table>
+
+<h3>13.6 The Object class methods</h3>
+<table>
+<tr><th>Method</th><th>Purpose</th></tr>
+<tr><td><code>equals()</code> / <code>hashCode()</code></td><td>Logical equality; override <b>together</b> (contract)</td></tr>
+<tr><td><code>toString()</code></td><td>Readable representation</td></tr>
+<tr><td><code>getClass()</code></td><td>Runtime type</td></tr>
+<tr><td><code>clone()</code></td><td>Object copy (shallow by default)</td></tr>
+</table>
+<div class="callout warn"><b>equals/hashCode contract:</b> if <code>a.equals(b)</code> then <code>a.hashCode()==b.hashCode()</code>. Breaking it corrupts <code>HashMap</code>/<code>HashSet</code>. Always override both together.</div>
+
+<h3>13.7 Constructors &amp; keywords</h3>
+<ul>
+<li><b>Constructor</b> &mdash; same name as class, no return type; initializes objects. <b>Constructor overloading</b> + <code>this()</code> chaining; <code>super()</code> calls the parent constructor.</li>
+<li><b>this</b> = current object; <b>super</b> = parent reference.</li>
+<li><b>static</b> &mdash; belongs to the class, shared across instances (can't use <code>this</code>).</li>
+<li><b>final</b> &mdash; constant variable / non-overridable method / non-extendable class.</li>
+</ul>
+
+<h3>13.8 Association, Aggregation &amp; Composition ("has-a")</h3>
+<table>
+<tr><th>Relationship</th><th>Meaning</th><th>Example</th></tr>
+<tr><td>Association</td><td>General link between objects</td><td>Teacher &harr; Student</td></tr>
+<tr><td>Aggregation</td><td>Weak "has-a"; parts live independently</td><td>Department has Professors</td></tr>
+<tr><td>Composition</td><td>Strong "has-a"; parts die with the whole</td><td>House has Rooms</td></tr>
+</table>
+<div class="callout tip"><b>Favour composition over inheritance:</b> inheritance creates tight coupling and fragile base classes; composition is more flexible and testable.</div>
+
+<h3>13.9 SOLID principles</h3>
+<table>
+<tr><th>Letter</th><th>Principle</th><th>Meaning</th></tr>
+<tr><td>S</td><td>Single Responsibility</td><td>One reason to change</td></tr>
+<tr><td>O</td><td>Open/Closed</td><td>Open for extension, closed for modification</td></tr>
+<tr><td>L</td><td>Liskov Substitution</td><td>Subtypes substitutable for base types</td></tr>
+<tr><td>I</td><td>Interface Segregation</td><td>Many small interfaces &gt; one fat one</td></tr>
+<tr><td>D</td><td>Dependency Inversion</td><td>Depend on abstractions, not concretions</td></tr>
+</table>
+
+<div class="callout warn"><b>Common pitfalls:</b> overriding <code>equals()</code> without <code>hashCode()</code>; calling overridable methods from a constructor (subclass not yet initialized); confusing field hiding (static binding) with method overriding (dynamic binding); deep inheritance trees.</div>
+
+<div class="qa">
+<div class="q">Can you achieve multiple inheritance in Java?</div>
+<div class="a">Not with classes (avoids the diamond problem), but yes through multiple interfaces. If two interfaces supply the same default method, the implementing class must override it and can disambiguate with <code>InterfaceName.super.method()</code>.</div>
+</div>
+<div class="qa">
+<div class="q">How does runtime polymorphism work internally?</div>
+<div class="a">Each object holds a pointer to its class's method table (vtable). On an overridden method call, the JVM dispatches based on the object's actual type at runtime, not the reference's declared type &mdash; this is dynamic (late) binding.</div>
+</div>
+<div class="qa">
+<div class="q">Abstraction vs Encapsulation?</div>
+<div class="a">Abstraction is design-level &mdash; hiding <em>complexity</em> by exposing only essential behaviour (via interfaces/abstract classes). Encapsulation is implementation-level &mdash; hiding <em>data</em> by restricting access (private fields + accessors). Abstraction hides "how it works"; encapsulation hides "the data".</div>
+</div>
+
+
+<h1 id="part4" class="pagebreak">Part IV &mdash; DBMS</h1>
+
+<h2 id="s14">14. DBMS Fundamentals <span class="tag basic">Basic</span></h2>
+<ul>
+<li><b>DBMS</b> &mdash; software to store, retrieve, and manage data with integrity, concurrency, and security (MySQL, PostgreSQL, Oracle).</li>
+<li><b>RDBMS</b> &mdash; relational DBMS storing data in tables with relationships, using SQL.</li>
+<li><b>Schema</b> &mdash; the structure (tables, columns, types); <b>instance</b> &mdash; the data at a moment.</li>
+<li><b>3-schema architecture</b> &mdash; physical (storage), logical (schema), view (user) levels &rarr; <b>data independence</b>.</li>
+</ul>
+<table>
+<tr><th>Concept</th><th>Meaning</th></tr>
+<tr><td>DDL</td><td>Define schema: CREATE, ALTER, DROP</td></tr>
+<tr><td>DML</td><td>Manipulate data: SELECT, INSERT, UPDATE, DELETE</td></tr>
+<tr><td>DCL / TCL</td><td>GRANT/REVOKE; COMMIT/ROLLBACK/SAVEPOINT</td></tr>
+</table>
+
+
+<h2 id="s15">15. ER &amp; Relational Model <span class="tag inter">Intermediate</span></h2>
+
+<h3>15.1 Keys</h3>
+<table>
+<tr><th>Key</th><th>Meaning</th></tr>
+<tr><td><b>Super key</b></td><td>Any set of attributes that uniquely identifies a row</td></tr>
+<tr><td><b>Candidate key</b></td><td>Minimal super key</td></tr>
+<tr><td><b>Primary key</b></td><td>Chosen candidate key; unique + not null</td></tr>
+<tr><td><b>Foreign key</b></td><td>References a PK in another table (referential integrity)</td></tr>
+<tr><td><b>Composite key</b></td><td>Key made of multiple columns</td></tr>
+</table>
+
+<h3>15.2 Relationships &amp; cardinality</h3>
+<p>One-to-one, one-to-many, many-to-many (resolved with a junction/bridge table). ER diagrams model entities, attributes, and relationships before designing tables.</p>
+
+<h3>15.3 Integrity constraints</h3>
+<ul>
+<li><b>Entity integrity</b> &mdash; PK not null/unique.</li>
+<li><b>Referential integrity</b> &mdash; FK must match an existing PK (or be null).</li>
+<li><b>Domain constraints</b> &mdash; valid values/types; CHECK, UNIQUE, NOT NULL.</li>
+</ul>
+
+
+<h2 id="s16">16. Normalization <span class="tag inter">Intermediate</span></h2>
+<p>Organizing tables to <b>reduce redundancy</b> and avoid <b>anomalies</b> (insert/update/delete). Each normal form builds on the previous.</p>
+<table>
+<tr><th>Form</th><th>Rule</th></tr>
+<tr><td><b>1NF</b></td><td>Atomic values; no repeating groups/arrays</td></tr>
+<tr><td><b>2NF</b></td><td>1NF + no partial dependency (non-key fully depends on whole PK)</td></tr>
+<tr><td><b>3NF</b></td><td>2NF + no transitive dependency (non-key depends only on the key)</td></tr>
+<tr><td><b>BCNF</b></td><td>Stronger 3NF: every determinant is a candidate key</td></tr>
+</table>
+<div class="callout note"><b>Memory aid (3NF):</b> every non-key attribute depends on "the key, the whole key, and nothing but the key."</div>
+<div class="callout warn"><b>Denormalization trade-off:</b> normalization reduces redundancy but adds joins. For read-heavy/analytical workloads, controlled <b>denormalization</b> (duplicating data) improves read performance at the cost of write complexity.</div>
+
+<div class="qa">
+<div class="q">What anomalies does normalization prevent?</div>
+<div class="a"><b>Update</b> anomaly (same fact in many rows &rarr; inconsistent updates), <b>insertion</b> anomaly (can't add data without unrelated data), and <b>deletion</b> anomaly (deleting a row loses unrelated facts).</div>
+</div>
+
+<h2 id="s17">17. SQL <span class="tag inter">Intermediate</span></h2>
+
+<h3>17.1 Query execution order</h3>
+<p>SQL is written one way but executed another &mdash; knowing this explains why aliases/WHERE/HAVING behave as they do:</p>
+<pre><code>Written:  SELECT ... FROM ... JOIN ... WHERE ... GROUP BY ... HAVING ... ORDER BY ... LIMIT
+Executed: FROM/JOIN -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY -> LIMIT</code></pre>
+<div class="callout note"><b>Why it matters:</b> you can't use a SELECT alias in WHERE (WHERE runs first), and WHERE filters rows while HAVING filters groups (after aggregation).</div>
+
+<h3>17.2 Joins</h3>
+<table>
+<tr><th>Join</th><th>Returns</th></tr>
+<tr><td>INNER</td><td>Only matching rows in both</td></tr>
+<tr><td>LEFT (OUTER)</td><td>All left + matched right (nulls if none)</td></tr>
+<tr><td>RIGHT (OUTER)</td><td>All right + matched left</td></tr>
+<tr><td>FULL OUTER</td><td>All rows from both</td></tr>
+<tr><td>CROSS</td><td>Cartesian product</td></tr>
+<tr><td>SELF</td><td>Table joined to itself</td></tr>
+</table>
+
+<h3>17.3 Aggregations &amp; key clauses</h3>
+<pre><code>SELECT dept, COUNT(*) AS cnt, AVG(salary) AS avg_sal
+FROM   employees
+WHERE  active = true            -- filter rows
+GROUP BY dept                    -- group
+HAVING COUNT(*) > 5              -- filter groups
+ORDER BY avg_sal DESC
+LIMIT 10;</code></pre>
+
+<h3>17.4 Subqueries, CTEs &amp; window functions</h3>
+<pre><code>-- Window function: rank salaries within each department
+SELECT name, dept, salary,
+       RANK() OVER (PARTITION BY dept ORDER BY salary DESC) AS rnk
+FROM employees;
+
+-- CTE (readable, reusable)
+WITH high_earners AS (
+  SELECT * FROM employees WHERE salary > 100000
+)
+SELECT dept, COUNT(*) FROM high_earners GROUP BY dept;</code></pre>
+
+<h3>17.5 Common interview SQL: 2nd highest salary</h3>
+<pre><code>-- Using a subquery
+SELECT MAX(salary) FROM employees
+WHERE salary < (SELECT MAX(salary) FROM employees);
+-- Using window function
+SELECT DISTINCT salary FROM (
+  SELECT salary, DENSE_RANK() OVER (ORDER BY salary DESC) r FROM employees
+) t WHERE r = 2;</code></pre>
+
+<table>
+<tr><th>Function family</th><th>Examples</th></tr>
+<tr><td>Aggregate</td><td>COUNT, SUM, AVG, MIN, MAX</td></tr>
+<tr><td>Window</td><td>ROW_NUMBER, RANK, DENSE_RANK, LAG, LEAD</td></tr>
+<tr><td>String/Date</td><td>CONCAT, SUBSTRING, COALESCE, NOW</td></tr>
+</table>
+
+<div class="qa">
+<div class="q">WHERE vs HAVING; DELETE vs TRUNCATE vs DROP?</div>
+<div class="a">WHERE filters rows before grouping; HAVING filters after aggregation. DELETE removes rows (logged, can rollback, can have WHERE); TRUNCATE quickly empties a table (no WHERE, minimal logging); DROP removes the table structure entirely.</div>
+</div>
+<div class="qa">
+<div class="q">RANK vs DENSE_RANK vs ROW_NUMBER?</div>
+<div class="a">ROW_NUMBER gives unique sequential numbers. RANK leaves gaps after ties (1,1,3). DENSE_RANK has no gaps (1,1,2).</div>
+</div>
+
+
+<h2 id="s18">18. Transactions &amp; Concurrency Control <span class="tag adv">Advanced</span></h2>
+
+<h3>18.1 ACID</h3>
+<table>
+<tr><th>Property</th><th>Meaning</th></tr>
+<tr><td><b>Atomicity</b></td><td>All-or-nothing (commit or rollback)</td></tr>
+<tr><td><b>Consistency</b></td><td>Moves DB from one valid state to another (constraints hold)</td></tr>
+<tr><td><b>Isolation</b></td><td>Concurrent txns don't interfere (as if serial)</td></tr>
+<tr><td><b>Durability</b></td><td>Committed data survives crashes (WAL/redo logs)</td></tr>
+</table>
+
+<h3>18.2 Concurrency anomalies &amp; isolation levels</h3>
+<table>
+<tr><th>Isolation level</th><th>Dirty read</th><th>Non-repeatable</th><th>Phantom</th></tr>
+<tr><td>READ UNCOMMITTED</td><td>Possible</td><td>Possible</td><td>Possible</td></tr>
+<tr><td>READ COMMITTED</td><td>No</td><td>Possible</td><td>Possible</td></tr>
+<tr><td>REPEATABLE READ</td><td>No</td><td>No</td><td>Possible*</td></tr>
+<tr><td>SERIALIZABLE</td><td>No</td><td>No</td><td>No</td></tr>
+</table>
+<ul>
+<li><b>Dirty read</b> &mdash; reading uncommitted data. <b>Non-repeatable read</b> &mdash; same row differs within a txn. <b>Phantom</b> &mdash; new rows appear matching a repeated query.</li>
+<li>Higher isolation = more consistency, less concurrency (more locking).</li>
+</ul>
+
+<h3>18.3 Concurrency control mechanisms</h3>
+<table>
+<tr><th>Approach</th><th>How</th></tr>
+<tr><td><b>Pessimistic (locking)</b></td><td>Lock rows up front (<code>SELECT ... FOR UPDATE</code>); 2-Phase Locking (2PL)</td></tr>
+<tr><td><b>Optimistic</b></td><td>Assume no conflict; validate at commit (version/timestamp). Good for low contention</td></tr>
+<tr><td><b>MVCC</b></td><td>Multi-Version Concurrency Control: readers see a snapshot, writers create new versions &mdash; readers don't block writers (PostgreSQL, InnoDB)</td></tr>
+</table>
+<div class="callout note"><b>MVCC</b> is why modern databases scale reads well: a SELECT reads a consistent snapshot without locking out concurrent writes.</div>
+
+<div class="qa">
+<div class="q">Two users update the same row at once &mdash; how do you handle it?</div>
+<div class="a"><b>Optimistic locking</b> with a version column &mdash; the second update fails if the version changed, prompting retry (best for low contention). <b>Pessimistic locking</b> (<code>SELECT ... FOR UPDATE</code>) &mdash; lock the row first (best for high contention).</div>
+</div>
+
+
+<h2 id="s19">19. Indexing &amp; Storage <span class="tag adv">Advanced</span></h2>
+
+<h3>19.1 Why indexes</h3>
+<p>An index is a data structure that speeds up lookups (O(log n) vs O(n) full scan), at the cost of extra storage and slower writes (index must be maintained).</p>
+
+<h3>19.2 Index types</h3>
+<table>
+<tr><th>Type</th><th>Notes</th></tr>
+<tr><td><b>B+ Tree</b></td><td>Default; great for range &amp; equality queries; sorted leaves linked</td></tr>
+<tr><td><b>Hash</b></td><td>O(1) equality only; no range queries</td></tr>
+<tr><td><b>Clustered</b></td><td>Table physically ordered by this key (one per table; usually PK)</td></tr>
+<tr><td><b>Non-clustered (secondary)</b></td><td>Separate structure pointing to rows</td></tr>
+<tr><td><b>Composite</b></td><td>Multi-column; leftmost-prefix rule applies</td></tr>
+<tr><td><b>Covering</b></td><td>Index contains all queried columns &rarr; no table lookup</td></tr>
+</table>
+<div class="callout warn"><b>Pitfalls:</b> too many indexes slow writes &amp; waste space; functions on indexed columns (<code>WHERE YEAR(date)=2024</code>) prevent index use; low-cardinality columns (e.g. boolean) gain little; composite index order matters (leftmost prefix).</div>
+
+<h3>19.3 Query optimization</h3>
+<ul>
+<li>Use <code>EXPLAIN</code>/<code>EXPLAIN ANALYZE</code> to see the query plan (index scan vs full scan, join type, rows examined).</li>
+<li>Index columns used in WHERE, JOIN, ORDER BY. Avoid <code>SELECT *</code>. Beware N+1 queries from ORMs.</li>
+</ul>
+
+<div class="qa">
+<div class="q">Clustered vs non-clustered index?</div>
+<div class="a">A clustered index defines the physical row order (only one per table; the PK in InnoDB). A non-clustered index is a separate structure storing the key + a pointer/row locator to the actual row, so it needs an extra lookup unless it's covering.</div>
+</div>
+
+
+<h2 id="s20">20. NoSQL &amp; Scaling <span class="tag adv">Advanced</span></h2>
+
+<h3>20.1 SQL vs NoSQL</h3>
+<table>
+<tr><th></th><th>SQL (Relational)</th><th>NoSQL</th></tr>
+<tr><td>Schema</td><td>Fixed, structured</td><td>Flexible/schema-less</td></tr>
+<tr><td>Scaling</td><td>Vertical (mostly)</td><td>Horizontal (built-in)</td></tr>
+<tr><td>Consistency</td><td>Strong (ACID)</td><td>Often eventual (BASE)</td></tr>
+<tr><td>Use</td><td>Transactions, complex queries</td><td>Huge scale, varied data</td></tr>
+</table>
+<table>
+<tr><th>NoSQL type</th><th>Examples</th></tr>
+<tr><td>Document</td><td>MongoDB, Couchbase</td></tr>
+<tr><td>Key-value</td><td>Redis, DynamoDB</td></tr>
+<tr><td>Column-family</td><td>Cassandra, HBase</td></tr>
+<tr><td>Graph</td><td>Neo4j</td></tr>
+</table>
+
+<h3>20.2 Scaling techniques</h3>
+<ul>
+<li><b>Replication</b> &mdash; copies for read scaling + HA (primary-replica).</li>
+<li><b>Sharding (partitioning)</b> &mdash; split data across nodes by a shard key for write scaling.</li>
+<li><b>CAP theorem</b> &mdash; under a network partition, choose Consistency or Availability. (CP vs AP.)</li>
+<li><b>BASE</b> &mdash; Basically Available, Soft state, Eventually consistent (NoSQL philosophy vs ACID).</li>
+</ul>
+
+<div class="qa">
+<div class="q">When would you choose NoSQL over a relational DB?</div>
+<div class="a">When you need massive horizontal scale, flexible/evolving schemas, very high write throughput, or simple access patterns (key lookups) &mdash; and can tolerate eventual consistency. Stick with SQL for complex relationships, multi-row transactions, and strong consistency.</div>
+</div>
+
+<h1 id="part5" class="pagebreak">Part V &mdash; Cyber Security</h1>
+
+<h2 id="s21">21. Security Fundamentals (CIA) <span class="tag basic">Basic</span></h2>
+
+<h3>21.1 The CIA triad</h3>
+<table>
+<tr><th>Pillar</th><th>Goal</th><th>Achieved by</th></tr>
+<tr><td><b>Confidentiality</b></td><td>Only authorized access</td><td>Encryption, access control</td></tr>
+<tr><td><b>Integrity</b></td><td>Data not tampered</td><td>Hashing, signatures, checksums</td></tr>
+<tr><td><b>Availability</b></td><td>Accessible when needed</td><td>Redundancy, DDoS protection, backups</td></tr>
+</table>
+<p>Extended with <b>Authentication</b>, <b>Authorization</b>, and <b>Non-repudiation</b> (can't deny an action &mdash; digital signatures).</p>
+
+<h3>21.2 Core principles</h3>
+<ul>
+<li><b>Defense in depth</b> &mdash; layered controls; no single point of failure.</li>
+<li><b>Least privilege</b> &mdash; grant the minimum access needed.</li>
+<li><b>Zero trust</b> &mdash; never trust, always verify (even internal traffic).</li>
+<li><b>Fail securely</b> &amp; <b>secure by default</b>.</li>
+</ul>
+
+<h3>21.3 Threats &amp; terminology</h3>
+<table>
+<tr><th>Term</th><th>Meaning</th></tr>
+<tr><td>Vulnerability</td><td>A weakness</td></tr>
+<tr><td>Threat</td><td>Potential cause of harm</td></tr>
+<tr><td>Exploit</td><td>Code/technique using a vulnerability</td></tr>
+<tr><td>Risk</td><td>Likelihood &times; impact</td></tr>
+<tr><td>Attack surface</td><td>All exposed entry points</td></tr>
+</table>
+
+
+<h2 id="s22">22. Cryptography <span class="tag adv">Advanced</span></h2>
+
+<h3>22.1 Symmetric vs Asymmetric</h3>
+<table>
+<tr><th></th><th>Symmetric</th><th>Asymmetric</th></tr>
+<tr><td>Keys</td><td>One shared secret key</td><td>Public + private key pair</td></tr>
+<tr><td>Speed</td><td>Fast</td><td>Slow</td></tr>
+<tr><td>Problem solved</td><td>Bulk encryption</td><td>Key exchange, signatures</td></tr>
+<tr><td>Examples</td><td>AES, ChaCha20</td><td>RSA, ECC, Diffie-Hellman</td></tr>
+</table>
+<div class="callout note"><b>Hybrid (TLS) approach:</b> use slow asymmetric crypto to securely exchange a symmetric session key, then fast symmetric encryption for the actual data. Best of both.</div>
+
+<h3>22.2 Hashing</h3>
+<ul>
+<li>One-way function: easy to compute, infeasible to reverse; deterministic; collision-resistant (SHA-256). Used for integrity &amp; password storage.</li>
+<li><b>Encryption is reversible (with key); hashing is not.</b></li>
+<li><b>Password storage:</b> never plaintext, never plain hash. Use <b>salt</b> (unique per user, defeats rainbow tables) + a slow KDF (<b>bcrypt, scrypt, Argon2</b>). <b>Pepper</b> = secret added server-side.</li>
+</ul>
+
+<h3>22.3 Digital signatures &amp; certificates</h3>
+<pre><code>Sign:   hash(message) -> encrypt with SENDER's PRIVATE key = signature
+Verify: decrypt signature with SENDER's PUBLIC key -> compare to hash(message)
+=> proves authenticity + integrity + non-repudiation</code></pre>
+<ul>
+<li><b>PKI &amp; CAs</b> &mdash; Certificate Authorities issue certificates binding a public key to an identity; browsers trust a chain of CAs.</li>
+<li><b>TLS handshake</b> &mdash; verify server cert, agree on cipher, exchange session key, then encrypt traffic.</li>
+</ul>
+
+<div class="qa">
+<div class="q">Why salt passwords if you already hash them?</div>
+<div class="a">Without salt, identical passwords produce identical hashes, and attackers can use precomputed rainbow tables. A unique random salt per user makes each hash unique and forces attackers to brute-force each one individually.</div>
+</div>
+
+
+<h2 id="s23">23. Authentication &amp; Authorization <span class="tag inter">Intermediate</span></h2>
+<table>
+<tr><th>Authentication (who you are)</th><th>Authorization (what you can do)</th></tr>
+<tr><td>Passwords, MFA, biometrics, tokens</td><td>Roles, permissions, scopes, ACLs</td></tr>
+</table>
+<ul>
+<li><b>MFA</b> &mdash; combine factors: something you know (password), have (phone/token), are (biometric).</li>
+<li><b>Sessions vs JWT</b> &mdash; server-side session store vs stateless signed tokens (see Networks &sect;12.4). JWTs scale but are hard to revoke (use short TTL + refresh tokens).</li>
+<li><b>OAuth 2.0</b> &mdash; delegated <em>authorization</em> (grant an app limited access without sharing your password). <b>OIDC</b> adds an identity/authentication layer on top.</li>
+<li><b>RBAC vs ABAC</b> &mdash; role-based vs attribute-based access control.</li>
+</ul>
+<div class="callout warn"><b>Common mistake:</b> using OAuth purely for authentication, or treating a JWT as revocable like a session. Understand the distinction and design token lifetimes/refresh carefully.</div>
+
+
+<h2 id="s24">24. Web Security (OWASP) <span class="tag adv">Advanced</span></h2>
+
+<h3>24.1 Key OWASP Top 10 risks</h3>
+<table>
+<tr><th>Vulnerability</th><th>What &amp; fix</th></tr>
+<tr><td><b>Injection (SQLi)</b></td><td>Untrusted input in queries &rarr; use <b>parameterized queries</b>/prepared statements, ORM, input validation</td></tr>
+<tr><td><b>Broken Access Control</b></td><td>Missing authz checks (IDOR) &rarr; enforce server-side authorization on every request</td></tr>
+<tr><td><b>Cryptographic Failures</b></td><td>Weak/missing encryption &rarr; TLS everywhere, strong algorithms, no secrets in code</td></tr>
+<tr><td><b>XSS</b></td><td>Injecting scripts &rarr; output encoding, CSP, sanitize input</td></tr>
+<tr><td><b>CSRF</b></td><td>Forged authenticated requests &rarr; anti-CSRF tokens, SameSite cookies</td></tr>
+<tr><td><b>SSRF</b></td><td>Server tricked into requests &rarr; allow-list, block internal IPs</td></tr>
+<tr><td><b>Security Misconfiguration</b></td><td>Defaults, verbose errors &rarr; harden, patch, minimal surface</td></tr>
+</table>
+
+<h3>24.2 SQL Injection example &amp; fix</h3>
+<pre><code>// VULNERABLE: string concatenation
+String q = "SELECT * FROM users WHERE name = '" + input + "'";
+// input = ' OR '1'='1   -> returns all rows / auth bypass
+
+// SAFE: parameterized query (PreparedStatement)
+PreparedStatement ps = conn.prepareStatement(
+    "SELECT * FROM users WHERE name = ?");
+ps.setString(1, input);   // input treated as data, never code</code></pre>
+
+<h3>24.3 XSS vs CSRF</h3>
+<table>
+<tr><th></th><th>XSS</th><th>CSRF</th></tr>
+<tr><td>What</td><td>Run attacker's script in victim's browser</td><td>Force victim's browser to make an authenticated request</td></tr>
+<tr><td>Exploits trust</td><td>User's trust in the site</td><td>Site's trust in the user's browser</td></tr>
+<tr><td>Defense</td><td>Output encoding, CSP, sanitize</td><td>CSRF tokens, SameSite cookies</td></tr>
+</table>
+
+<div class="qa">
+<div class="q">How do parameterized queries stop SQL injection?</div>
+<div class="a">The query structure is sent to the DB and compiled separately from the parameter values. User input is bound as data, never parsed as SQL, so it can't alter the query's logic regardless of its content.</div>
+</div>
+
+
+<h2 id="s25">25. Network &amp; System Security <span class="tag inter">Intermediate</span></h2>
+<table>
+<tr><th>Control / Threat</th><th>Notes</th></tr>
+<tr><td><b>Firewall</b></td><td>Filters traffic by rules (ports/IPs); stateful inspection</td></tr>
+<tr><td><b>IDS / IPS</b></td><td>Detect / actively block intrusions</td></tr>
+<tr><td><b>VPN</b></td><td>Encrypted tunnel over public networks</td></tr>
+<tr><td><b>DDoS</b></td><td>Flood to exhaust resources &rarr; rate limiting, CDN/scrubbing, autoscale</td></tr>
+<tr><td><b>MITM</b></td><td>Intercept traffic &rarr; defeated by TLS + cert validation</td></tr>
+<tr><td><b>Phishing / Social engineering</b></td><td>Human-targeted &rarr; training, MFA, email filtering</td></tr>
+<tr><td><b>Malware</b> (virus, worm, trojan, ransomware)</td><td>Endpoint protection, patching, least privilege</td></tr>
+</table>
+<div class="callout tip"><b>Secure coding best practices:</b> validate all input, encode all output, use prepared statements, hash+salt passwords, enforce HTTPS, apply least privilege, keep dependencies patched, never log secrets, rate-limit auth endpoints, and store secrets in a vault (not in code).</div>
+
+<div class="qa">
+<div class="q">How does HTTPS protect against a man-in-the-middle attack?</div>
+<div class="a">TLS encrypts the channel (confidentiality) and authenticates the server via a CA-signed certificate. An attacker can't read the traffic or impersonate the server without a valid certificate the client trusts, and tampering breaks integrity checks.</div>
+</div>
+
+
+<h2 id="s26">26. Interview Scenarios &amp; Cheat-Sheet <span class="tag adv">Advanced</span></h2>
+
+<h3>26.1 Cross-topic scenario questions</h3>
+<div class="qa">
+<div class="q">What happens, end to end, when you load a web page? (ties OS+Net+DB+Sec)</div>
+<div class="a">DNS resolves the domain &rarr; TCP handshake &rarr; TLS handshake (security) &rarr; HTTP request hits the server (a process scheduled by the OS) &rarr; server queries the DB (indexes, transactions) &rarr; response travels back through the layers &rarr; browser renders. A great answer touches all five subjects.</div>
+</div>
+<div class="qa">
+<div class="q">A web request is slow &mdash; how do you diagnose across the stack?</div>
+<div class="a">Check each layer: DNS/network latency, TLS overhead, server CPU/scheduling/GC, DB slow queries (missing index, locks, N+1), and downstream services. Use metrics/tracing to localize before optimizing.</div>
+</div>
+<div class="qa">
+<div class="q">Design a secure login system.</div>
+<div class="a">HTTPS everywhere; store passwords with bcrypt/Argon2 + per-user salt; parameterized queries; rate-limit + lockout on failed attempts; MFA; secure session/JWT with short TTL + refresh; CSRF protection; least-privilege DB account; audit logging.</div>
+</div>
+
+<hr>
+<h3 style="page-break-before:always;">26.2 Rapid Revision Cheat-Sheet</h3>
+<table>
+<tr><th>Topic</th><th>One-liner</th></tr>
+<tr><td>Process vs thread</td><td>Own memory vs shared memory (lightweight)</td></tr>
+<tr><td>Context switch</td><td>Save/restore state to swap process/thread</td></tr>
+<tr><td>Deadlock</td><td>4 Coffman conditions; break circular wait via lock ordering</td></tr>
+<tr><td>Scheduling</td><td>SJF best avg wait; RR fair; aging fixes starvation</td></tr>
+<tr><td>Paging</td><td>Fixed pages&rarr;frames; TLB caches translations</td></tr>
+<tr><td>Thrashing</td><td>More paging than work; fix with working set</td></tr>
+<tr><td>Page replacement</td><td>LRU approximates Optimal; FIFO has Belady's anomaly</td></tr>
+<tr><td>OSI</td><td>7 layers: App,Pres,Sess,Transport,Net,Link,Phys</td></tr>
+<tr><td>TCP vs UDP</td><td>Reliable+ordered vs fast+best-effort</td></tr>
+<tr><td>3-way handshake</td><td>SYN, SYN-ACK, ACK</td></tr>
+<tr><td>Flow vs congestion</td><td>Protect receiver vs protect network</td></tr>
+<tr><td>NAT</td><td>Private IPs &harr; public IP, conserves IPv4</td></tr>
+<tr><td>OOP pillars</td><td>Encapsulation, Abstraction, Inheritance, Polymorphism</td></tr>
+<tr><td>Overload vs override</td><td>Compile-time (same class) vs runtime (parent&rarr;child)</td></tr>
+<tr><td>Abstract vs interface</td><td>Shared state "is-a" vs capability "can-do"</td></tr>
+<tr><td>Composition over inheritance</td><td>Flexible "has-a" beats fragile "is-a"</td></tr>
+<tr><td>ACID</td><td>Atomic, Consistent, Isolated, Durable</td></tr>
+<tr><td>Isolation</td><td>Higher = fewer anomalies, less concurrency</td></tr>
+<tr><td>MVCC</td><td>Readers see snapshot; don't block writers</td></tr>
+<tr><td>Normalization</td><td>1NF atomic, 2NF no partial, 3NF no transitive dep</td></tr>
+<tr><td>Index</td><td>B+ tree; speeds reads, slows writes</td></tr>
+<tr><td>Clustered index</td><td>Defines physical row order (1 per table)</td></tr>
+<tr><td>CAP</td><td>Under partition pick C or A</td></tr>
+<tr><td>CIA</td><td>Confidentiality, Integrity, Availability</td></tr>
+<tr><td>Symmetric vs asymmetric</td><td>Shared key (fast) vs key pair (exchange/sign)</td></tr>
+<tr><td>Hash vs encrypt</td><td>One-way vs reversible</td></tr>
+<tr><td>Password storage</td><td>bcrypt/Argon2 + salt (never plaintext)</td></tr>
+<tr><td>SQLi fix</td><td>Parameterized queries</td></tr>
+<tr><td>XSS vs CSRF</td><td>Inject script vs forge request</td></tr>
+<tr><td>Least privilege</td><td>Minimum access necessary</td></tr>
+</table>
+
+<div class="callout tip"><b>Interview delivery tips:</b> (1) Define the term in one line, then go deeper. (2) Always give the trade-off ("X improves Y at the cost of Z"). (3) Connect topics &mdash; interviewers love when you link OS scheduling to JVM threads, or DB isolation to concurrency. (4) Use a concrete example or tiny diagram to show real understanding.</div>
+
+<hr>
+<p style="text-align:center;color:#777;font-size:.85rem;">End of notes &mdash; CS Fundamentals for SWE Interviews &bull; OS &middot; Networks &middot; Java Concurrency &middot; DBMS &middot; Cyber Security</p>
+<!--CONTENT-->
+
+</div>
+</body>
+</html>
