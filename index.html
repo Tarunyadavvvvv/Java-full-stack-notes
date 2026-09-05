@@ -82,6 +82,20 @@ a{color:inherit;}
 .wordmark__mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(145deg, var(--accent), var(--accent-strong));display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);}
 .wordmark__mark svg{width:17px;height:17px;color:#fff;}
 
+/* ---- prep banner (sits before the phase trail begins) ---- */
+.prep-banner{position:relative;z-index:5;display:flex;align-items:center;gap:1.3rem;max-width:680px;margin:0 auto 2.5rem;padding:1.3rem 1.6rem;background:var(--surface);border-radius:20px;box-shadow:var(--shadow-md);text-decoration:none;color:inherit;transition:transform var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);}
+.prep-banner:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+.prep-banner__icon{flex:none;width:50px;height:50px;border-radius:14px;background:linear-gradient(155deg, var(--tint-strong), var(--tint));display:flex;align-items:center;justify-content:center;color:var(--accent-ink);}
+.prep-banner__icon svg{width:24px;height:24px;}
+.prep-banner__body{flex:1;min-width:0;text-align:left;}
+.prep-banner__badge{display:inline-block;font-family:var(--font-mono);font-size:.66rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-ink);background:var(--tint);padding:.28rem .65rem;border-radius:999px;margin-bottom:.5rem;}
+.prep-banner__title{font-family:var(--font-display);font-weight:800;font-size:1.1rem;margin:0;}
+.prep-banner__desc{margin-top:.3rem;font-size:.86rem;color:var(--ink-soft);line-height:1.5;}
+.prep-banner__cta{flex:none;display:flex;align-items:center;gap:.3rem;font-weight:700;font-size:.82rem;color:var(--accent-ink);}
+.prep-banner__cta svg{width:15px;height:15px;transition:transform var(--dur-2) var(--ease);}
+.prep-banner:hover .prep-banner__cta svg{transform:translateX(3px);}
+@media (max-width:640px){.prep-banner{flex-direction:column;text-align:center;padding:1.4rem;}.prep-banner__body{text-align:center;}}
+
 /* ---- hero ---- */
 .hero{position:relative;z-index:5;max-width:760px;margin:0 auto;padding:clamp(2.5rem,7vw,5rem) clamp(1.25rem,4vw,2rem) 2rem;text-align:center;}
 .hero .eyebrow{display:inline-flex;align-items:center;gap:.55rem;font-family:var(--font-mono);font-size:.76rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-ink);background:var(--tint);padding:.45rem .9rem;border-radius:999px;margin-bottom:1.4rem;}
@@ -214,6 +228,16 @@ noscript .reveal{opacity:1;}
   </div>
 </section>
 
+<a class="prep-banner" href="resume-interview-prep.html">
+  <span class="prep-banner__icon"><svg viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" stroke-width="1.7"/><path d="M8 12h8M8 16h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+  <span class="prep-banner__body">
+    <span class="prep-banner__badge">Before the roadmap — personal prep</span>
+    <h2 class="prep-banner__title">Resume Interview Prep</h2>
+    <p class="prep-banner__desc">90 questions built from your own resume — conceptual, resume-verification, scenario, deep-dive follow-ups, and behavioral, each tagged by difficulty.</p>
+  </span>
+  <span class="prep-banner__cta">Open<svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+</a>
+
 <div class="journey" id="journey">
   <svg class="track" id="trackSvg" viewBox="0 0 1200 100" preserveAspectRatio="none" aria-hidden="true">
     <path id="trackBg" d="" fill="none" stroke="var(--border-strong)" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 16"/>
@@ -224,6 +248,7 @@ noscript .reveal{opacity:1;}
 <noscript>
   <div style="max-width:640px;margin:0 auto;padding:0 1.5rem 3rem;">
     <p style="font-size:.9rem;color:var(--muted);margin-bottom:1.5rem;">JavaScript is off, so here's the plain list of the full roadmap:</p>
+    <p style="font-size:.9rem;line-height:1.7;margin-bottom:1.5rem;"><strong>Before the roadmap</strong> — <a href="resume-interview-prep.html">Resume Interview Prep</a> (personal, not part of the 6 phases below)</p>
     <ol style="padding-left:1.2rem;line-height:1.9;">
       <li><strong>Foundations</strong> — <a href="cs-fundamentals-complete.html">CS Fundamentals</a>; <a href="java-notes-complete.html">Java</a>; <a href="dsa-notes-complete.html">DSA</a>; <a href="git-notes-complete.html">Git &amp; Version Control</a></li>
       <li><strong>Data &amp; Persistence</strong> — <a href="sql-notes-complete.html">SQL Fundamentals</a>; <a href="jpa-hibernate-notes-complete.html">JPA &amp; Hibernate</a>; <a href="caching-redis-notes-complete.html">Caching &amp; Redis</a></li>

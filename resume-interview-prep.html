@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Resume Interview Prep — Tarun Yadav</title>
+<meta name="description" content="A personal interview-prep sheet built from Tarun Yadav's own resume — conceptual questions, resume-verification questions, scenarios, and deep-dive follow-ups, each tagged by difficulty.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Source+Serif+4:ital,wght@0,400..700;1,400..500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F8F7; --surface:#FFFFFF; --surface-2:#EFF4F1; --tint:#E4F5EF; --tint-strong:#CFEEE3;
+  --ink:#15201C; --ink-soft:#45524B; --muted:#74827A;
+  --accent:#0E8F73; --accent-strong:#0B7460; --accent-ink:#0B6B57;
+  --success:#2FA36B; --success-tint:#E4F5EC;
+  --warning:#C98A2E; --warning-tint:#FBEEDD;
+  --danger:#D0574F; --danger-tint:#FCEAE9;
+  --border:rgba(21,32,28,.08); --border-strong:rgba(21,32,28,.14);
+  --shadow-sm:0 1px 2px rgba(21,32,28,.05), 0 2px 10px -6px rgba(21,32,28,.08);
+  --shadow-md:0 6px 20px -6px rgba(21,32,28,.10), 0 16px 40px -18px rgba(21,32,28,.12);
+  --shadow-lg:0 10px 30px -8px rgba(21,32,28,.14), 0 30px 70px -24px rgba(21,32,28,.18);
+
+  --font-display:'Bricolage Grotesque','Segoe UI',sans-serif;
+  --font-body:'Source Serif 4',Georgia,serif;
+  --font-mono:'JetBrains Mono',Consolas,monospace;
+
+  --r-sm:10px; --r-md:16px; --r-lg:24px; --r-pill:999px;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --dur-1:.2s; --dur-2:.4s; --dur-3:.65s;
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important;scroll-behavior:auto !important;}
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:800;line-height:1.08;margin:0;text-wrap:balance;letter-spacing:-.01em;}
+p{margin:0 0 .85em;max-width:70ch;}
+p:last-child{margin-bottom:0;}
+ul,ol{margin:0 0 .85em;padding-left:1.35em;}
+li{margin:.4em 0;}
+a{color:var(--accent-ink);text-decoration-thickness:1.5px;text-underline-offset:.18em;}
+a:hover{color:var(--accent-strong);}
+code{font-family:var(--font-mono);font-size:.87em;background:var(--surface-2);color:var(--accent-ink);padding:.15em .45em;border-radius:6px;}
+strong{font-weight:700;color:var(--ink);}
+:focus-visible{outline:2.5px solid var(--accent);outline-offset:3px;border-radius:4px;}
+::selection{background:var(--tint-strong);}
+.shell{max-width:900px;margin:0 auto;padding:0 clamp(1.25rem,4vw,2.5rem);}
+
+.topnav{position:sticky;top:0;z-index:30;background:color-mix(in srgb, var(--bg) 78%, transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);}
+.topnav__inner{max-width:900px;margin:0 auto;padding:.9rem clamp(1.25rem,4vw,2.5rem);display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+.wordmark{display:flex;align-items:center;gap:.6rem;font-family:var(--font-display);font-weight:800;font-size:1.2rem;text-decoration:none;color:inherit;}
+.wordmark__mark{width:30px;height:30px;flex:none;border-radius:9px;background:linear-gradient(145deg, var(--accent), var(--accent-strong));display:flex;align-items:center;justify-content:center;color:#fff;font-size:.85rem;box-shadow:var(--shadow-sm);}
+.navlink{font-size:.88rem;font-weight:600;color:var(--ink-soft);padding:.5rem .9rem;border-radius:var(--r-pill);text-decoration:none;}
+.navlink:hover{background:var(--surface-2);color:var(--ink);}
+.contents{position:relative;}
+.contents-btn{display:flex;align-items:center;gap:.4rem;font-family:var(--font-body);font-size:.88rem;font-weight:700;color:var(--ink);background:var(--surface-2);border:none;padding:.5rem 1rem;border-radius:var(--r-pill);cursor:pointer;}
+.contents-btn:hover{background:var(--tint);}
+.contents-btn svg{width:14px;height:14px;transition:transform var(--dur-2) var(--ease);}
+.contents.is-open .contents-btn svg{transform:rotate(180deg);}
+.contents-panel{position:absolute;top:calc(100% + 10px);right:0;width:min(88vw,320px);background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:1.2rem;opacity:0;visibility:hidden;transform:translateY(-8px) scale(.98);transition:opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease), visibility var(--dur-2);z-index:40;}
+.contents.is-open .contents-panel{opacity:1;visibility:visible;transform:none;}
+.contents-link{display:flex;align-items:baseline;gap:.5rem;padding:.4rem .6rem;border-radius:10px;text-decoration:none;color:var(--ink-soft);font-size:.87rem;font-weight:600;}
+.contents-link:hover{background:var(--tint);color:var(--ink);}
+.contents-link .code{font-family:var(--font-mono);font-size:.66rem;color:var(--muted);font-weight:500;}
+
+.site-hero{max-width:900px;margin:0 auto;padding:clamp(2.5rem,6vw,4rem) clamp(1.25rem,4vw,2.5rem) 1rem;}
+.site-hero .eyebrow{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--font-mono);font-size:.76rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink);background:var(--tint);padding:.45rem .9rem;border-radius:999px;margin-bottom:1.4rem;}
+.site-hero h1{font-size:clamp(2.1rem,5vw,3rem);max-width:20ch;}
+.site-hero h1 em{font-style:normal;color:var(--accent);}
+.site-hero .lede{margin-top:1.1rem;font-size:1.1rem;color:var(--ink-soft);max-width:none;}
+.site-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:1px;background:var(--border);border-radius:var(--r-lg);overflow:hidden;margin-top:2rem;box-shadow:var(--shadow-sm);}
+.site-stats .stat{background:var(--surface);padding:1rem 1.1rem;}
+.site-stats .stat .n{font-family:var(--font-display);font-size:1.5rem;font-weight:800;}
+.site-stats .stat .l{font-size:.72rem;color:var(--muted);font-weight:600;margin-top:.2rem;}
+
+.chapter-hero{padding:clamp(2rem,5vw,3rem) 0 1rem;}
+.eyebrow-chip{display:inline-flex;align-items:center;gap:.5rem;background:var(--tint);color:var(--accent-ink);font-size:.78rem;font-weight:700;letter-spacing:.02em;padding:.4rem .85rem;border-radius:var(--r-pill);margin-bottom:1.3rem;}
+.eyebrow-chip .n{font-family:var(--font-mono);font-weight:500;opacity:.75;}
+.chapter-hero h2{font-size:clamp(1.8rem,4.2vw,2.5rem);max-width:20ch;}
+.chapter-hero .lede{margin-top:1rem;font-size:1.05rem;color:var(--ink-soft);max-width:none;}
+.meta-row{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.3rem;}
+.chip{display:inline-flex;align-items:center;gap:.4rem;background:var(--surface-2);color:var(--ink-soft);font-size:.8rem;font-weight:600;padding:.4rem .8rem;border-radius:var(--r-pill);}
+.chip--tint{background:var(--tint);color:var(--accent-ink);}
+
+.sub{font-size:1.25rem;margin:2.6rem 0 .9rem;}
+
+.panel{background:var(--surface);border-radius:var(--r-lg);padding:clamp(1.3rem,3vw,1.8rem);box-shadow:var(--shadow-sm);margin:1.5rem 0;}
+
+.callout{display:flex;gap:1rem;align-items:flex-start;border-radius:var(--r-lg);padding:1.2rem 1.4rem;margin:1.5rem 0;box-shadow:var(--shadow-sm);}
+.callout__icon{flex:none;width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1rem;}
+.callout__body{flex:1;min-width:0;}
+.callout__body b.h{display:block;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.35rem;}
+.callout__body p{font-size:.95rem;max-width:none;}
+.callout--tip{background:var(--tint);}
+.callout--tip .callout__icon{background:var(--tint-strong);color:var(--accent-ink);}
+.callout--tip .callout__body b.h{color:var(--accent-ink);}
+.callout--warn{background:var(--warning-tint);}
+.callout--warn .callout__icon{background:rgba(201,138,46,.18);color:var(--warning);}
+.callout--warn .callout__body b.h{color:var(--warning);}
+
+.tbl-wrap{border-radius:var(--r-md);overflow:auto;box-shadow:var(--shadow-sm);margin:1.5rem 0;background:var(--surface);}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:320px;}
+th,td{padding:.75rem 1rem;text-align:left;vertical-align:top;}
+thead th{background:var(--surface-2);font-weight:700;font-size:.76rem;letter-spacing:.03em;color:var(--ink-soft);}
+tbody tr{border-top:1px solid var(--border);}
+tbody tr:hover{background:var(--surface-2);}
+
+/* difficulty-grouped plain question lists (conceptual chapter) */
+.diff-block{margin:1.6rem 0;}
+.diff-head{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--font-mono);font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.35rem .8rem;border-radius:999px;margin-bottom:.9rem;}
+.diff-head--easy{background:var(--tint);color:var(--accent-ink);}
+.diff-head--medium{background:var(--surface-2);color:var(--ink-soft);}
+.diff-head--hard{background:var(--warning-tint);color:var(--warning);}
+.diff-head--veryhard{background:var(--danger-tint);color:var(--danger);}
+.q-plain-list{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-sm);padding:1.3rem 1.6rem 1.3rem 2.6rem;margin:0;}
+.q-plain-list li{margin:.7rem 0;font-size:.98rem;}
+
+/* interview-style Q&A card, reused for resume/scenario/follow-up chapters */
+.iq-item{border-radius:var(--r-lg);background:var(--surface);box-shadow:var(--shadow-sm);margin:1.1rem 0;overflow:hidden;}
+.iq-item:hover{box-shadow:var(--shadow-md);}
+.iq-item>summary{list-style:none;cursor:pointer;padding:1.2rem 1.3rem;display:flex;align-items:flex-start;gap:.9rem;}
+.iq-item>summary::-webkit-details-marker{display:none;}
+.iq-num{flex:none;font-family:var(--font-mono);font-size:.72rem;color:var(--muted);padding-top:.3rem;min-width:1.6em;}
+.iq-q-wrap{flex:1;min-width:0;}
+.iq-tag{display:inline-block;font-family:var(--font-mono);font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.2rem .6rem;border-radius:99px;margin-bottom:.5rem;}
+.iq-tag--easy{background:var(--tint);color:var(--accent-ink);}
+.iq-tag--medium{background:var(--surface-2);color:var(--ink-soft);}
+.iq-tag--hard{background:var(--warning-tint);color:var(--warning);}
+.iq-tag--veryhard{background:var(--danger-tint);color:var(--danger);}
+.iq-q{font-weight:700;font-size:1rem;display:block;}
+.iq-chevron{flex:none;width:26px;height:26px;border-radius:50%;background:var(--surface-2);display:flex;align-items:center;justify-content:center;transition:transform var(--dur-2) var(--ease), background var(--dur-2) var(--ease);margin-top:.05rem;}
+.iq-item[open] .iq-chevron{transform:rotate(180deg);background:var(--tint);}
+.iq-body{padding:.2rem 1.3rem 1.4rem 3.1rem;font-size:.93rem;color:var(--ink-soft);}
+.iq-body p{margin:0 0 .8rem;max-width:none;}
+.iq-body p:last-child{margin-bottom:0;}
+.iq-body ul{margin:0 0 .8rem;max-width:none;}
+.iq-group-label{font-family:var(--font-mono);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-ink);margin:2.2rem 0 .8rem;}
+.iq-group-label:first-of-type{margin-top:1rem;}
+@media (max-width:640px){.iq-body{padding-left:1.3rem;}}
+
+.summary{border-radius:var(--r-lg);padding:1.5rem 1.7rem;margin:2rem 0;background:linear-gradient(160deg, var(--tint), var(--surface) 120%);box-shadow:var(--shadow-sm);}
+.summary__head{font-weight:800;font-size:1rem;color:var(--accent-ink);margin-bottom:.7rem;}
+.summary ul{margin-bottom:0;}
+
+.chapter-divider{height:1px;background:linear-gradient(90deg, transparent, var(--border-strong), transparent);margin:2.8rem 0;}
+.site-foot{padding:3rem 0 4rem;text-align:center;color:var(--muted);font-size:.85rem;}
+
+@media (max-width:640px){
+  body{font-size:16.5px;}
+  .topnav__inner{flex-wrap:wrap;row-gap:.5rem;}
+}
+</style>
+</head>
+<body>
+
+<header class="topnav">
+  <div class="topnav__inner">
+    <a class="wordmark" href="index.html"><span class="wordmark__mark"><svg width="16" height="16" viewBox="0 0 32 32"><path d="M5 24.3 13.3 7.8 18.8 16 22.9 10.5 27 24.3" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Resume Prep</a>
+    <nav style="display:flex;align-items:center;gap:.4rem;">
+      <a class="navlink" href="index.html">← All topics</a>
+      <div class="contents" id="contents">
+        <button class="contents-btn" id="contentsBtn" aria-expanded="false" aria-controls="contentsPanel">
+          Contents
+          <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="contents-panel" id="contentsPanel">
+          <a class="contents-link" href="#conceptual"><span class="code">01</span>Conceptual Questions</a>
+          <a class="contents-link" href="#resume-based"><span class="code">02</span>Resume-Based Questions</a>
+          <a class="contents-link" href="#scenario"><span class="code">03</span>Scenario-Based Questions</a>
+          <a class="contents-link" href="#followups"><span class="code">04</span>Deep-Dive Follow-ups</a>
+          <a class="contents-link" href="#behavioral"><span class="code">05</span>Behavioral Questions</a>
+          <a class="contents-link" href="#summary"><span class="code">REF</span>How to Use This</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<section class="site-hero">
+  <span class="eyebrow">★ Personal interview prep</span>
+  <h1>Every claim on your resume, <em>ready to defend.</em></h1>
+  <p class="lede">Built directly from your resume (Senior Backend Engineer — Java / Spring Boot, ACT21 Software) — conceptual questions on the technologies you list, questions that verify you actually did what each bullet claims, practical production scenarios in the same domain, and deep-dive follow-ups on your biggest claims. Every question is tagged Easy / Medium / Hard / Very Hard.</p>
+  <div class="site-stats">
+    <div class="stat"><div class="n">5</div><div class="l">Sections</div></div>
+    <div class="stat"><div class="n">39</div><div class="l">Conceptual (Q only)</div></div>
+    <div class="stat"><div class="n">16</div><div class="l">Resume-based</div></div>
+    <div class="stat"><div class="n">13</div><div class="l">Scenario-based</div></div>
+    <div class="stat"><div class="n">14</div><div class="l">Deep-dive follow-ups</div></div>
+    <div class="stat"><div class="n">8</div><div class="l">Behavioral</div></div>
+  </div>
+</section>
+
+<main class="shell">
+
+<!-- ============================================================ -->
+<!-- 1. CONCEPTUAL QUESTIONS — questions only, no answers          -->
+<!-- ============================================================ -->
+<section id="conceptual">
+  <div class="chapter-hero">
+    <span class="eyebrow-chip"><span class="n">01</span> Foundations</span>
+    <h2>Conceptual Questions</h2>
+    <p class="lede">"What is X", "explain X", "difference between X and Y" — straight out of the technologies your resume lists. Deliberately no answers here: talk through each one out loud before checking a reference, the same way a real interview works.</p>
+    <div class="meta-row"><span class="chip chip--tint">39 questions</span><span class="chip">No answers — self-test</span></div>
+  </div>
+
+  <div class="diff-block">
+    <span class="diff-head diff-head--easy">Easy</span>
+    <div class="tbl-wrap"><div class="q-plain-list" style="box-shadow:none;">
+    <ol>
+      <li>What is a RESTful API, and what makes an API "RESTful" rather than just "an API over HTTP"?</li>
+      <li>What is the difference between the Spring Framework and Spring Boot?</li>
+      <li>What is Spring Data JPA, and how does it relate to Hibernate?</li>
+      <li>What is a JWT? What are its three parts, and what is each part used for?</li>
+      <li>What is Redis, and why is it commonly used as a cache in front of a relational database?</li>
+      <li>What is the difference between a unit test and an integration test?</li>
+      <li>What is Docker, and what problem does it actually solve compared to running an app directly on a VM?</li>
+      <li>What is the difference between authentication and authorization?</li>
+      <li>What is Camunda BPM, and what problem does a BPM/workflow engine solve that you couldn't solve with plain application code?</li>
+      <li>What is Kubernetes, and what problem does it solve on top of what Docker already gives you?</li>
+      <li>What is MongoDB, and how does a document database differ from a relational database like PostgreSQL?</li>
+      <li>What is Jenkins, and what is a Jenkinsfile?</li>
+    </ol>
+    </div></div>
+  </div>
+
+  <div class="diff-block">
+    <span class="diff-head diff-head--medium">Medium</span>
+    <div class="q-plain-list">
+    <ol>
+      <li>What is the difference between OAuth2 and OpenID Connect (OIDC)?</li>
+      <li>What is Single Sign-On (SSO), and how does it work at a high level across multiple applications?</li>
+      <li>What is Role-Based Access Control (RBAC), and how is it different from assigning permissions to individual users directly?</li>
+      <li>What is a Kafka topic, a partition, and a consumer group — and how do the three relate to each other?</li>
+      <li>What is the N+1 query problem in JPA/Hibernate, and why does it happen even when the code "looks fine"?</li>
+      <li>What is the difference between a covering index and a partial index in PostgreSQL?</li>
+      <li>What is the Circuit Breaker pattern, and what specific problem does it solve that a simple timeout doesn't?</li>
+      <li>What is the difference between <code>CompletableFuture</code> and a plain <code>Future</code> in Java?</li>
+      <li>What is the difference between a BPMN user task and a service task in Camunda?</li>
+      <li>What is the difference between a Kubernetes Pod, a Deployment, and a Service?</li>
+      <li>When would you actually reach for MongoDB over PostgreSQL, and what do you give up by making that choice?</li>
+      <li>What is the difference between a declarative and a scripted Jenkins pipeline?</li>
+    </ol>
+    </div>
+  </div>
+
+  <div class="callout callout--warn">
+    <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a1 1 0 0 0 .86 1.5h18.64a1 1 0 0 0 .86-1.5L13.71 3.86a1 1 0 0 0-1.72 0Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
+    <div class="callout__body"><b class="h">Being honest about Camunda, Kubernetes &amp; MongoDB</b><p>Your own real exposure to these three is short-span, not deep production ownership — and that's fine to say plainly rather than bluff. If a follow-up pushes past what's above, the strongest answer is a direct one: "I worked with this for a short period on [project] — I know the fundamentals solidly, but I haven't gone deep into [specific advanced topic]." An interviewer respects a candidate who knows the edges of their own knowledge far more than one who overclaims and then visibly struggles on the very next question. Jenkins is the one exception here — you actually built CI/CD pipelines with it, so treat that one with the same confidence as GitLab CI/CD.</p></div>
+  </div>
+
+  <div class="diff-block">
+    <span class="diff-head diff-head--hard">Hard</span>
+    <div class="q-plain-list">
+    <ol>
+      <li>What is idempotency, and why does it matter specifically for a Kafka consumer?</li>
+      <li>What is a dead-letter queue (DLQ), and what should actually happen to a message once it lands there?</li>
+      <li>What is the difference between optimistic locking and pessimistic locking, and what kind of workload makes each one fail you?</li>
+      <li>What is a distributed lock, and why can't an in-process lock (like Java's <code>synchronized</code>) solve the same problem across multiple service instances?</li>
+      <li>What is the Saga pattern, and how does a "compensating transaction" differ from a database rollback?</li>
+      <li>What is connection pool exhaustion, and what typically causes it in a production system that "worked fine in staging"?</li>
+      <li>What is the difference between horizontal and vertical scaling, and what does an application need architecturally to scale horizontally well?</li>
+      <li>Explain the difference between at-most-once, at-least-once, and exactly-once delivery semantics.</li>
+      <li>How do you handle secrets (API keys, credentials) securely in a Jenkins pipeline, rather than hardcoding them into the Jenkinsfile?</li>
+    </ol>
+    </div>
+  </div>
+
+  <div class="diff-block">
+    <span class="diff-head diff-head--veryhard">Very Hard</span>
+    <div class="q-plain-list">
+    <ol>
+      <li>Explain how PostgreSQL's MVCC (Multi-Version Concurrency Control) affects the choice between optimistic locking and row-level locking in a high-concurrency system.</li>
+      <li>What happens to already-issued JWT access tokens if the identity provider (e.g. Keycloak) that issued them goes down — can they still be validated?</li>
+      <li>What is a "thundering herd" problem in the context of retries against a struggling downstream service, and how does a well-designed retry policy avoid causing one?</li>
+      <li>What is the difference between a stateless retry and a circuit breaker's half-open state, and why does a resilient system need both rather than just one?</li>
+      <li>Explain exactly what happens during a Kafka consumer group rebalance, and what can go wrong — duplicate processing, message loss — if consumers aren't designed carefully around it.</li>
+      <li>Explain the CAP theorem, and given an architecture combining Kafka, PostgreSQL, and Redis, where the overall system's real consistency/availability guarantees actually land.</li>
+    </ol>
+    </div>
+  </div>
+</section>
+
+<div class="chapter-divider"></div>
+
+<!-- ============================================================ -->
+<!-- 2. RESUME-BASED QUESTIONS — with answers                      -->
+<!-- ============================================================ -->
+<section id="resume-based">
+  <div class="chapter-hero">
+    <span class="eyebrow-chip"><span class="n">02</span> Verification</span>
+    <h2>Resume-Based Questions</h2>
+    <p class="lede">Every question here targets a specific bullet on your resume, and every answer models what a genuinely strong response sounds like — grounded in the exact numbers and technologies you actually listed. If your real answer can't get close to this, that's the bullet to go re-familiarize yourself with before the interview.</p>
+    <div class="meta-row"><span class="chip chip--tint">16 questions</span><span class="chip">With model answers</span></div>
+  </div>
+
+  <div class="iq-group-label">Easy</div>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">01</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--easy">Easy</span><span class="iq-q">Your resume says you "architected distributed microservices for the HyperTrack SaaS platform exposing versioned RESTful APIs consumed by 10+ internal services." What does "versioned" actually mean here, and why does it matter with 10+ internal consumers?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body">
+      <p>Versioning means the API's contract is tagged (commonly in the URI, e.g. <code>/api/v1/timesheets</code>, or via a request header/media type) so that a breaking change can ship as a new version while old consumers keep talking to the version they already integrated against. With 10+ internal services depending on these APIs, a breaking change rolled out without versioning would require coordinating a simultaneous update across every consumer — completely impractical at that scale, and a guaranteed source of production incidents.</p>
+      <p>In practice this means: additive changes (a new optional field) can go into the existing version safely, but anything that changes an existing field's meaning or removes something gets a new version, with the old version kept running until every consumer has migrated off it.</p>
+    </div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">02</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--easy">Easy</span><span class="iq-q">You mention deploying "on AWS EC2 with artefacts in S3 and health monitored via CloudWatch alarms." What's actually stored in S3, and what's the deployment flow from a build to a running instance?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body">
+      <p>S3 holds the deployable build artifact — typically a versioned JAR (or a packaged deployment bundle) produced by the CI pipeline. The flow: CI builds and tests the code, publishes the resulting artifact to a versioned S3 path, and the deployment step (a script, or a tool like CodeDeploy) pulls that specific artifact version onto the EC2 instance(s) and restarts the service.</p>
+      <p>CloudWatch then watches the running instance — both infrastructure metrics (CPU, memory, disk) and application-level health, typically surfaced through Spring Actuator's <code>/actuator/health</code> and custom metrics — with alarms firing to notify the team (or trigger auto-remediation) when something crosses a threshold.</p>
+    </div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">03</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--easy">Easy</span><span class="iq-q">You list JUnit and Mockito for testing. Walk through how you'd unit-test a service class that depends on a repository, using Mockito to isolate it.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body">
+      <p>Mock the repository dependency with <code>@Mock</code> (or Mockito's <code>mock()</code>), inject it into the service under test with <code>@InjectMocks</code>, then use <code>when(repository.findById(id)).thenReturn(someEntity)</code> to control exactly what the "database" returns without touching a real one. The test asserts on the service's own logic — the transformation, validation, or business rule it applies to that data — not on whether the repository itself works.</p>
+      <p>Where it matters: use <code>verify(repository).save(any())</code> to assert a side effect actually happened (e.g., the service really did persist something) when the return value alone doesn't prove it. This isolation is exactly why it's a <em>unit</em> test — a real database round-trip belongs in an integration test instead.</p>
+    </div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">04</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--easy">Easy</span><span class="iq-q">You built "React JS admin dashboards surfacing operational metrics." What kind of metrics would actually be useful on an admin dashboard for a BFSI backend, and how does the frontend get that data?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body">
+      <p>Useful metrics: pending/failed reconciliation counts, dead-letter queue depth, request latency percentiles, per-service health status, and recent error rates — the things an ops person actually needs to decide "is something broken right now, and where." The frontend typically gets this by polling a REST endpoint on a short interval (10–30s is common for an ops dashboard), backed by Spring Actuator's custom metrics or a small purpose-built reporting endpoint — a full WebSocket push is usually overkill unless the dashboard genuinely needs sub-second updates.</p>
+    </div>
+  </details>
+
+  <div class="iq-group-label">Medium</div>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">05</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--medium">Medium</span><span class="iq-q">You designed a "rules-driven timesheet engine with configurable validation rules... reducing manual reconciliation effort by ~40%." How do you make validation rules "configurable" so business users can change logic without a code deployment?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body">
+      <p>The key design move is separating "what to check" (data) from "how checking works" (code). Rules get modeled as data — a table or config describing a field, an operator (greater-than, within-range, matches-pattern), and a threshold/value — rather than hardcoded <code>if/else</code> chains in Java. The engine reads that rule data at runtime and evaluates it generically, so adding or changing a rule means inserting/editing a row, not shipping new code.</p>
+      <p>The trade-off worth naming in an interview: this adds real complexity (you now need a UI or admin tool for business users to safely edit rules, validation on the rules themselves so a bad rule can't be saved, and a way to test a new rule against historical data before it goes live) — configurability isn't free, it's a deliberate investment that pays off once rule changes become frequent enough that a code deploy per change becomes the bottleneck.</p>
+    </div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">06</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--medium">Medium</span><span class="iq-q">The same feature uses "async aggregation using <code>CompletableFuture</code>." Why did aggregation specifically need to be asynchronous — what would have gone wrong if it were synchronous?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body">
+      <p>Aggregating across a hierarchical task mapping (many employees, many tasks, many periods) means many independent sub-computations — likely involving I/O, like fetching related records per branch of the hierarchy. Done synchronously and sequentially, total wall-clock time is the <em>sum</em> of every sub-computation's latency; for a large org that's slow enough to matter, especially for a periodic/batch-style job like end-of-period reconciliation.</p>
+      <p><code>CompletableFuture</code> (via <code>supplyAsync</code> + <code>allOf</code>/<code>thenCombine</code>) lets independent branches run concurrently on a thread pool, so total time approaches the <em>slowest single branch</em> instead of the sum of all of them — a large, real win specifically because the sub-tasks don't depend on each other's results.</p>
+    </div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">07</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--medium">Medium</span><span class="iq-q">You built "fault-tolerant, idempotent consumers with dead-letter queue handling." Concretely, how do you make a Kafka consumer idempotent?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body">
+      <p>Kafka's default delivery guarantee is at-least-once, meaning the same message can legitimately arrive twice (after a rebalance, a retried commit, a consumer restart). Idempotency is what makes processing it twice harmless. Two common mechanisms: track processed message/event IDs in a dedup store (a table keyed on a unique event ID, checked before processing — if already present, skip), or design the write itself to be naturally idempotent, e.g. an <code>UPSERT</code> keyed on business ID instead of a raw <code>INSERT</code>, or setting an absolute value instead of incrementing a counter.</p>
+      <p>The dead-letter queue is the separate, complementary mechanism for the opposite problem: a message that <em>can't</em> be processed at all (bad data, a bug) gets routed there after retries are exhausted, instead of blocking the partition forever or silently dropping it.</p>
+    </div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">08</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--medium">Medium</span><span class="iq-q">You applied "Resilience4j circuit breakers and retry policies on all third-party service calls." Walk through the circuit breaker's state machine — what causes it to open, and what causes it to close again?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body">
+      <p><strong>Closed</strong> (normal): calls pass through to the downstream, failures are tracked over a sliding window. Once the failure rate inside that window crosses a configured threshold, the breaker trips to <strong>Open</strong>: calls fail immediately without ever reaching the downstream, protecting both the caller (no more waiting on a struggling dependency) and the downstream itself (no pile-up of retries against something already failing).</p>
+      <p>After a configured wait duration, the breaker moves to <strong>Half-Open</strong>: a small number of trial calls are allowed through. If they succeed, the breaker closes again (back to normal); if they still fail, it reopens and waits again. This is the mechanism that lets the system self-heal without a human flipping it back on manually.</p>
+    </div>
+  </details>
+
+  <div class="iq-group-label">Hard</div>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">09</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--hard">Hard</span><span class="iq-q">You "optimised PostgreSQL queries (covering indexes, partial indexes, EXPLAIN ANALYZE)... reduced average query latency by ~35%." Walk through your actual process — how does EXPLAIN ANALYZE tell you a covering index is the right fix?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body">
+      <p>Run <code>EXPLAIN (ANALYZE, BUFFERS)</code> on the slow query and look for an index scan followed by a <strong>heap fetch</strong> — the planner used an index to find matching rows, but then still had to go back to the actual table to fetch columns the index didn't contain. That extra heap access, multiplied across many rows, is exactly the cost a covering index removes: by including the needed columns in the index itself (via a composite index or an <code>INCLUDE</code> clause), the query becomes answerable from the index alone — an <strong>index-only scan</strong>, with the heap fetch gone entirely.</p>
+      <p>A partial index solves a different, narrower case: when a query only ever filters a small, well-known subset of rows (e.g. <code>WHERE status = 'PENDING'</code> out of a table dominated by completed rows), indexing just that subset keeps the index small and fast instead of indexing (and maintaining) rows the query never touches. The proof either way is the same: re-run <code>EXPLAIN ANALYZE</code> after the change and confirm actual execution time dropped and the plan no longer shows the heap fetch or full scan you started with.</p>
+    </div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">10</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--hard">Hard</span><span class="iq-q">You designed "multi-level approval workflows using Camunda BPM with... compensating transactions." Give a concrete example — what business action needed "undoing," and how did you undo it?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body">
+      <p>A representative example: an early approval step optimistically reserves something (budget, a resource allocation) so downstream steps can proceed without waiting for final sign-off. If a later approver rejects the request, that reservation needs to be released — but by then it may already be visible to other parts of the system (another process may have already seen "reserved" and acted on it), so a raw database rollback isn't enough; you need a deliberate, explicit compensating step that releases the reservation and notifies anything that depended on it.</p>
+      <p>This is the core reason compensating transactions exist in a multi-step workflow: once intermediate steps have committed and potentially been observed elsewhere, "undo" has to be a real forward-moving action (release, reverse, notify), not a transactional rollback — because there's no single database transaction spanning a multi-day, multi-approver, multi-system workflow to roll back in the first place.</p>
+    </div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">11</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--hard">Hard</span><span class="iq-q">You "established GitLab CI/CD pipelines with zero-downtime deployments and automated rollback." What deployment strategy gives zero downtime, and what exactly triggers an automatic rollback?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body">
+      <p>A rolling deployment (replacing instances a few at a time behind a load balancer, never taking all of them down together) — or blue-green (a full second environment stood up, traffic cut over once it's verified healthy) — is what avoids downtime; either way, health checks (typically Spring Actuator's <code>/actuator/health</code>) gate whether traffic is allowed to shift to a newly-deployed instance.</p>
+      <p>Automated rollback is triggered by that same health signal failing post-deploy, or by an error-rate/latency threshold being breached during a canary window immediately after rollout — the pipeline detects the regression and automatically redeploys the last known-good artifact, without waiting for a human to notice and intervene manually.</p>
+    </div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">12</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--hard">Hard</span><span class="iq-q">Your Docker containerisation + centralised monitoring "cut environment incidents by ~60%." What kinds of incidents were most likely happening before, and why does Docker structurally prevent them?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body">
+      <p>Classic "works on my machine" environment drift: a different JDK patch version between servers, a missing system library, config files that diverged between environments over time, a manual deployment step someone forgot on one box but not another. These are structurally eliminated by Docker because the image bundles the exact runtime, dependencies, and config together as one immutable artifact — the same image runs identically wherever it's deployed, so an entire category of "it's different here" incidents simply can't occur anymore.</p>
+      <p>Worth being honest about in an interview: the ~60% figure is likely a combination of two effects, not one — fewer root causes (environment drift eliminated) <em>and</em> faster detection/response for the incidents that still do occur, thanks to the centralized monitoring (structured logs, health checks, automated alerts) shipped alongside the containerization work.</p>
+    </div>
+  </details>
+
+  <div class="iq-group-label">Very Hard</div>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">13</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--veryhard">Very Hard</span><span class="iq-q">You "centralised token validation... across 8+ microservices" using OAuth2/OIDC across Keycloak, Okta, and Azure AD. If a request carries an Azure AD-issued JWT but reaches a service only configured for Keycloak, how does multi-IdP validation actually work without hardcoding logic per identity provider?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body">
+      <p>The centralizing move is a shared validation layer — a gateway filter or a common library used by every service — that reads the token's <code>iss</code> (issuer) claim, resolves which identity provider issued it, and fetches that specific IdP's public signing keys from its JWKS endpoint (cached locally, refreshed periodically) to verify the signature. Because this logic is generic over "whichever issuer is in the token," adding a new IdP means registering its JWKS endpoint once in the shared layer — not writing new per-service validation code for every microservice that might see that IdP's tokens.</p>
+      <p>This is exactly what "eliminating duplicated per-service auth logic across 8+ microservices" means concretely: before centralization, each service likely had to know how to validate at least one specific IdP's tokens itself; after, every service trusts one shared component's decision instead of re-implementing (and potentially getting subtly wrong) token validation N times.</p>
+    </div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">14</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--veryhard">Very Hard</span><span class="iq-q">You implemented "AES-256 payload encryption for third-party banking integrations." Where do the encryption keys live, how are they rotated, and what's the actual blast radius if a key is compromised?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body">
+      <p>Keys belong in a dedicated secrets/key-management service (AWS KMS, Vault, or equivalent) — never in application config or source. A mature approach uses envelope encryption: each payload (or batch) is encrypted with its own data key, and that data key is itself encrypted by a master key held in KMS. Rotating the master key doesn't require re-encrypting every historical payload immediately; only newly-generated data keys use the new master key, and old data keys remain individually decryptable via the KMS version that issued them.</p>
+      <p>This is precisely what limits blast radius: if a single data key were ever compromised, only the payload(s) it encrypted are exposed — not every payload the system has ever encrypted. A system using one static key for everything has the opposite property: compromise of that one key exposes the entire historical dataset. "AES-256" alone is a checkbox; the actual security property comes from key management design, which is the deeper point this question is really testing.</p>
+    </div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">15</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--veryhard">Very Hard</span><span class="iq-q">Your rental platform project mentions "distributed locking for concurrent reservation conflict resolution." Two users click "book" on the same property within milliseconds — walk through exactly what happens, including if the lock-holder crashes mid-transaction.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body">
+      <p>Both requests attempt to acquire a distributed lock keyed on the property + date range. One acquires it first; it re-checks availability (never trusting data read before the lock), creates the booking, then releases the lock. The second request, waiting on the same key, acquires the lock only after the first releases it — at which point it re-checks availability itself and correctly finds the slot already taken, returning a conflict rather than double-booking.</p>
+      <p>The crash case is the important part: the lock must carry a lease/TTL, not be held forever — otherwise a crashed process permanently deadlocks that property for every future booking attempt. But a lease alone isn't a full correctness guarantee either: if the crashed process had already written the booking before crashing (just hadn't released the lock yet), the lease expiring and a second process proceeding could still create a conflict unless the actual write itself has a backstop — e.g. a unique database constraint on <code>(property_id, date_range)</code> that makes a genuine double-booking fail at the data layer regardless of what the lock did or didn't prevent. The lock is an optimization to avoid contention and wasted work; the constraint is the actual correctness guarantee.</p>
+    </div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">16</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--veryhard">Very Hard</span><span class="iq-q">You reduced API latency 30% via "multi-level Redis caching." What were the levels, and how did you keep them consistent when the underlying PostgreSQL data changed?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body">
+      <p>A typical two-level design: a small local/in-process cache (fastest — no network hop — but limited in size and not shared across instances) sitting in front of a shared Redis cache (a network hop slower than local memory, but shared across every instance and much larger), with PostgreSQL as the ultimate source of truth behind both.</p>
+      <p>Consistency uses the cache-aside pattern: reads populate the cache on a miss, and writes explicitly invalidate (or update) the relevant cache key at both levels the moment the underlying row changes — rather than relying purely on a TTL to eventually expire stale data, which would leave a window of visibly wrong data after every write. TTL still plays a role as a safety net for anything an explicit invalidation might miss, not as the primary consistency mechanism. Worth naming honestly: two cache levels means two places that can go stale instead of one, which is the real complexity cost being traded for that extra layer of speed.</p>
+    </div>
+  </details>
+</section>
+
+<div class="chapter-divider"></div>
+
+<!-- ============================================================ -->
+<!-- 3. SCENARIO-BASED QUESTIONS — with answers                    -->
+<!-- ============================================================ -->
+<section id="scenario">
+  <div class="chapter-hero">
+    <span class="eyebrow-chip"><span class="n">03</span> Practice</span>
+    <h2>Scenario-Based Questions</h2>
+    <p class="lede">Practical, production-flavoured situations in the exact domain your resume already covers — debugging, incidents, trade-offs, and judgment calls. These test how you think under pressure, not just what you know.</p>
+    <div class="meta-row"><span class="chip chip--tint">13 questions</span><span class="chip">With model answers</span></div>
+  </div>
+
+  <div class="iq-group-label">Easy</div>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">01</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--easy">Easy</span><span class="iq-q">Your Kafka consumer group's lag suddenly spikes during peak traffic. What's your first step to diagnose it?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>Check per-partition consumer lag first to see if it's uniform (a throughput problem) or concentrated on a few partitions (a skew/hot-key problem). Confirm every consumer instance in the group is actually alive and processing, not stuck or silently dead. Then check whether the consumer's own processing step includes a slow call (a downstream service, a DB query) — since consumer throughput is capped by how long each message takes to process, a slow-but-not-failing downstream call is the single most common real cause of a sudden lag spike under peak load.</p></div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">02</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--easy">Easy</span><span class="iq-q">A colleague asks you to unit-test a new validation rule in the timesheet engine. What would you mock, and what would you actually assert?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>Mock any repository or external dependency the rule evaluator touches, so the test exercises only the rule's own logic. Feed a handful of representative inputs (a clearly-passing case, a clearly-failing case, and at least one boundary case right at the rule's threshold) and assert both the pass/fail outcome and the specific violation message returned — a rule that fails silently without a clear message is a real production support headache, so the message itself deserves an assertion too.</p></div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">03</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--easy">Easy</span><span class="iq-q">Your team wants a new health check added to the centralised monitoring service ahead of a big release. What would you check, and how would you expose it?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>Identify the specific new dependency the release introduces (a new downstream call, a new DB table, a new queue) and write a Spring Actuator custom <code>HealthIndicator</code> that checks it directly — e.g. a lightweight connectivity check, not a full functional test. That indicator gets aggregated automatically into <code>/actuator/health</code>, which both CloudWatch alarms and any deployment-time health gate already read from — so a new check plugs into existing infrastructure rather than needing its own separate monitoring path.</p></div>
+  </details>
+
+  <div class="iq-group-label">Medium</div>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">04</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--medium">Medium</span><span class="iq-q">After a zero-downtime deployment, some users briefly see inconsistent data — old-format responses mixed with new-format ones. What's happening, and how do you prevent it going forward?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>A rolling deployment means old and new instance versions genuinely serve traffic simultaneously for a window — that's the mechanism that gives you zero downtime in the first place. If that release changed the response contract in a backward-incompatible way, clients randomly hitting old vs. new instances during that window see different shapes, which looks like "inconsistent data" but is really a versioning discipline gap. The fix: make every release backward-compatible for at least one full deploy cycle — add new fields additively, and only remove or repurpose old ones in a later release once you know every instance (and every consumer) has moved forward.</p></div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">05</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--medium">Medium</span><span class="iq-q">Your Resilience4j circuit breaker keeps tripping open even though you've confirmed the downstream service itself is healthy. What would you check in your config?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>Check the failure-rate threshold and the sliding window size/type — a too-small window or an overly aggressive threshold can trip on ordinary transient blips that aren't a real outage. Check how "failure" is actually defined: if the timeout is set too tight, genuinely slow-but-successful calls get counted as failures, inflating the failure rate artificially. And don't rule out a real intermittent issue elsewhere in the call path that a surface-level "downstream looks fine" check wouldn't catch — confirm you're actually measuring the same thing the breaker is reacting to.</p></div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">06</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--medium">Medium</span><span class="iq-q">A dead-lettered Kafka event needs reprocessing now that you've fixed the bug that failed it — but replaying it risks double-charging a customer. How do you reprocess it safely?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>This is exactly why idempotent consumers were built in the first place: if the processing path is genuinely idempotent (keyed on a unique transaction/event ID), replaying the message through the same path is safe by design — if the charge already happened before the original failure, the idempotency check short-circuits it as a no-op; if it never happened, it completes normally now. The one thing worth confirming before replaying: exactly where in the original flow the failure occurred (before or after the side effect), so you're not assuming idempotency covers a path it was never actually built to cover.</p></div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">07</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--medium">Medium</span><span class="iq-q">Your covering-index optimisation improved dashboard read latency, but write throughput on that same table has since dropped noticeably. How do you explain this, and what do you do?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>Every index has to be maintained on every <code>INSERT</code>/<code>UPDATE</code>/<code>DELETE</code> that touches an indexed column — this is the standard read/write trade-off of indexing, and a wider covering index costs more to maintain than a narrow one. The response isn't "remove the index" reflexively — first confirm this specific index is actually the cause (vs. some unrelated regression), then look at whether a narrower or partial index could deliver most of the same read speedup with less write overhead, or whether the write path itself can absorb the cost better (batching writes, for example).</p></div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">08</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--medium">Medium</span><span class="iq-q">Your Jenkins pipeline builds and deploys fine for every feature branch, but fails intermittently only on the release branch. How do you debug this?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>Start by isolating what's actually different about that one branch's pipeline run rather than assuming it's the same job under a different name: check whether the release branch triggers extra stages feature branches don't (a deploy step, an approval gate, a different set of credentials/environment targets), and whether it runs on a different agent/executor than feature builds do — a resource-constrained or differently-configured agent is a very common source of "works everywhere except this one path." Pull the actual console output from a few failed release-branch runs and compare it line-by-line against a successful feature-branch run at the same stage, rather than guessing from the final error alone — intermittent failures especially point toward a race condition (two release builds queued back-to-back sharing a workspace) or a flaky external dependency only the release stage calls (a production-like environment, a stricter approval/notification integration).</p></div>
+  </details>
+
+  <div class="iq-group-label">Hard</div>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">09</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--hard">Hard</span><span class="iq-q">Your centralised Keycloak/SSO service goes down entirely. Walk through the blast radius across your 8+ dependent microservices, and what you'd want already built to limit the damage.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>If every service validates JWTs locally against cached public signing keys (JWKS fetched and cached ahead of time, not fetched live per-request), already-authenticated traffic keeps working through the outage — tokens remain valid until their own expiry regardless of whether the issuer is currently reachable. The real damage in that design is limited to new logins and token refreshes failing until Keycloak recovers.</p><p>The dangerous alternative — and the thing worth actively designing against — is any service doing a live token-introspection call to Keycloak on every request. In that design, Keycloak going down becomes an instant, total authentication outage across all 8+ services simultaneously: a single point of failure hiding behind what was meant to be a resilience-improving centralization.</p></div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">10</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--hard">Hard</span><span class="iq-q">You need to migrate the timesheet engine's validation from hardcoded rules to the new configurable rules engine in production, with zero downtime and no mid-migration breakage. Walk through your rollout plan.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>Run both engines in parallel first, in shadow mode: evaluate the new rules engine's output alongside the old hardcoded path, but only act on the old path's result while logging any discrepancy between the two. Once discrepancies are understood (and either fixed or confirmed to be intentional differences), cut traffic over gradually — a feature flag per team/tenant rather than a single big-bang switch — with an instant rollback path (flip the flag back) if the new engine misbehaves for any subset of real data. Only remove the old hardcoded path once the new one has run cleanly in production, at full traffic, for a defined burn-in period.</p></div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">11</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--hard">Hard</span><span class="iq-q">Under real peak load, your retry policy against a flaky third-party service seems to be making the outage worse, not better. What's likely misconfigured?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>Almost certainly missing or insufficient backoff-with-jitter. If failed calls retry immediately, or every client's retries land on the same fixed delay, retries arrive in synchronized waves that pile onto an already-struggling downstream — a retry storm that deepens the outage instead of riding it out. The fix is exponential backoff with randomized jitter so retries spread out over time instead of synchronizing. Also worth checking: that retries aren't being attempted on requests that will never succeed regardless (a validation error, a 400) — retrying those only burns capacity for zero chance of success — and that retry and circuit breaker are wired together, so retries actually stop once the breaker trips open, rather than continuing to hammer a downstream the breaker has already given up on.</p></div>
+  </details>
+
+  <div class="iq-group-label">Very Hard</div>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">12</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--veryhard">Very Hard</span><span class="iq-q">A regulator asks you to prove a specific banking transaction from 6 months ago was correctly authorized and hasn't been tampered with since. What in your architecture actually answers that, and where might the real gaps be?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>The Camunda audit trail (who approved what, under which role, at what time) answers the "correctly authorized" half convincingly — that's exactly what an audit trail is for. But "hasn't been tampered with since" is a stronger, different claim: AES-256 encryption protects <em>confidentiality</em>, it says nothing about whether the stored audit record itself could be edited afterward by someone with database access.</p><p>A genuinely defensible answer needs a separate tamper-evidence mechanism — an append-only/write-once audit store, or a cryptographic hash chain over audit records, or at minimum row-level signatures that would visibly break if a record were altered after the fact. If the real system only has "an audit trail table in an otherwise normal, mutable database," the honest answer is that this is a real gap, not something encryption already covers — and recognizing that distinction, rather than overclaiming, is what a strong candidate does here.</p></div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">13</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--veryhard">Very Hard</span><span class="iq-q">Two microservices consume the same Kafka topic, but one processes twice as fast as the other and drifts far ahead in "understanding" recent events. Could this create a consistency problem, and how would you design around it?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>Yes, if anything assumes the two services stay roughly in sync. If the fast service (already having processed event N+5) makes a synchronous call to the slow service expecting it to already reflect a state change from event N+2, and the slow service is still stuck back at event N, that call gets answered with stale state — a real, silent consistency bug, not a crash.</p><p>The robust design avoids the assumption entirely: each consumer should be independently correct based only on the stream itself, maintaining its own materialized view rather than depending synchronously on a sibling's current position. Where a genuine ordering dependency can't be avoided, make it explicit rather than implicit — e.g. the fast service checks "has the slow service processed at least up to offset/version X" before proceeding, instead of silently assuming they're already aligned. This is precisely the trade-off the resume's own "eventual consistency" phrasing implies, and being able to name the specific failure mode it creates — not just the term itself — is what this question is testing.</p></div>
+  </details>
+</section>
+
+<div class="chapter-divider"></div>
+
+<!-- ============================================================ -->
+<!-- 4. DEEP-DIVE FOLLOW-UPS                                        -->
+<!-- ============================================================ -->
+<section id="followups">
+  <div class="chapter-hero">
+    <span class="eyebrow-chip"><span class="n">04</span> Drill Deeper</span>
+    <h2>Deep-Dive Follow-ups</h2>
+    <p class="lede">For your biggest resume claims, these are the exact follow-up questions a sharp interviewer fires right after your first answer, to check whether the depth is real. Grouped by which claim they're testing. Since these depend on specifics only you know, each answer is framed as what a strong response needs to <em>cover</em> — fill in your own real numbers and choices.</p>
+    <div class="meta-row"><span class="chip chip--tint">14 questions</span><span class="chip">7 claim groups</span></div>
+  </div>
+
+  <div class="iq-group-label">On: "~40% reduction in manual reconciliation"</div>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">01</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--medium">Medium</span><span class="iq-q">How exactly was the ~40% figure measured — what was the baseline, and over what time period?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>A strong answer names the actual unit measured (hours spent per reconciliation cycle, number of manual corrections needed, or headcount-time freed up), the specific before/after comparison window, and who tracked it (ops team's own reporting, a ticket count, a timed process). Vague answers ("it just felt faster") are the tell an interviewer is listening for — have the real number and its source ready, not just the headline percentage.</p></div>
+  </details>
+  <details class="iq-item">
+    <summary><span class="iq-num">02</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--hard">Hard</span><span class="iq-q">What happens if two different validation rules conflict for the same timesheet entry — which one wins, and how did you design for that?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>A strong answer has an explicit conflict-resolution model — a priority/ordering field on each rule, a "most restrictive wins" policy, or rules scoped so they genuinely can't overlap — and can explain why that specific choice was made. If rule conflicts were never actually considered, that's worth acknowledging honestly and reasoning through live rather than pretending a design decision exists that doesn't.</p></div>
+  </details>
+
+  <div class="iq-group-label">On: Kafka idempotent consumers with DLQ</div>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">03</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--hard">Hard</span><span class="iq-q">What's the exact mechanism used to detect a duplicate — a dedup table, a unique constraint, an idempotency key, something else?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>Name the specific mechanism precisely — e.g. a unique constraint on the business/event key at the database level (the simplest, most robust option, since the database itself enforces it), versus a separate dedup lookup table checked before processing (more flexible, but is itself another piece of state that needs its own consistency guarantees). Be ready to explain why that specific choice fit the workload, not just that "idempotency" was applied as a label.</p></div>
+  </details>
+  <details class="iq-item">
+    <summary><span class="iq-num">04</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--veryhard">Very Hard</span><span class="iq-q">How long are dedup records retained, and what happens if a genuine duplicate arrives after that retention window has expired?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>A strong answer acknowledges this honestly: a dedup window has to end somewhere (unbounded retention isn't free), so there's a real, bounded risk window where a very late duplicate could slip through. The mitigation is picking a retention period comfortably longer than any realistic redelivery delay Kafka/the consumer group could produce (accounting for worst-case rebalance/retry timing), and, where the business impact of a rare duplicate is high (money movement), pairing this with a second, cheaper safety net like a database-level uniqueness constraint on the actual side effect.</p></div>
+  </details>
+
+  <div class="iq-group-label">On: Resilience4j circuit breakers under peak load</div>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">05</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--medium">Medium</span><span class="iq-q">What specific configuration values did you use — failure-rate threshold, sliding window size, wait duration in open state — and how did you arrive at them?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>Be ready with real numbers, not just "we configured it sensibly" — e.g. a 50% failure-rate threshold over a 10-call sliding window, a 10-second wait duration before probing again. More important than the numbers themselves: explain the reasoning (a smaller window reacts faster but is noisier; a longer wait duration is gentler on a recovering downstream but leaves callers fast-failing longer) and whether the values came from load-testing/observed behaviour or were an informed starting guess later tuned from production data.</p></div>
+  </details>
+  <details class="iq-item">
+    <summary><span class="iq-num">06</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--hard">Hard</span><span class="iq-q">When the circuit is open and fast-failing, what does the calling code actually do with that failure — return a cached/degraded response, propagate an error, something else?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>A strong answer names the actual fallback behaviour wired via Resilience4j's fallback method — a cached last-known-good value, a degraded response the caller can still act on, or a clean, fast error the caller can meaningfully handle. "It just throws" is a valid answer too, but only if that's genuinely the right call for that specific downstream (i.e., there's no sane degraded behaviour) rather than a fallback nobody got around to implementing.</p></div>
+  </details>
+
+  <div class="iq-group-label">On: ~35% PostgreSQL query latency reduction</div>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">07</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--medium">Medium</span><span class="iq-q">Which specific query or dashboard was the primary target — what did EXPLAIN ANALYZE show before your change, and what did it show after?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>Have the actual before/after plan shapes ready to describe — e.g. "sequential scan on a 2M-row table, ~400ms" versus "index-only scan, ~40ms" — and name the actual table/query involved, not a generic description. This is the single most common place a resume claim gets stress-tested, since it's easy to state a percentage and hard to fake the specific mechanism behind it.</p></div>
+  </details>
+  <details class="iq-item">
+    <summary><span class="iq-num">08</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--veryhard">Very Hard</span><span class="iq-q">Did adding the covering/partial index change autovacuum behaviour or table bloat on that table over time, and did you monitor for that?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>This is a genuinely advanced follow-up most candidates won't have monitored — a fair, honest answer is that this wasn't specifically tracked, paired with a correct explanation of <em>why</em> it matters: more/wider indexes mean more index entries autovacuum has to clean up after updates and deletes, which can subtly increase vacuum workload and, if vacuum falls behind, table/index bloat over time. Knowing this is a real second-order effect — even without having measured it personally — reads far better than either bluffing a fabricated number or drawing a blank.</p></div>
+  </details>
+
+  <div class="iq-group-label">On: zero-downtime deployments with automated rollback</div>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">09</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--medium">Medium</span><span class="iq-q">What specific signal triggers an automatic rollback, and how quickly does it act?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>Name the exact signal (failed health check on the new instance, an error-rate threshold breached during a canary window) and the actual timing (checked every N seconds, rollback triggered after M consecutive failures) — the specificity of "how quickly" is what separates a real, built system from a described-in-theory one.</p></div>
+  </details>
+  <details class="iq-item">
+    <summary><span class="iq-num">10</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--hard">Hard</span><span class="iq-q">If a bad deploy passes health checks initially but degrades only under real production load a few minutes later, does your rollback mechanism still catch it?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>A strong answer distinguishes a one-time post-deploy health check from a continuous canary/monitoring window — only the latter catches a regression that only shows up under sustained real load (a memory leak, a connection pool slowly exhausting). If the real pipeline only checks health once immediately after deploy, the honest answer is that this specific failure mode would slip through today — which is a legitimate, self-aware gap to name rather than claim coverage that doesn't exist.</p></div>
+  </details>
+
+  <div class="iq-group-label">On: eliminating duplicated auth logic across 8+ microservices</div>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">11</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--hard">Hard</span><span class="iq-q">Before centralisation, what did the duplicated auth logic actually look like in each service?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>Name the concrete "before" shape — e.g. each service had its own copy-pasted JWT-validation filter, or a shared library that had drifted out of sync across services over time. This grounds the "eliminated duplication" claim in something real and shows you understand what the actual problem was, not just that a fix was applied.</p></div>
+  </details>
+  <details class="iq-item">
+    <summary><span class="iq-num">12</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--veryhard">Very Hard</span><span class="iq-q">If one specific microservice needs a slightly different authorization rule than the rest, how does the centralized design accommodate that exception without re-introducing per-service special-casing?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>A well-designed centralized layer handles this via configuration, not code branches — e.g. a per-service scope/claim requirement declared in config that the shared validation logic reads and enforces generically, rather than an <code>if (service == X)</code> check inside the shared component itself. If the current design would in fact need a code change in the shared layer for this, that's a real, worth-naming limitation of "centralized" — genuine centralization should be extensible through configuration, not by editing the shared component every time one consumer's needs differ slightly.</p></div>
+  </details>
+
+  <div class="iq-group-label">On: distributed locking in the rental platform</div>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">13</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--hard">Hard</span><span class="iq-q">Which specific distributed locking mechanism did you use, and why that one over the alternatives?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>Common real options worth being able to compare: a Redis-based lock (fast, already in your stack since Redis is used for caching too, but needs careful TTL/lease handling to be safe), a PostgreSQL advisory lock (no new infrastructure, transactionally tied to the database you already trust, but scoped to a single DB connection/session), or a dedicated coordination service like ZooKeeper (the strongest correctness guarantees, but real operational overhead for a system that doesn't already run one). A strong answer picks one, names the real trade-off against at least one alternative, and explains why that trade-off fit this specific use case.</p></div>
+  </details>
+  <details class="iq-item">
+    <summary><span class="iq-num">14</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--veryhard">Very Hard</span><span class="iq-q">What lock timeout/lease duration did you choose, and how did you decide it was long enough for the critical section but short enough not to hold up other users on a crash?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>This is a genuine engineering trade-off worth reasoning through explicitly rather than stating a number in isolation: the lease needs to comfortably exceed the critical section's realistic worst-case duration (including a slow DB write or an occasional GC pause) to avoid the lock expiring <em>while still legitimately in use</em> — which would let a second request in concurrently despite the first not actually being done. But too generous a lease means a genuine crash holds up every other user on that resource for that whole duration. A strong answer names an actual value and the reasoning behind it (e.g. "3x the p99 observed duration of the critical section"), not just "we set a timeout."</p></div>
+  </details>
+</section>
+
+<div class="chapter-divider"></div>
+
+<!-- ============================================================ -->
+<!-- 5. BEHAVIORAL QUESTIONS                                        -->
+<!-- ============================================================ -->
+<section id="behavioral">
+  <div class="chapter-hero">
+    <span class="eyebrow-chip"><span class="n">05</span> The Human Round</span>
+    <h2>Behavioral Questions</h2>
+    <p class="lede">Every technical section above verifies what you know. This one verifies how you actually work with people — and your resume already hands the interviewer an opening ("mentored 2 junior engineers") that a technical-only prep pass would miss entirely. Answers here are STAR-structure guidance (Situation, Task, Action, Result), not a script — the specifics have to be your own real story.</p>
+    <div class="meta-row"><span class="chip chip--tint">8 questions</span><span class="chip">STAR-structure guidance</span></div>
+  </div>
+
+  <div class="iq-group-label">Easy</div>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">01</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--easy">Easy</span><span class="iq-q">Your resume says you "mentored 2 junior engineers via code reviews and architecture walkthroughs." Walk me through one specific instance, not just that you did it.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>This is the single most likely behavioral follow-up given what's already on your resume — have one real, specific instance ready, not a generic description of "mentoring." <strong>Situation:</strong> what was the junior engineer working on, and what was actually going wrong or missing (a design that wouldn't scale, a misunderstanding of a pattern, a habit worth correcting). <strong>Task:</strong> what were you specifically responsible for — was this a scheduled 1:1 walkthrough, a PR review, an ad-hoc pairing session? <strong>Action:</strong> what did you actually do — did you point out the fix directly, or ask questions that led them to find it themselves (interviewers often listen for this distinction, since it signals real teaching vs. just correcting). <strong>Result:</strong> what changed afterward — did their code quality visibly improve, did they start catching similar issues themselves next time? A concrete before/after beats "they learned a lot."</p></div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">02</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--easy">Easy</span><span class="iq-q">Describe a time you disagreed with a technical decision made by a teammate or lead. How did you handle it?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>The interviewer isn't testing whether you were right — they're testing whether you can disagree productively. A strong structure: what was the actual technical disagreement (be specific — a library choice, an architecture pattern, a shortcut under deadline pressure), how did you raise it (privately vs. in a group setting matters — raising a public disagreement badly is itself a red flag interviewers listen for), what evidence or reasoning did you bring rather than just an opinion, and — importantly — how it actually resolved. It's fine if the resolution was "I was wrong and here's what changed my mind," or "we disagreed and went with their call, and here's why I supported it afterward anyway" — both show maturity; "I was right and they eventually admitted it" as the only resolution you can describe is a weaker answer than it sounds.</p></div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">03</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--easy">Easy</span><span class="iq-q">How do you approach giving feedback in a code review when you disagree with the author's approach?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>A strong answer separates "this is objectively wrong" (a bug, a security hole, a broken contract) from "I'd have done this differently" (a style/design preference) — and explains that the review comment's tone and certainty should match which category it's actually in. Have a real example ready: a comment you wrote that was a hard blocker vs. one phrased as a suggestion, and why you drew that line where you did. Bonus depth: mention asking a genuine question ("what led you to this approach?") before asserting your own is better — sometimes the author had context you didn't.</p></div>
+  </details>
+
+  <div class="iq-group-label">Medium</div>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">04</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--medium">Medium</span><span class="iq-q">Tell me about the most challenging bug you've had to debug in production. What made it hard, and how did you eventually find it?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>Pick a real bug where the difficulty was genuinely interesting — intermittent/non-reproducible, or one that only showed up under real concurrent load (your resume's own domain — a race condition, a connection pool issue, a Kafka rebalance edge case — is rich ground here). Structure: what was the visible symptom, why your first hypothesis was wrong (this detail makes the story credible — real debugging rarely nails it on the first guess), what specific tool or technique actually cracked it (logs, a heap dump, distributed tracing, adding a targeted log line and reproducing under load), and what you changed afterward so the same class of bug couldn't recur silently again.</p></div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">05</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--medium">Medium</span><span class="iq-q">Describe a time a deadline was at risk. What did you do?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>Interviewers listen for whether you communicated early or waited silently and hoped it would resolve itself. Strong structure: when did you realize the deadline was actually at risk (the earlier the better — flags candidates who track their own progress honestly), who did you tell and how (did you bring options — cut scope, ask for help, extend the deadline — rather than just the problem), and what actually happened. A good answer doesn't need a rescue-at-the-last-minute ending; "we cut scope deliberately and shipped the core piece on time" is a genuinely strong result, often stronger than a heroics story.</p></div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">06</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--medium">Medium</span><span class="iq-q">Tell me about a time you had to learn something quickly with only shallow prior exposure to complete a task.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>Your own real Camunda, Kubernetes, or MongoDB experience is a genuinely good real story for this one — short-span exposure that still required getting productive fast is exactly the situation this question is asking about, and using one of them turns an honest limitation into a demonstrated strength. Structure: what was the actual task and the real time pressure, what was your approach to getting up to speed (docs, a specific person you asked, a small experiment/spike before committing to an approach), and what you shipped — plus, ideally, an honest note on what you'd still want to learn deeper if you used that technology again. That last part directly reinforces the honesty this same technology already needs in the technical rounds.</p></div>
+  </details>
+
+  <div class="iq-group-label">Hard</div>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">07</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--hard">Hard</span><span class="iq-q">Describe a situation where a technical decision you made turned out to be wrong. What did you learn, and what would you do differently?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>This question specifically filters out candidates who can't name a real mistake — refusing to have an answer, or giving a "mistake" that's secretly a humble-brag ("I worked too hard"), reads worse than an honest one. Pick something genuinely wrong with real consequence (a design that didn't scale the way you assumed, a dependency choice that caused problems later, an estimate that was badly off) and be specific about the actual impact, not just "it wasn't ideal." The learning has to be concrete too — not "I learned to be more careful" but a specific change in how you now approach that class of decision (e.g. "I now prototype the risky part before committing to the full design" or "I now load-test before assuming a caching strategy will hold under real traffic").</p></div>
+  </details>
+
+  <details class="iq-item">
+    <summary><span class="iq-num">08</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--hard">Hard</span><span class="iq-q">Tell me about a time you had to push back on a request — from a product manager, a stakeholder, or another team — because it wasn't technically feasible or was too risky. How did you communicate that?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
+    <div class="iq-body"><p>The interviewer is testing whether you can say no without either caving silently or being obstructive. Strong structure: what was actually being asked and why it was risky in concrete terms (not "it seemed hard" but a specific consequence — data loss, a security gap, a timeline that would force skipping tests on a BFSI system where that matters more than usual), how you communicated it (ideally with an alternative, not just a blocker — "here's what we can do instead, and here's the trade-off"), and what actually happened as a result. If the answer is "they pushed back and we did it anyway, and it caused the problem I predicted," that's still a strong story as long as you're honest about it and can name what you'd do differently in the pushback itself next time — perhaps escalating earlier or getting the risk in writing.</p></div>
+  </details>
+</section>
+
+<div class="chapter-divider"></div>
+
+<!-- ============================================================ -->
+<!-- HOW TO USE THIS / SUMMARY                                      -->
+<!-- ============================================================ -->
+<section id="summary">
+  <div class="chapter-hero">
+    <span class="eyebrow-chip"><span class="n">REF</span> Before the interview</span>
+    <h2>How to Use This</h2>
+  </div>
+
+  <div class="summary">
+    <div class="summary__head">A practical run-through, in order</div>
+    <ul>
+      <li><strong>Conceptual Questions first, closed-book.</strong> If any of these make you hesitate, that's a real gap to close before anything else — they're the ones any competent interviewer expects instantly.</li>
+      <li><strong>Resume-Based Questions next — answer out loud, then compare to the model answer.</strong> The goal isn't to memorize the model answer verbatim; it's to check whether your own real experience can get to the same level of specificity (the actual mechanism, not just the headline number).</li>
+      <li><strong>Scenario-Based Questions as a stress test.</strong> These deliberately extend beyond exactly what's on the resume — practice reasoning through them live, since a real interview will do the same.</li>
+      <li><strong>Deep-Dive Follow-ups, and be honest with yourself.</strong> If a follow-up exposes a detail you genuinely don't know about your own project, that's more useful to discover now than in the room — go find the real answer, or be ready to say plainly "we didn't design for that" if it's a genuine gap.</li>
+      <li><strong>Behavioral Questions last, out loud, not just in your head.</strong> A story that sounds complete when you think it through silently often turns out to have gaps once you actually say it — practice these the same way you'd practice the technical ones, not as an afterthought the night before.</li>
+    </ul>
+  </div>
+
+  <div class="callout callout--tip">
+    <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2.5l2.1 5.9 5.9 2.1-5.9 2.1L12 18.5l-2.1-5.9-5.9-2.1 5.9-2.1L12 2.5z" fill="currentColor"/></svg></div>
+    <div class="callout__body"><b class="h">Difficulty is directional, not absolute</b><p>These tags reflect typical interview difficulty for someone at a senior-engineer level, not an objective scale — a "Hard" question you've genuinely lived through in production should feel easier than an "Easy" concept you've only read about. Weight your prep time toward wherever your real confidence is thinnest, regardless of the label.</p></div>
+  </div>
+
+  <div class="callout callout--warn">
+    <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a1 1 0 0 0 .86 1.5h18.64a1 1 0 0 0 .86-1.5L13.71 3.86a1 1 0 0 0-1.72 0Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
+    <div class="callout__body"><b class="h">A note on the model answers</b><p>The Resume-Based and Scenario answers are written to be technically strong and grounded in the exact numbers your resume states — but for details your resume doesn't specify (which exact locking library, which exact config values), they describe the reasoning and common real choices rather than inventing a false specific. Swap in your own actual implementation details wherever they differ — an interviewer values a correct, specific account of what you really built far more than a polished generic one.</p></div>
+  </div>
+</section>
+
+</main>
+
+<div class="site-foot">Built from your resume for interview prep — not part of the general study modules.</div>
+
+<script>
+(function(){
+"use strict";
+var contentsEl=document.getElementById("contents");
+var contentsBtn=document.getElementById("contentsBtn");
+function closeContents(){ contentsEl.classList.remove("is-open"); contentsBtn.setAttribute("aria-expanded","false"); }
+function toggleContents(){
+  var open=contentsEl.classList.toggle("is-open");
+  contentsBtn.setAttribute("aria-expanded", open?"true":"false");
+}
+document.addEventListener("keydown",function(e){ if(e.key==="Escape") closeContents(); });
+document.addEventListener("click",function(e){
+  if(e.target.closest("#contentsBtn")){ toggleContents(); return; }
+  if(e.target.closest(".contents-link")){ closeContents(); return; }
+  if(contentsEl.classList.contains("is-open") && !e.target.closest(".contents-panel")){ closeContents(); }
+});
+})();
+</script>
+</body>
+</html>
