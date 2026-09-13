@@ -460,7 +460,13 @@ noscript .reveal{opacity:1;}
   </div>
 
   <h3 class="sub reveal">Bounded contexts: the unit decomposition actually happens around</h3>
-  <p class="reveal">Domain-Driven Design's <strong>bounded context</strong> is the idea underneath every good service boundary: a bounded context is the area of a domain where a particular model, its terms, and its rules stay internally consistent. "Order" means something specific and complete inside the Orders context — line items, totals, fulfillment status. It might mean something narrower inside Shipping (just an address and a set of items to move) and narrower still inside Billing (a set of charges). A service boundary should line up with a bounded context, not with an arbitrary slice of the codebase — because a bounded context is the largest unit that can change internally without forcing another team's model to change in lockstep.</p>
+  <p class="reveal">Domain-Driven Design's <strong>bounded context</strong> — the area of a domain where one model, its terms, and its rules stay internally consistent — is the idea underneath every good service boundary. The same word means something different depending which context it's in:</p>
+  <ul class="reveal">
+    <li><strong>Orders context</strong> — line items, totals, fulfillment status</li>
+    <li><strong>Shipping context</strong> — just an address and a set of items to move</li>
+    <li><strong>Billing context</strong> — a set of charges</li>
+  </ul>
+  <p class="reveal">A service boundary should line up with a bounded context, not an arbitrary slice of the codebase — it's the largest unit that can change internally without forcing another team's model to change in lockstep.</p>
 
   <h3 class="sub reveal">Cutting by business capability, not by technical layer</h3>
   <p class="reveal">There are two instincts for where to draw the lines, and only one of them survives contact with production.</p>
@@ -484,7 +490,7 @@ noscript .reveal{opacity:1;}
       </ul>
     </div>
   </div>
-  <p class="reveal">The technical-layer cut feels natural because it mirrors how a monolith's codebase is often already organized internally — but that's exactly the problem: it recreates the monolith's coupling with extra network hops bolted on. It's often called a <strong>distributed monolith</strong>: all the deployment and operational overhead of microservices, none of the independence.</p>
+  <p class="reveal">The technical-layer cut feels natural — it mirrors how a monolith's codebase is often already organized internally. That's exactly the problem: it recreates the monolith's coupling with network hops bolted on, a pattern often called a <strong>distributed monolith</strong> — all the deployment overhead of microservices, none of the independence.</p>
 
   <div class="panel diagram-panel reveal">
     <ul class="soft-tree">
@@ -500,12 +506,12 @@ noscript .reveal{opacity:1;}
   </div>
 
   <h3 class="sub reveal">Database-per-service: the rule that makes the split real</h3>
-  <p class="reveal">Splitting the code into separate deployables while leaving one shared database underneath is the single most common way teams accidentally rebuild a monolith. The moment two services read and write the same tables, a schema change in one requires coordinating with every other team that touches those tables — exactly the cross-team coordination cost decomposition was supposed to remove. <strong>Database-per-service</strong> means each service's data is private to that service; anything another service needs comes through that service's API or an event it publishes, never a direct query against its tables.</p>
+  <p class="reveal">Splitting the code into separate deployables while leaving one shared database underneath is the most common way teams accidentally rebuild a monolith — the moment two services read and write the same tables, a schema change in one needs sign-off from every other team touching them, the exact coordination cost decomposition was supposed to remove. <strong>Database-per-service</strong> fixes this: each service's data is private, and anything another service needs comes through its API or a published event, never a direct query.</p>
   <div class="callout callout--mistake reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3L2 20h20L12 3z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M12 9.5v4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17" r="1.1" fill="currentColor"/></svg></div>
     <div class="callout__body">
       <b class="h">The shared-database anti-pattern</b>
-      <p>A team splits its monolith into five deployable services, each with its own repo and its own CI pipeline — but all five still point at the same Postgres instance, and worse, the same tables. It looks decomposed on an architecture diagram. In practice, a migration on the <code>orders</code> table still needs sign-off from four other teams before it can ship, deploys still get coordinated on a release calendar, and a slow query from one service still starves connections for the others. The organizational coupling the split was meant to remove is still fully intact — it just moved from "shared code" to "shared schema."</p>
+      <p>A team splits its monolith into five deployable services, each with its own repo and CI pipeline — but all five still point at the same Postgres tables. It looks decomposed on the architecture diagram. In practice: a migration on the <code>orders</code> table still needs sign-off from four other teams, deploys still get coordinated on a release calendar, and a slow query from one service still starves connections for the rest. The organizational coupling the split was meant to remove is still fully intact — it just moved from "shared code" to "shared schema."</p>
     </div>
   </div>
 
@@ -519,7 +525,7 @@ noscript .reveal{opacity:1;}
 
   <details class="accordion reveal">
     <summary><div class="accordion__chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>So how big should one service actually be?</summary>
-    <div class="accordion__body">There's no line-of-code or endpoint-count answer — "how big" is the wrong axis entirely. A service is correctly sized when one team can change its internal model and deploy it without asking another team for a schema change, an API contract change, or a coordinated release. If two "services" can never actually ship independently because a change in one always forces a change in the other, they're really one bounded context that got split too early — merge them back and re-split later once the seam is clearer.</div>
+    <div class="accordion__body">There's no line-of-code or endpoint-count answer — "how big" is the wrong axis. A service is sized correctly when one team can change its internal model and deploy it without asking another team for a schema change, an API contract change, or a coordinated release. If two "services" can never ship independently because a change in one always forces a change in the other, they're really one bounded context split too early — merge them back and re-split later once the seam is clearer.</div>
   </details>
 
   <div class="summary reveal">
