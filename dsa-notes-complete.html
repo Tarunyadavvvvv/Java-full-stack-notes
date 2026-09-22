@@ -173,6 +173,7 @@ img,svg{max-width:100%;}
 .chip{display:inline-flex;align-items:center;gap:.4rem;background:var(--surface-2);color:var(--ink-soft);font-size:.82rem;font-weight:600;padding:.42rem .85rem;border-radius:var(--r-pill);}
 .chip svg{width:14px;height:14px;}
 .chip--tint{background:var(--tint);color:var(--accent-ink);}
+.tuf-badge{display:inline-flex;align-items:center;font-family:var(--font-mono);font-size:.66rem;font-weight:800;letter-spacing:.04em;color:#fff;background:linear-gradient(135deg,#ff7a3d,#e8482c);padding:.12em .5em;border-radius:5px;margin-left:.45em;vertical-align:middle;}
 
 /* ============================================================
    SECTION HEADS
@@ -466,6 +467,7 @@ noscript .reveal{opacity:1;}
       <span class="chip chip--tint">Read before practice</span>
       <span class="chip">Pattern-first thinking</span>
     </div>
+    <p class="reveal" style="font-size:.86rem;color:var(--muted);margin-top:.9rem;">Every practice list in this file covers all 75 <strong>Blind 75</strong> problems — each one carries a <span class="tuf-badge">TUF</span> badge. Problems outside Blind 75 also get the badge whenever they're independently on <strong>Striver's SDE Sheet</strong> (takeUforward) too.</p>
   </div>
 
   <h3 class="sub reveal">How to read a problem</h3>
@@ -545,105 +547,7 @@ merge
 minimum rooms</code></pre><p>Ask: Should I sort by start/end time, then sweep once?</p></div>
   </div>
 
-  <h3 class="sub reveal">Example problem cards</h3>
-  <div class="code-window reveal">
-    <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">SlidingWindow.signal</span></div>
-    <pre><code>Problem: Longest Substring Without Repeating Characters
-Approach: Keep a window [left, right] and a map of last seen positions.
-Why this approach? The substring must be contiguous, and repeats only make the current window invalid. Move left past the repeated character.
-Time: O(n)
-Space: O(min(n, charset))
-Pattern: Sliding Window + HashMap
-
-Problem: Minimum Window Substring
-Approach: Expand right until the window contains all needed characters, then shrink left while it stays valid.
-Why this approach? We need the shortest contiguous substring, so we should not restart from every index. The window grows to become valid and shrinks to become minimal.
-Time: O(n)
-Space: O(k)
-Pattern: Sliding Window + Frequency Map</code></pre>
-  </div>
-
-  <div class="code-window reveal">
-    <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">Hashing.signal</span></div>
-    <pre><code>Problem: Two Sum
-Approach: For each number, check whether target - number was seen before in a HashMap.
-Why this approach? Brute force checks every pair. HashMap stores previous values so the complement check becomes O(1).
-Time: O(n)
-Space: O(n)
-Pattern: HashMap / Complement
-
-Problem: Subarray Sum Equals K
-Approach: Track prefix sum frequencies. For current prefix sum S, add count of previous prefix sums S - K.
-Why this approach? A subarray sum equals K when currentPrefix - oldPrefix = K. HashMap lets us find oldPrefix quickly.
-Time: O(n)
-Space: O(n)
-Pattern: Prefix Sum + HashMap</code></pre>
-  </div>
-
-  <div class="code-window reveal">
-    <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">PointersAndSearch.signal</span></div>
-    <pre><code>Problem: Two Sum II - Input Array Is Sorted
-Approach: Put one pointer at the start and one at the end. Move left if sum is too small; move right if sum is too large.
-Why this approach? Sorted order tells us which pointer can move safely without missing an answer.
-Time: O(n)
-Space: O(1)
-Pattern: Two Pointers
-
-Problem: Koko Eating Bananas
-Approach: Binary search the eating speed. For each speed, check if Koko can finish within h hours.
-Why this approach? If a speed works, every faster speed also works. That true/false condition is monotonic.
-Time: O(n log maxPile)
-Space: O(1)
-Pattern: Binary Search on Answer</code></pre>
-  </div>
-
-  <div class="code-window reveal">
-    <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">StackHeapGraph.signal</span></div>
-    <pre><code>Problem: Daily Temperatures
-Approach: Keep a stack of indices whose warmer day has not been found yet. Pop when current temperature is warmer.
-Why this approach? Each unresolved day waits for the next greater temperature. The current day can solve many previous days at once.
-Time: O(n)
-Space: O(n)
-Pattern: Monotonic Stack
-
-Problem: Top K Frequent Elements
-Approach: Count frequencies, then keep a min-heap of size K.
-Why this approach? We only need the best K, not a full sort. The heap root is the weakest current top-K candidate.
-Time: O(n log K)
-Space: O(n)
-Pattern: HashMap + Heap
-
-Problem: Number of Islands
-Approach: Scan the grid. When land is found, run DFS/BFS to mark the whole island visited.
-Why this approach? Each island is a connected component. Once visited, those cells should never be counted again.
-Time: O(rows * cols)
-Space: O(rows * cols) worst case
-Pattern: Graph DFS/BFS</code></pre>
-  </div>
-
-  <div class="code-window reveal">
-    <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">DpBacktrackingIntervals.signal</span></div>
-    <pre><code>Problem: House Robber
-Approach: Let dp[i] be the best money up to house i. Choose max(skip current, rob current + best before previous).
-Why this approach? Each decision depends on earlier overlapping decisions, and robbing adjacent houses is not allowed.
-Time: O(n)
-Space: O(1) after optimization
-Pattern: Dynamic Programming
-
-Problem: Combination Sum
-Approach: Use backtracking. Choose a number, recurse with reduced target, then undo the choice.
-Why this approach? We need all valid combinations, so we must explore choices systematically.
-Time: Exponential
-Space: O(target depth)
-Pattern: Backtracking
-
-Problem: Merge Intervals
-Approach: Sort by start time, then merge with the last kept interval if they overlap.
-Why this approach? Sorting puts possible overlaps next to each other. After sorting, only the last merged interval matters.
-Time: O(n log n)
-Space: O(n)
-Pattern: Sorting + Intervals</code></pre>
-  </div>
+  <p class="reveal">Each of these patterns gets a full worked example (brute force → optimized idea → dry run) plus its own curated LeetCode practice list right where it's taught — in the matching chapter below: Arrays &amp; Two Pointers, Linked Lists, Stacks &amp; Queues, Trees, Heaps, Hashing, Graphs, Sorting, Searching, Dynamic Programming, Greedy &amp; Backtracking, and Bit/Math/Intervals.</p>
 </section>
 
 <div class="chapter-divider reveal"></div>
@@ -809,6 +713,18 @@ Pattern: Sorting + Intervals</code></pre>
     <span class="tk-kw">return new</span> <span class="tk-typ">int</span>[]{-<span class="tk-fn">1</span>, -<span class="tk-fn">1</span>};
 }</code></pre>
   </div>
+  <p class="reveal"><strong>Example:</strong> this exact code is the accepted solution for <a href="https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/">Two Sum II - Input Array Is Sorted</a> — the array is sorted and we need one pair, so a closing left/right pair beats checking every pair.</p>
+  <div class="panel reveal">
+    <h4>Practice — Two Pointers</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/3sum/">3Sum</a> — Medium <span class="tuf-badge">TUF</span></li>
+      <li><a href="https://leetcode.com/problems/container-with-most-water/">Container With Most Water</a> <span class="tuf-badge">TUF</span> — Medium</li>
+      <li><a href="https://leetcode.com/problems/valid-palindrome/">Valid Palindrome</a> <span class="tuf-badge">TUF</span> — Easy</li>
+      <li><a href="https://leetcode.com/problems/trapping-rain-water/">Trapping Rain Water</a> <span class="tuf-badge">TUF</span> — Hard</li>
+      <li><a href="https://leetcode.com/problems/longest-palindromic-substring/">Longest Palindromic Substring</a> — Medium <span class="tuf-badge">TUF</span></li>
+      <li><a href="https://leetcode.com/problems/palindromic-substrings/">Palindromic Substrings</a> <span class="tuf-badge">TUF</span> — Medium</li>
+    </ul>
+  </div>
 
   <h3 class="sub reveal">Sliding window</h3>
   <p class="reveal">A window <code>[left, right]</code> expands by moving <code>right</code>, and shrinks by moving <code>left</code> — only when it's grown "invalid" (e.g. a repeated character). The key insight: you never move <code>left</code> backwards, so each pointer visits each index at most once — O(n) total, not O(n) per window position.</p>
@@ -827,6 +743,16 @@ Pattern: Sorting + Intervals</code></pre>
     <span class="tk-kw">return</span> best;
 }</code></pre>
   </div>
+  <p class="reveal"><strong>Example:</strong> this is the accepted approach for <a href="https://leetcode.com/problems/longest-substring-without-repeating-characters/">Longest Substring Without Repeating Characters</a> <span class="tuf-badge">TUF</span> — repeats only invalidate the window from the repeat's last position onward, so <code>left</code> can jump there instead of restarting.</p>
+  <div class="panel reveal">
+    <h4>Practice — Sliding Window</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/minimum-window-substring/">Minimum Window Substring</a> <span class="tuf-badge">TUF</span> — Hard</li>
+      <li><a href="https://leetcode.com/problems/longest-repeating-character-replacement/">Longest Repeating Character Replacement</a> <span class="tuf-badge">TUF</span> — Medium</li>
+      <li><a href="https://leetcode.com/problems/max-consecutive-ones-iii/">Max Consecutive Ones III</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/permutation-in-string/">Permutation in String</a> — Medium</li>
+    </ul>
+  </div>
 
   <h3 class="sub reveal">Kadane's algorithm</h3>
   <p class="reveal">"Maximum sum of any contiguous subarray" in a single O(n) pass: at each index, decide whether the running sum is still worth extending, or whether it's dragging along enough negative baggage that starting fresh right here beats carrying it forward.</p>
@@ -840,6 +766,15 @@ Pattern: Sorting + Intervals</code></pre>
     }
     <span class="tk-kw">return</span> best;
 }</code></pre>
+  </div>
+  <p class="reveal"><strong>Example:</strong> this is the accepted approach for <a href="https://leetcode.com/problems/maximum-subarray/">Maximum Subarray</a> <span class="tuf-badge">TUF</span> — at each index you either extend the running sum or abandon it and restart, so one pass with two running values replaces checking every subarray.</p>
+  <div class="panel reveal">
+    <h4>Practice — Kadane's Algorithm</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock/">Best Time to Buy and Sell Stock</a> — Easy <span class="tuf-badge">TUF</span></li>
+      <li><a href="https://leetcode.com/problems/maximum-product-subarray/">Maximum Product Subarray</a> — Medium <span class="tuf-badge">TUF</span></li>
+      <li><a href="https://leetcode.com/problems/maximum-sum-circular-subarray/">Maximum Sum Circular Subarray</a> — Medium</li>
+    </ul>
   </div>
 
   <h3 class="sub reveal">Common array/string patterns</h3>
@@ -875,6 +810,22 @@ Pattern: Sorting + Intervals</code></pre>
       <b class="h">Prefix sums in one line</b>
       <p>Precompute <code>prefix[i] = arr[0] + ... + arr[i-1]</code> once in O(n). Any range sum <code>[l, r]</code> is then just <code>prefix[r+1] - prefix[l]</code> — O(1) per query no matter how many queries you get.</p>
     </div>
+  </div>
+  <div class="panel reveal">
+    <h4>Practice — Prefix / Suffix Products &amp; Sums</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/product-of-array-except-self/">Product of Array Except Self</a> <span class="tuf-badge">TUF</span> — Medium</li>
+      <li><a href="https://leetcode.com/problems/range-sum-query-immutable/">Range Sum Query - Immutable</a> — Easy</li>
+    </ul>
+  </div>
+
+  <div class="panel reveal">
+    <h4>Practice — Matrix Traversal</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/set-matrix-zeroes/">Set Matrix Zeroes</a> — Medium <span class="tuf-badge">TUF</span></li>
+      <li><a href="https://leetcode.com/problems/spiral-matrix/">Spiral Matrix</a> <span class="tuf-badge">TUF</span> — Medium</li>
+      <li><a href="https://leetcode.com/problems/rotate-image/">Rotate Image</a> — Medium <span class="tuf-badge">TUF</span></li>
+    </ul>
   </div>
 
   <div class="callout callout--mistake reveal">
@@ -981,6 +932,16 @@ Pattern: Sorting + Intervals</code></pre>
     <span class="tk-kw">return</span> prev;                    <span class="tk-com">// prev is the new head</span>
 }</code></pre>
   </div>
+  <p class="reveal"><strong>Example:</strong> this is the accepted solution for <a href="https://leetcode.com/problems/reverse-linked-list/">Reverse Linked List</a> <span class="tuf-badge">TUF</span> — every node's <code>next</code> flips to point backward in one O(n) pass, no extra storage.</p>
+  <div class="panel reveal">
+    <h4>Practice — Reversal &amp; Pointer Rewiring</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/reverse-linked-list-ii/">Reverse Linked List II</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/reverse-nodes-in-k-group/">Reverse Nodes in k-Group</a> <span class="tuf-badge">TUF</span> — Hard</li>
+      <li><a href="https://leetcode.com/problems/swap-nodes-in-pairs/">Swap Nodes in Pairs</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/merge-two-sorted-lists/">Merge Two Sorted Lists</a> — Easy <span class="tuf-badge">TUF</span></li>
+    </ul>
+  </div>
 
   <h3 class="sub reveal">Fast &amp; slow pointers (Floyd's cycle detection)</h3>
   <p class="reveal">Two pointers move through the list at different speeds — <code>slow</code> one step, <code>fast</code> two steps. If there's a cycle, <code>fast</code> eventually laps <code>slow</code> and they meet; if the list ends, <code>fast</code> hits <code>null</code> first. No extra memory needed (unlike a hash-set of visited nodes).</p>
@@ -995,6 +956,17 @@ Pattern: Sorting + Intervals</code></pre>
     }
     <span class="tk-kw">return false</span>;                            <span class="tk-com">// fast hit null -> no cycle</span>
 }</code></pre>
+  </div>
+  <p class="reveal"><strong>Example:</strong> this is the accepted solution for <a href="https://leetcode.com/problems/linked-list-cycle/">Linked List Cycle</a> <span class="tuf-badge">TUF</span> — a fast pointer laps a slow one inside a cycle, so meeting is proof of one, with zero extra memory.</p>
+  <div class="panel reveal">
+    <h4>Practice — Fast &amp; Slow Pointers</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/linked-list-cycle-ii/">Linked List Cycle II</a> <span class="tuf-badge">TUF</span> — Medium</li>
+      <li><a href="https://leetcode.com/problems/middle-of-the-linked-list/">Middle of the Linked List</a> <span class="tuf-badge">TUF</span> — Easy</li>
+      <li><a href="https://leetcode.com/problems/remove-nth-node-from-end-of-list/">Remove Nth Node From End of List</a> — Medium <span class="tuf-badge">TUF</span></li>
+      <li><a href="https://leetcode.com/problems/palindrome-linked-list/">Palindrome Linked List</a> <span class="tuf-badge">TUF</span> — Easy</li>
+      <li><a href="https://leetcode.com/problems/reorder-list/">Reorder List</a> <span class="tuf-badge">TUF</span> — Medium</li>
+    </ul>
   </div>
 
   <h3 class="sub reveal">Array vs. linked list</h3>
@@ -1112,6 +1084,15 @@ Pattern: Sorting + Intervals</code></pre>
     <span class="tk-kw">return</span> stack.isEmpty();
 }</code></pre>
   </div>
+  <p class="reveal"><strong>Example:</strong> this is the accepted solution for <a href="https://leetcode.com/problems/valid-parentheses/">Valid Parentheses</a> <span class="tuf-badge">TUF</span> — every closer must match the most recently opened bracket, which is exactly what a stack's LIFO order gives you for free.</p>
+  <div class="panel reveal">
+    <h4>Practice — Stack Basics</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/min-stack/">Min Stack</a> <span class="tuf-badge">TUF</span> — Medium</li>
+      <li><a href="https://leetcode.com/problems/evaluate-reverse-polish-notation/">Evaluate Reverse Polish Notation</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/implement-queue-using-stacks/">Implement Queue using Stacks</a> <span class="tuf-badge">TUF</span> — Easy</li>
+    </ul>
+  </div>
 
   <div class="callout callout--mistake reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3L2 20h20L12 3z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M12 9.5v4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17" r="1.1" fill="currentColor"/></svg></div>
@@ -1144,6 +1125,16 @@ Pattern: Sorting + Intervals</code></pre>
       <b class="h">Traced: why this never becomes O(n²)</b>
       <p>Run it on <code>[2, 1, 2, 4, 3]</code>. Indices 0 and 1 just push and wait. At i=2 (value 2), the inner loop pops index 1 once — 2 &gt; 1, its answer is found — then stops, because 2 isn't greater than 2. At i=3 (value 4), it pops index 2 <em>and</em> index 0 in that same iteration, since 4 beats both. At i=4 (value 3), nothing pops; it just pushes. The final drain empties what's left (indices 3 and 4, both get -1). Total across the entire run: 5 pushes, 5 pops — one of each per index, regardless of which outer iteration did the popping. That's the amortized argument: the inner <code>while</code> can look like it costs O(n) on any single iteration, but summed over all n iterations, total pops are capped at n.</p>
     </div>
+  </div>
+  <p class="reveal"><strong>Example:</strong> this is the accepted solution for <a href="https://leetcode.com/problems/daily-temperatures/">Daily Temperatures</a> (indices instead of values, same monotonic-stack shape) — each unresolved day waits on the stack until a warmer one resolves it.</p>
+  <div class="panel reveal">
+    <h4>Practice — Monotonic Stack</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/next-greater-element-i/">Next Greater Element I</a> <span class="tuf-badge">TUF</span> — Easy</li>
+      <li><a href="https://leetcode.com/problems/next-greater-element-ii/">Next Greater Element II</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/largest-rectangle-in-histogram/">Largest Rectangle in Histogram</a> <span class="tuf-badge">TUF</span> — Hard</li>
+      <li><a href="https://leetcode.com/problems/asteroid-collision/">Asteroid Collision</a> — Medium</li>
+    </ul>
   </div>
 
   <div class="tbl-wrap reveal">
@@ -1265,6 +1256,16 @@ Pattern: Sorting + Intervals</code></pre>
     <span class="tk-kw">return</span> target &lt; root.val ? search(root.left, target) : search(root.right, target);
 }</code></pre>
   </div>
+  <p class="reveal"><strong>Example:</strong> this insert/search shape is the core of <a href="https://leetcode.com/problems/search-in-a-binary-search-tree/">Search in a Binary Search Tree</a> <span class="tuf-badge">TUF</span> — the BST invariant means each comparison eliminates one whole subtree, so a lookup costs O(height) instead of O(n).</p>
+  <div class="panel reveal">
+    <h4>Practice — BST Basics</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/insert-into-a-binary-search-tree/">Insert into a Binary Search Tree</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/validate-binary-search-tree/">Validate Binary Search Tree</a> — Medium <span class="tuf-badge">TUF</span></li>
+      <li><a href="https://leetcode.com/problems/kth-smallest-element-in-a-bst/">Kth Smallest Element in a BST</a> — Medium <span class="tuf-badge">TUF</span></li>
+      <li><a href="https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/">Lowest Common Ancestor of a BST</a> — Medium <span class="tuf-badge">TUF</span></li>
+    </ul>
+  </div>
 
   <h3 class="sub reveal">Traversals</h3>
   <div class="tbl-wrap reveal">
@@ -1325,6 +1326,22 @@ Pattern: Sorting + Intervals</code></pre>
       <p>If an in-order traversal of a binary tree doesn't come out in strictly increasing order, it isn't a valid BST — this is the standard "validate BST" interview question in one sentence.</p>
     </div>
   </div>
+  <p class="reveal"><strong>Example:</strong> level-order here is the accepted solution for <a href="https://leetcode.com/problems/binary-tree-level-order-traversal/">Binary Tree Level Order Traversal</a> <span class="tuf-badge">TUF</span> — a queue plus "how many nodes are in the queue right now" naturally groups nodes by depth.</p>
+  <div class="panel reveal">
+    <h4>Practice — Traversals</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/binary-tree-inorder-traversal/">Binary Tree Inorder Traversal</a> — Easy</li>
+      <li><a href="https://leetcode.com/problems/symmetric-tree/">Symmetric Tree</a> <span class="tuf-badge">TUF</span> — Easy</li>
+      <li><a href="https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/">Binary Tree Zigzag Level Order Traversal</a> <span class="tuf-badge">TUF</span> — Medium</li>
+      <li><a href="https://leetcode.com/problems/maximum-depth-of-binary-tree/">Maximum Depth of Binary Tree</a> — Easy <span class="tuf-badge">TUF</span></li>
+      <li><a href="https://leetcode.com/problems/same-tree/">Same Tree</a> — Easy <span class="tuf-badge">TUF</span></li>
+      <li><a href="https://leetcode.com/problems/invert-binary-tree/">Invert Binary Tree</a> — Easy <span class="tuf-badge">TUF</span></li>
+      <li><a href="https://leetcode.com/problems/subtree-of-another-tree/">Subtree of Another Tree</a> <span class="tuf-badge">TUF</span> — Easy</li>
+      <li><a href="https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/">Construct Binary Tree from Preorder and Inorder Traversal</a> — Medium <span class="tuf-badge">TUF</span></li>
+      <li><a href="https://leetcode.com/problems/binary-tree-maximum-path-sum/">Binary Tree Maximum Path Sum</a> — Hard <span class="tuf-badge">TUF</span></li>
+      <li><a href="https://leetcode.com/problems/serialize-and-deserialize-binary-tree/">Serialize and Deserialize Binary Tree</a> — Hard <span class="tuf-badge">TUF</span></li>
+    </ul>
+  </div>
 
   <details class="accordion reveal">
     <summary><div class="accordion__chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>How does a self-balancing tree (AVL / Red-Black) stay O(log n)?</summary>
@@ -1366,6 +1383,16 @@ Pattern: Sorting + Intervals</code></pre>
       <b class="h">Where tries show up</b>
       <p>Autocomplete/typeahead, spell-checkers, IP routing (longest-prefix match), and "word search on a board" problems that need fast "is this prefix even possible" pruning.</p>
     </div>
+  </div>
+  <p class="reveal"><strong>Example:</strong> this <code>insert</code> plus a matching <code>search</code>/<code>startsWith</code> walk is the accepted solution for <a href="https://leetcode.com/problems/implement-trie-prefix-tree/">Implement Trie (Prefix Tree)</a> <span class="tuf-badge">TUF</span> — each character just follows or creates one child edge.</p>
+  <div class="panel reveal">
+    <h4>Practice — Tries</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/map-sum-pairs/">Map Sum Pairs</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/design-add-and-search-words-data-structure/">Design Add and Search Words Data Structure</a> <span class="tuf-badge">TUF</span> — Medium</li>
+      <li><a href="https://leetcode.com/problems/word-search-ii/">Word Search II</a> <span class="tuf-badge">TUF</span> — Hard</li>
+      <li><a href="https://leetcode.com/problems/longest-word-in-dictionary/">Longest Word in Dictionary</a> — Medium</li>
+    </ul>
   </div>
 
   <div class="callout callout--mistake reveal">
@@ -1490,6 +1517,16 @@ Pattern: Sorting + Intervals</code></pre>
       <b class="h">Java's <code>PriorityQueue</code> is a <em>min</em>-heap by default</b>
       <p>Calling <code>poll()</code> gives you the smallest element first, not the largest. For a max-heap, pass a reversed comparator: <code>new PriorityQueue&lt;&gt;(Collections.reverseOrder())</code>.</p>
     </div>
+  </div>
+  <p class="reveal"><strong>Example:</strong> this is the accepted solution for <a href="https://leetcode.com/problems/top-k-frequent-elements/">Top K Frequent Elements</a> <span class="tuf-badge">TUF</span> — a size-K min-heap only ever holds the current best K, so nothing weaker than the heap's root survives.</p>
+  <div class="panel reveal">
+    <h4>Practice — Heap / Priority Queue</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/last-stone-weight/">Last Stone Weight</a> — Easy</li>
+      <li><a href="https://leetcode.com/problems/find-median-from-data-stream/">Find Median from Data Stream</a> — Hard <span class="tuf-badge">TUF</span></li>
+      <li><a href="https://leetcode.com/problems/merge-k-sorted-lists/">Merge k Sorted Lists</a> <span class="tuf-badge">TUF</span> — Hard</li>
+      <li><a href="https://leetcode.com/problems/k-closest-points-to-origin/">K Closest Points to Origin</a> — Medium</li>
+    </ul>
   </div>
 
   <div class="tbl-wrap reveal">
@@ -1636,6 +1673,18 @@ Pattern: Sorting + Intervals</code></pre>
     }
     <span class="tk-kw">return new</span> <span class="tk-typ">int</span>[0];   <span class="tk-com">// O(n) time, O(n) space -- one pass, not the O(n^2) nested-loop version</span>
 }</code></pre>
+  </div>
+  <p class="reveal"><strong>Example:</strong> this is the accepted solution for <a href="https://leetcode.com/problems/two-sum/">Two Sum</a> <span class="tuf-badge">TUF</span> — storing each value as it's seen turns "search for the complement" into an O(1) average lookup instead of a second nested loop.</p>
+  <div class="panel reveal">
+    <h4>Practice — Hashing</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/group-anagrams/">Group Anagrams</a> <span class="tuf-badge">TUF</span> — Medium</li>
+      <li><a href="https://leetcode.com/problems/contains-duplicate/">Contains Duplicate</a> <span class="tuf-badge">TUF</span> — Easy</li>
+      <li><a href="https://leetcode.com/problems/subarray-sum-equals-k/">Subarray Sum Equals K</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/longest-consecutive-sequence/">Longest Consecutive Sequence</a> — Medium <span class="tuf-badge">TUF</span></li>
+      <li><a href="https://leetcode.com/problems/valid-anagram/">Valid Anagram</a> — Easy <span class="tuf-badge">TUF</span></li>
+      <li><a href="https://leetcode.com/problems/encode-and-decode-strings/">Encode and Decode Strings</a> <span class="tuf-badge">TUF</span> — Medium</li>
+    </ul>
   </div>
 
   <h3 class="sub reveal">Load factor &amp; resizing</h3>
@@ -1785,6 +1834,15 @@ Pattern: Sorting + Intervals</code></pre>
       <p>Skip the visited-set on a cyclic graph and BFS/DFS loops forever. Mark a node visited the moment you <em>enqueue</em> it (not when you dequeue it) — otherwise the same node can be queued multiple times before it's ever processed.</p>
     </div>
   </div>
+  <p class="reveal"><strong>Example:</strong> this level-by-level shape is the accepted solution for <a href="https://leetcode.com/problems/rotting-oranges/">Rotting Oranges</a> <span class="tuf-badge">TUF</span> — everything rotten at minute 0 starts the queue, and each drained level is one more minute.</p>
+  <div class="panel reveal">
+    <h4>Practice — BFS</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/flood-fill/">Flood Fill</a> — Easy</li>
+      <li><a href="https://leetcode.com/problems/shortest-path-in-binary-matrix/">Shortest Path in Binary Matrix</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/word-ladder/">Word Ladder</a> — Hard</li>
+    </ul>
+  </div>
 
   <p class="reveal">DFS applies the same visited-set discipline with a different structure — recursion (or an explicit stack) instead of a queue, diving one branch all the way down before backtracking to try the next:</p>
   <div class="code-window reveal">
@@ -1808,6 +1866,17 @@ Pattern: Sorting + Intervals</code></pre>
         <tr><td>Space</td><td>O(width of graph)</td><td>O(depth of graph)</td></tr>
       </tbody>
     </table>
+  </div>
+  <p class="reveal"><strong>Example:</strong> this exact visited-set-and-recurse shape is the accepted solution for <a href="https://leetcode.com/problems/number-of-islands/">Number of Islands</a> <span class="tuf-badge">TUF</span> — DFS from each unvisited land cell floods and marks its whole connected component.</p>
+  <div class="panel reveal">
+    <h4>Practice — DFS</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/find-if-path-exists-in-graph/">Find if Path Exists in Graph</a> — Easy</li>
+      <li><a href="https://leetcode.com/problems/max-area-of-island/">Max Area of Island</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/clone-graph/">Clone Graph</a> — Medium <span class="tuf-badge">TUF</span></li>
+      <li><a href="https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/">Number of Connected Components in an Undirected Graph</a> <span class="tuf-badge">TUF</span> — Medium</li>
+      <li><a href="https://leetcode.com/problems/pacific-atlantic-water-flow/">Pacific Atlantic Water Flow</a> <span class="tuf-badge">TUF</span> — Medium</li>
+    </ul>
   </div>
 
   <h3 class="sub reveal">Shortest path algorithms</h3>
@@ -1853,6 +1922,15 @@ Pattern: Sorting + Intervals</code></pre>
       <p>Its greedy "closest node is finalised forever" assumption relies on weights only adding distance. A negative edge discovered later could retroactively create a shorter path to an already-finalised node — Dijkstra will never revisit it and return a wrong answer. Use Bellman-Ford instead.</p>
     </div>
   </div>
+  <p class="reveal"><strong>Example:</strong> this is the accepted solution for <a href="https://leetcode.com/problems/network-delay-time/">Network Delay Time</a> — a min-heap keyed by current best distance always expands the closest unfinalized node next.</p>
+  <div class="panel reveal">
+    <h4>Practice — Shortest Path</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/">Find the City With the Smallest Number of Neighbors at a Threshold Distance</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/cheapest-flights-within-k-stops/">Cheapest Flights Within K Stops</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/path-with-minimum-effort/">Path With Minimum Effort</a> — Medium</li>
+    </ul>
+  </div>
 
   <h3 class="sub reveal">Topological sort</h3>
   <p class="reveal">Orders nodes in a <strong>DAG</strong> (directed, acyclic) so every edge points from earlier to later — "what must happen before what." Two standard approaches: Kahn's algorithm (BFS, repeatedly remove nodes with in-degree 0) or DFS (post-order, then reverse).</p>
@@ -1883,6 +1961,15 @@ Pattern: Sorting + Intervals</code></pre>
       <b class="h">Cycle detection is a free side effect</b>
       <p>If Kahn's algorithm produces fewer than <code>n</code> nodes in the output, some nodes never reached in-degree 0 — meaning a cycle exists. This is the standard way to detect cycles in a directed graph <em>and</em> course-schedule-style "is this even possible" problems in one pass.</p>
     </div>
+  </div>
+  <p class="reveal"><strong>Example:</strong> this in-degree-and-queue shape is the accepted solution for <a href="https://leetcode.com/problems/course-schedule/">Course Schedule</a> <span class="tuf-badge">TUF</span> — courses are nodes, prerequisites are edges, and finishing fewer than <code>n</code> courses means a cycle (impossible schedule).</p>
+  <div class="panel reveal">
+    <h4>Practice — Topological Sort</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/course-schedule-ii/">Course Schedule II</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/minimum-height-trees/">Minimum Height Trees</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/alien-dictionary/">Alien Dictionary</a> <span class="tuf-badge">TUF</span> — Hard</li>
+    </ul>
   </div>
 
   <h3 class="sub reveal">Union-Find (Disjoint Set Union)</h3>
@@ -1964,6 +2051,16 @@ Pattern: Sorting + Intervals</code></pre>
       <b class="h">Where union-find shows up</b>
       <p>Kruskal's minimum spanning tree (add edges cheapest-first, skip any that would connect an already-unified pair), "number of connected components," and "redundant connection" (the edge that first unites two already-connected nodes is the cycle-causing one).</p>
     </div>
+  </div>
+  <p class="reveal"><strong>Example:</strong> this exact <code>find</code>/<code>union</code> pair is the accepted solution for <a href="https://leetcode.com/problems/redundant-connection/">Redundant Connection</a> — the first edge whose two endpoints already <code>find()</code> to the same root is the one creating the cycle.</p>
+  <div class="panel reveal">
+    <h4>Practice — Union-Find</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/satisfiability-of-equality-equations/">Satisfiability of Equality Equations</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/number-of-provinces/">Number of Provinces</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/accounts-merge/">Accounts Merge</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/graph-valid-tree/">Graph Valid Tree</a> <span class="tuf-badge">TUF</span> — Medium</li>
+    </ul>
   </div>
 
   <h3 class="sub reveal">How to identify graph questions</h3>
@@ -2089,6 +2186,15 @@ Pattern: Sorting + Intervals</code></pre>
     System.arraycopy(tmp, <span class="tk-fn">0</span>, a, lo, tmp.length);
 }</code></pre>
   </div>
+  <p class="reveal"><strong>Example:</strong> this merge step, applied to two already-sorted lists instead of two halves of one array, is the accepted solution for <a href="https://leetcode.com/problems/merge-sorted-array/">Merge Sorted Array</a> <span class="tuf-badge">TUF</span>.</p>
+  <div class="panel reveal">
+    <h4>Practice — Merge Sort</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/squares-of-a-sorted-array/">Squares of a Sorted Array</a> — Easy</li>
+      <li><a href="https://leetcode.com/problems/sort-list/">Sort List</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/count-of-smaller-numbers-after-self/">Count of Smaller Numbers After Self</a> — Hard</li>
+    </ul>
+  </div>
 
   <h3 class="sub reveal">Quicksort — partition in place</h3>
   <div class="code-window reveal">
@@ -2118,6 +2224,15 @@ Pattern: Sorting + Intervals</code></pre>
     <summary><div class="accordion__chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Why is quicksort's worst case O(n²)?</summary>
     <div class="accordion__body">Quicksort's speed depends entirely on picking a pivot that roughly splits the array in half. Always picking the <em>last element</em> as pivot on an already-sorted (or reverse-sorted) array is the worst possible choice — the partition splits into "0 elements" and "n-1 elements" every single time, giving n recursive levels instead of log n, each doing O(n) work: O(n²) total. Fix: pick a random pivot, or median-of-three (first/middle/last), which makes the worst case astronomically unlikely rather than eliminating it.</div>
   </details>
+  <p class="reveal"><strong>Example:</strong> this exact <code>partition</code> routine (stopping once the pivot lands at index k) is the accepted solution for <a href="https://leetcode.com/problems/kth-largest-element-in-an-array/">Kth Largest Element in an Array</a> <span class="tuf-badge">TUF</span> — quickselect, O(n) average instead of O(n log n) for a full sort.</p>
+  <div class="panel reveal">
+    <h4>Practice — Quicksort / Quickselect</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/sort-colors/">Sort Colors</a> <span class="tuf-badge">TUF</span> — Medium</li>
+      <li><a href="https://leetcode.com/problems/sort-array-by-parity/">Sort Array By Parity</a> — Easy</li>
+      <li><a href="https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/">Kth Smallest Element in a Sorted Matrix</a> — Medium</li>
+    </ul>
+  </div>
 
   <div class="callout callout--real reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg></div>
@@ -2243,6 +2358,16 @@ Pattern: Sorting + Intervals</code></pre>
     </div>
     <p class="diagram-cap">Searching for 23 in the sorted array <code>[2, 5, 8, 12, 16, 23, 38, 56, 72, 91]</code> (indices 0-9): each comparison throws away half of whatever candidates remain — 10 → 5 → 2 — landing on the answer in 3 comparisons instead of scanning all 10 elements.</p>
   </div>
+  <p class="reveal"><strong>Example:</strong> this is the accepted solution for <a href="https://leetcode.com/problems/binary-search/">Binary Search</a> itself — each comparison eliminates half the remaining candidates, so the search space shrinks from n to 1 in O(log n) steps.</p>
+  <div class="panel reveal">
+    <h4>Practice — Binary Search</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/first-bad-version/">First Bad Version</a> — Easy</li>
+      <li><a href="https://leetcode.com/problems/search-in-rotated-sorted-array/">Search in Rotated Sorted Array</a> <span class="tuf-badge">TUF</span> — Medium</li>
+      <li><a href="https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/">Find Minimum in Rotated Sorted Array</a> <span class="tuf-badge">TUF</span> — Medium</li>
+      <li><a href="https://leetcode.com/problems/search-a-2d-matrix/">Search a 2D Matrix</a> <span class="tuf-badge">TUF</span> — Medium</li>
+    </ul>
+  </div>
 
   <h3 class="sub reveal">Binary search on the answer</h3>
   <p class="reveal">Whenever a problem asks to "minimize the maximum X" or "find the smallest value where condition Y becomes true," and the condition is <strong>monotonic</strong> (once true, always true for every larger candidate), you can binary search over the space of possible <em>answers</em> instead of over an array — testing each midpoint with a feasibility check.</p>
@@ -2301,6 +2426,16 @@ Pattern: Sorting + Intervals</code></pre>
       <b class="h">Binary search outside the interview room</b>
       <p><code>git bisect</code> finds the commit that introduced a regression in O(log n) test runs instead of checking every commit since the last release. A database's B-tree index binary-searches within each page once disk I/O has narrowed things down to a single block. And "binary search on the answer" isn't just an interview trick — autoscalers and rate limiters use exactly this pattern to find the smallest instance count or token-bucket size that keeps p99 latency under budget, treating each candidate value as a feasibility check rather than an array lookup.</p>
     </div>
+  </div>
+  <p class="reveal"><strong>Example:</strong> the same lower/upper-bound shape is the accepted solution for <a href="https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/">Find First and Last Position of Element in Sorted Array</a> — run <code>lowerBound</code> and <code>upperBound</code> once each.</p>
+  <div class="panel reveal">
+    <h4>Practice — Binary Search on the Answer</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/sqrtx/">Sqrt(x)</a> — Easy</li>
+      <li><a href="https://leetcode.com/problems/koko-eating-bananas/">Koko Eating Bananas</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/">Capacity To Ship Packages Within D Days</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/median-of-two-sorted-arrays/">Median of Two Sorted Arrays</a> — Hard</li>
+    </ul>
   </div>
 
   <h3 class="sub reveal">How to identify binary-search questions</h3>
@@ -2460,6 +2595,18 @@ Pattern: Sorting + Intervals</code></pre>
       <p>Ask: "can I express the answer for size n in terms of the answer for smaller sizes?" (optimal substructure) and "would a brute-force recursive solution recompute the same smaller cases repeatedly?" (overlapping subproblems). Two yeses means DP applies.</p>
     </div>
   </div>
+  <p class="reveal"><strong>Example:</strong> this same top-down-vs-bottom-up choice is the accepted approach for <a href="https://leetcode.com/problems/climbing-stairs/">Climbing Stairs</a> <span class="tuf-badge">TUF</span> — <code>ways(n) = ways(n-1) + ways(n-2)</code> is Fibonacci wearing a different name.</p>
+  <div class="panel reveal">
+    <h4>Practice — Memoization vs. Tabulation</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/min-cost-climbing-stairs/">Min Cost Climbing Stairs</a> — Easy</li>
+      <li><a href="https://leetcode.com/problems/house-robber/">House Robber</a> <span class="tuf-badge">TUF</span> — Medium</li>
+      <li><a href="https://leetcode.com/problems/n-th-tribonacci-number/">N-th Tribonacci Number</a> — Easy</li>
+      <li><a href="https://leetcode.com/problems/house-robber-ii/">House Robber II</a> <span class="tuf-badge">TUF</span> — Medium</li>
+      <li><a href="https://leetcode.com/problems/decode-ways/">Decode Ways</a> <span class="tuf-badge">TUF</span> — Medium</li>
+      <li><a href="https://leetcode.com/problems/unique-paths/">Unique Paths</a> — Medium <span class="tuf-badge">TUF</span></li>
+    </ul>
+  </div>
 
   <h3 class="sub reveal">Classic DP pattern families</h3>
   <div class="tbl-wrap reveal">
@@ -2505,6 +2652,18 @@ Pattern: Sorting + Intervals</code></pre>
     <summary><div class="accordion__chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>How do you actually recover the chosen items, not just the max value?</summary>
     <div class="accordion__body">Keep the full 2-D table (don't space-optimize) and walk backwards from <code>dp[n][capacity]</code>: if <code>dp[i][w] != dp[i-1][w]</code>, item i was taken — subtract its weight and move to <code>dp[i-1][w-weight]</code>; otherwise move to <code>dp[i-1][w]</code> unchanged. This backtrack is only possible if you keep the table around, which is one reason not to always space-optimize by default.</div>
   </details>
+  <p class="reveal"><strong>Example:</strong> this exact take-or-skip recurrence is the accepted solution for <a href="https://leetcode.com/problems/partition-equal-subset-sum/">Partition Equal Subset Sum</a> <span class="tuf-badge">TUF</span> — it's 0/1 knapsack where the "value" of every item equals its weight and the target capacity is half the total sum.</p>
+  <div class="panel reveal">
+    <h4>Practice — Knapsack &amp; Subset DP</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/coin-change-ii/">Coin Change II</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/coin-change/">Coin Change</a> — Medium <span class="tuf-badge">TUF</span></li>
+      <li><a href="https://leetcode.com/problems/target-sum/">Target Sum</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/longest-common-subsequence/">Longest Common Subsequence</a> — Medium <span class="tuf-badge">TUF</span></li>
+      <li><a href="https://leetcode.com/problems/longest-increasing-subsequence/">Longest Increasing Subsequence</a> — Medium <span class="tuf-badge">TUF</span></li>
+      <li><a href="https://leetcode.com/problems/word-break/">Word Break</a> — Medium <span class="tuf-badge">TUF</span></li>
+    </ul>
+  </div>
 
   <h3 class="sub reveal">How to identify dynamic-programming questions</h3>
   <div class="tbl-wrap reveal">
@@ -2611,6 +2770,16 @@ Pattern: Sorting + Intervals</code></pre>
       <p>0/1 knapsack is the classic counterexample: greedily taking the highest value-per-weight item first can lock in a suboptimal combination, because items can't be split. (The <em>fractional</em> knapsack, where items can be split, genuinely is solvable greedily.) Always check the greedy-choice property holds before trusting a greedy solution — don't assume "sort and scan" works just because it's simple.</p>
     </div>
   </div>
+  <p class="reveal"><strong>Example:</strong> this exact sort-by-end-then-scan shape is the accepted solution for <a href="https://leetcode.com/problems/non-overlapping-intervals/">Non-overlapping Intervals</a> <span class="tuf-badge">TUF</span> — the answer is <code>intervals.length - maxActivities(intervals)</code>, the ones that had to be removed.</p>
+  <div class="panel reveal">
+    <h4>Practice — Greedy</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/assign-cookies/">Assign Cookies</a> <span class="tuf-badge">TUF</span> — Easy</li>
+      <li><a href="https://leetcode.com/problems/jump-game/">Jump Game</a> <span class="tuf-badge">TUF</span> — Medium</li>
+      <li><a href="https://leetcode.com/problems/gas-station/">Gas Station</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/candy/">Candy</a> — Hard</li>
+    </ul>
+  </div>
 
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">Subsets.java</span></div>
@@ -2649,6 +2818,16 @@ Pattern: Sorting + Intervals</code></pre>
       </li>
     </ul>
     <p class="diagram-cap">Every node in this tree is one call to <code>backtrack</code>, and every call records a subset the instant it's entered — that's why <code>result.add(new ArrayList&lt;&gt;(path))</code> is the first line in the method, not the last. Eight calls, eight subsets of <code>[1, 2, 3]</code> — exactly 2³. The "un-choose" line is what lets the loop at each level try its next sibling instead of staying buried in the branch it just returned from.</p>
+  </div>
+  <p class="reveal"><strong>Example:</strong> this is the accepted solution for <a href="https://leetcode.com/problems/subsets/">Subsets</a> itself — every node visited in the recursion tree is one valid subset.</p>
+  <div class="panel reveal">
+    <h4>Practice — Backtracking</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/permutations/">Permutations</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/combination-sum/">Combination Sum</a> — Medium <span class="tuf-badge">TUF</span></li>
+      <li><a href="https://leetcode.com/problems/word-search/">Word Search</a> <span class="tuf-badge">TUF</span> — Medium</li>
+      <li><a href="https://leetcode.com/problems/n-queens/">N-Queens</a> <span class="tuf-badge">TUF</span> — Hard</li>
+    </ul>
   </div>
 
   <div class="tbl-wrap reveal">
@@ -2801,6 +2980,18 @@ Pattern: Sorting + Intervals</code></pre>
       <p>Representing a <em>subset</em> of up to ~20-30 items as a single integer (bit <code>i</code> set = item <code>i</code> included) turns "iterate all subsets" into "iterate all integers from 0 to 2ⁿ-1" — the standard trick behind bitmask DP (e.g. travelling-salesman-style "visited set" states).</p>
     </div>
   </div>
+  <p class="reveal"><strong>Example:</strong> the XOR trick above is the accepted solution for <a href="https://leetcode.com/problems/single-number/">Single Number</a> — every value that appears twice cancels itself out via <code>a^a=0</code>, leaving only the one that appears once.</p>
+  <div class="panel reveal">
+    <h4>Practice — Bit Manipulation</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/single-number-ii/">Single Number II</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/number-of-1-bits/">Number of 1 Bits</a> <span class="tuf-badge">TUF</span> — Easy</li>
+      <li><a href="https://leetcode.com/problems/counting-bits/">Counting Bits</a> <span class="tuf-badge">TUF</span> — Easy</li>
+      <li><a href="https://leetcode.com/problems/sum-of-two-integers/">Sum of Two Integers</a> <span class="tuf-badge">TUF</span> — Medium</li>
+      <li><a href="https://leetcode.com/problems/missing-number/">Missing Number</a> <span class="tuf-badge">TUF</span> — Easy</li>
+      <li><a href="https://leetcode.com/problems/reverse-bits/">Reverse Bits</a> <span class="tuf-badge">TUF</span> — Easy</li>
+    </ul>
+  </div>
 
   <h3 class="sub reveal">Number theory essentials</h3>
   <div class="code-window reveal">
@@ -2820,6 +3011,15 @@ Pattern: Sorting + Intervals</code></pre>
 }</code></pre>
   </div>
   <p class="reveal">Also worth knowing by name: the <strong>Sieve of Eratosthenes</strong> finds every prime up to <code>n</code> in O(n log log n) by crossing off multiples; the <strong>Sieve</strong> plus a precomputed factorial table gives O(1) combinatorics (<code>nCr</code>) after O(n) setup.</p>
+  <p class="reveal"><strong>Example:</strong> this <code>gcd</code> is the accepted building block for <a href="https://leetcode.com/problems/fraction-to-recurring-decimal/">Fraction to Recurring Decimal</a>-style problems that need a fraction reduced to lowest terms.</p>
+  <div class="panel reveal">
+    <h4>Practice — Math &amp; Number Theory</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/count-primes/">Count Primes</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/powx-n/">Pow(x, n)</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/greatest-common-divisor-of-strings/">Greatest Common Divisor of Strings</a> — Easy</li>
+    </ul>
+  </div>
 
   <h3 class="sub reveal">Interval patterns</h3>
   <p class="reveal">Almost every interval problem starts the same way: <strong>sort by start time</strong> (or end time), then sweep once, deciding merge-or-new-interval based on whether the current interval overlaps the last one kept.</p>
@@ -2844,6 +3044,17 @@ Pattern: Sorting + Intervals</code></pre>
       <b class="h">"Meeting rooms" is a heap problem wearing an interval costume</b>
       <p>"Minimum meeting rooms needed" = push each meeting's end time onto a min-heap; for each new meeting, if its start is ≥ the heap's smallest end time, pop it (that room freed up) before pushing the new end time. The heap's final size is the answer.</p>
     </div>
+  </div>
+  <p class="reveal"><strong>Example:</strong> this is the accepted solution for <a href="https://leetcode.com/problems/merge-intervals/">Merge Intervals</a> <span class="tuf-badge">TUF</span> itself — sorting by start puts every possible overlap next to each other, so one pass is enough.</p>
+  <div class="panel reveal">
+    <h4>Practice — Intervals</h4>
+    <ul>
+      <li><a href="https://leetcode.com/problems/meeting-rooms/">Meeting Rooms</a> <span class="tuf-badge">TUF</span> — Easy</li>
+      <li><a href="https://leetcode.com/problems/insert-interval/">Insert Interval</a> <span class="tuf-badge">TUF</span> — Medium</li>
+      <li><a href="https://leetcode.com/problems/meeting-rooms-ii/">Meeting Rooms II</a> <span class="tuf-badge">TUF</span> — Medium</li>
+      <li><a href="https://leetcode.com/problems/my-calendar-i/">My Calendar I</a> — Medium</li>
+      <li><a href="https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/">Minimum Number of Arrows to Burst Balloons</a> — Medium</li>
+    </ul>
   </div>
 
   <h3 class="sub reveal">Named patterns worth recognising on sight</h3>
