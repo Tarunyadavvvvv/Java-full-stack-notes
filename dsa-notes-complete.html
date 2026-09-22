@@ -407,6 +407,7 @@ noscript .reveal{opacity:1;}
           <div class="contents-col">
             <div class="contents-group">
               <div class="contents-group__label">Foundations</div>
+              <a class="contents-link" href="#signals"><span class="code">SIG</span>Pattern Signals</a>
               <a class="contents-link" href="#bigo"><span class="code">01</span>Big-O &amp; Complexity</a>
               <a class="contents-link" href="#arrays"><span class="code">02</span>Arrays, Strings &amp; Two Pointers</a>
               <a class="contents-link" href="#linkedlists"><span class="code">03</span>Linked Lists</a>
@@ -455,6 +456,197 @@ noscript .reveal{opacity:1;}
 </section>
 
 <main class="shell">
+
+<section id="signals">
+  <div class="chapter-hero reveal">
+    <span class="eyebrow-chip"><span class="n">SIG</span> Problem Recognition</span>
+    <h2>Pattern Signals</h2>
+    <p class="lede">Before coding, learn to hear what the question is hinting at. A DSA problem usually hides one main pattern. Your first job is not to remember code; it is to notice the signal, ask the right question, then choose an approach.</p>
+    <div class="meta-row">
+      <span class="chip chip--tint">Read before practice</span>
+      <span class="chip">Pattern-first thinking</span>
+    </div>
+  </div>
+
+  <h3 class="sub reveal">How to read a problem</h3>
+  <div class="panel reveal">
+    <ul>
+      <li><strong>Step 1:</strong> Underline words like <code>subarray</code>, <code>substring</code>, <code>sorted</code>, <code>frequency</code>, <code>shortest</code>, <code>top K</code>, <code>all combinations</code>.</li>
+      <li><strong>Step 2:</strong> Ask what information would make the problem easy: previous values, current window, sorted order, nearest level, smallest item, repeated state.</li>
+      <li><strong>Step 3:</strong> Say the brute-force idea first. The optimized pattern usually removes the repeated work from brute force.</li>
+      <li><strong>Step 4:</strong> Dry-run one small example before writing code. This is where most boundary mistakes show up.</li>
+    </ul>
+  </div>
+
+  <h3 class="sub reveal">Core signals</h3>
+  <div class="duo reveal">
+    <div class="panel"><h4><span class="sw"></span>Sliding Window</h4><p>When I see:</p><pre><code>subarray
+substring
+longest
+shortest
+at most K
+exactly K
+distinct elements
+contiguous</code></pre><p>Ask: Can I maintain a window and move <code>left</code>/<code>right</code> without restarting?</p></div>
+    <div class="panel"><h4><span class="sw"></span>Hashing</h4><p>When I see:</p><pre><code>frequency
+duplicates
+pairs
+complement
+seen before
+count occurrences
+subarray sum</code></pre><p>Ask: Can I store previous information in a <code>HashMap</code> or <code>HashSet</code>?</p></div>
+    <div class="panel"><h4><span class="sw"></span>Two Pointers</h4><p>When I see:</p><pre><code>sorted array
+pair sum
+triplet
+palindrome
+remove duplicates
+move from both ends</code></pre><p>Ask: Can I move one pointer based on whether the current answer is too small or too large?</p></div>
+    <div class="panel"><h4><span class="sw"></span>Binary Search</h4><p>When I see:</p><pre><code>sorted
+first or last position
+minimum possible answer
+maximum possible answer
+can/cannot condition
+monotonic</code></pre><p>Ask: Can I cut the search space in half, or binary-search the answer itself?</p></div>
+    <div class="panel"><h4><span class="sw"></span>Stack</h4><p>When I see:</p><pre><code>next greater
+next smaller
+parentheses
+nested expression
+undo
+most recent unresolved item</code></pre><p>Ask: Does the latest unresolved item need to be solved first?</p></div>
+    <div class="panel"><h4><span class="sw"></span>Heap</h4><p>When I see:</p><pre><code>top K
+kth largest
+kth smallest
+running median
+merge K sorted
+always pick smallest/largest</code></pre><p>Ask: Do I repeatedly need the current min or max without sorting everything?</p></div>
+    <div class="panel"><h4><span class="sw"></span>Graph BFS/DFS</h4><p>When I see:</p><pre><code>grid
+islands
+connected components
+shortest path
+minimum steps
+level by level</code></pre><p>Ask: Is this about exploring neighbors? Use BFS for shortest unweighted steps, DFS/BFS for full exploration.</p></div>
+    <div class="panel"><h4><span class="sw"></span>Dynamic Programming</h4><p>When I see:</p><pre><code>count ways
+min cost
+max profit
+choose or skip
+best possible
+repeated subproblems</code></pre><p>Ask: Can I define a smaller state and reuse its answer?</p></div>
+    <div class="panel"><h4><span class="sw"></span>Backtracking</h4><p>When I see:</p><pre><code>all subsets
+all combinations
+all permutations
+valid arrangements
+try every choice
+undo choice</code></pre><p>Ask: Can I build the answer step by step, then undo and try the next choice?</p></div>
+    <div class="panel"><h4><span class="sw"></span>Intervals</h4><p>When I see:</p><pre><code>meeting
+schedule
+start and end
+overlap
+merge
+minimum rooms</code></pre><p>Ask: Should I sort by start/end time, then sweep once?</p></div>
+  </div>
+
+  <h3 class="sub reveal">Example problem cards</h3>
+  <div class="code-window reveal">
+    <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">SlidingWindow.signal</span></div>
+    <pre><code>Problem: Longest Substring Without Repeating Characters
+Approach: Keep a window [left, right] and a map of last seen positions.
+Why this approach? The substring must be contiguous, and repeats only make the current window invalid. Move left past the repeated character.
+Time: O(n)
+Space: O(min(n, charset))
+Pattern: Sliding Window + HashMap
+
+Problem: Minimum Window Substring
+Approach: Expand right until the window contains all needed characters, then shrink left while it stays valid.
+Why this approach? We need the shortest contiguous substring, so we should not restart from every index. The window grows to become valid and shrinks to become minimal.
+Time: O(n)
+Space: O(k)
+Pattern: Sliding Window + Frequency Map</code></pre>
+  </div>
+
+  <div class="code-window reveal">
+    <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">Hashing.signal</span></div>
+    <pre><code>Problem: Two Sum
+Approach: For each number, check whether target - number was seen before in a HashMap.
+Why this approach? Brute force checks every pair. HashMap stores previous values so the complement check becomes O(1).
+Time: O(n)
+Space: O(n)
+Pattern: HashMap / Complement
+
+Problem: Subarray Sum Equals K
+Approach: Track prefix sum frequencies. For current prefix sum S, add count of previous prefix sums S - K.
+Why this approach? A subarray sum equals K when currentPrefix - oldPrefix = K. HashMap lets us find oldPrefix quickly.
+Time: O(n)
+Space: O(n)
+Pattern: Prefix Sum + HashMap</code></pre>
+  </div>
+
+  <div class="code-window reveal">
+    <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">PointersAndSearch.signal</span></div>
+    <pre><code>Problem: Two Sum II - Input Array Is Sorted
+Approach: Put one pointer at the start and one at the end. Move left if sum is too small; move right if sum is too large.
+Why this approach? Sorted order tells us which pointer can move safely without missing an answer.
+Time: O(n)
+Space: O(1)
+Pattern: Two Pointers
+
+Problem: Koko Eating Bananas
+Approach: Binary search the eating speed. For each speed, check if Koko can finish within h hours.
+Why this approach? If a speed works, every faster speed also works. That true/false condition is monotonic.
+Time: O(n log maxPile)
+Space: O(1)
+Pattern: Binary Search on Answer</code></pre>
+  </div>
+
+  <div class="code-window reveal">
+    <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">StackHeapGraph.signal</span></div>
+    <pre><code>Problem: Daily Temperatures
+Approach: Keep a stack of indices whose warmer day has not been found yet. Pop when current temperature is warmer.
+Why this approach? Each unresolved day waits for the next greater temperature. The current day can solve many previous days at once.
+Time: O(n)
+Space: O(n)
+Pattern: Monotonic Stack
+
+Problem: Top K Frequent Elements
+Approach: Count frequencies, then keep a min-heap of size K.
+Why this approach? We only need the best K, not a full sort. The heap root is the weakest current top-K candidate.
+Time: O(n log K)
+Space: O(n)
+Pattern: HashMap + Heap
+
+Problem: Number of Islands
+Approach: Scan the grid. When land is found, run DFS/BFS to mark the whole island visited.
+Why this approach? Each island is a connected component. Once visited, those cells should never be counted again.
+Time: O(rows * cols)
+Space: O(rows * cols) worst case
+Pattern: Graph DFS/BFS</code></pre>
+  </div>
+
+  <div class="code-window reveal">
+    <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">DpBacktrackingIntervals.signal</span></div>
+    <pre><code>Problem: House Robber
+Approach: Let dp[i] be the best money up to house i. Choose max(skip current, rob current + best before previous).
+Why this approach? Each decision depends on earlier overlapping decisions, and robbing adjacent houses is not allowed.
+Time: O(n)
+Space: O(1) after optimization
+Pattern: Dynamic Programming
+
+Problem: Combination Sum
+Approach: Use backtracking. Choose a number, recurse with reduced target, then undo the choice.
+Why this approach? We need all valid combinations, so we must explore choices systematically.
+Time: Exponential
+Space: O(target depth)
+Pattern: Backtracking
+
+Problem: Merge Intervals
+Approach: Sort by start time, then merge with the last kept interval if they overlap.
+Why this approach? Sorting puts possible overlaps next to each other. After sorting, only the last merged interval matters.
+Time: O(n log n)
+Space: O(n)
+Pattern: Sorting + Intervals</code></pre>
+  </div>
+</section>
+
+<div class="chapter-divider reveal"></div>
 
 <section id="bigo">
   <div class="chapter-hero reveal">
@@ -663,6 +855,20 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
+  <h3 class="sub reveal">How to identify array/string questions</h3>
+  <div class="tbl-wrap reveal">
+    <table>
+      <thead><tr><th>Question shape</th><th>Famous problems to practise</th><th>Approach and thinking</th></tr></thead>
+      <tbody>
+        <tr><td>Sorted array, pair/triplet, palindrome, "move from both ends"</td><td>Two Sum II, 3Sum, Container With Most Water, Valid Palindrome</td><td>Use two pointers because sorted/order information tells you which side to move. First ask: "If the current value is too small/big, which pointer can safely move without missing an answer?"</td></tr>
+        <tr><td>Longest/shortest contiguous subarray or substring with a condition</td><td>Longest Substring Without Repeating Characters, Minimum Window Substring, Max Consecutive Ones III, Fruit Into Baskets</td><td>Use sliding window. Expand right to include new data, shrink left only when the window becomes invalid. The core thinking is: each element should enter once and leave once.</td></tr>
+        <tr><td>Range sum, subarray sum equals K, repeated sum queries</td><td>Range Sum Query, Subarray Sum Equals K, Product of Array Except Self</td><td>Use prefix sums or prefix products. Replace "sum this range again" with "what cumulative information have I already stored?" For subarray sum K, look for a previous prefix equal to currentPrefix - K.</td></tr>
+        <tr><td>Best contiguous score where bad values can reset progress</td><td>Maximum Subarray, Best Time to Buy and Sell Stock</td><td>Use Kadane-style thinking: at every index, decide whether the previous run helps or hurts. Keep a local best ending here and a global best seen so far.</td></tr>
+        <tr><td>Array contains values in a limited range or asks in-place placement</td><td>Sort Colors, First Missing Positive, Find All Numbers Disappeared in an Array</td><td>Think index-as-bucket. Ask whether each value can be placed at the index where it "belongs" so extra memory is avoided.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
   <div class="callout callout--tip reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2.5l2.1 5.9 5.9 2.1-5.9 2.1L12 18.5l-2.1-5.9-5.9-2.1 5.9-2.1L12 2.5z" fill="currentColor"/></svg></div>
     <div class="callout__body">
@@ -805,6 +1011,19 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
+  <h3 class="sub reveal">How to identify linked-list questions</h3>
+  <div class="tbl-wrap reveal">
+    <table>
+      <thead><tr><th>Question shape</th><th>Famous problems to practise</th><th>Approach and thinking</th></tr></thead>
+      <tbody>
+        <tr><td>Reverse, reorder, swap, remove nodes without random access</td><td>Reverse Linked List, Reverse Nodes in K Group, Swap Nodes in Pairs</td><td>Think pointer rewiring, not indexing. Draw three pointers: previous, current, next. The main danger is losing the rest of the list before reconnecting it.</td></tr>
+        <tr><td>Cycle, middle, Nth from end, meeting point</td><td>Linked List Cycle, Linked List Cycle II, Middle of the Linked List, Remove Nth Node From End</td><td>Use fast/slow or gap pointers. If one pointer moves faster, their relative distance gives you cycle/middle information without extra memory.</td></tr>
+        <tr><td>Merge sorted lists or add numbers digit by digit</td><td>Merge Two Sorted Lists, Merge K Sorted Lists, Add Two Numbers</td><td>Use a dummy head to avoid special-casing the first node. Maintain a tail pointer and attach the next correct node each step.</td></tr>
+        <tr><td>Palindrome or reorder by halves</td><td>Palindrome Linked List, Reorder List</td><td>Find the middle, reverse the second half, then compare/merge. This pattern combines fast/slow pointers with reversal.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
   <div class="callout callout--real reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg></div>
     <div class="callout__body">
@@ -935,6 +1154,19 @@ noscript .reveal{opacity:1;}
         <tr><td>Queue (array ring buffer)</td><td>O(1)*</td><td>O(1)</td><td>O(1)</td></tr>
         <tr><td>Queue via linked list</td><td>O(1)</td><td>O(1)</td><td>O(1)</td></tr>
         <tr><td>Queue via two stacks</td><td>O(1)</td><td>O(1) amortized</td><td>O(1) amortized</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub reveal">How to identify stack and queue questions</h3>
+  <div class="tbl-wrap reveal">
+    <table>
+      <thead><tr><th>Question shape</th><th>Famous problems to practise</th><th>Approach and thinking</th></tr></thead>
+      <tbody>
+        <tr><td>Most recent unresolved item matters first</td><td>Valid Parentheses, Min Stack, Decode String, Evaluate Reverse Polish Notation</td><td>Use a stack. Push when you open/start something; pop when you close/resolve it. If the problem says nested, recent, undo, or matching, check stack first.</td></tr>
+        <tr><td>Next greater/smaller, daily temperatures, histogram bars</td><td>Next Greater Element, Daily Temperatures, Largest Rectangle in Histogram</td><td>Use a monotonic stack. Keep candidates in increasing/decreasing order and pop when the current element finally answers their question.</td></tr>
+        <tr><td>Process in arrival order or level by level</td><td>Binary Tree Level Order Traversal, Number of Islands BFS, Rotting Oranges</td><td>Use a queue. The first item inserted is processed first, which is exactly what level-order and shortest-step expansion need.</td></tr>
+        <tr><td>Need queue behavior but only stacks are allowed</td><td>Implement Queue using Stacks</td><td>Use two stacks: one for incoming pushes, one for outgoing pops. Pour only when the outgoing stack is empty to get amortized O(1).</td></tr>
       </tbody>
     </table>
   </div>
@@ -1144,6 +1376,19 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
+  <h3 class="sub reveal">How to identify tree, BST, and trie questions</h3>
+  <div class="tbl-wrap reveal">
+    <table>
+      <thead><tr><th>Question shape</th><th>Famous problems to practise</th><th>Approach and thinking</th></tr></thead>
+      <tbody>
+        <tr><td>Need to visit every node and combine child answers</td><td>Maximum Depth of Binary Tree, Diameter of Binary Tree, Balanced Binary Tree</td><td>Use DFS recursion. Ask: "What information should each child return to its parent?" Height, best path, valid range, or boolean usually becomes the return value.</td></tr>
+        <tr><td>Level, shortest depth, right side view, zigzag order</td><td>Binary Tree Level Order Traversal, Binary Tree Right Side View, Minimum Depth</td><td>Use BFS with a queue. Process one level at a time when the question talks about depth, layers, or nearest node.</td></tr>
+        <tr><td>BST validity, search, kth smallest, range query</td><td>Validate Binary Search Tree, Kth Smallest Element in a BST, Lowest Common Ancestor of a BST</td><td>Use the BST invariant. In-order traversal gives sorted order; min/max bounds verify validity; comparisons decide which subtree can be ignored.</td></tr>
+        <tr><td>Prefix lookup, autocomplete, word search pruning</td><td>Implement Trie, Word Search II, Replace Words</td><td>Use a trie when shared prefixes matter. During search, stop early if the current prefix does not exist; that pruning is the point of the structure.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
   <div class="summary reveal">
     <div class="summary__head">Chapter summary</div>
     <ul>
@@ -1277,6 +1522,19 @@ noscript .reveal{opacity:1;}
     </ul>
   </div>
 
+  <h3 class="sub reveal">How to identify heap questions</h3>
+  <div class="tbl-wrap reveal">
+    <table>
+      <thead><tr><th>Question shape</th><th>Famous problems to practise</th><th>Approach and thinking</th></tr></thead>
+      <tbody>
+        <tr><td>Top K, kth largest/smallest, keep best K seen so far</td><td>Kth Largest Element in an Array, Top K Frequent Elements, K Closest Points to Origin</td><td>Use a heap capped at K. For K largest, keep a min-heap so the weakest current answer is easiest to evict.</td></tr>
+        <tr><td>Repeatedly take the smallest/largest available item</td><td>Last Stone Weight, Task Scheduler, Reorganize String</td><td>Use a priority queue because each step depends on the current highest-priority candidate, then the priority may change and re-enter the heap.</td></tr>
+        <tr><td>Merge many sorted streams/lists</td><td>Merge K Sorted Lists, Kth Smallest Element in a Sorted Matrix</td><td>Put the first candidate from each list/row into a min-heap. Every pop gives the next smallest globally, then push that source's next item.</td></tr>
+        <tr><td>Running median or balanced lower/upper halves</td><td>Find Median from Data Stream</td><td>Use two heaps: max-heap for the lower half, min-heap for the upper half. Balance sizes so the median is always at the root(s).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
   <div class="deck-row reveal">
     <div class="flip"><div class="flip__inner">
       <div class="flip__face flip__face--front"><span>Parent/child index formula</span><span class="flip__hint">Tap to reveal</span></div>
@@ -1400,6 +1658,19 @@ noscript .reveal{opacity:1;}
       <b class="h">"Have I seen this before" is the tell</b>
       <p>Any problem shaped like duplicate detection, frequency counting, grouping (anagrams), or O(1) existence checks is very likely a HashMap/HashSet problem hiding behind different wording.</p>
     </div>
+  </div>
+
+  <h3 class="sub reveal">How to identify hashing questions</h3>
+  <div class="tbl-wrap reveal">
+    <table>
+      <thead><tr><th>Question shape</th><th>Famous problems to practise</th><th>Approach and thinking</th></tr></thead>
+      <tbody>
+        <tr><td>Need to know if something appeared before</td><td>Two Sum, Contains Duplicate, Happy Number</td><td>Use a HashSet or HashMap. Replace repeated searching with O(1) average lookup: "Have I seen the complement/state/key already?"</td></tr>
+        <tr><td>Frequency count, top frequency, majority, grouping</td><td>Valid Anagram, Group Anagrams, Top K Frequent Elements, Majority Element</td><td>Count first, then reason from counts. For anagrams, normalize the key by sorting characters or using a 26-count signature.</td></tr>
+        <tr><td>Subarray with target sum/count</td><td>Subarray Sum Equals K, Continuous Subarray Sum</td><td>Combine prefix sums with a HashMap. Store how many times each prefix appeared; currentPrefix - target tells you how many valid starts exist.</td></tr>
+        <tr><td>Need O(1) insert/delete/random or LRU behavior</td><td>Insert Delete GetRandom O(1), LRU Cache</td><td>Use structures together: array + map for random access, or doubly linked list + map for O(1) recency updates.</td></tr>
+      </tbody>
+    </table>
   </div>
 
   <div class="summary reveal">
@@ -1695,6 +1966,20 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
+  <h3 class="sub reveal">How to identify graph questions</h3>
+  <div class="tbl-wrap reveal">
+    <table>
+      <thead><tr><th>Question shape</th><th>Famous problems to practise</th><th>Approach and thinking</th></tr></thead>
+      <tbody>
+        <tr><td>Grid/graph asks shortest number of steps with equal edge cost</td><td>Rotting Oranges, Shortest Path in Binary Matrix, Word Ladder</td><td>Use BFS. Each queue layer is one more step, so the first time you reach a state is the shortest path.</td></tr>
+        <tr><td>Explore all connected cells/nodes or count components</td><td>Number of Islands, Max Area of Island, Clone Graph, Connected Components</td><td>Use DFS or BFS with a visited set. The key is not revisiting; every node/cell should be processed once.</td></tr>
+        <tr><td>Prerequisites, ordering, dependency graph</td><td>Course Schedule, Course Schedule II, Alien Dictionary</td><td>Use topological sort. Track in-degrees; repeatedly remove nodes with zero prerequisites. If nodes remain, there is a cycle.</td></tr>
+        <tr><td>Dynamic connectivity, "are these already connected?"</td><td>Redundant Connection, Number of Provinces, Accounts Merge</td><td>Use union-find. If an edge connects two nodes already in the same set, that edge reveals a cycle/redundancy.</td></tr>
+        <tr><td>Weighted shortest path with non-negative weights</td><td>Network Delay Time, Path With Minimum Effort</td><td>Use Dijkstra. Always expand the currently cheapest known path using a min-heap; skip stale heap entries.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
   <div class="summary reveal">
     <div class="summary__head">Chapter summary</div>
     <ul>
@@ -1850,6 +2135,19 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
+  <h3 class="sub reveal">How to identify sorting questions</h3>
+  <div class="tbl-wrap reveal">
+    <table>
+      <thead><tr><th>Question shape</th><th>Famous problems to practise</th><th>Approach and thinking</th></tr></thead>
+      <tbody>
+        <tr><td>"Intervals", "overlap", "merge", "schedule"</td><td>Merge Intervals, Insert Interval, Non-overlapping Intervals</td><td>Sort first, usually by start or end time. Sorting turns a messy global problem into a one-pass local decision.</td></tr>
+        <tr><td>Only a few distinct values or bounded integer range</td><td>Sort Colors, Relative Sort Array, H-Index</td><td>Use counting or bucket thinking instead of comparison sorting. The range is small enough to count occurrences directly.</td></tr>
+        <tr><td>Need smallest/largest pair after ordering</td><td>Meeting Rooms, Boats to Save People, Assign Cookies</td><td>Sort to expose order, then scan with two pointers or greedy. Ask what sorted order makes obvious at each step.</td></tr>
+        <tr><td>Custom ranking or stable multi-field ordering</td><td>Largest Number, Reorder Log Files</td><td>Define the comparator carefully. For stability-sensitive object sorting, understand why equal items should preserve earlier order.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
   <div class="summary reveal">
     <div class="summary__head">Chapter summary</div>
     <ul>
@@ -2003,6 +2301,19 @@ noscript .reveal{opacity:1;}
       <b class="h">Binary search outside the interview room</b>
       <p><code>git bisect</code> finds the commit that introduced a regression in O(log n) test runs instead of checking every commit since the last release. A database's B-tree index binary-searches within each page once disk I/O has narrowed things down to a single block. And "binary search on the answer" isn't just an interview trick — autoscalers and rate limiters use exactly this pattern to find the smallest instance count or token-bucket size that keeps p99 latency under budget, treating each candidate value as a feasibility check rather than an array lookup.</p>
     </div>
+  </div>
+
+  <h3 class="sub reveal">How to identify binary-search questions</h3>
+  <div class="tbl-wrap reveal">
+    <table>
+      <thead><tr><th>Question shape</th><th>Famous problems to practise</th><th>Approach and thinking</th></tr></thead>
+      <tbody>
+        <tr><td>Sorted array, first/last occurrence, insertion position</td><td>Binary Search, Search Insert Position, Find First and Last Position</td><td>Use standard binary search or lower/upper bound. Decide whether a matching mid should end the search or shrink toward the boundary.</td></tr>
+        <tr><td>Rotated sorted array or one sorted half at a time</td><td>Search in Rotated Sorted Array, Find Minimum in Rotated Sorted Array</td><td>At every mid, one half is sorted. Use that sorted half's range to decide which side can contain the answer.</td></tr>
+        <tr><td>"Minimum possible X", "smallest capacity", "maximum minimum"</td><td>Koko Eating Bananas, Capacity To Ship Packages, Split Array Largest Sum</td><td>Binary search the answer. Write a feasibility function: "Can this candidate work?" Then rely on monotonicity.</td></tr>
+        <tr><td>Matrix sorted by rows/columns or conceptual sorted space</td><td>Search a 2D Matrix, Kth Smallest Element in a Sorted Matrix</td><td>Either flatten the index math or binary-search values/counts. The important question is what order property is guaranteed.</td></tr>
+      </tbody>
+    </table>
   </div>
 
   <div class="summary reveal">
@@ -2195,6 +2506,20 @@ noscript .reveal{opacity:1;}
     <div class="accordion__body">Keep the full 2-D table (don't space-optimize) and walk backwards from <code>dp[n][capacity]</code>: if <code>dp[i][w] != dp[i-1][w]</code>, item i was taken — subtract its weight and move to <code>dp[i-1][w-weight]</code>; otherwise move to <code>dp[i-1][w]</code> unchanged. This backtrack is only possible if you keep the table around, which is one reason not to always space-optimize by default.</div>
   </details>
 
+  <h3 class="sub reveal">How to identify dynamic-programming questions</h3>
+  <div class="tbl-wrap reveal">
+    <table>
+      <thead><tr><th>Question shape</th><th>Famous problems to practise</th><th>Approach and thinking</th></tr></thead>
+      <tbody>
+        <tr><td>Count ways, min/max cost, best score over choices</td><td>Climbing Stairs, House Robber, Min Cost Climbing Stairs</td><td>Define <code>dp[i]</code> in one sentence. Usually: "best/count/min answer up to index i." Then express it from earlier states.</td></tr>
+        <tr><td>Pick/skip items under capacity or target</td><td>0/1 Knapsack, Partition Equal Subset Sum, Target Sum</td><td>State is index + remaining capacity/target. The decision is take or skip; memoize because the same remaining target appears repeatedly.</td></tr>
+        <tr><td>Compare two strings/sequences</td><td>Longest Common Subsequence, Edit Distance, Distinct Subsequences</td><td>Use 2-D DP over prefixes. Ask what happens if the last characters match versus do not match.</td></tr>
+        <tr><td>Grid path count/min path with only right/down moves</td><td>Unique Paths, Minimum Path Sum, Dungeon Game</td><td>Each cell depends on neighboring previous cells. Fill from the known base row/column toward the target.</td></tr>
+        <tr><td>Palindrome/interval decisions</td><td>Longest Palindromic Substring, Palindrome Partitioning II, Burst Balloons</td><td>Think interval DP. Smaller ranges must be solved before larger ranges; length often becomes the loop order.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
   <div class="summary reveal">
     <div class="summary__head">Chapter summary</div>
     <ul>
@@ -2333,6 +2658,19 @@ noscript .reveal{opacity:1;}
         <tr><td>Greedy</td><td>Problem provably has the greedy-choice + optimal-substructure property</td><td>O(n log n) sort + O(n) scan</td></tr>
         <tr><td>Dynamic programming</td><td>Overlapping subproblems, no greedy-choice guarantee</td><td>Polynomial (varies by state space)</td></tr>
         <tr><td>Backtracking</td><td>Need every valid combination, or provably-correct exhaustive search with pruning</td><td>Often exponential, pruning limits the real cost</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub reveal">How to identify greedy and backtracking questions</h3>
+  <div class="tbl-wrap reveal">
+    <table>
+      <thead><tr><th>Question shape</th><th>Famous problems to practise</th><th>Approach and thinking</th></tr></thead>
+      <tbody>
+        <tr><td>Choose earliest finishing, smallest/largest valid option, local choice seems irreversible</td><td>Activity Selection, Non-overlapping Intervals, Jump Game, Gas Station</td><td>Try greedy only when you can explain why the local choice cannot hurt future choices. Sorting often creates the right greedy order.</td></tr>
+        <tr><td>Need all subsets, combinations, permutations, valid arrangements</td><td>Subsets, Combination Sum, Permutations, N-Queens</td><td>Use backtracking: choose, recurse, un-choose. Your state is the current path plus what choices remain.</td></tr>
+        <tr><td>Search space is huge but invalid branches can be stopped early</td><td>Word Search, Sudoku Solver, Palindrome Partitioning</td><td>Add pruning. Before recursing, ask if this partial path can still possibly become valid; if not, stop the branch.</td></tr>
+        <tr><td>Greedy feels tempting but combinations matter</td><td>0/1 Knapsack, Coin Change, Partition Equal Subset Sum</td><td>Switch to DP when a local best choice can block a better combination later. The failure of greedy is the signal.</td></tr>
       </tbody>
     </table>
   </div>
@@ -2517,6 +2855,21 @@ noscript .reveal{opacity:1;}
         <tr><td>Dutch national flag</td><td>Sort an array of only 0s/1s/2s in one pass with three pointers (low/mid/high)</td></tr>
         <tr><td>Boyer-Moore voting</td><td>Find a majority element (&gt;n/2 occurrences) in O(n)/O(1) via a running candidate + counter</td></tr>
         <tr><td>Reservoir sampling</td><td>Pick a uniformly random element from a stream of unknown length, one pass, O(1) memory</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub reveal">How to identify bit, math, and interval questions</h3>
+  <div class="tbl-wrap reveal">
+    <table>
+      <thead><tr><th>Question shape</th><th>Famous problems to practise</th><th>Approach and thinking</th></tr></thead>
+      <tbody>
+        <tr><td>Numbers appear twice except one, toggle membership, parity of bits</td><td>Single Number, Missing Number, Sum of Two Integers</td><td>Use XOR/bit tricks. XOR cancels identical values because <code>x ^ x = 0</code> and <code>x ^ 0 = x</code>.</td></tr>
+        <tr><td>All subsets of a small set, choose/not choose encoded compactly</td><td>Subsets, Maximum Product of Word Lengths, Bitmask DP basics</td><td>Use bitmasks when n is small enough, usually n <= 20. Each bit says whether an item is included.</td></tr>
+        <tr><td>Prime checks, divisibility, gcd/lcm, modular arithmetic</td><td>Count Primes, Pow(x,n), Greatest Common Divisor of Strings</td><td>Use math identities to reduce work: test divisors only up to sqrt(n), use Euclid for gcd, use fast exponentiation for powers.</td></tr>
+        <tr><td>Merge overlap, remove overlap, insert into schedule</td><td>Merge Intervals, Insert Interval, Non-overlapping Intervals</td><td>Sort intervals first. Once sorted, only the latest kept interval can overlap the current one.</td></tr>
+        <tr><td>Minimum rooms/resources active at the same time</td><td>Meeting Rooms II, Minimum Number of Arrows to Burst Balloons, Car Pooling</td><td>Use sweep-line or min-heap of end times. The thinking is: count how many intervals are active right now.</td></tr>
+        <tr><td>Array values are 1..n and missing/duplicate must be found in O(1) space</td><td>Find Missing Number, Find All Duplicates in an Array, First Missing Positive</td><td>Use cyclic sort or index marking. Treat the array itself as the storage for "where each value belongs."</td></tr>
       </tbody>
     </table>
   </div>
