@@ -379,6 +379,25 @@ noscript .reveal{opacity:1;}
   .navlink{font-size:.8rem;padding:.45rem .7rem;}
   .contents-btn{font-size:.8rem;padding:.45rem .8rem;}
 }
+/* ---- site search ---- */
+.site-search{position:relative;flex:1;max-width:420px;margin:0 1.2rem;}
+.site-search__box{display:flex;align-items:center;gap:.5rem;background:var(--surface-2);border-radius:var(--r-pill);padding:.5rem .9rem;transition:background var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);}
+.site-search__box:focus-within{background:var(--surface);box-shadow:0 0 0 2px var(--accent);}
+.site-search__icon{flex:none;width:15px;height:15px;color:var(--muted);}
+.site-search__input{flex:1;min-width:0;border:none;background:none;outline:none;font-family:var(--font-body);font-size:.87rem;color:var(--ink);}
+.site-search__input::placeholder{color:var(--muted);}
+.site-search__kbd{flex:none;font-family:var(--font-mono);font-size:.68rem;color:var(--muted);background:var(--surface);border-radius:5px;padding:.1rem .4rem;box-shadow:var(--shadow-sm);}
+.site-search__results{position:absolute;top:calc(100% + 8px);left:0;right:0;max-height:min(70vh,480px);overflow-y:auto;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:.5rem;display:none;z-index:50;}
+.site-search.is-open .site-search__results{display:block;}
+.site-search__empty{padding:1rem;font-size:.85rem;color:var(--muted);text-align:center;}
+.site-search__item{display:block;padding:.65rem .8rem;border-radius:10px;text-decoration:none;color:inherit;cursor:pointer;}
+.site-search__item:hover,.site-search__item.is-active{background:var(--tint);}
+.site-search__item-title{font-weight:700;font-size:.88rem;display:block;}
+.site-search__item-meta{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:.4rem;margin-top:.2rem;}
+.site-search__item-type{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;background:var(--surface-2);padding:.1rem .4rem;border-radius:999px;}
+.site-search mark{background:var(--tint-strong);color:inherit;border-radius:3px;padding:0 .1em;}
+@media (max-width:820px){.site-search{order:3;flex-basis:100%;max-width:none;margin:.6rem 0 0;}}
+[id]{scroll-margin-top:90px;}
 </style>
 <body>
 <noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript>
@@ -386,6 +405,14 @@ noscript .reveal{opacity:1;}
 <header class="topnav">
   <div class="topnav__inner">
     <a class="wordmark" href="index.html#testing"><span class="wordmark__mark">T</span>Testing</a>
+    <div class="site-search" id="siteSearch">
+      <div class="site-search__box">
+        <svg class="site-search__icon" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" class="site-search__input" id="siteSearchInput" placeholder="Search any topic or question…" autocomplete="off" aria-label="Search notes" aria-expanded="false" aria-controls="siteSearchResults">
+        <span class="site-search__kbd">/</span>
+      </div>
+      <div class="site-search__results" id="siteSearchResults"></div>
+    </div>
     <nav class="navlinks">
       <a class="navlink" href="index.html#testing">← All topics</a>
       <div class="contents" id="contents">
@@ -451,7 +478,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">What automated tests actually buy you</h3>
+  <h3 class="sub reveal" id="what-automated-tests-actually-buy-you">What automated tests actually buy you</h3>
   <div class="duo reveal">
     <div class="panel">
       <h4><span class="sw"></span>A regression safety net</h4>
@@ -471,7 +498,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">The testing pyramid</h3>
+  <h3 class="sub reveal" id="the-testing-pyramid">The testing pyramid</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node is-accent"><b>Unit tests</b><span>many · fast · isolated</span></div>
@@ -496,7 +523,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Flaky tests are a trust problem, not just an annoyance</h3>
+  <h3 class="sub reveal" id="flaky-tests-are-a-trust-problem-not-just-an-annoyance">Flaky tests are a trust problem, not just an annoyance</h3>
   <p class="reveal">A <strong>flaky test</strong> passes or fails unpredictably with no code change — often from timing assumptions, shared mutable state between tests, or a real (if rare) race condition in the code under test. The actual damage isn't the occasional red build; it's that once a team learns "that test is just flaky, re-run it," every <em>future</em> genuine failure from that test gets the same dismissive re-run instead of investigation.</p>
   <div class="callout callout--warn reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a1 1 0 0 0 .86 1.5h18.64a1 1 0 0 0 .86-1.5L13.71 3.86a1 1 0 0 0-1.72 0Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
@@ -541,7 +568,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Test lifecycle</h3>
+  <h3 class="sub reveal" id="test-lifecycle">Test lifecycle</h3>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">DiscountCalculatorTest.java</span></div>
     <pre><code><span class="tk-kw">class</span> <span class="tk-typ">DiscountCalculatorTest</span> {
@@ -582,7 +609,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Grouping related tests with @Nested</h3>
+  <h3 class="sub reveal" id="grouping-related-tests-with-nested">Grouping related tests with @Nested</h3>
   <p class="reveal">A flat test class covering several distinct scenarios turns into a wall of similarly-named methods fast. <code>@Nested</code> groups tests that share a scenario into their own inner class, which also shows up as its own labeled group in most IDE and CI test reports — combined with <code>@DisplayName</code>, a failing test reads as a sentence instead of a bare method name.</p>
   <pre class="reveal"><code><span class="tk-kw">class</span> <span class="tk-typ">DiscountCalculatorTest</span> {
     <span class="tk-kw">@Nested</span>
@@ -607,7 +634,7 @@ noscript .reveal{opacity:1;}
 }</code></pre>
   <p class="reveal">Each <code>@Nested</code> class can also declare its own <code>@BeforeEach</code>, layered on top of the outer class's — useful when one scenario needs extra setup beyond what every test in the class already shares.</p>
 
-  <h3 class="sub reveal">Parameterized tests</h3>
+  <h3 class="sub reveal" id="parameterized-tests">Parameterized tests</h3>
   <p class="reveal">Testing the same logic against several inputs shouldn't mean copy-pasting the same test method five times. <code>@ParameterizedTest</code> runs one test method once per supplied input.</p>
   <pre class="reveal"><code><span class="tk-kw">@ParameterizedTest</span>
 <span class="tk-kw">@CsvSource</span>({
@@ -626,7 +653,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Assertions &amp; testing for exceptions</h3>
+  <h3 class="sub reveal" id="assertions-testing-for-exceptions">Assertions &amp; testing for exceptions</h3>
   <pre class="reveal"><code>assertEquals(expected, actual);
 assertTrue(order.isValid());
 assertThrows(IllegalArgumentException.<span class="tk-kw">class</span>, () -&gt; <span class="tk-kw">new</span> <span class="tk-typ">Order</span>(-<span class="tk-str">10.00</span>));
@@ -677,7 +704,7 @@ assertThat(order.getTotal()).isGreaterThan(<span class="tk-str">0</span>).isLess
     </div>
   </div>
 
-  <h3 class="sub reveal">Mock vs. stub vs. spy</h3>
+  <h3 class="sub reveal" id="mock-vs-stub-vs-spy">Mock vs. stub vs. spy</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Term</th><th>What it is</th></tr></thead>
@@ -689,7 +716,7 @@ assertThat(order.getTotal()).isGreaterThan(<span class="tk-str">0</span>).isLess
     </table>
   </div>
 
-  <h3 class="sub reveal">The standard Mockito pattern</h3>
+  <h3 class="sub reveal" id="the-standard-mockito-pattern">The standard Mockito pattern</h3>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">OrderServiceTest.java</span></div>
     <pre><code><span class="tk-kw">@ExtendWith</span>(MockitoExtension.<span class="tk-kw">class</span>)
@@ -730,13 +757,13 @@ assertThat(order.getTotal()).isGreaterThan(<span class="tk-str">0</span>).isLess
     </div>
   </div>
 
-  <h3 class="sub reveal">ArgumentCaptor: when "it was called" isn't enough</h3>
+  <h3 class="sub reveal" id="argumentcaptor-when-it-was-called-isn-t-enough">ArgumentCaptor: when "it was called" isn't enough</h3>
   <p class="reveal">Sometimes you need to verify not just that a method was called, but <em>what</em> it was called with — beyond what a simple equality check on the argument can express.</p>
   <pre class="reveal"><code>ArgumentCaptor&lt;ChargeRequest&gt; captor = ArgumentCaptor.<span class="tk-fn">forClass</span>(ChargeRequest.<span class="tk-kw">class</span>);
 verify(gateway).<span class="tk-fn">charge</span>(captor.<span class="tk-fn">capture</span>());
 assertThat(captor.<span class="tk-fn">getValue</span>().amount()).isEqualTo(<span class="tk-str">150.00</span>);  <span class="tk-com">// inspect the real argument that was passed</span></code></pre>
 
-  <h3 class="sub reveal">Verifying call counts, not just "it happened"</h3>
+  <h3 class="sub reveal" id="verifying-call-counts-not-just-it-happened">Verifying call counts, not just "it happened"</h3>
   <p class="reveal">Plain <code>verify(mock).method(...)</code> is shorthand for "exactly once." Passing an explicit count-modifier as <code>verify()</code>'s second argument checks a more specific expectation:</p>
   <pre class="reveal"><code>verify(gateway, times(<span class="tk-str">1</span>)).<span class="tk-fn">charge</span>(any());        <span class="tk-com">// exactly once — same as the plain verify(gateway) above</span>
 verify(gateway, never()).<span class="tk-fn">charge</span>(any());           <span class="tk-com">// never called at all</span>
@@ -744,7 +771,7 @@ verify(gateway, atLeastOnce()).<span class="tk-fn">charge</span>(any());     <sp
 verify(gateway, atMost(<span class="tk-str">3</span>)).<span class="tk-fn">charge</span>(any());        <span class="tk-com">// no more than 3 times</span></code></pre>
   <p class="reveal">These matter most when "called too many times" is itself the bug — a retry path firing more often than intended, or a listener double-processing the same event. <code>never()</code> in particular is how you assert a negative: "this side effect must not happen under these conditions."</p>
 
-  <h3 class="sub reveal">Spies done safely: doReturn() vs. when()</h3>
+  <h3 class="sub reveal" id="spies-done-safely-doreturn-vs-when">Spies done safely: doReturn() vs. when()</h3>
   <p class="reveal">A <code>@Spy</code> wraps a real object, so the normal <code>when(spy.method()).thenReturn(...)</code> syntax has a sharp edge: to evaluate that expression, Java has to actually call <code>spy.method()</code> for real first, before Mockito ever gets a chance to intercept it and install the stub.</p>
   <pre class="reveal"><code>PaymentGateway spyGateway = spy(<span class="tk-kw">new</span> <span class="tk-typ">PaymentGateway</span>());
 
@@ -770,7 +797,7 @@ doReturn(Receipt.<span class="tk-fn">ok</span>()).<span class="tk-fn">when</span
     </div>
   </div>
 
-  <h3 class="sub reveal">The catch: classic Mockito can't mock static or final methods</h3>
+  <h3 class="sub reveal" id="the-catch-classic-mockito-can-t-mock-static-or-final-methods">The catch: classic Mockito can't mock static or final methods</h3>
   <p class="reveal">Everything above works because Mockito creates a mock by generating a subclass of the target at runtime and overriding its methods to intercept calls. That mechanism has a hard edge: there's no instance to override a method on for a <code>static</code> call, and a <code>final</code> class or method can't be subclassed or overridden at all. Classic <code>mockito-core</code> simply cannot mock either one — not a missing feature so much as a structural consequence of how it mocks in the first place.</p>
   <pre class="reveal"><code><span class="tk-com">// build.gradle — add the mockito-inline artifact alongside/instead of mockito-core:</span>
 <span class="tk-com">// testImplementation("org.mockito:mockito-inline:5.2.0")</span>
@@ -834,7 +861,7 @@ doReturn(Receipt.<span class="tk-fn">ok</span>()).<span class="tk-fn">when</span
     </div>
   </div>
 
-  <h3 class="sub reveal">Red, Green, Refactor</h3>
+  <h3 class="sub reveal" id="red-green-refactor">Red, Green, Refactor</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>Red</b><span>write a failing test first</span></div>
@@ -846,10 +873,10 @@ doReturn(Receipt.<span class="tk-fn">ok</span>()).<span class="tk-fn">when</span
     <p class="diagram-cap">The cycle repeats in small steps — one small piece of behavior at a time, not the whole feature in one pass. "Minimum code to pass" is deliberate: it stops you from designing ahead of what's actually proven needed yet.</p>
   </div>
 
-  <h3 class="sub reveal">The cycle, with real code</h3>
+  <h3 class="sub reveal" id="the-cycle-with-real-code">The cycle, with real code</h3>
   <p class="reveal">Here's Red-Green-Refactor applied to an actual increment, continuing the <code>DiscountCalculator</code>/<code>Order</code> example from the JUnit&nbsp;5 chapter. The existing rule is a flat 10% off above a $100.00 threshold; the new requirement is a steeper 20% tier for orders above $300.00.</p>
 
-  <h3 class="sub reveal">Step 1 — Red: write the failing test first</h3>
+  <h3 class="sub reveal" id="step-1-red-write-the-failing-test-first">Step 1 — Red: write the failing test first</h3>
   <p class="reveal">Before touching <code>DiscountCalculator</code> itself, add the test for behavior it doesn't have yet:</p>
   <pre class="reveal"><code><span class="tk-kw">@Test</span>
 <span class="tk-kw">void</span> <span class="tk-fn">appliesTwentyPercentDiscountAboveHigherThreshold</span>() {
@@ -873,7 +900,7 @@ doReturn(Receipt.<span class="tk-fn">ok</span>()).<span class="tk-fn">when</span
   </div>
   <p class="reveal">This is deliberately not the most elegant shape — it's the smallest change that turns the new test green while leaving the existing 10%-tier tests (150.00 → 135.00, 100.00 → 100.00) passing exactly as before. Green means <em>all</em> tests pass, not just the newest one.</p>
 
-  <h3 class="sub reveal">Step 3 — Refactor: clean up, tests stay green</h3>
+  <h3 class="sub reveal" id="step-3-refactor-clean-up-tests-stay-green">Step 3 — Refactor: clean up, tests stay green</h3>
   <p class="reveal">With the safety net of three passing tests in place, the magic numbers and repeated shape can be cleaned up without changing what the code actually does:</p>
   <pre class="reveal"><code><span class="tk-kw">class</span> <span class="tk-typ">DiscountCalculator</span> {
     <span class="tk-kw">private</span> <span class="tk-kw">static</span> <span class="tk-kw">final</span> <span class="tk-kw">double</span> HIGH_TIER_THRESHOLD = <span class="tk-str">300.00</span>;
@@ -893,7 +920,7 @@ doReturn(Receipt.<span class="tk-fn">ok</span>()).<span class="tk-fn">when</span
 }</code></pre>
   <p class="reveal">Same three tests, still green — nothing about observable behavior changed. What changed is internal: the magic numbers now have names, and "which rate applies" is separated from "how a rate is applied to a total" — exactly the part of the design a future third tier would actually need to touch.</p>
 
-  <h3 class="sub reveal">Why writing the test first changes the resulting design</h3>
+  <h3 class="sub reveal" id="why-writing-the-test-first-changes-the-resulting-design">Why writing the test first changes the resulting design</h3>
   <p class="reveal">Writing a test <em>after</em> the code exists tends to test whatever shape the code already has — including awkward dependencies you've gotten used to working around. Writing the test <em>first</em> forces you to imagine calling the not-yet-written code from a clean slate, as a consumer would: what does it need injected? What's the smallest meaningful interface? Code that's painful to set up in a test written first is usually a preview of code that will be painful to reuse, extend, or debug later.</p>
 
   <div class="callout callout--mistake reveal">
@@ -904,7 +931,7 @@ doReturn(Receipt.<span class="tk-fn">ok</span>()).<span class="tk-fn">when</span
     </div>
   </div>
 
-  <h3 class="sub reveal">Where TDD earns its keep, and where it doesn't</h3>
+  <h3 class="sub reveal" id="where-tdd-earns-its-keep-and-where-it-doesn-t">Where TDD earns its keep, and where it doesn't</h3>
   <div class="duo reveal">
     <div class="panel">
       <h4><span class="sw"></span>TDD shines here</h4>
@@ -959,7 +986,7 @@ doReturn(Receipt.<span class="tk-fn">ok</span>()).<span class="tk-fn">when</span
     </div>
   </div>
 
-  <h3 class="sub reveal">Naming a test so it explains itself when it fails</h3>
+  <h3 class="sub reveal" id="naming-a-test-so-it-explains-itself-when-it-fails">Naming a test so it explains itself when it fails</h3>
   <p class="reveal">A test's name is read exactly once under normal circumstances: the moment it fails, usually in a CI log, usually by someone who isn't you. <code>testOrder()</code> tells that person nothing; <code>rejectsOrderWhenInventoryIsInsufficient</code> tells them almost everything before they open the file.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -972,7 +999,7 @@ doReturn(Receipt.<span class="tk-fn">ok</span>()).<span class="tk-fn">when</span
     </table>
   </div>
 
-  <h3 class="sub reveal">Test independence</h3>
+  <h3 class="sub reveal" id="test-independence">Test independence</h3>
   <p class="reveal">Every test should be able to run alone, in any order, an unlimited number of times, and get the same result. Violating this is one of the most common sources of "flaky" tests that aren't actually about timing at all — they're about hidden coupling between tests.</p>
   <div class="callout callout--mistake reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div>
@@ -982,7 +1009,7 @@ doReturn(Receipt.<span class="tk-fn">ok</span>()).<span class="tk-fn">when</span
     </div>
   </div>
 
-  <h3 class="sub reveal">What actually causes flaky tests</h3>
+  <h3 class="sub reveal" id="what-actually-causes-flaky-tests">What actually causes flaky tests</h3>
   <p class="reveal">"Flaky" is a symptom, not a diagnosis. Shared mutable state above is one specific, common cause — but naming the actual root cause, rather than reflexively re-running, is what turns a flaky test into a fixed one.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -998,7 +1025,7 @@ doReturn(Receipt.<span class="tk-fn">ok</span>()).<span class="tk-fn">when</span
   </div>
   <p class="reveal">The fix for that last one is usually a design change, not a test-only patch: inject a <code>java.time.Clock</code> instead of calling <code>Instant.now()</code>/<code>System.currentTimeMillis()</code> directly, so a test can supply a fixed instant. That exact fix shows up again as its own interview question later in this module.</p>
 
-  <h3 class="sub reveal">Test data builders</h3>
+  <h3 class="sub reveal" id="test-data-builders">Test data builders</h3>
   <p class="reveal">Constructing a complex object with a dozen fields, over and over, with only one field different each time, is both noisy and fragile — adding a thirteenth required field means updating every single test that builds one. A <strong>test data builder</strong> centralizes sane defaults and lets each test override only what it actually cares about.</p>
   <pre class="reveal"><code><span class="tk-com">// Instead of this in every single test:</span>
 <span class="tk-kw">new</span> <span class="tk-typ">Order</span>(<span class="tk-str">1L</span>, <span class="tk-str">"pending"</span>, <span class="tk-str">100.00</span>, <span class="tk-kw">true</span>, customer, <span class="tk-kw">null</span>, Instant.<span class="tk-fn">now</span>(), ...)
@@ -1013,7 +1040,7 @@ OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class="tk-fn">withTo
     </div>
   </div>
 
-  <h3 class="sub reveal">Object Mother: named factory methods instead of a fluent builder</h3>
+  <h3 class="sub reveal" id="object-mother-named-factory-methods-instead-of-a-fluent">Object Mother: named factory methods instead of a fluent builder</h3>
   <p class="reveal">An <strong>Object Mother</strong> is the builder's older sibling. Instead of one generic builder with chainable <code>.withX()</code> overrides, it's a small class of static factory methods, each named for a specific, recurring scenario rather than a set of field overrides.</p>
   <pre class="reveal"><code><span class="tk-com">// Object Mother: the scenario is the method name, not a chain of overrides</span>
 Order order = OrderMother.<span class="tk-fn">pendingOrderAboveDiscountThreshold</span>();
@@ -1058,7 +1085,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </div>
   </div>
 
-  <h3 class="sub reveal">Test slices</h3>
+  <h3 class="sub reveal" id="test-slices">Test slices</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Annotation</th><th>Loads</th><th>Use for</th></tr></thead>
@@ -1071,7 +1098,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </table>
   </div>
 
-  <h3 class="sub reveal">Testing a controller with MockMvc</h3>
+  <h3 class="sub reveal" id="testing-a-controller-with-mockmvc">Testing a controller with MockMvc</h3>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">OrderControllerTest.java</span></div>
     <pre><code><span class="tk-kw">@WebMvcTest</span>(OrderController.<span class="tk-kw">class</span>)
@@ -1105,7 +1132,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </div>
   </div>
 
-  <h3 class="sub reveal">The @DataJpaTest trap: it swaps your real database out from under you</h3>
+  <h3 class="sub reveal" id="the-datajpatest-trap-it-swaps-your-real-database-out-from">The @DataJpaTest trap: it swaps your real database out from under you</h3>
   <p class="reveal">By default, <code>@DataJpaTest</code> auto-configures an embedded, in-memory database and points your repositories at that instead of whatever your application actually configures — even if you've wired up a real Testcontainers-backed Postgres, as the next chapter covers. Left unchecked, the queries you think you're testing against Postgres are silently running against H2 instead.</p>
   <pre class="reveal"><code><span class="tk-kw">@DataJpaTest</span>
 <span class="tk-kw">@AutoConfigureTestDatabase</span>(replace = Replace.NONE)  <span class="tk-com">// keep OUR datasource — don't swap in an embedded one</span>
@@ -1154,7 +1181,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </div>
   </div>
 
-  <h3 class="sub reveal">Why H2-for-tests, Postgres-for-prod is a trap</h3>
+  <h3 class="sub reveal" id="why-h2-for-tests-postgres-for-prod-is-a-trap">Why H2-for-tests, Postgres-for-prod is a trap</h3>
   <p class="reveal">Swapping in an in-memory database like H2 for tests, while running Postgres or MySQL in production, was the standard advice for years — it's fast and needs no setup. The cost: SQL dialect differences, JSON column support, specific locking behavior, and database-specific functions all behave differently, or don't exist at all, in the in-memory substitute. A test suite that's fully green against H2 can still hide a query that fails, or behaves subtly differently, against the real production database.</p>
   <div class="callout callout--mistake reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div>
@@ -1164,7 +1191,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </div>
   </div>
 
-  <h3 class="sub reveal">Testcontainers: the real thing, disposably</h3>
+  <h3 class="sub reveal" id="testcontainers-the-real-thing-disposably">Testcontainers: the real thing, disposably</h3>
   <p class="reveal"><strong>Testcontainers</strong> spins up a real, disposable Docker container — an actual Postgres, an actual Kafka broker — for the duration of a test run, then tears it down. You get the fidelity of testing against the real dependency without the operational overhead of a permanently-running shared test database.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">OrderRepositoryIT.java</span></div>
@@ -1185,7 +1212,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
 }</code></pre>
   </div>
 
-  <h3 class="sub reveal">Why static @Container, and why @DynamicPropertySource at all</h3>
+  <h3 class="sub reveal" id="why-static-container-and-why-dynamicpropertysource-at-all">Why static @Container, and why @DynamicPropertySource at all</h3>
   <p class="reveal">Two details in that example are easy to copy without understanding, and both matter. <code>static</code> on the <code>@Container</code> field means Testcontainers' JUnit 5 extension starts exactly one Postgres container for the whole test class, shared across every <code>@Test</code> method in it — drop <code>static</code> and you get a fresh container per test method instead, which is correct in principle but usually far too slow to be practical for anything but the smallest suites.</p>
   <p class="reveal"><code>@DynamicPropertySource</code> exists because of a timing problem <code>application.properties</code> can't solve on its own: Docker assigns the container's host-mapped port at container-start time, which is <em>after</em> the test class has already begun executing — there's no way to write that port into a static config file, because the value doesn't exist yet when the file would be read. <code>@DynamicPropertySource</code> is a callback Spring invokes after the container is already running but before the application context loads, so <code>postgres::getJdbcUrl</code> can read the real, just-assigned connection URL and register it programmatically, at the one moment it's actually knowable.</p>
   <div class="callout callout--tip reveal">
@@ -1204,7 +1231,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </div>
   </div>
 
-  <h3 class="sub reveal">Where this fits in the pyramid</h3>
+  <h3 class="sub reveal" id="where-this-fits-in-the-pyramid">Where this fits in the pyramid</h3>
   <p class="reveal">Testcontainers-backed tests are integration tests, not unit tests — they're slower (container startup) and belong in the pyramid's middle layer, run less frequently than the fast unit-test layer but still fully automated in CI, not reserved for a manual QA pass.</p>
 
   <div class="mini-quiz reveal">
@@ -1243,7 +1270,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </div>
   </div>
 
-  <h3 class="sub reveal">The gap integration tests don't cover</h3>
+  <h3 class="sub reveal" id="the-gap-integration-tests-don-t-cover">The gap integration tests don't cover</h3>
   <p class="reveal">A service's own integration tests confirm it works correctly against <em>its own</em> database, cache, and message broker. They say nothing about whether the JSON shape it expects from a service it <em>calls</em> still matches what that service actually returns today — that dependency is usually mocked, based on an assumption that can silently go stale the moment the other team changes something.</p>
   <div class="callout callout--mistake reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div>
@@ -1253,7 +1280,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </div>
   </div>
 
-  <h3 class="sub reveal">Consumer-driven contract testing</h3>
+  <h3 class="sub reveal" id="consumer-driven-contract-testing">Consumer-driven contract testing</h3>
   <p class="reveal">The consumer (Service A) defines a <strong>contract</strong> — the exact request it will send and the exact response shape it expects — as an explicit, shared artifact. The provider (Service B) then runs that contract against its <em>real</em> implementation in its own CI pipeline, failing its build if the actual response no longer matches what any consumer expects.</p>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
@@ -1273,7 +1300,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </div>
   </div>
 
-  <h3 class="sub reveal">What a contract actually looks like in code: Pact</h3>
+  <h3 class="sub reveal" id="what-a-contract-actually-looks-like-in-code-pact">What a contract actually looks like in code: Pact</h3>
   <p class="reveal"><strong>Pact</strong> is the most widely used consumer-driven contract tool on the JVM — and cross-language, which matters whenever the consumer and provider aren't both written in Java. The consumer test below encodes exactly the scenario from earlier: <code>BillingService</code> (the consumer) expects <code>{"status": "ACTIVE"}</code> from <code>OrderService</code> (the provider), and runs against a Pact-managed mock server rather than the real thing.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">OrderClientPactTest.java</span></div>
@@ -1322,7 +1349,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </div>
   </div>
 
-  <h3 class="sub reveal">Shaping a CI test strategy</h3>
+  <h3 class="sub reveal" id="shaping-a-ci-test-strategy">Shaping a CI test strategy</h3>
   <p class="reveal">Not every test should run on every commit, and not every failure should block a merge in the same way.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -1381,7 +1408,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
 
   <div class="iq-group-label">Foundations &amp; The Pyramid</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-01">
     <summary><span class="iq-num">01</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does an inverted test pyramid (mostly end-to-end tests) cost more long-term than simply having fewer tests overall?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>It's not just slow — it actively teaches bad habits. Frequent, unrelated failures (environment flakiness, timing issues inherent to full-system tests) train engineers to reflexively re-run rather than investigate, which means a genuine regression is now competing with noise for attention and often loses. A smaller, well-shaped suite that fails rarely and always for a real reason preserves the team's trust in red builds — an inverted pyramid actively destroys that trust over time, which is a much deeper cost than CI minutes.</p>
@@ -1389,7 +1416,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-02">
     <summary><span class="iq-num">02</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">"Our code has 100% test coverage, so it's well-tested." What's the flaw in this claim?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Coverage measures which lines <em>executed</em> during tests, not whether anything meaningful was <em>asserted</em> about their behavior. A test that calls a method and asserts nothing (or asserts something trivially true) achieves 100% coverage of that method while verifying literally nothing — this is a well-known way coverage numbers get gamed, intentionally or not, under pressure to hit a target.</p>
@@ -1397,7 +1424,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-03">
     <summary><span class="iq-num">03</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A previously-reliable test starts failing intermittently right after a teammate enables parallel test execution. Diagnose it.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>This is the classic signature of hidden shared state that test independence was silently relying on — a static field, a shared file, a fixed row in a shared test database, or a fixed port/resource name. Sequential execution happened to never expose the coupling because tests ran one at a time in a fixed order; parallel execution makes two tests touch the same shared resource simultaneously, and now the outcome depends on scheduling.</p>
@@ -1405,7 +1432,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-04">
     <summary><span class="iq-num">04</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">When would you deliberately choose a slower, heavier integration test over a faster unit test for the same piece of logic?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>When the actual risk lives in the integration itself, not the logic — a complex SQL query's correctness against a real database engine, or whether your JSON mapping actually round-trips correctly through Jackson's real configuration. A unit test mocking the database proves your code calls the repository correctly; it can't prove the query itself is correct, because the mock has no real query semantics to get wrong.</p>
@@ -1415,7 +1442,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
 
   <div class="iq-group-label">JUnit &amp; Mockito</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-05">
     <summary><span class="iq-num">05</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">You forget to declare a needed <code>@Mock</code> field that the class under test depends on. What actually happens with <code>@InjectMocks</code>?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Mockito doesn't fail loudly here — <code>@InjectMocks</code> constructs the object under test with whatever mocks it finds, and leaves any dependency it can't match as <code>null</code> (for field injection) or simply fails to satisfy a required constructor argument, depending on the injection style. The test then blows up with a <code>NullPointerException</code> deep inside the class under test, which reads like a bug in the production code rather than a missing mock in the test.</p>
@@ -1423,7 +1450,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-06">
     <summary><span class="iq-num">06</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">"Using @Spy instead of @Mock everywhere is safer, since it calls real code by default." Why is this actually risky advice?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>A spy calling real code by default means a "unit" test can silently start exercising real, potentially expensive or side-effecting behavior — a real database write, a real external API call — that a mock would have safely no-op'd. Defaulting to spies everywhere reintroduces exactly the coupling to real collaborators that mocking exists to remove, just less visibly than an obvious integration test would.</p>
@@ -1431,7 +1458,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-07">
     <summary><span class="iq-num">07</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A test asserts <code>verify(mock, times(1)).charge(any())</code>, but occasionally fails because the method was actually called twice. Is the test wrong, or did it just find a real bug?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Don't reflexively loosen the assertion to <code>atLeastOnce()</code> to make the flakiness go away — that treats the symptom, not the cause, and can hide a genuine double-charge bug in production. First determine <em>why</em> it's sometimes called twice: is there a retry path in the code under test that's firing unexpectedly, a race condition, or a genuine logic bug triggering a duplicate call under specific conditions?</p>
@@ -1439,7 +1466,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-08">
     <summary><span class="iq-num">08</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q"><code>ArgumentCaptor</code> vs. argument matchers like <code>eq()</code> — when do you actually need the captor instead of just matching?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p><code>eq(expectedValue)</code> is simpler and sufficient whenever you already know the exact expected value up front and just want to confirm the mock was called with it. <code>ArgumentCaptor</code> earns its extra ceremony when you need to inspect <em>part</em> of a complex argument (one field of an object, not the whole thing), when the expected value isn't fully known until runtime (a generated ID, a timestamp), or when you want to run multiple different assertions against the captured value rather than one equality check.</p>
@@ -1449,7 +1476,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
 
   <div class="iq-group-label">TDD &amp; Test Design</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-09">
     <summary><span class="iq-num">09</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does writing the test first tend to produce classes with fewer, more focused constructor dependencies than writing the test after?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Writing the test first means you have to construct the class under test before it has any implementation to justify its dependencies — every dependency you add to the constructor is one more thing the test has to set up, felt immediately and directly. That immediate friction acts as continuous design pressure toward fewer, more essential dependencies.</p>
@@ -1457,7 +1484,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-10">
     <summary><span class="iq-num">10</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">"We practice TDD, so we don't need code review to focus on test quality — the tests were written first, so they must be good." What's wrong here?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>TDD governs <em>when</em> a test is written relative to the code, not whether it's actually a <em>good</em> test — one asserting the right thing, named clearly, independent of other tests, and covering meaningful edge cases rather than just the happy path. A test-first test can still be a weak test: over-mocked, testing implementation details instead of behavior, or missing the actual boundary case that matters.</p>
@@ -1465,7 +1492,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-11">
     <summary><span class="iq-num">11</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A refactor that changes only internal implementation (no observable behavior change) breaks 40 tests. What does this reveal about those tests?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>This is the signature of tests coupled to implementation details rather than observable behavior — likely over-specified mock interaction verifications (asserting <em>how</em> a result was computed, via exact call sequences to internal collaborators) rather than assertions on <em>what</em> the result actually is. A genuinely behavior-focused test suite should be able to survive an internal refactor untouched, precisely because "the public behavior didn't change" is the whole premise of a safe refactor.</p>
@@ -1473,7 +1500,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-12">
     <summary><span class="iq-num">12</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Test data builders vs. loading fixture data from JSON/YAML files — what are the real trade-offs?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Builders live in the same language as the test, get full IDE/compiler support (a renamed field is a compile error, not a silently-stale fixture file), and make it obvious in the test code itself which field is being deliberately overridden. Fixture files decouple large or numerous test datasets from code, are easier for a non-engineer to review or contribute to, and can represent bulk/realistic datasets more readably than a long chain of builder calls.</p>
@@ -1483,7 +1510,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
 
   <div class="iq-group-label">Spring Testing &amp; Testcontainers</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-13">
     <summary><span class="iq-num">13</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does a <code>@SpringBootTest</code> need <code>@MockBean</code> specifically, rather than just a plain Mockito <code>@Mock</code>?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>A plain <code>@Mock</code> only exists in the test class's own Mockito context — it's never registered with Spring's <code>ApplicationContext</code>, so nothing in the actual application graph would ever receive it via injection. <code>@MockBean</code> specifically tells Spring's test support to replace the real bean of that type <em>inside the loaded application context</em> with a Mockito mock, so every other bean that gets it injected — exactly as it would in production wiring — receives the mock instead of the real implementation.</p>
@@ -1491,7 +1518,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-14">
     <summary><span class="iq-num">14</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">"Testcontainers tests are integration tests, so a nightly CI run is frequent enough for them." Why is this risky?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>This confuses "slower than a unit test" with "doesn't need fast feedback." If integration tests only run nightly, a broken persistence-layer change can sit in main for up to 24 hours, with several more commits potentially built on top of it, before anyone finds out — turning a same-day, one-line fix into a much larger untangling job the next morning.</p>
@@ -1499,7 +1526,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-15">
     <summary><span class="iq-num">15</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A <code>@DataJpaTest</code> using Testcontainers passes reliably on every developer's machine but times out intermittently in CI. What infrastructure issue is most likely?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>The most common culprit is CI runner resource constraints combined with container startup being genuinely slow under load — pulling the container image (if not cached), starting Docker-in-Docker or a sibling container, and the database itself becoming ready all take real wall-clock time, and CI runners are often more resource-constrained and more variable in load than a developer's own machine.</p>
@@ -1507,7 +1534,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-16">
     <summary><span class="iq-num">16</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q"><code>@SpringBootTest</code> with a full mocked-web-environment vs. a real running instance hit via <code>WebTestClient</code> — when would you choose the latter?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>A mocked web environment (no real port bound) is faster and sufficient for most controller-through-context tests. A genuinely running instance, hit over real HTTP via <code>WebTestClient</code> or similar, matters when the behavior under test depends on something a mocked environment can't faithfully reproduce — real HTTP-level concerns like actual serialization over the wire, real connection/timeout behavior, or verifying an actual embedded server configuration (a custom filter, real TLS setup) rather than the application logic alone.</p>
@@ -1517,7 +1544,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
 
   <div class="iq-group-label">Cross-Topic Scenarios</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-17">
     <summary><span class="iq-num">17</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">You've inherited a legacy service with zero tests, and a critical bug needs fixing under real deadline pressure. What's your actual test strategy here?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Don't attempt to retrofit comprehensive coverage across the whole service under time pressure — that's a recipe for missing the deadline without actually fixing the bug either. Instead, apply TDD narrowly and surgically to just the bug: write one failing test that reproduces the exact reported issue (using whatever slice — unit if the logic is isolable, integration if it isn't), confirm it fails for the right reason, then fix the minimum code needed to make it pass.</p>
@@ -1525,7 +1552,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-18">
     <summary><span class="iq-num">18</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">A team wants to cut CI time in half. Where would you look first, and what would you refuse to cut?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Look first at the pyramid's shape: if end-to-end or heavy integration tests dominate wall-clock time relative to how much unique risk they actually cover, that's usually the biggest lever — parallelizing them, trimming redundant coverage already exercised by faster tests underneath, or moving genuinely slow ones to a less-frequent CI stage per the earlier staging discussion. Container reuse and image caching for Testcontainers-based tests is another common, low-risk win.</p>
@@ -1533,7 +1560,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-19">
     <summary><span class="iq-num">19</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A test checks that a promotion banner is hidden once "today" is past the promotion's end date. It passes for months, then fails for exactly one day right at the rollover. What's the actual design fix, not just a workaround?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>The underlying problem is that the production code — not just the test — calls <code>Instant.now()</code>/<code>LocalDate.now()</code>/<code>System.currentTimeMillis()</code> directly, which bakes "the current moment" into the method as an invisible, un-injectable dependency. The fix is to inject a <code>java.time.Clock</code> (via the constructor or a method parameter) and have the promotion logic read the time from that <code>Clock</code> instead of calling the static now-methods itself.</p>
@@ -1541,7 +1568,7 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-20">
     <summary><span class="iq-num">20</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why can't classic Mockito mock a <code>static</code> method or a <code>final</code> class out of the box, and what actually changes when you switch to <code>mockito-inline</code>?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Classic Mockito creates a mock by generating a subclass of the target class at runtime and overriding its methods to intercept calls — that mechanism fundamentally needs an instance to override a method on, and something subclassable to generate the mock from. A <code>static</code> method isn't called on any instance, so there's no method to override; a <code>final</code> class can't be subclassed at all, and a <code>final</code> method can't be overridden even on a class that otherwise permits it. Both are structural consequences of subclassing-based mocking, not arbitrary missing features.</p>
@@ -1615,6 +1642,8 @@ Order order2 = OrderTestBuilder.<span class="tk-fn">anOrder</span>().<span class
 <footer class="site-foot">Testing — Confidence That Survives Refactors. <a href="index.html#testing" style="color:var(--accent-ink);font-weight:600;">← Back to the trailhead</a></footer>
 
 </main>
+<script src="search-index.js"></script>
+<script src="site-search.js"></script>
 <script>
 (function(){
 "use strict";

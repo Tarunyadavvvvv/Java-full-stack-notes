@@ -379,6 +379,25 @@ noscript .reveal{opacity:1;}
   .navlink{font-size:.8rem;padding:.45rem .7rem;}
   .contents-btn{font-size:.8rem;padding:.45rem .8rem;}
 }
+/* ---- site search ---- */
+.site-search{position:relative;flex:1;max-width:420px;margin:0 1.2rem;}
+.site-search__box{display:flex;align-items:center;gap:.5rem;background:var(--surface-2);border-radius:var(--r-pill);padding:.5rem .9rem;transition:background var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);}
+.site-search__box:focus-within{background:var(--surface);box-shadow:0 0 0 2px var(--accent);}
+.site-search__icon{flex:none;width:15px;height:15px;color:var(--muted);}
+.site-search__input{flex:1;min-width:0;border:none;background:none;outline:none;font-family:var(--font-body);font-size:.87rem;color:var(--ink);}
+.site-search__input::placeholder{color:var(--muted);}
+.site-search__kbd{flex:none;font-family:var(--font-mono);font-size:.68rem;color:var(--muted);background:var(--surface);border-radius:5px;padding:.1rem .4rem;box-shadow:var(--shadow-sm);}
+.site-search__results{position:absolute;top:calc(100% + 8px);left:0;right:0;max-height:min(70vh,480px);overflow-y:auto;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:.5rem;display:none;z-index:50;}
+.site-search.is-open .site-search__results{display:block;}
+.site-search__empty{padding:1rem;font-size:.85rem;color:var(--muted);text-align:center;}
+.site-search__item{display:block;padding:.65rem .8rem;border-radius:10px;text-decoration:none;color:inherit;cursor:pointer;}
+.site-search__item:hover,.site-search__item.is-active{background:var(--tint);}
+.site-search__item-title{font-weight:700;font-size:.88rem;display:block;}
+.site-search__item-meta{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:.4rem;margin-top:.2rem;}
+.site-search__item-type{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;background:var(--surface-2);padding:.1rem .4rem;border-radius:999px;}
+.site-search mark{background:var(--tint-strong);color:inherit;border-radius:3px;padding:0 .1em;}
+@media (max-width:820px){.site-search{order:3;flex-basis:100%;max-width:none;margin:.6rem 0 0;}}
+[id]{scroll-margin-top:90px;}
 </style>
 <body>
 <noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript>
@@ -386,6 +405,14 @@ noscript .reveal{opacity:1;}
 <header class="topnav">
   <div class="topnav__inner">
     <a class="wordmark" href="index.html#design-patterns"><span class="wordmark__mark">D</span>Design Patterns</a>
+    <div class="site-search" id="siteSearch">
+      <div class="site-search__box">
+        <svg class="site-search__icon" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" class="site-search__input" id="siteSearchInput" placeholder="Search any topic or question…" autocomplete="off" aria-label="Search notes" aria-expanded="false" aria-controls="siteSearchResults">
+        <span class="site-search__kbd">/</span>
+      </div>
+      <div class="site-search__results" id="siteSearchResults"></div>
+    </div>
     <nav class="navlinks">
       <a class="navlink" href="index.html#design-patterns">← All topics</a>
       <div class="contents" id="contents">
@@ -456,7 +483,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">What a pattern actually is</h3>
+  <h3 class="sub reveal" id="what-a-pattern-actually-is">What a pattern actually is</h3>
   <p class="reveal">In 1994, the "Gang of Four" (Gamma, Helm, Johnson, Vlissides) cataloged 23 recurring object-oriented design solutions in <em>Design Patterns: Elements of Reusable Software</em>. Each pattern names a problem, the forces that make it tricky, and a proven shape of solution — not code you copy-paste, but a structure you adapt to your specific classes.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -476,7 +503,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Patterns are applied SOLID, not a separate topic</h3>
+  <h3 class="sub reveal" id="patterns-are-applied-solid-not-a-separate-topic">Patterns are applied SOLID, not a separate topic</h3>
   <p class="reveal">Nearly every pattern in this module is really SOLID principles given a concrete shape. Strategy is Open/Closed applied to algorithms. Dependency Inversion, taken to its logical conclusion, <em>is</em> most of what makes Spring's IoC container useful. Understanding SOLID first makes every pattern's "why" almost derivable rather than memorized.</p>
 
   <details class="accordion reveal">
@@ -486,7 +513,7 @@ noscript .reveal{opacity:1;}
     </div>
   </details>
 
-  <h3 class="sub reveal">The overuse problem</h3>
+  <h3 class="sub reveal" id="the-overuse-problem">The overuse problem</h3>
   <p class="reveal">Design patterns became a popular interview and resume topic in the 2000s, which created a real, well-documented failure mode: engineers reaching for a named pattern because they know it, not because the problem actually calls for it. A Factory for a class with one implementation and no foreseeable second one is ceremony, not design — it adds indirection that has to be read through for zero present benefit.</p>
   <div class="callout callout--mistake reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div>
@@ -546,7 +573,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Factory Method: let subclasses decide what to build</h3>
+  <h3 class="sub reveal" id="factory-method-let-subclasses-decide-what-to-build">Factory Method: let subclasses decide what to build</h3>
   <p class="reveal">Define an interface for creating an object, but let implementing classes decide which concrete class to instantiate. The calling code depends only on the abstraction, never a concrete type.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">NotificationFactory.java</span></div>
@@ -569,7 +596,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Abstract Factory: families of related objects</h3>
+  <h3 class="sub reveal" id="abstract-factory-families-of-related-objects">Abstract Factory: families of related objects</h3>
   <p class="reveal">Where Factory Method produces <em>one</em> kind of object, Abstract Factory produces a <strong>family</strong> of related objects that need to stay consistent with each other — a UI toolkit's button, checkbox, and menu all needing to match the same visual theme, for instance.</p>
   <pre class="reveal"><code><span class="tk-kw">public interface</span> <span class="tk-typ">CloudResourceFactory</span> {
     Storage <span class="tk-fn">createStorage</span>();
@@ -594,7 +621,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Builder: taming complex construction</h3>
+  <h3 class="sub reveal" id="builder-taming-complex-construction">Builder: taming complex construction</h3>
   <p class="reveal">When a constructor needs many parameters — especially many <em>optional</em> ones — callers either have to provide every parameter in a fixed, unreadable order, or you end up hand-writing a "telescoping" pile of overloaded constructors for every combination. Builder replaces both with a fluent, readable, step-by-step construction API.</p>
   <pre class="reveal"><code><span class="tk-com">// The problem Builder solves — which boolean is which, at the call site?</span>
 <span class="tk-kw">new</span> <span class="tk-typ">Pizza</span>(<span class="tk-str">12</span>, <span class="tk-kw">true</span>, <span class="tk-kw">false</span>, <span class="tk-kw">true</span>, <span class="tk-kw">null</span>, <span class="tk-kw">false</span>);
@@ -676,7 +703,7 @@ Pizza pizza = Pizza.<span class="tk-fn">builder</span>()
     </div>
   </div>
 
-  <h3 class="sub reveal">Singleton: exactly one instance, guaranteed</h3>
+  <h3 class="sub reveal" id="singleton-exactly-one-instance-guaranteed">Singleton: exactly one instance, guaranteed</h3>
   <p class="reveal">Singleton ensures a class has exactly one instance, globally accessible. Spring beans are singleton-scoped by default (see the Spring Boot module's Bean Lifecycle chapter) — which is worth noting, because it means most Java engineers use the Singleton <em>pattern's effect</em> constantly via Spring, without ever hand-writing the classic implementation below.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">ConfigRegistry.java</span></div>
@@ -695,7 +722,7 @@ Pizza pizza = Pizza.<span class="tk-fn">builder</span>()
     </div>
   </div>
 
-  <h3 class="sub reveal">How a hand-rolled Singleton gets broken</h3>
+  <h3 class="sub reveal" id="how-a-hand-rolled-singleton-gets-broken">How a hand-rolled Singleton gets broken</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Attack</th><th>How</th><th>Enum's immunity</th></tr></thead>
@@ -721,7 +748,7 @@ Pizza pizza = Pizza.<span class="tk-fn">builder</span>()
     </div>
   </div>
 
-  <h3 class="sub reveal">Prototype: cloning instead of building</h3>
+  <h3 class="sub reveal" id="prototype-cloning-instead-of-building">Prototype: cloning instead of building</h3>
   <p class="reveal">When creating a new object from scratch is expensive — a complex object graph, an object loaded from a slow source — Prototype creates new instances by <strong>copying</strong> an existing, pre-configured instance instead.</p>
   <pre class="reveal"><code><span class="tk-kw">public class</span> <span class="tk-typ">EnemyTemplate</span> <span class="tk-kw">implements</span> Cloneable {
     <span class="tk-kw">private</span> String type;
@@ -783,7 +810,7 @@ Pizza pizza = Pizza.<span class="tk-fn">builder</span>()
     </div>
   </div>
 
-  <h3 class="sub reveal">Adapter: making incompatible interfaces fit</h3>
+  <h3 class="sub reveal" id="adapter-making-incompatible-interfaces-fit">Adapter: making incompatible interfaces fit</h3>
   <p class="reveal">Converts one interface into another that calling code expects, without modifying either side. The textbook use case: integrating a third-party library or legacy class whose interface you can't (or shouldn't) change.</p>
   <pre class="reveal"><code><span class="tk-com">// Your code expects this interface:</span>
 <span class="tk-kw">public interface</span> <span class="tk-typ">PaymentProcessor</span> { Receipt <span class="tk-fn">charge</span>(BigDecimal amount); }
@@ -806,7 +833,7 @@ Pizza pizza = Pizza.<span class="tk-fn">builder</span>()
     </div>
   </div>
 
-  <h3 class="sub reveal">Decorator: adding behavior without inheritance</h3>
+  <h3 class="sub reveal" id="decorator-adding-behavior-without-inheritance">Decorator: adding behavior without inheritance</h3>
   <p class="reveal">Wraps an object to add responsibilities dynamically, without subclassing — and critically, decorators can be <strong>stacked</strong>, combining behaviors in whatever combination is needed at runtime, which a fixed inheritance hierarchy can't do without a combinatorial explosion of subclasses.</p>
   <pre class="reveal"><code><span class="tk-com">// java.io is built entirely from this pattern:</span>
 InputStream in = <span class="tk-kw">new</span> <span class="tk-typ">BufferedInputStream</span>(
@@ -837,7 +864,7 @@ InputStream in = <span class="tk-kw">new</span> <span class="tk-typ">BufferedInp
     </div>
   </div>
 
-  <h3 class="sub reveal">Facade: a simple front door for a complex subsystem</h3>
+  <h3 class="sub reveal" id="facade-a-simple-front-door-for-a-complex-subsystem">Facade: a simple front door for a complex subsystem</h3>
   <p class="reveal">Provides a single, simplified interface to a larger, more complex set of classes — hiding the subsystem's internal complexity from callers who don't need to know about it.</p>
   <pre class="reveal"><code><span class="tk-kw">public class</span> <span class="tk-typ">OrderFacade</span> {
     <span class="tk-kw">public</span> Receipt <span class="tk-fn">placeOrder</span>(Cart cart) {
@@ -898,7 +925,7 @@ InputStream in = <span class="tk-kw">new</span> <span class="tk-typ">BufferedInp
     </div>
   </div>
 
-  <h3 class="sub reveal">Composite: trees you can treat uniformly</h3>
+  <h3 class="sub reveal" id="composite-trees-you-can-treat-uniformly">Composite: trees you can treat uniformly</h3>
   <p class="reveal">Composes objects into tree structures, then lets calling code treat a single leaf object and a whole branch of the tree through the <em>same interface</em> — a file and a folder both respond to <code>getSize()</code>, and a folder's implementation just sums its children's, recursively.</p>
   <pre class="reveal"><code><span class="tk-kw">public interface</span> <span class="tk-typ">FileSystemNode</span> { <span class="tk-kw">long</span> <span class="tk-fn">getSize</span>(); }
 
@@ -935,7 +962,7 @@ InputStream in = <span class="tk-kw">new</span> <span class="tk-typ">BufferedInp
     </div>
   </div>
 
-  <h3 class="sub reveal">Proxy: standing in for the real thing</h3>
+  <h3 class="sub reveal" id="proxy-standing-in-for-the-real-thing">Proxy: standing in for the real thing</h3>
   <p class="reveal">Provides a stand-in object that controls access to another object — the real one might be expensive to create, remote, or need access control before being reachable at all.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -974,7 +1001,7 @@ InputStream in = <span class="tk-kw">new</span> <span class="tk-typ">BufferedInp
     </div>
   </div>
 
-  <h3 class="sub reveal">Flyweight: sharing to save memory</h3>
+  <h3 class="sub reveal" id="flyweight-sharing-to-save-memory">Flyweight: sharing to save memory</h3>
   <p class="reveal">When an application needs to represent a huge number of similar objects, Flyweight splits each object's state into <strong>intrinsic</strong> (shared, immutable, identical across many instances) and <strong>extrinsic</strong> (unique per instance, supplied by the caller) — and shares one instance of the intrinsic part across every object that needs it.</p>
   <pre class="reveal"><code><span class="tk-kw">public class</span> <span class="tk-typ">GlyphFactory</span> {
     <span class="tk-kw">private static final</span> Map&lt;String, Glyph&gt; CACHE = <span class="tk-kw">new</span> <span class="tk-typ">ConcurrentHashMap</span>&lt;&gt;();
@@ -997,7 +1024,7 @@ Glyph a2 = GlyphFactory.<span class="tk-fn">get</span>(<span class="tk-str">'a'<
     </div>
   </div>
 
-  <h3 class="sub reveal">Bridge: decoupling abstraction from implementation</h3>
+  <h3 class="sub reveal" id="bridge-decoupling-abstraction-from-implementation">Bridge: decoupling abstraction from implementation</h3>
   <p class="reveal">Splits a class hierarchy into two independent hierarchies — an abstraction and an implementation — connected by composition instead of inheritance, so either side can vary and evolve without touching the other.</p>
   <pre class="reveal"><code><span class="tk-com">// Without Bridge: RemoteControl x TV-brand would need a class per COMBINATION (explosion).</span>
 <span class="tk-kw">public abstract class</span> <span class="tk-typ">RemoteControl</span> {
@@ -1064,7 +1091,7 @@ Glyph a2 = GlyphFactory.<span class="tk-fn">get</span>(<span class="tk-str">'a'<
     </div>
   </div>
 
-  <h3 class="sub reveal">Observer: one-to-many notification</h3>
+  <h3 class="sub reveal" id="observer-one-to-many-notification">Observer: one-to-many notification</h3>
   <p class="reveal">Defines a one-to-many dependency so that when one object (the subject) changes state, all its registered observers are notified automatically — without the subject needing to know anything concrete about who's listening.</p>
   <pre class="reveal"><code><span class="tk-com">// Spring's ApplicationEventPublisher is Observer, built into the framework:</span>
 events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <span class="tk-typ">OrderPlacedEvent</span>(orderId));  <span class="tk-com">// the "subject" publishes, knowing nothing about listeners</span>
@@ -1105,7 +1132,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </div>
 
-  <h3 class="sub reveal">Mediator: a hub instead of a mesh</h3>
+  <h3 class="sub reveal" id="mediator-a-hub-instead-of-a-mesh">Mediator: a hub instead of a mesh</h3>
   <p class="reveal">When many objects need to communicate with each other, direct references between all of them create an unmaintainable many-to-many mesh. Mediator introduces one object that all the others talk <em>through</em>, turning the mesh into a hub-and-spoke.</p>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
@@ -1141,7 +1168,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </div>
 
-  <h3 class="sub reveal">Chain of Responsibility: pass it along until someone handles it</h3>
+  <h3 class="sub reveal" id="chain-of-responsibility-pass-it-along-until-someone-handles">Chain of Responsibility: pass it along until someone handles it</h3>
   <p class="reveal">Passes a request along a chain of potential handlers until one of them handles it (or the chain ends). Each handler only needs to know about the next link in the chain — not the full set of handlers or which one will ultimately act.</p>
   <pre class="reveal"><code><span class="tk-kw">public abstract class</span> <span class="tk-typ">Handler</span> {
     <span class="tk-kw">protected</span> Handler next;
@@ -1212,7 +1239,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </div>
 
-  <h3 class="sub reveal">Strategy: swap the algorithm, not the caller</h3>
+  <h3 class="sub reveal" id="strategy-swap-the-algorithm-not-the-caller">Strategy: swap the algorithm, not the caller</h3>
   <p class="reveal">Defines a family of interchangeable algorithms behind a common interface, letting the algorithm vary independently of the code that uses it — the direct antidote to a growing <code>if/else</code> or <code>switch</code> ladder choosing behavior by type.</p>
   <pre class="reveal"><code><span class="tk-kw">public interface</span> <span class="tk-typ">DiscountStrategy</span> { BigDecimal <span class="tk-fn">apply</span>(BigDecimal total); }
 
@@ -1233,7 +1260,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
   </div>
   <p class="reveal">The JDK ships a Strategy interface you've almost certainly already used: <code>java.util.Comparator</code>. <code>Collections.sort(list, comparator)</code> and the newer <code>list.sort(comparator)</code> both take the actual comparison logic as a swappable strategy object — <code>Comparator.comparing(Person::getAge)</code> and <code>Comparator.comparing(Person::getName)</code> are two interchangeable strategies plugged into the exact same sort call, with zero change to the sorting code itself.</p>
 
-  <h3 class="sub reveal">Template Method: fix the skeleton, vary the steps</h3>
+  <h3 class="sub reveal" id="template-method-fix-the-skeleton-vary-the-steps">Template Method: fix the skeleton, vary the steps</h3>
   <p class="reveal">Defines the overall skeleton of an algorithm in a base class, deferring specific steps to subclasses — the structure is fixed and shared; only named, individual steps vary.</p>
   <pre class="reveal"><code><span class="tk-kw">public abstract class</span> <span class="tk-typ">DataImportJob</span> {
     <span class="tk-kw">public final void</span> <span class="tk-fn">run</span>() {                 <span class="tk-com">// the fixed skeleton — "final" is deliberate</span>
@@ -1252,7 +1279,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </div>
 
-  <h3 class="sub reveal">State: behavior that changes with the object's own state</h3>
+  <h3 class="sub reveal" id="state-behavior-that-changes-with-the-object-s-own-state">State: behavior that changes with the object's own state</h3>
   <p class="reveal">Lets an object alter its behavior when its internal state changes, by delegating to a separate object representing the current state — replacing a large conditional checking "what state am I in" scattered throughout the class.</p>
   <pre class="reveal"><code><span class="tk-kw">public interface</span> <span class="tk-typ">OrderState</span> {
     OrderState <span class="tk-fn">ship</span>();     <span class="tk-com">// returns the NEXT state — the transition itself is explicit</span>
@@ -1286,7 +1313,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </div>
 
-  <h3 class="sub reveal">Command: turning a request into an object</h3>
+  <h3 class="sub reveal" id="command-turning-a-request-into-an-object">Command: turning a request into an object</h3>
   <p class="reveal">Encapsulates a request as a standalone object, letting you parameterize callers with different requests, queue them, log them, or support undo — none of which is possible when "the request" is just a direct method call with no independent existence.</p>
   <pre class="reveal"><code><span class="tk-kw">public interface</span> <span class="tk-typ">Command</span> { <span class="tk-kw">void</span> <span class="tk-fn">execute</span>(); <span class="tk-kw">void</span> <span class="tk-fn">undo</span>(); }
 
@@ -1348,7 +1375,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </div>
 
-  <h3 class="sub reveal">Iterator: traversal without exposing internals</h3>
+  <h3 class="sub reveal" id="iterator-traversal-without-exposing-internals">Iterator: traversal without exposing internals</h3>
   <p class="reveal">Provides a way to access a collection's elements sequentially without exposing whether it's backed by an array, a linked list, or a tree. Java's <code>for (var item : collection)</code> is Iterator, used so constantly it's easy to forget it's a named pattern at all.</p>
   <pre class="reveal"><code><span class="tk-kw">public class</span> <span class="tk-typ">RingBuffer</span>&lt;T&gt; <span class="tk-kw">implements</span> Iterable&lt;T&gt; {
     <span class="tk-kw">private final</span> List&lt;T&gt; items = <span class="tk-kw">new</span> <span class="tk-typ">ArrayList</span>&lt;&gt;();
@@ -1382,7 +1409,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </div>
 
-  <h3 class="sub reveal">Visitor: adding operations without editing the hierarchy</h3>
+  <h3 class="sub reveal" id="visitor-adding-operations-without-editing-the-hierarchy">Visitor: adding operations without editing the hierarchy</h3>
   <p class="reveal">Lets you define a new operation over a class hierarchy without modifying the classes themselves — each class accepts a "visitor" object, which implements the new behavior for every type in the hierarchy.</p>
   <pre class="reveal"><code><span class="tk-kw">public interface</span> <span class="tk-typ">ShapeVisitor</span> { <span class="tk-kw">void</span> <span class="tk-fn">visit</span>(Circle c); <span class="tk-kw">void</span> <span class="tk-fn">visit</span>(Square s); }
 <span class="tk-kw">public interface</span> <span class="tk-typ">Shape</span> { <span class="tk-kw">void</span> <span class="tk-fn">accept</span>(ShapeVisitor v); }
@@ -1408,7 +1435,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
   </div>
   <p class="reveal">The JDK's own <code>java.nio.file.FileVisitor</code> is this exact pattern applied to filesystem traversal: <code>Files.walkFileTree(start, visitor)</code> walks a directory tree and calls your visitor's <code>preVisitDirectory()</code>, <code>visitFile()</code>, <code>postVisitDirectory()</code>, and <code>visitFileFailed()</code> at each node. The traversal logic lives entirely inside <code>Files</code>; a new operation over the tree — counting files, computing total size, deleting recursively — is just a new <code>FileVisitor</code> implementation, with no change to how the tree itself gets walked.</p>
 
-  <h3 class="sub reveal">Memento: capturing and restoring state, without breaking encapsulation</h3>
+  <h3 class="sub reveal" id="memento-capturing-and-restoring-state-without-breaking">Memento: capturing and restoring state, without breaking encapsulation</h3>
   <p class="reveal">Captures an object's internal state so it can be restored later — the classic "undo" mechanism — without exposing that internal state to the object doing the saving/restoring.</p>
   <pre class="reveal"><code><span class="tk-kw">public class</span> <span class="tk-typ">Editor</span> {
     <span class="tk-kw">private</span> String content;
@@ -1468,10 +1495,10 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </div>
 
-  <h3 class="sub reveal">Dependency Injection: patterns working together</h3>
+  <h3 class="sub reveal" id="dependency-injection-patterns-working-together">Dependency Injection: patterns working together</h3>
   <p class="reveal">The Spring Boot module covers DI in full depth as a framework mechanic. Worth naming explicitly here: DI is really Strategy and Factory combined at the framework level — the container acts as a factory for every bean, and constructor injection is what lets each class receive a swappable strategy (any implementation of an interface) without hardcoding which concrete class it gets.</p>
 
-  <h3 class="sub reveal">Repository: an abstraction over "where the data lives"</h3>
+  <h3 class="sub reveal" id="repository-an-abstraction-over-where-the-data-lives">Repository: an abstraction over "where the data lives"</h3>
   <p class="reveal">Mediates between the domain and data mapping layers, presenting a collection-like interface for accessing domain objects — the caller works with something that feels like an in-memory collection, while the repository hides whether that means a SQL query, a document store lookup, or an in-memory cache underneath.</p>
   <pre class="reveal"><code><span class="tk-kw">public interface</span> <span class="tk-typ">OrderRepository</span> <span class="tk-kw">extends</span> <span class="tk-typ">JpaRepository</span>&lt;Order, Long&gt; {
     List&lt;Order&gt; <span class="tk-fn">findByStatus</span>(String status);
@@ -1486,7 +1513,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </div>
 
-  <h3 class="sub reveal">Null Object: a do-nothing implementation instead of null checks</h3>
+  <h3 class="sub reveal" id="null-object-a-do-nothing-implementation-instead-of-null">Null Object: a do-nothing implementation instead of null checks</h3>
   <p class="reveal">Provides a real, valid object that implements "do nothing" or "return a neutral default," used in place of a <code>null</code> reference — eliminating scattered <code>if (x != null)</code> checks throughout a codebase.</p>
   <pre class="reveal"><code><span class="tk-kw">public interface</span> <span class="tk-typ">Logger</span> { <span class="tk-kw">void</span> <span class="tk-fn">log</span>(String message); }
 <span class="tk-kw">public class</span> <span class="tk-typ">NoOpLogger</span> <span class="tk-kw">implements</span> Logger {
@@ -1501,7 +1528,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </div>
 
-  <h3 class="sub reveal">Patterns you've already met, seen again from this angle</h3>
+  <h3 class="sub reveal" id="patterns-you-ve-already-met-seen-again-from-this-angle">Patterns you've already met, seen again from this angle</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Pattern</th><th>Where you already saw it</th></tr></thead>
@@ -1557,7 +1584,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </div>
 
-  <h3 class="sub reveal">God Object / God Class</h3>
+  <h3 class="sub reveal" id="god-object-god-class">God Object / God Class</h3>
   <p class="reveal">A single class that has grown to know or do far too much — often a "Manager," "Utils," or "Service" class that started small and became a dumping ground for anything that didn't have an obvious home. It violates Single Responsibility so thoroughly that almost every change to the system ends up touching it, and it becomes nearly impossible to test in isolation.</p>
   <div class="callout callout--tip reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2.5l2.1 5.9 5.9 2.1-5.9 2.1L12 18.5l-2.1-5.9-5.9-2.1 5.9-2.1L12 2.5z" fill="currentColor"/></svg></div>
@@ -1567,7 +1594,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </div>
 
-  <h3 class="sub reveal">Anemic Domain Model</h3>
+  <h3 class="sub reveal" id="anemic-domain-model">Anemic Domain Model</h3>
   <p class="reveal">Domain objects (entities) that are pure data holders — getters and setters, no behavior — while all actual business logic lives in separate "Service" classes that operate <em>on</em> them. This is extremely common in real Spring codebases, and is genuinely controversial: some consider it a pragmatic, acceptable trade-off; Martin Fowler and other OOP purists consider it a real anti-pattern because it abandons encapsulation — the data and the logic that should protect its invariants are separated, so nothing stops any service anywhere from mutating an entity into an invalid state.</p>
   <div class="callout callout--warn reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a1 1 0 0 0 .86 1.5h18.64a1 1 0 0 0 .86-1.5L13.71 3.86a1 1 0 0 0-1.72 0Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
@@ -1577,10 +1604,10 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </div>
 
-  <h3 class="sub reveal">Golden Hammer: one pattern for every problem</h3>
+  <h3 class="sub reveal" id="golden-hammer-one-pattern-for-every-problem">Golden Hammer: one pattern for every problem</h3>
   <p class="reveal">"If all you have is a hammer, everything looks like a nail" — applied to design patterns, this is reaching for the one pattern you know best (often Singleton, or whatever was just learned) regardless of whether the actual problem calls for it. Singleton specifically is one of the most commonly over-applied patterns in exactly this way, reached for as a convenient global variable rather than because the problem genuinely requires exactly-one-instance semantics.</p>
 
-  <h3 class="sub reveal">Recognizing over-engineering in your own code</h3>
+  <h3 class="sub reveal" id="recognizing-over-engineering-in-your-own-code">Recognizing over-engineering in your own code</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Warning sign</th><th>What it usually means</th></tr></thead>
@@ -1637,7 +1664,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
 
   <div class="iq-group-label">Creational Patterns</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-01">
     <summary><span class="iq-num">01</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does the enum Singleton resist reflection, serialization, <em>and</em> cloning attacks simultaneously, rather than needing a separate defense for each?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>All three attacks share a common root: each one is a way to obtain a <em>second</em> instance of a class whose constructor "shouldn't" be callable again. The JVM treats enum types specially at a fundamental level — enum constants are instantiated exactly once during class initialization, reflection is explicitly blocked from invoking an enum constructor, cloning is disabled outright for all enums, and serialization is special-cased to resolve back to the existing constant rather than deserializing a new object.</p>
@@ -1645,7 +1672,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-02">
     <summary><span class="iq-num">02</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">"We used Builder because our class has 15 fields." Is field count alone sufficient justification?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Field count alone is a reasonable heuristic but not the actual justification — what matters is how many of those 15 fields are <em>optional</em>, and whether the class needs to be constructed in more than one meaningful combination of them. Fifteen fields that are all required, always set together, in one consistent way, are arguably just as clearly expressed by one large constructor (or, more idiomatically in modern Java, a record) as by a builder.</p>
@@ -1653,7 +1680,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-03">
     <summary><span class="iq-num">03</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A factory method's output is subtly wrong only under production load, never in local testing. Could a hand-rolled Singleton be involved? Walk through how you'd check.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Yes — this is a classic symptom of a non-thread-safe lazy Singleton being accessed concurrently. A naive "check null, then create" implementation with no synchronization can let two threads both see a null instance simultaneously under real concurrent load (which local single-request testing rarely reproduces) and each create their own instance, breaking the "exactly one" guarantee silently.</p>
@@ -1661,7 +1688,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-04">
     <summary><span class="iq-num">04</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">When does Prototype (copying an existing object) actually beat Factory Method (building a new one) in practice?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>When construction from scratch is genuinely expensive relative to copying — an object built from a slow external call, a database load, or heavy computation, where a pre-configured template already holding the expensive-to-obtain parts just needs its cheap, per-instance fields varied. Factory Method wins when construction is cheap and the real variability is <em>which type</em> to build, not how to obtain one instance's data efficiently.</p>
@@ -1671,7 +1698,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
 
   <div class="iq-group-label">Structural Patterns</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-05">
     <summary><span class="iq-num">05</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">You need to add gzip compression and/or encryption to a file-writing class, in any combination a caller wants. Which pattern, and why not just subclass for each combination?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Decorator — wrap the base writer in a <code>CompressingWriter</code> and/or an <code>EncryptingWriter</code>, each implementing the same writer interface and delegating to what they wrap. Any combination (neither, either, or both, in either order) is just a different stacking of the same two decorator classes.</p>
@@ -1679,7 +1706,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-06">
     <summary><span class="iq-num">06</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">"Our ProductServiceFacade has grown real business logic over the last year — that's fine, Facades naturally evolve." Is this actually fine?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>No — this is the Facade-to-God-Object drift named explicitly in this module, not a healthy, expected evolution. A Facade's defining job is coordination — delegating to real subsystem classes. Business logic accumulating in it means responsibilities that belong in the domain layer are instead concentrated in what's supposed to be a thin entry point, making the Facade progressively harder to test, reason about, and safely modify.</p>
@@ -1687,7 +1714,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-07">
     <summary><span class="iq-num">07</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why can a Proxy's added indirection be completely invisible to the code that calls it?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Because a well-implemented Proxy exposes exactly the same interface as the real object — the caller has a reference typed to the interface (or, via CGLIB, to what looks like the concrete class), and simply calls methods on it normally. Nothing in the call syntax reveals whether it's hitting the real object directly or being intercepted first.</p>
@@ -1695,7 +1722,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-08">
     <summary><span class="iq-num">08</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">You have thousands of similar objects, but memory isn't actually a constraint on your system. Is Flyweight still worth implementing?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Generally no — Flyweight's entire justification is memory savings at scale, achieved at a real cost (the intrinsic/extrinsic split adds real design complexity, and shared mutable state introduces its own risks if the "immutable" intrinsic assumption is ever violated). If memory genuinely isn't the constraint, that cost is being paid for a benefit that doesn't matter in this context.</p>
@@ -1705,7 +1732,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
 
   <div class="iq-group-label">Behavioral Patterns</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-09">
     <summary><span class="iq-num">09</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Design a document-approval workflow where different roles can take different actions depending on the document's current stage. Which patterns from this module compose here?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p><strong>State</strong> is the backbone — each stage (Draft, InReview, Approved, Rejected) is its own state object defining exactly which transitions/actions are valid from there, replacing a sprawling conditional checking the current stage everywhere. <strong>Command</strong> layers on top for the actual actions (Approve, Reject, RequestChanges) as objects, letting them be queued, logged, and potentially undone.</p>
@@ -1713,7 +1740,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-10">
     <summary><span class="iq-num">10</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">"Observer and Mediator solve the same problem — decoupling communication between objects." Are they actually interchangeable?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>They decouple communication, but along different shapes. Observer is one-directional and one-to-many: one subject broadcasts to any number of listeners, who don't coordinate with each other or with the subject beyond receiving the notification. Mediator is about coordinating <em>bidirectional, interdependent</em> relationships among a fixed, known set of components (a mediator often needs to know quite a lot about its components to coordinate them correctly).</p>
@@ -1721,7 +1748,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-11">
     <summary><span class="iq-num">11</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does Visitor need "double dispatch" instead of just relying on ordinary method overriding?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Java resolves overloaded methods based on the <em>declared/static</em> type of the arguments at compile time, not the runtime type — so if a visitor were called directly as <code>visitor.visit(shape)</code> where <code>shape</code> is declared as the base <code>Shape</code> type, the compiler would always pick the <code>visit(Shape)</code> overload, never <code>visit(Circle)</code> or <code>visit(Square)</code>, regardless of the object's actual runtime type.</p>
@@ -1729,7 +1756,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-12">
     <summary><span class="iq-num">12</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">For a simple 3-state order lifecycle (Pending → Shipped → Delivered), is the full State pattern worth it over a plain enum with a switch statement?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>For exactly 3 states with simple, linear, rarely-changing transitions, a plain enum plus a switch (or, in modern Java, a switch expression with exhaustiveness checking) is often perfectly readable and considerably less ceremony than a full set of State classes. The full pattern's value grows with the number of states, the complexity of per-state behavior beyond just "what's the next state," and how often new states or transitions get added.</p>
@@ -1739,7 +1766,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
 
   <div class="iq-group-label">Modern Practice &amp; Anti-Patterns</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-13">
     <summary><span class="iq-num">13</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Code review turns up a class named <code>Utils</code> with 40 unrelated static methods, imported almost everywhere in the codebase. Name the anti-pattern and describe a realistic fix path.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>This is a God Class (specifically the common "Utils dumping ground" flavor) — a class with no real cohesion, accumulated because it was always the path of least resistance for "this doesn't obviously belong anywhere else." Being imported almost everywhere means it's also become a hidden coupling point: touching it risks affecting unrelated parts of the codebase.</p>
@@ -1747,7 +1774,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-14">
     <summary><span class="iq-num">14</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">"Our domain model is anemic, so we're definitely doing OOP wrong." Is this framing accurate?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Not necessarily — this module frames Anemic Domain Model as a real, debatable trade-off, not an automatic mistake. It genuinely costs encapsulation (nothing stops a service from mutating an entity into an inconsistent state), but it genuinely buys simplicity and friction-free compatibility with JPA, Jackson serialization, and the layered-architecture style most Spring codebases already use.</p>
@@ -1755,7 +1782,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-15">
     <summary><span class="iq-num">15</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Spring Data JPA generates repository implementations automatically. Does this mean the Repository pattern itself has become obsolete?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>No — Spring Data JPA automates the <em>implementation</em>, not the design intent. The pattern's actual point is that calling code (a service) depends on a collection-like abstraction and remains genuinely unaware of the underlying storage mechanism — that decoupling is exactly as real whether the implementation is hand-written or generated from an interface's method names.</p>
@@ -1763,7 +1790,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-16">
     <summary><span class="iq-num">16</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">You recognize a God Class in a legacy service, but a major client integration deadline is in two days. Do you refactor it now?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Generally, no — not as an unplanned addition to an already-tight deadline. A large structural refactor introduces real regression risk precisely when there's the least slack to absorb and fix problems it might cause. Recognizing the anti-pattern doesn't obligate immediate action; it obligates a deliberate decision about timing.</p>
@@ -1773,7 +1800,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
 
   <div class="iq-group-label">Cross-Topic Scenarios</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-17">
     <summary><span class="iq-num">17</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Design a notification system supporting email, SMS, and push, pluggable per user preference at runtime, with retry and delivery-confirmation logging. Which patterns compose here, and how?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p><strong>Strategy</strong> is the core: a <code>NotificationChannel</code> interface with <code>EmailChannel</code>/<code>SmsChannel</code>/<code>PushChannel</code> implementations, selected per user preference at send time — adding a new channel later means adding one class, touching nothing else. <strong>Decorator</strong> can wrap any channel with retry behavior (a <code>RetryingChannel</code> wrapping the real one), composable independently of which channel it wraps.</p>
@@ -1781,7 +1808,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-18">
     <summary><span class="iq-num">18</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">A PR introduces Strategy, Factory, and Observer together for what looks like a fairly simple feature. How do you evaluate whether this is good design or over-engineering, as a reviewer?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Ask, for each pattern individually, the same question this module keeps returning to: is there a real, current instance of the variation this pattern is designed for? Does the Strategy actually have (or clearly, imminently need) a second implementation? Does the Observer have real, independent listeners today, or is there exactly one, hardcoded, making the indirection pure overhead? A Factory producing exactly one concrete type is the clearest possible overuse tell.</p>
@@ -1789,7 +1816,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-19">
     <summary><span class="iq-num">19</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A junior engineer asks: "Why do we even need to learn design patterns — doesn't Spring already do everything for us?" How do you answer?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Spring doesn't remove the need for patterns — it implements the most common recurring ones so well you often use them without hand-writing their structure, which is exactly the opposite of "not needed." Recognizing that <code>@Transactional</code> is Proxy, that <code>ApplicationEventPublisher</code> is Observer, and that <code>JdbcTemplate</code> is Template Method is what turns "mysterious Spring magic" into "a specific, well-understood mechanism I can reason about" — including debugging exactly why self-invocation silently breaks an advised method.</p>
@@ -1797,7 +1824,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-20">
     <summary><span class="iq-num">20</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Strategy, State, and Template Method all look structurally similar (an interface or base class, varying behavior). What's the actual conceptual thread connecting all three?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>All three are, fundamentally, ways of avoiding a conditional that decides behavior based on some discriminator — a type flag, a status field, an algorithm choice — by turning each branch of that conditional into its own object instead. The differences are in what varies and why: Strategy varies the <em>whole algorithm</em>, chosen by the caller, usually fixed for the object's lifetime. State varies behavior based on the object's <em>own internal, changing</em> condition, with the object transitioning between state objects itself. Template Method varies only <em>one step</em> of an otherwise-fixed sequence, via subclassing rather than composition.</p>
@@ -1807,7 +1834,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
 
   <div class="iq-group-label">Pattern Disambiguation</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-21">
     <summary><span class="iq-num">21</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">Singleton guarantees exactly one instance. Why do many teams still treat it as an anti-pattern, specifically from a testing perspective?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>A Singleton reached via a static reference (<code>ConfigRegistry.INSTANCE</code>, or a classic <code>getInstance()</code>) is, from a testing standpoint, indistinguishable from a global variable — any code that calls it directly is hard-wired to one specific, real implementation with no seam to substitute a test double. A unit test that wants to verify behavior under a specific config value, or under a simulated failure, has no way to inject a fake instance — it's stuck with whatever the real, globally shared object currently holds, and worse, one test mutating that shared state can silently leak into and break a completely unrelated test that happens to run afterward.</p>
@@ -1815,7 +1842,7 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-22">
     <summary><span class="iq-num">22</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Composite, Decorator, and Proxy all wrap an object behind the same interface it implements. Structurally they can look almost identical — what actually tells them apart?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>All three share the literal same shape: a class implementing interface <code>X</code> while holding a reference to another <code>X</code> and delegating to it. Reading a single class in isolation genuinely can't tell them apart — the real difference is in intent, and in what the held reference actually points to. Composite holds a <em>collection</em> of children of the same type specifically so a whole tree can be treated uniformly with a single leaf — its delegation typically fans out to many children and aggregates their results (a sum, a count), not just forwards to one unchanged. Decorator holds exactly <em>one</em> wrapped instance and adds new behavior around the delegated call — the call still reaches essentially the same object, just with something extra layered on before or after it.</p>
@@ -1894,6 +1921,8 @@ events.<span class="tk-fn">publishEvent</span>(<span class="tk-kw">new</span> <s
 <footer class="site-foot">Design Patterns — Reusable Solutions, Used Well. <a href="index.html#design-patterns" style="color:var(--accent-ink);font-weight:600;">← Back to the trailhead</a></footer>
 
 </main>
+<script src="search-index.js"></script>
+<script src="site-search.js"></script>
 <script>
 (function(){
 "use strict";

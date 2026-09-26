@@ -379,6 +379,25 @@ noscript .reveal{opacity:1;}
   .navlink{font-size:.8rem;padding:.45rem .7rem;}
   .contents-btn{font-size:.8rem;padding:.45rem .8rem;}
 }
+/* ---- site search ---- */
+.site-search{position:relative;flex:1;max-width:420px;margin:0 1.2rem;}
+.site-search__box{display:flex;align-items:center;gap:.5rem;background:var(--surface-2);border-radius:var(--r-pill);padding:.5rem .9rem;transition:background var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);}
+.site-search__box:focus-within{background:var(--surface);box-shadow:0 0 0 2px var(--accent);}
+.site-search__icon{flex:none;width:15px;height:15px;color:var(--muted);}
+.site-search__input{flex:1;min-width:0;border:none;background:none;outline:none;font-family:var(--font-body);font-size:.87rem;color:var(--ink);}
+.site-search__input::placeholder{color:var(--muted);}
+.site-search__kbd{flex:none;font-family:var(--font-mono);font-size:.68rem;color:var(--muted);background:var(--surface);border-radius:5px;padding:.1rem .4rem;box-shadow:var(--shadow-sm);}
+.site-search__results{position:absolute;top:calc(100% + 8px);left:0;right:0;max-height:min(70vh,480px);overflow-y:auto;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:.5rem;display:none;z-index:50;}
+.site-search.is-open .site-search__results{display:block;}
+.site-search__empty{padding:1rem;font-size:.85rem;color:var(--muted);text-align:center;}
+.site-search__item{display:block;padding:.65rem .8rem;border-radius:10px;text-decoration:none;color:inherit;cursor:pointer;}
+.site-search__item:hover,.site-search__item.is-active{background:var(--tint);}
+.site-search__item-title{font-weight:700;font-size:.88rem;display:block;}
+.site-search__item-meta{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:.4rem;margin-top:.2rem;}
+.site-search__item-type{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;background:var(--surface-2);padding:.1rem .4rem;border-radius:999px;}
+.site-search mark{background:var(--tint-strong);color:inherit;border-radius:3px;padding:0 .1em;}
+@media (max-width:820px){.site-search{order:3;flex-basis:100%;max-width:none;margin:.6rem 0 0;}}
+[id]{scroll-margin-top:90px;}
 </style>
 <body>
 <noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript>
@@ -386,6 +405,14 @@ noscript .reveal{opacity:1;}
 <header class="topnav">
   <div class="topnav__inner">
     <a class="wordmark" href="index.html#rest-api"><span class="wordmark__mark">R</span>REST API Design</a>
+    <div class="site-search" id="siteSearch">
+      <div class="site-search__box">
+        <svg class="site-search__icon" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" class="site-search__input" id="siteSearchInput" placeholder="Search any topic or question…" autocomplete="off" aria-label="Search notes" aria-expanded="false" aria-controls="siteSearchResults">
+        <span class="site-search__kbd">/</span>
+      </div>
+      <div class="site-search__results" id="siteSearchResults"></div>
+    </div>
     <nav class="navlinks">
       <a class="navlink" href="index.html#rest-api">← All topics</a>
       <div class="contents" id="contents">
@@ -452,7 +479,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">REST is a set of constraints, not a technology</h3>
+  <h3 class="sub reveal" id="rest-is-a-set-of-constraints-not-a-technology">REST is a set of constraints, not a technology</h3>
   <p class="reveal"><strong>REST</strong> (Representational State Transfer) is an architectural style defined by six constraints. An API that satisfies them gets specific, valuable properties in return — it's not an arbitrary checklist, each constraint buys something concrete.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -468,7 +495,7 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">Resource-oriented thinking, not RPC-in-disguise</h3>
+  <h3 class="sub reveal" id="resource-oriented-thinking-not-rpc-in-disguise">Resource-oriented thinking, not RPC-in-disguise</h3>
   <p class="reveal">The most common real-world REST violation isn't missing HATEOAS or a caching header — it's designing URLs around <em>actions</em> instead of <em>things</em>, effectively writing RPC calls that happen to travel over HTTP.</p>
   <div class="duo reveal">
     <div class="panel">
@@ -557,7 +584,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Methods: safety &amp; idempotency</h3>
+  <h3 class="sub reveal" id="methods-safety-idempotency">Methods: safety &amp; idempotency</h3>
   <p class="reveal">Two properties matter more than the method names themselves. <strong>Safe</strong> means the request causes no observable state change — a client (or a prefetching browser, or a retry-happy proxy) can call it speculatively with no consequence. <strong>Idempotent</strong> means calling it once has the same effect as calling it many times — critical for retry logic on an unreliable network.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -586,7 +613,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Status codes: the categories, and the ones that actually matter</h3>
+  <h3 class="sub reveal" id="status-codes-the-categories-and-the-ones-that-actually">Status codes: the categories, and the ones that actually matter</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Range</th><th>Category</th><th>Common codes worth knowing precisely</th></tr></thead>
@@ -632,7 +659,7 @@ noscript .reveal{opacity:1;}
     <p class="diagram-cap">Nine 4xx codes look interchangeable until you ask one question at a time — parseable? authenticated? authorized? exists? right verb? right format in? right format out? conflicts with current state? — each branch has exactly one correct answer.</p>
   </div>
 
-  <h3 class="sub reveal">Content negotiation</h3>
+  <h3 class="sub reveal" id="content-negotiation">Content negotiation</h3>
   <p class="reveal">The <code>Accept</code> header lets a client ask for a specific representation format (<code>Accept: application/json</code>, or a more specific vendor media type); <code>Content-Type</code> tells the server — or the client, reading a response — what format a body actually is. Most APIs today negotiate down to just JSON, but the mechanism is what makes supporting a second format later a non-breaking addition rather than a rewrite.</p>
   <pre class="reveal"><code><span class="tk-com">// Client asks for a format the server can't produce for this resource:</span>
 GET /orders/17 HTTP/1.1
@@ -653,7 +680,7 @@ HTTP/1.1 415 Unsupported Media Type</code></pre>
     </div>
   </div>
 
-  <h3 class="sub reveal">Freshness vs. revalidation: two complementary caching mechanisms</h3>
+  <h3 class="sub reveal" id="freshness-vs-revalidation-two-complementary-caching">Freshness vs. revalidation: two complementary caching mechanisms</h3>
   <p class="reveal">HTTP gives two different answers to "do I even need to ask the server again?" — and a production API typically wants both, not just one.</p>
   <div class="duo reveal">
     <div class="panel">
@@ -726,7 +753,7 @@ HTTP/1.1 415 Unsupported Media Type</code></pre>
     </div>
   </div>
 
-  <h3 class="sub reveal">Collections and single resources</h3>
+  <h3 class="sub reveal" id="collections-and-single-resources">Collections and single resources</h3>
   <p class="reveal">Two consistent URL shapes cover the vast majority of an API's surface: a plural <strong>collection</strong> and a specific <strong>item</strong> within it.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">OrderController.java</span></div>
@@ -748,7 +775,7 @@ HTTP/1.1 415 Unsupported Media Type</code></pre>
 }</code></pre>
   </div>
 
-  <h3 class="sub reveal">Naming conventions</h3>
+  <h3 class="sub reveal" id="naming-conventions">Naming conventions</h3>
   <ul class="reveal">
     <li>Use <strong>plural nouns</strong> consistently for collections (<code>/orders</code>, not <code>/order</code>) — even a "singleton" concept like the current user's profile is usually still modeled as an item within a plural collection conceptually.</li>
     <li>Use lowercase, hyphen-separated path segments (<code>/order-items</code>, not <code>/orderItems</code> or <code>/OrderItems</code>) — URLs are case-sensitive by spec, and mixed conventions across an API are a constant source of integration bugs.</li>
@@ -763,7 +790,7 @@ HTTP/1.1 415 Unsupported Media Type</code></pre>
     </div>
   </div>
 
-  <h3 class="sub reveal">When an action genuinely isn't a CRUD verb</h3>
+  <h3 class="sub reveal" id="when-an-action-genuinely-isn-t-a-crud-verb">When an action genuinely isn't a CRUD verb</h3>
   <p class="reveal">Not everything maps cleanly onto GET/POST/PUT/PATCH/DELETE on a noun — "send a password reset email" isn't really creating, replacing, or deleting anything. The accepted pattern is to model the action itself as a sub-resource, keeping the noun-based structure intact.</p>
   <pre class="reveal"><code><span class="tk-com">// Not a great fit for plain CRUD — model the action as its own resource:</span>
 POST /users/42/password-reset-requests   <span class="tk-com">// creates a "password reset request" resource</span>
@@ -810,7 +837,7 @@ POST /orders/17/cancellation             <span class="tk-com">// creates a "canc
     </div>
   </div>
 
-  <h3 class="sub reveal">DTOs, never entities</h3>
+  <h3 class="sub reveal" id="dtos-never-entities">DTOs, never entities</h3>
   <p class="reveal">Return a dedicated Data Transfer Object from every endpoint — never your JPA <code>@Entity</code> directly, however tempting it looks for a quick prototype.</p>
   <div class="duo reveal">
     <div class="panel">
@@ -836,7 +863,7 @@ POST /orders/17/cancellation             <span class="tk-com">// creates a "canc
     </div>
   </div>
 
-  <h3 class="sub reveal">Partial updates: PUT vs. PATCH bodies</h3>
+  <h3 class="sub reveal" id="partial-updates-put-vs-patch-bodies">Partial updates: PUT vs. PATCH bodies</h3>
   <p class="reveal">A <code>PUT</code> body is the resource's <em>complete</em> new state — omitted fields should be treated as cleared, not "left alone." A <code>PATCH</code> body describes only the <em>changes</em>, and here's where a subtle but important ambiguity shows up.</p>
   <div class="callout callout--warn reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a1 1 0 0 0 .86 1.5h18.64a1 1 0 0 0 .86-1.5L13.71 3.86a1 1 0 0 0-1.72 0Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
@@ -846,7 +873,7 @@ POST /orders/17/cancellation             <span class="tk-com">// creates a "canc
     </div>
   </div>
 
-  <h3 class="sub reveal">PUT can create, too — client-specified vs. server-assigned URIs</h3>
+  <h3 class="sub reveal" id="put-can-create-too-client-specified-vs-server-assigned-uris">PUT can create, too — client-specified vs. server-assigned URIs</h3>
   <p class="reveal">"POST creates, PUT replaces" is a useful simplification, but PUT is also a legitimate <em>create</em> pattern — just a different one from POST's. The distinction that actually matters is who decides the resource's URI.</p>
   <div class="duo reveal">
     <div class="panel">
@@ -874,7 +901,7 @@ POST /orders/17/cancellation             <span class="tk-com">// creates a "canc
     </div>
   </div>
 
-  <h3 class="sub reveal">Consistency in field naming and shape</h3>
+  <h3 class="sub reveal" id="consistency-in-field-naming-and-shape">Consistency in field naming and shape</h3>
   <ul class="reveal">
     <li>Pick one casing convention for JSON field names (<code>camelCase</code> is the overwhelming default) and never mix it with <code>snake_case</code> in the same API.</li>
     <li>Represent dates/times in <strong>ISO 8601</strong> (<code>2024-03-15T14:30:00Z</code>) — unambiguous, timezone-aware, and parseable by every mainstream language without custom logic.</li>
@@ -925,7 +952,7 @@ POST /orders/17/cancellation             <span class="tk-com">// creates a "canc
     </div>
   </div>
 
-  <h3 class="sub reveal">Offset vs. cursor pagination</h3>
+  <h3 class="sub reveal" id="offset-vs-cursor-pagination">Offset vs. cursor pagination</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th></th><th>Offset-based (<code>page</code> / <code>size</code>)</th><th>Cursor-based (keyset)</th></tr></thead>
@@ -968,7 +995,7 @@ POST /orders/17/cancellation             <span class="tk-com">// creates a "canc
     <p class="diagram-cap">Same five concurrent inserts, two outcomes: offset pagination's "skip 40" silently means a different set of rows than it did a moment ago; cursor pagination's "rows after id 37" points at the same anchor regardless of what got inserted around it.</p>
   </div>
 
-  <h3 class="sub reveal">Cursor pagination needs a tie-breaker on non-unique sort columns</h3>
+  <h3 class="sub reveal" id="cursor-pagination-needs-a-tie-breaker-on-non-unique-sort">Cursor pagination needs a tie-breaker on non-unique sort columns</h3>
   <p class="reveal">The cursor examples above quietly assume the sort column is unique (an <code>id</code>). Sort by <code>createdAt</code> instead — genuinely the most common real-world case — and a naive cursor breaks the moment two rows share the exact same timestamp.</p>
   <pre class="reveal"><code><span class="tk-com">// Naive cursor on a non-unique column -- breaks on ties:</span>
 SELECT * FROM orders
@@ -989,7 +1016,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     </div>
   </div>
 
-  <h3 class="sub reveal">A consistent pagination envelope</h3>
+  <h3 class="sub reveal" id="a-consistent-pagination-envelope">A consistent pagination envelope</h3>
   <pre class="reveal"><code><span class="tk-com">// GET /api/v1/orders?page=0&amp;size=20&amp;sort=createdAt,desc</span>
 {
   <span class="tk-str">"content"</span>: [ <span class="tk-com">/* 20 order objects */</span> ],
@@ -1000,7 +1027,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
 }</code></pre>
   <p class="reveal">Whatever shape you pick, use the <em>same</em> envelope on every paginated endpoint in the API — a client's list-rendering code should work identically regardless of which resource it's paging through.</p>
 
-  <h3 class="sub reveal">Filtering &amp; sorting conventions</h3>
+  <h3 class="sub reveal" id="filtering-sorting-conventions">Filtering &amp; sorting conventions</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Need</th><th>Convention</th></tr></thead>
@@ -1057,7 +1084,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     </div>
   </div>
 
-  <h3 class="sub reveal">What actually counts as a breaking change</h3>
+  <h3 class="sub reveal" id="what-actually-counts-as-a-breaking-change">What actually counts as a breaking change</h3>
   <div class="duo reveal">
     <div class="panel">
       <h4><span class="sw"></span>Breaking (needs a new version)</h4>
@@ -1086,7 +1113,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     </div>
   </div>
 
-  <h3 class="sub reveal">Where the version lives</h3>
+  <h3 class="sub reveal" id="where-the-version-lives">Where the version lives</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Strategy</th><th>Example</th><th>Trade-off</th></tr></thead>
@@ -1114,7 +1141,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     </div>
   </div>
 
-  <h3 class="sub reveal">Deprecating a version gracefully</h3>
+  <h3 class="sub reveal" id="deprecating-a-version-gracefully">Deprecating a version gracefully</h3>
   <p class="reveal">Bumping the version number is the easy part — the harder discipline is giving existing clients a real runway to migrate. The <code>Deprecation</code> and <code>Sunset</code> response headers communicate this in a machine-readable way: <code>Deprecation: true</code> flags an endpoint as on its way out, and <code>Sunset: Sat, 31 Dec 2026 23:59:59 GMT</code> gives the exact date it stops working — both readable by automated tooling that monitors for upcoming breakage, not just by a human reading changelogs.</p>
 
   <div class="callout callout--mistake reveal">
@@ -1161,7 +1188,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     </div>
   </div>
 
-  <h3 class="sub reveal">One error shape, everywhere</h3>
+  <h3 class="sub reveal" id="one-error-shape-everywhere">One error shape, everywhere</h3>
   <p class="reveal">RFC 7807 ("Problem Details for HTTP APIs") standardizes what an error response looks like, so a client can write one error-parsing function that works against every endpoint, every status code, every service that follows the standard.</p>
   <pre class="reveal"><code>{
   <span class="tk-str">"type"</span>: <span class="tk-str">"https://api.example.com/errors/insufficient-funds"</span>,
@@ -1196,7 +1223,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     </div>
   </div>
 
-  <h3 class="sub reveal">Documenting the contract: OpenAPI</h3>
+  <h3 class="sub reveal" id="documenting-the-contract-openapi">Documenting the contract: OpenAPI</h3>
   <p class="reveal"><strong>OpenAPI</strong> (formerly Swagger) is a machine-readable specification format describing every endpoint, parameter, request/response shape, and status code an API returns. Beyond human-readable docs, an OpenAPI spec can generate client SDKs, drive contract testing, and power an interactive "try it" explorer — all from one source of truth.</p>
   <div class="duo reveal">
     <div class="panel">
@@ -1293,7 +1320,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     </div>
   </div>
 
-  <h3 class="sub reveal">Making POST safe to retry</h3>
+  <h3 class="sub reveal" id="making-post-safe-to-retry">Making POST safe to retry</h3>
   <p class="reveal"><code>GET</code>, <code>PUT</code>, and <code>DELETE</code> are naturally idempotent. <code>POST</code> — "create," "charge," "send" — is not, so for anything where a duplicate has a real consequence, idempotency has to be engineered deliberately, not assumed.</p>
   <p class="reveal">The robust production pattern uses <strong>two layers</strong>: a fast in-memory guard that absorbs the common case, backed by a durable database constraint that holds even under a genuine race.</p>
   <div class="tbl-wrap reveal">
@@ -1362,7 +1389,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     <p class="diagram-cap">Both requests carry the identical idempotency key and arrive close enough to race. Redis's <code>SETNX</code> is atomic, so exactly one of them can "win" it — but the DB unique constraint still stands as backstop for the rarer case where both miss the Redis check entirely (a Redis restart mid-race, or eviction), which is why layer 2 exists even though layer 1 handles this common case cleanly.</p>
   </div>
 
-  <h3 class="sub reveal">Rate limiting</h3>
+  <h3 class="sub reveal" id="rate-limiting">Rate limiting</h3>
   <p class="reveal">Rate limiting protects your API from being overwhelmed by one client (accidentally or maliciously) at the expense of everyone else. The <strong>token bucket</strong> algorithm is the standard mental model: a bucket refills with tokens at a steady rate, and each request consumes one — if the bucket is empty, the request is rejected. This naturally allows short bursts (up to the bucket's size) while enforcing a steady average rate over time.</p>
   <div class="callout callout--warn reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a1 1 0 0 0 .86 1.5h18.64a1 1 0 0 0 .86-1.5L13.71 3.86a1 1 0 0 0-1.72 0Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
@@ -1416,7 +1443,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     </div>
   </div>
 
-  <h3 class="sub reveal">The Richardson Maturity Model</h3>
+  <h3 class="sub reveal" id="the-richardson-maturity-model">The Richardson Maturity Model</h3>
   <p class="reveal">A widely-used way to describe how "RESTful" an API actually is, in four levels of increasing adherence to REST's uniform interface.</p>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
@@ -1431,7 +1458,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     <p class="diagram-cap">Each step up buys more of REST's uniform interface — and, in practice, costs enough more that almost every production API climbs to Level 2 and simply stops.</p>
   </div>
 
-  <h3 class="sub reveal">What HATEOAS actually looks like</h3>
+  <h3 class="sub reveal" id="what-hateoas-actually-looks-like">What HATEOAS actually looks like</h3>
   <p class="reveal"><strong>HATEOAS</strong> (Hypermedia as the Engine of Application State) means a response doesn't just return data — it returns the <em>actions currently available</em> on that resource, as links, so a client doesn't need to hardcode API structure to know what it can do next.</p>
   <pre class="reveal"><code>{
   <span class="tk-str">"orderId"</span>: <span class="tk-str">17</span>,
@@ -1451,7 +1478,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     </div>
   </div>
 
-  <h3 class="sub reveal">Why most production APIs stop at Level 2 anyway</h3>
+  <h3 class="sub reveal" id="why-most-production-apis-stop-at-level-2-anyway">Why most production APIs stop at Level 2 anyway</h3>
   <div class="duo reveal">
     <div class="panel">
       <h4><span class="sw"></span>The case for stopping at Level 2</h4>
@@ -1516,7 +1543,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
 
   <div class="iq-group-label">Foundations &amp; HTTP Semantics</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-01">
     <summary><span class="iq-num">01</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">GET being "safe" is more than a convention — what actually relies on that guarantee?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Browsers prefetch links, crawlers follow them, proxies and CDNs cache GET responses and may replay them, and retry middleware freely re-issues a GET that timed out — all without asking permission, precisely because GET is documented as having no side effects. Every one of those behaviors becomes a real bug the moment a "GET" actually mutates state.</p>
@@ -1524,7 +1551,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-02">
     <summary><span class="iq-num">02</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">"Using POST for everything is fine, since a JSON body can express anything GET's query params can't." What's wrong with this?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Expressive power was never the issue — POST can encode anything. The problem is everything that comes for free with GET evaporates: browser/CDN caching, safe prefetching, bookmarkable/shareable URLs, and the implicit "this doesn't change anything" guarantee every HTTP-aware tool assumes. All-POST APIs have to reinvent caching and safety guarantees by hand, per endpoint, that GET gives away for nothing.</p>
@@ -1532,7 +1559,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-03">
     <summary><span class="iq-num">03</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A code reviewer flags a DELETE endpoint that returns 200 with an empty body. What's the better choice, and why does it matter?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p><code>204 No Content</code> is the precise match: the operation succeeded, and there is deliberately nothing to return (the resource is gone). Returning 200 with an empty body is ambiguous — is the empty body intentional, or is it a client-side parsing bug silently swallowing an expected payload?</p>
@@ -1540,7 +1567,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-04">
     <summary><span class="iq-num">04</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">When is 422 Unprocessable Entity more appropriate than 400 Bad Request — and does a client actually care about the distinction?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>400 fits malformed requests the server can't even parse or understand structurally — invalid JSON, a missing required field, wrong content type. 422 fits requests that are perfectly well-formed and understood, but semantically invalid against business rules — a well-shaped request to transfer money the account doesn't have, or a date range where "end" precedes "start."</p>
@@ -1550,7 +1577,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
 
   <div class="iq-group-label">Resource &amp; Payload Design</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-05">
     <summary><span class="iq-num">05</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A "search" endpoint needs 12 optional filter parameters. GET with query params, or POST with a request body? Walk through the reasoning.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>GET remains the semantically correct choice for a read, but 12 parameters can genuinely hit practical query-string length limits and get unwieldy to construct/debug. The accepted middle ground: model the search itself as a resource, created via POST — <code>POST /order-searches</code> with the filters in the body, returning either the results directly or a reference to fetch them via GET.</p>
@@ -1558,7 +1585,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-06">
     <summary><span class="iq-num">06</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">"Returning the JPA entity directly is fine as long as we set every association to FetchType.EAGER, so nothing's lazy." What's still wrong?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>This "solves" the lazy-loading exception but makes the actual underlying problem worse, not better: every request now eagerly loads every association whether the endpoint needs it or not, which is its own performance disaster at scale (often turning into a much bigger N+1 problem than the one being avoided).</p>
@@ -1566,7 +1593,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-07">
     <summary><span class="iq-num">07</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Give a concrete example of a real production bug caused by PATCH's "omitted vs. explicitly null" ambiguity.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>A user profile has an optional <code>middleName</code>. A client SDK, by default configuration, omits fields with a null value from the serialized JSON entirely (a common default to "keep payloads small"). A user clears their middle name in the UI; the SDK sends a PATCH with <code>middleName</code> simply absent from the body, rather than present-and-null.</p>
@@ -1574,7 +1601,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-08">
     <summary><span class="iq-num">08</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A client reports that two endpoints represent the same "amount" concept inconsistently — a string on one, a number on the other. How do you fix this systemically, not just patch the one field?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Fixing just this one field treats a symptom — the actual gap is that the API has no enforced, shared convention for how monetary values (or any recurring concept) are represented across the whole surface. Audit every endpoint for the same class of field, document one canonical representation (e.g., a string to avoid floating-point precision issues, with a separate currency code field), and fix all instances together as a single, clearly-communicated breaking change behind a new API version.</p>
@@ -1584,7 +1611,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
 
   <div class="iq-group-label">Pagination &amp; Versioning</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-09">
     <summary><span class="iq-num">09</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Mechanically, why does cursor pagination avoid the "skipped row" problem that plagues offset pagination?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Offset pagination identifies a page by a <em>position</em> — "skip 40, take 20" — which silently means something different if rows are inserted or deleted before that position between requests. Cursor pagination identifies a page by a <em>value</em> — "give me 20 rows where <code>id &gt; 37</code>" — anchored to an actual, immutable data point rather than a shifting count.</p>
@@ -1592,7 +1619,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-10">
     <summary><span class="iq-num">10</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">A public API with millions of external integrators needs to add a required request field. How do you actually ship this without breaking everyone at once?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>You don't add a truly required field to an existing version at all — that's definitionally breaking. Ship it as an optional field with a sensible default on the current version (so nobody breaks), while introducing a new API version where the field is genuinely required, reserved for clients who explicitly opt in by migrating.</p>
@@ -1600,7 +1627,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-11">
     <summary><span class="iq-num">11</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">"We can just announce a breaking change in the changelog and update whenever we want." What's wrong with relying on this alone?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>A changelog is a document a human has to go read — most integrations are set up once and never revisited until something actually breaks in production, at which point the "advance notice" has already failed its purpose. Changelogs also don't scale to hundreds or thousands of independent integrator teams with no shared communication channel.</p>
@@ -1608,7 +1635,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-12">
     <summary><span class="iq-num">12</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">You're designing pagination for both an infinite-scroll social feed and an admin back-office table with page numbers. Same strategy for both?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>No — these have genuinely different requirements, and picking one strategy for both means compromising one of them. The social feed is high-write-volume, sequential-only, and never needs "jump to page 40" — a natural fit for cursor pagination, which stays consistent and fast regardless of how deep a user scrolls.</p>
@@ -1618,7 +1645,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
 
   <div class="iq-group-label">Idempotency, Rate Limiting &amp; HATEOAS</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-13">
     <summary><span class="iq-num">13</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A mobile client on a flaky connection retries a "place order" POST three times before finally getting a response. Design the endpoint so this can't create three orders.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Require the client to generate a stable idempotency key once (a UUID, generated before the first attempt, reused across retries of the <em>same logical request</em> — not regenerated per retry). The server implements the two-layer pattern: a Redis check to fast-path duplicate detection, backed by a database unique constraint on the idempotency key in the same transaction as actually creating the order.</p>
@@ -1626,7 +1653,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-14">
     <summary><span class="iq-num">14</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">"Idempotency keys aren't needed for internal service-to-service calls, only public-facing APIs." Why is this risky?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Network partitions, timeouts, and retries happen just as much — arguably more, given the volume — inside a microservices mesh as they do for external clients. A service-to-service retry storm during a transient network blip can double-charge, double-ship, or double-send just as easily as a flaky mobile client can.</p>
@@ -1634,7 +1661,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-15">
     <summary><span class="iq-num">15</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why is a token bucket's ability to allow a "burst" of requests a deliberate design feature rather than a flaw?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Real client traffic is bursty by nature — a user loading a dashboard might fire 10 requests in the first second, then go quiet for a minute. A rate limiter that enforces a perfectly smooth, unbroken rate (say, exactly 1 request per 6 seconds, no exceptions) would reject entirely normal usage patterns just because they're front-loaded, which is a worse user experience for no real protective benefit.</p>
@@ -1642,7 +1669,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-16">
     <summary><span class="iq-num">16</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Give a concrete example where HATEOAS's engineering cost is actually worth paying.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>An approval-workflow API (expense reports, document sign-off, loan applications) where an item moves through many states, each unlocking different next actions depending on the current approver's role, the item's history, and business rules that change over time. Hardcoding "what can I do with this item" into every client (a web app, a mobile app, a partner integration) means keeping three separate rule engines in sync forever.</p>
@@ -1652,7 +1679,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
 
   <div class="iq-group-label">Cross-Topic Scenarios</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-17">
     <summary><span class="iq-num">17</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Design the full contract for "list a user's transactions, filterable by date range" — URL, method, status codes, pagination, and error shape. Walk through each decision.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p><strong>URL/method:</strong> <code>GET /api/v1/users/{userId}/transactions?from=2024-01-01&amp;to=2024-03-31&amp;page=0&amp;size=20&amp;sort=-date</code> — a nested read under the owning user (one level, genuinely owned relationship), GET because it's a safe read, ISO 8601 dates as range filters, an explicit pagination envelope.</p>
@@ -1660,7 +1687,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-18">
     <summary><span class="iq-num">18</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">You inherit an API violating half this module's guidance — verb-shaped URLs, no pagination, raw entities returned, no versioning — with one big client integration deadline approaching. You can fix only one thing first. Which, and why?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Add versioning first, even before fixing anything else — it's the one change that, if skipped, makes every future fix dramatically more painful. Without a version boundary, fixing verb-shaped URLs or entity-leaking means breaking the very client you're racing to onboard; with one, you can introduce a clean <code>/v2</code> with all the other fixes applied, while the new client integrates against the corrected version and any existing callers keep working against <code>/v1</code> unchanged.</p>
@@ -1670,7 +1697,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
 
   <div class="iq-group-label">Method Semantics &amp; CORS</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-19">
     <summary><span class="iq-num">19</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">To create a new resource, should the client PUT to a URI it picks, or POST to a collection and let the server assign the URI? Walk through the reasoning.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Both are legitimate REST creation patterns, and the deciding factor is who actually knows the resource's identity ahead of time. <code>POST /orders</code> is the default when the server assigns the ID — an auto-increment key or a generated UUID the client couldn't have predicted — returned via <code>Location</code> and <code>201 Created</code>. <code>PUT /files/report-2024-q1.pdf</code> (or <code>PUT /settings/theme</code>) is the right call when the client already owns or chooses the URI: a natural key, a client-generated UUID, or a singleton resource.</p>
@@ -1679,7 +1706,7 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-20">
     <summary><span class="iq-num">20</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">"We added CORS headers, so no unauthorized origin can call our API." What's wrong with this statement?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>This treats CORS as a server-side access-control mechanism, but it's enforced entirely by the <em>browser</em>, on top of the browser's same-origin policy — it has no effect whatsoever on non-browser clients. A direct server-to-server call, a mobile app, curl, or Postman never runs a browser's CORS check at all and will call the API regardless of whatever <code>Access-Control-Allow-Origin</code> header is set; CORS restricts which websites' JavaScript may <em>read the response</em> in a browser tab, not who can technically reach the endpoint.</p>
@@ -1759,6 +1786,8 @@ ORDER BY createdAt, id LIMIT 20;</code></pre>
 <footer class="site-foot">REST API Design — Contracts That Age Well. <a href="index.html#rest-api" style="color:var(--accent-ink);font-weight:600;">← Back to the trailhead</a></footer>
 
 </main>
+<script src="search-index.js"></script>
+<script src="site-search.js"></script>
 <script>
 (function(){
 "use strict";

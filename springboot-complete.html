@@ -379,6 +379,25 @@ noscript .reveal{opacity:1;}
   .navlink{font-size:.8rem;padding:.45rem .7rem;}
   .contents-btn{font-size:.8rem;padding:.45rem .8rem;}
 }
+/* ---- site search ---- */
+.site-search{position:relative;flex:1;max-width:420px;margin:0 1.2rem;}
+.site-search__box{display:flex;align-items:center;gap:.5rem;background:var(--surface-2);border-radius:var(--r-pill);padding:.5rem .9rem;transition:background var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);}
+.site-search__box:focus-within{background:var(--surface);box-shadow:0 0 0 2px var(--accent);}
+.site-search__icon{flex:none;width:15px;height:15px;color:var(--muted);}
+.site-search__input{flex:1;min-width:0;border:none;background:none;outline:none;font-family:var(--font-body);font-size:.87rem;color:var(--ink);}
+.site-search__input::placeholder{color:var(--muted);}
+.site-search__kbd{flex:none;font-family:var(--font-mono);font-size:.68rem;color:var(--muted);background:var(--surface);border-radius:5px;padding:.1rem .4rem;box-shadow:var(--shadow-sm);}
+.site-search__results{position:absolute;top:calc(100% + 8px);left:0;right:0;max-height:min(70vh,480px);overflow-y:auto;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:.5rem;display:none;z-index:50;}
+.site-search.is-open .site-search__results{display:block;}
+.site-search__empty{padding:1rem;font-size:.85rem;color:var(--muted);text-align:center;}
+.site-search__item{display:block;padding:.65rem .8rem;border-radius:10px;text-decoration:none;color:inherit;cursor:pointer;}
+.site-search__item:hover,.site-search__item.is-active{background:var(--tint);}
+.site-search__item-title{font-weight:700;font-size:.88rem;display:block;}
+.site-search__item-meta{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:.4rem;margin-top:.2rem;}
+.site-search__item-type{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;background:var(--surface-2);padding:.1rem .4rem;border-radius:999px;}
+.site-search mark{background:var(--tint-strong);color:inherit;border-radius:3px;padding:0 .1em;}
+@media (max-width:820px){.site-search{order:3;flex-basis:100%;max-width:none;margin:.6rem 0 0;}}
+[id]{scroll-margin-top:90px;}
 </style>
 <body>
 <noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript>
@@ -386,6 +405,14 @@ noscript .reveal{opacity:1;}
 <header class="topnav">
   <div class="topnav__inner">
     <a class="wordmark" href="index.html#spring-boot"><span class="wordmark__mark">S</span>Spring Boot</a>
+    <div class="site-search" id="siteSearch">
+      <div class="site-search__box">
+        <svg class="site-search__icon" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" class="site-search__input" id="siteSearchInput" placeholder="Search any topic or question…" autocomplete="off" aria-label="Search notes" aria-expanded="false" aria-controls="siteSearchResults">
+        <span class="site-search__kbd">/</span>
+      </div>
+      <div class="site-search__results" id="siteSearchResults"></div>
+    </div>
     <nav class="navlinks">
       <a class="navlink" href="index.html#spring-boot">← All topics</a>
       <div class="contents" id="contents">
@@ -458,7 +485,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Inversion of Control, precisely</h3>
+  <h3 class="sub reveal" id="inversion-of-control-precisely">Inversion of Control, precisely</h3>
   <p class="reveal">In plain Java, an object that needs a collaborator typically creates it: <code>new PaymentGateway()</code>. <strong>Inversion of Control</strong> flips who's in charge — the <strong>IoC container</strong> (Spring's <code>ApplicationContext</code>) creates, configures, and wires objects, and your class simply declares what it needs. <strong>Dependency Injection</strong> is the specific mechanism that implements this: dependencies are <em>supplied</em> to an object rather than built by it.</p>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
@@ -473,7 +500,7 @@ noscript .reveal{opacity:1;}
     <p class="diagram-cap">The container reads your annotations (or Java config), figures out the dependency graph, instantiates every bean in the right order, and injects each one's dependencies — all before your code ever runs.</p>
   </div>
 
-  <h3 class="sub reveal">Three ways to inject, one clear winner</h3>
+  <h3 class="sub reveal" id="three-ways-to-inject-one-clear-winner">Three ways to inject, one clear winner</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Type</th><th>How</th><th>Notes</th></tr></thead>
@@ -496,7 +523,7 @@ noscript .reveal{opacity:1;}
 }</code></pre>
   </div>
 
-  <h3 class="sub reveal">Spring's stereotypes</h3>
+  <h3 class="sub reveal" id="spring-s-stereotypes">Spring's stereotypes</h3>
   <p class="reveal">All of these are specializations of the same underlying idea (a Spring-managed bean) — the different names exist purely to communicate a class's role, and some (like <code>@Repository</code>) add real behavior on top.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -511,7 +538,7 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">Resolving ambiguity</h3>
+  <h3 class="sub reveal" id="resolving-ambiguity">Resolving ambiguity</h3>
   <ul class="reveal">
     <li>Spring resolves <code>@Autowired</code> by <strong>type</strong> first. If multiple beans match that type, it falls back to matching by <strong>name</strong>.</li>
     <li><code>@Qualifier("beanName")</code> — explicitly pick one specific bean among several candidates of the same type.</li>
@@ -597,7 +624,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">The full lifecycle</h3>
+  <h3 class="sub reveal" id="the-full-lifecycle">The full lifecycle</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>Instantiate</b><span>constructor runs</span></div>
@@ -631,7 +658,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">InitializingBean/DisposableBean vs. the annotations</h3>
+  <h3 class="sub reveal" id="initializingbean-disposablebean-vs-the-annotations">InitializingBean/DisposableBean vs. the annotations</h3>
   <p class="reveal">The lifecycle hooks above didn't start out as annotations — Spring's original mechanism was a pair of interfaces, and they still work exactly the same way today.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">CacheLoader.java (interface style)</span></div>
@@ -646,7 +673,7 @@ noscript .reveal{opacity:1;}
   </div>
   <p class="reveal">Functionally identical to the <code>@PostConstruct</code>/<code>@PreDestroy</code> version above — same position in the lifecycle, same guarantees. The difference is entirely about coupling: implementing the interface ties the class directly to the Spring API (the method names <code>afterPropertiesSet</code>/<code>destroy</code> are fixed by the interface contract), while the annotations let you name the method anything you like and keep the class technically framework-agnostic. Spring's own reference documentation recommends the annotation style for exactly this reason — reach for the interfaces mainly when you're writing framework or library code that can't assume annotation processing is configured a certain way.</p>
 
-  <h3 class="sub reveal">Reacting to events: ApplicationListener &amp; @EventListener</h3>
+  <h3 class="sub reveal" id="reacting-to-events-applicationlistener-eventlistener">Reacting to events: ApplicationListener &amp; @EventListener</h3>
   <p class="reveal">Bean-level hooks only ever fire for the one bean that declares them. Spring's event system solves a different problem: letting <em>any number of</em> independent beans react to something that happened elsewhere in the application, without depending on whatever published it.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">OrderEvents.java</span></div>
@@ -674,7 +701,7 @@ noscript .reveal{opacity:1;}
   <p class="reveal"><code>OrderService</code> never references <code>ReceiptMailer</code> at all — it just publishes a fact. Any number of other listeners (an analytics recorder, a fraud check, an inventory decrement) can subscribe to the exact same event with zero changes to <code>OrderService</code>, which is the whole point: publisher and listeners stay decoupled, and adding a new reaction to "an order was placed" never means touching the code that places it.</p>
   <p class="reveal">Spring publishes its own lifecycle milestones through this same mechanism — <code>ContextRefreshedEvent</code> fires once the <code>ApplicationContext</code> has fully initialized, and <code>ApplicationReadyEvent</code> fires after that, once the application is genuinely ready to serve requests (the embedded server is up and listening). <code>ApplicationReadyEvent</code> is the idiomatic place for startup work that needs the <em>entire</em> context available — unlike <code>@PostConstruct</code>, which only guarantees that one bean's own dependencies are ready, not the whole application.</p>
 
-  <h3 class="sub reveal">Bean scopes</h3>
+  <h3 class="sub reveal" id="bean-scopes">Bean scopes</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Scope</th><th>Lifetime</th></tr></thead>
@@ -738,7 +765,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">What Spring Boot actually adds on top of Spring</h3>
+  <h3 class="sub reveal" id="what-spring-boot-actually-adds-on-top-of-spring">What Spring Boot actually adds on top of Spring</h3>
   <div class="duo reveal">
     <div class="panel">
       <h4><span class="sw"></span>Auto-configuration</h4>
@@ -761,7 +788,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">@SpringBootApplication is three annotations wearing a trenchcoat</h3>
+  <h3 class="sub reveal" id="springbootapplication-is-three-annotations-wearing-a">@SpringBootApplication is three annotations wearing a trenchcoat</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Annotation</th><th>Purpose</th></tr></thead>
@@ -773,7 +800,7 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">How auto-configuration actually decides what to build</h3>
+  <h3 class="sub reveal" id="how-auto-configuration-actually-decides-what-to-build">How auto-configuration actually decides what to build</h3>
   <p class="reveal">Auto-configuration classes are listed in a metadata file bundled with each starter (<code>META-INF/spring/...AutoConfiguration.imports</code>, formerly <code>spring.factories</code>). Each one is wrapped in <strong>conditional</strong> annotations that only activate it when specific circumstances hold.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -817,7 +844,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">How the embedded server &amp; packaging actually work</h3>
+  <h3 class="sub reveal" id="how-the-embedded-server-packaging-actually-work">How the embedded server &amp; packaging actually work</h3>
   <p class="reveal">The web starter pulls in an embedded server (Tomcat by default) as an ordinary library dependency — Spring Boot starts it programmatically inside your own <code>main()</code> method, rather than deploying your code <em>into</em> a separately-installed server. The build produces a self-contained "fat JAR": your compiled classes plus every dependency, including the server itself, bundled together with a special nested-JAR layout and a small <code>JarLauncher</code> that knows how to unpack and run it — runnable anywhere with just <code>java -jar app.jar</code>.</p>
 
   <details class="accordion reveal">
@@ -871,10 +898,10 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Externalized configuration</h3>
+  <h3 class="sub reveal" id="externalized-configuration">Externalized configuration</h3>
   <p class="reveal"><code>application.properties</code> / <code>application.yml</code> hold configuration that lives outside your compiled code — database URLs, ports, feature flags, timeouts. <strong>Profiles</strong> let you layer environment-specific overrides on top: <code>application-dev.yml</code> or <code>application-prod.yml</code>, activated by setting <code>spring.profiles.active=dev</code>. Only the values that differ need to appear in the profile-specific file; everything else falls through to the base file.</p>
 
-  <h3 class="sub reveal">Type-safe configuration binding</h3>
+  <h3 class="sub reveal" id="type-safe-configuration-binding">Type-safe configuration binding</h3>
   <p class="reveal"><code>@ConfigurationProperties</code> binds a whole group of related properties to a single, type-safe object — preferred over scattering individual <code>@Value("${...}")</code> annotations across the codebase, especially as a config group grows past two or three properties.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">MailProps.java</span></div>
@@ -890,7 +917,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Nested configuration &amp; relaxed binding</h3>
+  <h3 class="sub reveal" id="nested-configuration-relaxed-binding">Nested configuration &amp; relaxed binding</h3>
   <p class="reveal">Real configuration is rarely flat, and the property names in a YAML file rarely match Java's camelCase convention exactly. Extending the same <code>MailProps</code> from above with a nested <code>retry</code> group demonstrates both at once.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">MailProps.java (nested)</span></div>
@@ -910,7 +937,7 @@ noscript .reveal{opacity:1;}
       backoff: <span class="tk-str">2s</span></code></pre>
   <p class="reveal">Notice <code>tls-enabled</code> and <code>max-attempts</code> in the YAML but <code>tlsEnabled</code>/<code>maxAttempts</code> in the Java. This is <strong>relaxed binding</strong>: Spring Boot normalizes kebab-case, snake_case, and even upper-case environment-variable style (<code>APP_MAIL_TLS_ENABLED</code>) down to the same canonical form before matching them against your camelCase property names. Kebab-case is the conventional style in YAML/properties files precisely because relaxed binding treats it as equivalent to the rest — you never have to remember which casing a particular property source expects, and an env var can override a YAML key without the two ever needing to look alike.</p>
 
-  <h3 class="sub reveal">Property precedence</h3>
+  <h3 class="sub reveal" id="property-precedence">Property precedence</h3>
   <p class="reveal">When the same property is set in more than one place, Spring Boot resolves it by a strict precedence order — higher up the list always wins:</p>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
@@ -968,7 +995,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Cross-cutting concerns &amp; terminology</h3>
+  <h3 class="sub reveal" id="cross-cutting-concerns-terminology">Cross-cutting concerns &amp; terminology</h3>
   <p class="reveal">A <strong>cross-cutting concern</strong> is behavior that spans many otherwise-unrelated classes — logging every service call, wrapping every repository method in a transaction. AOP lets you define that behavior <em>once</em> and have it apply everywhere it's needed, without touching the business logic itself.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -983,7 +1010,7 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">Advice types</h3>
+  <h3 class="sub reveal" id="advice-types">Advice types</h3>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">LoggingAspect.java</span></div>
     <pre><code><span class="tk-kw">@Aspect</span> <span class="tk-kw">@Component</span>
@@ -1017,7 +1044,7 @@ noscript .reveal{opacity:1;}
   </div>
   <p class="reveal">Both binding attributes are name-matching contracts, not positional ones: whatever string you pass to <code>returning</code>/<code>throwing</code> has to be spelled identically as a method parameter name, and Spring wires the actual value into that parameter by matching the name. Get the two out of sync and Spring fails fast at startup with a pointcut-parameter mismatch, rather than silently passing <code>null</code> at runtime. Notice the pointcut itself is <code>@annotation(Audited)</code> rather than an <code>execution(..)</code> expression — it matches any method carrying a custom <code>@Audited</code> marker annotation, regardless of which package or class it lives in, which scales far better than an <code>execution</code> pattern once "audited methods" are scattered across many unrelated packages.</p>
 
-  <h3 class="sub reveal">How Spring AOP actually works: proxies</h3>
+  <h3 class="sub reveal" id="how-spring-aop-actually-works-proxies">How Spring AOP actually works: proxies</h3>
   <p class="reveal">Spring doesn't modify your class's bytecode. Instead, at bean-creation time, it wraps your bean in a <strong>proxy</strong> — a generated object with the same public interface that intercepts calls, runs the matched advice, then delegates to the real object.</p>
 
   <div class="panel diagram-panel reveal">
@@ -1104,7 +1131,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Bean Validation basics</h3>
+  <h3 class="sub reveal" id="bean-validation-basics">Bean Validation basics</h3>
   <p class="reveal">Spring uses <strong>Bean Validation</strong> (the <code>jakarta.validation</code> specification, JSR-380), implemented by <strong>Hibernate Validator</strong>. Annotate the fields of a DTO with constraints, then trigger validation with <code>@Valid</code> at the point that data enters your system.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">CreateUserReq.java</span></div>
@@ -1129,7 +1156,7 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">@Valid vs. @Validated</h3>
+  <h3 class="sub reveal" id="valid-vs-validated">@Valid vs. @Validated</h3>
   <ul class="reveal">
     <li><strong><code>@Valid</code></strong> (standard Java/Jakarta annotation) triggers validation and <strong>cascades</strong> into nested objects — a <code>@Valid List&lt;LineItem&gt;</code> field validates every item in the list too.</li>
     <li><strong><code>@Validated</code></strong> (Spring's own annotation) is class-level, and unlocks two things <code>@Valid</code> alone can't: <strong>validation groups</strong> (different rule sets for "create" vs. "update") and method-level validation on plain service beans, not just controller parameters.</li>
@@ -1142,7 +1169,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Custom constraints</h3>
+  <h3 class="sub reveal" id="custom-constraints">Custom constraints</h3>
   <p class="reveal">When the built-ins don't cover a business rule (a password matching a specific policy, a date range that must be internally consistent), define a custom annotation plus a <code>ConstraintValidator</code> implementation — the same declarative style, extended to your own domain logic.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">ValidPostcode.java</span></div>
@@ -1214,7 +1241,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Centralizing with @RestControllerAdvice</h3>
+  <h3 class="sub reveal" id="centralizing-with-restcontrolleradvice">Centralizing with @RestControllerAdvice</h3>
   <p class="reveal">A class annotated <code>@RestControllerAdvice</code> intercepts exceptions thrown from <em>any</em> controller in the application, and each <code>@ExceptionHandler</code> method inside it maps one exception type to a specific HTTP response.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">GlobalExceptionHandler.java</span></div>
@@ -1248,7 +1275,7 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">RFC 7807 and a consistent error schema</h3>
+  <h3 class="sub reveal" id="rfc-7807-and-a-consistent-error-schema">RFC 7807 and a consistent error schema</h3>
   <p class="reveal">RFC 7807 ("Problem Details for HTTP APIs") standardizes a machine-readable error shape — <code>type</code>, <code>title</code>, <code>status</code>, <code>detail</code>, <code>instance</code> — so clients can parse errors from your API the same way regardless of which endpoint failed. Spring Boot 3's <code>ProblemDetail</code> return type implements this directly, without you hand-rolling an error DTO.</p>
   <div class="callout callout--tip reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2.5l2.1 5.9 5.9 2.1-5.9 2.1L12 18.5l-2.1-5.9-5.9-2.1 5.9-2.1L12 2.5z" fill="currentColor"/></svg></div>
@@ -1310,7 +1337,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">The filter chain: a gauntlet before your controller ever runs</h3>
+  <h3 class="sub reveal" id="the-filter-chain-a-gauntlet-before-your-controller-ever-runs">The filter chain: a gauntlet before your controller ever runs</h3>
   <p class="reveal">In a secured Spring Boot app, no request reaches your <code>@RestController</code> directly. It first passes through a chain of servlet filters that Spring Security registers in front of <code>DispatcherServlet</code> — and any one of them can reject the request outright, long before your controller code ever executes.</p>
 
   <div class="panel diagram-panel reveal">
@@ -1330,7 +1357,7 @@ noscript .reveal{opacity:1;}
 
   <p class="reveal">The custom <code>JwtFilter</code> is deliberately written as <code>extends OncePerRequestFilter</code> rather than implementing <code>Filter</code> directly. A plain servlet filter can run more than once per client request — internal forwards (an error dispatch to <code>/error</code>, an async dispatch, a <code>RequestDispatcher.forward()</code>) all re-enter the filter chain. <code>OncePerRequestFilter</code> guarantees its <code>doFilterInternal</code> runs <em>exactly once</em> per request regardless of how many times it's internally dispatched — critical for a filter whose whole job is "check the token," since running it twice is at best wasted work and at worst a source of subtle bugs.</p>
 
-  <h3 class="sub reveal">Configuring the chain: SecurityFilterChain, not WebSecurityConfigurerAdapter</h3>
+  <h3 class="sub reveal" id="configuring-the-chain-securityfilterchain-not">Configuring the chain: SecurityFilterChain, not WebSecurityConfigurerAdapter</h3>
   <p class="reveal"><code>WebSecurityConfigurerAdapter</code> — the old pattern of extending a base class and overriding <code>configure(HttpSecurity)</code> — is deprecated and removed as of Spring Security 6. The modern replacement is a <code>SecurityFilterChain</code> <code>@Bean</code>, built with the lambda DSL:</p>
 
   <div class="code-window reveal">
@@ -1360,11 +1387,11 @@ noscript .reveal{opacity:1;}
   </div>
   <p class="reveal"><code>.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)</code> is what actually slots the custom filter into the chain at the right position. CSRF is disabled here deliberately — this is a stateless, token-authenticated API with no browser-managed session cookie for a forged request to ride on; the CSRF theory behind that trade-off (and when you'd want it back) is covered in <strong>security-auth-complete.html</strong>.</p>
 
-  <h3 class="sub reveal">UserDetailsService and PasswordEncoder</h3>
+  <h3 class="sub reveal" id="userdetailsservice-and-passwordencoder">UserDetailsService and PasswordEncoder</h3>
   <p class="reveal"><code>UserDetailsService</code> is a one-method contract — <code>loadUserByUsername(String username)</code> — that tells Spring how to fetch a user (and their granted authorities) from wherever they actually live: a database, an LDAP directory, anywhere. Spring's authentication machinery calls it during login and hands the result, plus the raw submitted password, to whichever <code>PasswordEncoder</code> bean is configured.</p>
   <p class="reveal">In practice that's almost always <code>BCryptPasswordEncoder</code>. BCrypt is <strong>one-way</strong> — there is no <code>decode()</code>, only a comparison — and it <strong>salts automatically</strong>, meaning <code>passwordEncoder.encode("password123")</code> produces a <em>different</em> hash string on every single call, even for the exact same input, because a random salt is generated and embedded directly in the output. That's also why you never compare hashes with <code>.equals()</code> — <code>passwordEncoder.matches(rawPassword, storedHash)</code> is the only correct check, since it extracts the salt from the stored hash before re-hashing the candidate.</p>
 
-  <h3 class="sub reveal">JwtFilter: validating the token on every request</h3>
+  <h3 class="sub reveal" id="jwtfilter-validating-the-token-on-every-request">JwtFilter: validating the token on every request</h3>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">JwtFilter.java</span></div>
     <pre><code><span class="tk-kw">public class</span> <span class="tk-typ">JwtFilter</span> <span class="tk-kw">extends</span> OncePerRequestFilter {
@@ -1393,7 +1420,7 @@ noscript .reveal{opacity:1;}
   </div>
   <p class="reveal">Note the null-check on <code>getAuthentication()</code> — if a filter earlier in the chain already authenticated this request, <code>JwtFilter</code> doesn't redo the work. Once <code>SecurityContextHolder</code> holds an <code>Authentication</code>, everything downstream — <code>@PreAuthorize</code> checks, <code>FilterSecurityInterceptor</code>, <code>Authentication.getPrincipal()</code> in your controller — reads from it.</p>
 
-  <h3 class="sub reveal">The full JWT-secured request flow</h3>
+  <h3 class="sub reveal" id="the-full-jwt-secured-request-flow">The full JWT-secured request flow</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>Client POSTs credentials</b><span>/auth/login</span></div>
@@ -1418,7 +1445,7 @@ noscript .reveal{opacity:1;}
 
   <p class="reveal">Access tokens are deliberately short-lived — 15 minutes to a day is typical — so a leaked token has a small blast radius. That would force constant re-logins if it were the whole story, so it's paired with a longer-lived <strong>refresh token</strong>: when the access token expires, the client silently exchanges the refresh token for a new access token instead of asking the user to log in again. The full OAuth2/OIDC token-lifecycle theory behind this pattern lives in <strong>security-auth-complete.html</strong> — this is the Spring-side plumbing that issues and checks the tokens.</p>
 
-  <h3 class="sub reveal">@PreAuthorize, and role vs. authority</h3>
+  <h3 class="sub reveal" id="preauthorize-and-role-vs-authority">@PreAuthorize, and role vs. authority</h3>
   <p class="reveal"><code>@PreAuthorize("hasRole('ADMIN')")</code> enforces authorization at the <em>method</em> level rather than the URL level — it protects a service method no matter which controller (or which other service) ends up calling it, which a <code>SecurityFilterChain</code>'s URL-pattern rules can't do. It requires <code>@EnableMethodSecurity</code> on your configuration class, and is evaluated via an AOP proxy exactly like <code>@Transactional</code> or <code>@Cacheable</code> — meaning it's subject to the exact same self-invocation blind spot covered in the AOP chapter.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -1504,7 +1531,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">WebSockets: when the server needs to push</h3>
+  <h3 class="sub reveal" id="websockets-when-the-server-needs-to-push">WebSockets: when the server needs to push</h3>
   <p class="reveal">HTTP is fundamentally request/response — the client always speaks first. <strong>WebSockets</strong> upgrade a single TCP connection into a <strong>full-duplex</strong> channel, so the server can push data to the client at any time without the client asking again. It's the backbone of chat, live dashboards, notifications, and collaborative editing.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -1537,7 +1564,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">gRPC: when services need to talk to each other, a lot</h3>
+  <h3 class="sub reveal" id="grpc-when-services-need-to-talk-to-each-other-a-lot">gRPC: when services need to talk to each other, a lot</h3>
   <p class="reveal"><strong>gRPC</strong> is a high-performance RPC framework built on <strong>Protocol Buffers</strong> (a compact binary contract) and <strong>HTTP/2</strong> (multiplexed, streaming transport). It's built for exactly one job better than REST: fast, strongly-typed, internal service-to-service communication.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">inventory.proto</span></div>
@@ -1578,7 +1605,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Reactive programming: WebFlux, Mono &amp; Flux</h3>
+  <h3 class="sub reveal" id="reactive-programming-webflux-mono-flux">Reactive programming: WebFlux, Mono &amp; Flux</h3>
   <p class="reveal">Spring MVC — the default stack used everywhere else in this module — is <strong>blocking</strong>: a thread is checked out of a pool for the entire lifetime of a request, including any time it spends waiting on a database call, a downstream HTTP call, or anything else I/O-bound. That's a fine trade-off until the number of concurrent, slow, I/O-bound requests starts to outgrow the thread pool itself. <strong>Spring WebFlux</strong> is Spring's alternative stack, built on Project Reactor, that handles requests without dedicating a thread to each one for its full duration.</p>
 
   <div class="tbl-wrap reveal">
@@ -1701,7 +1728,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">What Actuator exposes</h3>
+  <h3 class="sub reveal" id="what-actuator-exposes">What Actuator exposes</h3>
   <p class="reveal">Adding <code>spring-boot-starter-actuator</code> exposes a set of production-ready endpoints over HTTP (and optionally JMX) with zero custom code required.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -1717,7 +1744,7 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">Writing a custom HealthIndicator</h3>
+  <h3 class="sub reveal" id="writing-a-custom-healthindicator">Writing a custom HealthIndicator</h3>
   <p class="reveal">The built-in checks cover infrastructure Spring already knows about — the database, disk space. For anything domain-specific — a downstream payment gateway, a third-party API this service can't function without — implement <code>HealthIndicator</code>, and Spring Boot automatically folds it into the aggregate <code>/actuator/health</code> response with no registration step required.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">PaymentGatewayHealthIndicator.java</span></div>
@@ -1738,7 +1765,7 @@ noscript .reveal{opacity:1;}
   </div>
   <p class="reveal">Spring Boot discovers this bean automatically and merges it into the overall health tree under a key derived from the class name — <code>paymentGateway</code> here — with its own <code>UP</code>/<code>DOWN</code> status rolling up into the top-level status. <code>Health.down(ex)</code> attaches the exception's message as a detail automatically, which is exactly what shows up in <code>/actuator/health</code> when this specific dependency is what broke, instead of a generic "the app is unhealthy" with no further clue where to look.</p>
 
-  <h3 class="sub reveal">Micrometer &amp; the three pillars</h3>
+  <h3 class="sub reveal" id="micrometer-the-three-pillars">Micrometer &amp; the three pillars</h3>
   <p class="reveal"><strong>Micrometer</strong> is a vendor-neutral metrics facade — often described as "the SLF4J of metrics" — that lets your code emit metrics once and ship them to Prometheus, Datadog, or whatever backend you choose, without changing instrumentation code. Modern observability rests on three pillars, correlated by a shared trace ID:</p>
   <div class="duo reveal">
     <div class="panel"><h4><span class="sw"></span>Metrics</h4><ul><li>Numeric time series — request counts, latencies, error rates, JVM stats</li></ul></div>
@@ -1753,7 +1780,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Kubernetes health probes</h3>
+  <h3 class="sub reveal" id="kubernetes-health-probes">Kubernetes health probes</h3>
   <p class="reveal">Actuator's health groups map directly onto Kubernetes' two-probe model: <code>/actuator/health/liveness</code> answers "is this instance broken and needs restarting," and <code>/actuator/health/readiness</code> answers "is this instance ready to receive traffic right now." Wiring these up correctly is what makes a rolling deploy actually graceful instead of routing traffic to a pod that isn't ready yet.</p>
 
   <div class="callout callout--tip reveal">
@@ -1801,7 +1828,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">HikariCP: why connection pooling exists</h3>
+  <h3 class="sub reveal" id="hikaricp-why-connection-pooling-exists">HikariCP: why connection pooling exists</h3>
   <p class="reveal">Opening a new database connection isn't free — TCP handshake, authentication, sometimes TLS negotiation, routinely costing on the order of 100ms. Paying that cost on every single request would make the database connection itself the slowest part of most APIs. <strong>HikariCP</strong> — Spring Boot's default connection pool since Boot 2 — keeps a fixed set of connections already open and hands them out on request, so a request <em>borrows</em> a connection and returns it instead of opening and closing a real socket every time.</p>
 
   <div class="code-window reveal">
@@ -1827,7 +1854,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">GZIP compression: a free win</h3>
+  <h3 class="sub reveal" id="gzip-compression-a-free-win">GZIP compression: a free win</h3>
   <p class="reveal">One line of YAML, zero code changes, typically a ~90% reduction in the size of a JSON response over the wire:</p>
   <pre class="reveal"><code>server:
   compression:
@@ -1836,7 +1863,7 @@ noscript .reveal{opacity:1;}
     min-response-size: 1024</code></pre>
   <p class="reveal">There's essentially no argument against turning this on — the CPU cost of compressing is trivial compared to what it saves in transfer time, especially for clients on a slow or metered connection. It's the rare optimization with no real trade-off attached.</p>
 
-  <h3 class="sub reveal">@Async: don't make the client wait for work they don't need to wait for</h3>
+  <h3 class="sub reveal" id="async-don-t-make-the-client-wait-for-work-they-don-t-need">@Async: don't make the client wait for work they don't need to wait for</h3>
   <p class="reveal">A synchronous call blocks the caller until the entire method — including any side effects inside it — finishes. <code>@Async</code> runs the annotated method on a separate thread and returns control to the caller immediately; the caller doesn't wait for it to complete at all. It's the right shape for fire-and-forget background work: sending a signup confirmation email, generating a report nobody's staring at a spinner for, writing an audit-trail entry.</p>
 
   <div class="code-window reveal">
@@ -1853,7 +1880,7 @@ noscript .reveal{opacity:1;}
   </div>
   <p class="reveal">Two things have to be true for this to actually run async in production: <code>@EnableAsync</code> on a configuration class, and a real, bounded <code>ThreadPoolTaskExecutor</code> bean (named <code>taskExecutor</code> above) with an explicit <code>corePoolSize</code>/<code>maxPoolSize</code>/<code>queueCapacity</code>. Skip the second part and Spring falls back to <code>SimpleAsyncTaskExecutor</code>, which spins up a brand-new thread per call with no reuse and no upper bound — a resource leak waiting for enough concurrent calls to happen at once.</p>
 
-  <h3 class="sub reveal">WebClient vs. RestTemplate: blocking vs. non-blocking outbound calls</h3>
+  <h3 class="sub reveal" id="webclient-vs-resttemplate-blocking-vs-non-blocking-outbound">WebClient vs. RestTemplate: blocking vs. non-blocking outbound calls</h3>
   <p class="reveal"><code>RestTemplate</code> is Spring's original HTTP client for calling other services, and it's now officially in maintenance mode — no new features, ever. It's <strong>blocking</strong>: the calling thread sits parked for the entire round trip of every outbound call. <code>WebClient</code> (from Spring WebFlux) is <strong>non-blocking</strong>, built on a small event-loop of threads that register a callback for each in-flight call and move on, rather than dedicating a thread to sit and wait.</p>
 
   <div class="duo reveal">
@@ -1875,7 +1902,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Quick wins checklist</h3>
+  <h3 class="sub reveal" id="quick-wins-checklist">Quick wins checklist</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Win</th><th>Why it matters</th></tr></thead>
@@ -1889,7 +1916,7 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">Triage: where to look first</h3>
+  <h3 class="sub reveal" id="triage-where-to-look-first">Triage: where to look first</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Symptom</th><th>Check first</th></tr></thead>
@@ -1966,7 +1993,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">The five-layer flow</h3>
+  <h3 class="sub reveal" id="the-five-layer-flow">The five-layer flow</h3>
   <p class="reveal">A conventional Spring Boot service is built from five layers, each with one job and (deliberately) no knowledge of the layers it isn't adjacent to:</p>
 
   <div class="panel diagram-panel reveal">
@@ -1986,7 +2013,7 @@ noscript .reveal{opacity:1;}
 
   <p class="reveal">This isn't ceremony. The controller shouldn't know how data gets persisted — it just needs the service to hand back something it can serialize. The repository shouldn't know it's serving an HTTP request — it just needs to answer a query. That separation is what lets you change the persistence layer (a new index, a caching layer in front of the repository, even swapping databases) without touching the controller, and rework an endpoint's shape without touching how anything is stored. DTOs are the mechanism that makes this possible: they decouple your <em>API contract</em> from your <em>persistence model</em>, so a column rename in the entity doesn't have to become a breaking API change, and a client-facing field addition doesn't have to become a schema migration.</p>
 
-  <h3 class="sub reveal">A realistic package layout</h3>
+  <h3 class="sub reveal" id="a-realistic-package-layout">A realistic package layout</h3>
   <div class="panel diagram-panel reveal">
     <ul class="soft-tree">
       <li><span class="k">com.example.app</span><span class="d">root package</span>
@@ -2014,7 +2041,7 @@ noscript .reveal{opacity:1;}
     <p class="diagram-cap">Package-by-layer like this is the conventional default for a single-module Spring Boot service — it makes "where does this kind of code live" a one-second question for anyone new to the codebase.</p>
   </div>
 
-  <h3 class="sub reveal">Debugging a production issue — the interview-answer structure</h3>
+  <h3 class="sub reveal" id="debugging-a-production-issue-the-interview-answer-structure">Debugging a production issue — the interview-answer structure</h3>
   <p class="reveal">"How would you debug a production issue" is asked often enough, and answered vaguely often enough, that having an actual order to walk through is worth more than any specific war story.</p>
   <div class="callout callout--tip reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2.5l2.1 5.9 5.9 2.1-5.9 2.1L12 18.5l-2.1-5.9-5.9-2.1 5.9-2.1L12 2.5z" fill="currentColor"/></svg></div>
@@ -2024,7 +2051,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Common errors, triaged</h3>
+  <h3 class="sub reveal" id="common-errors-triaged">Common errors, triaged</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Symptom</th><th>Likely cause</th><th>Confirm / fix</th></tr></thead>
@@ -2094,7 +2121,7 @@ noscript .reveal{opacity:1;}
 
   <div class="iq-group-label">IoC, DI &amp; Bean Lifecycle</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-01">
     <summary><span class="iq-num">01</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does constructor injection catch a circular dependency at startup, when setter injection often doesn't?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>A constructor needs <em>all</em> of its arguments fully resolved before it can even be called — if bean A's constructor needs bean B, and B's constructor needs bean A, Spring can't finish constructing either one first, and fails immediately with a clear circular-reference error.</p>
@@ -2102,7 +2129,7 @@ noscript .reveal{opacity:1;}
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-02">
     <summary><span class="iq-num">02</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">"@Autowired always resolves to whichever bean is marked @Primary." What's incomplete about this claim?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>@Primary is only a tiebreaker — it applies when Spring is choosing among <em>multiple matching candidates</em> and nothing more specific has been requested. An explicit <code>@Qualifier("beanName")</code> at the injection point overrides <code>@Primary</code> outright; the qualifier is a direct request, while <code>@Primary</code> is just a default preference.</p>
@@ -2110,7 +2137,7 @@ noscript .reveal{opacity:1;}
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-03">
     <summary><span class="iq-num">03</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A singleton service injected with a prototype-scoped helper behaves as if it's reusing stale state across unrelated requests. What's happening, and what's the fix?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>This is the classic prototype-in-singleton trap. The singleton is constructed exactly once, so its constructor (or field) injection of the prototype bean also happens exactly once — the "fresh instance per lookup" promise of prototype scope never actually triggers again after that first wiring. Every subsequent call reuses the very first prototype instance, accumulating whatever state it holds.</p>
@@ -2118,7 +2145,7 @@ noscript .reveal{opacity:1;}
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-04">
     <summary><span class="iq-num">04</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Given the strong general recommendation for constructor injection, when would setter injection genuinely be the better call?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>When a dependency is genuinely optional — the bean is fully functional without it, and its presence only enables extra behavior (an optional metrics reporter, an optional cache warmer). Forcing an optional collaborator through the constructor implies it's mandatory, which is misleading to anyone reading the class, and complicates every test that doesn't care about that dependency.</p>
@@ -2128,7 +2155,7 @@ noscript .reveal{opacity:1;}
 
   <div class="iq-group-label">Spring Boot &amp; Configuration</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-05">
     <summary><span class="iq-num">05</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Walk through what actually happens, in order, from <code>java -jar app.jar</code> to the app accepting its first request.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>The JAR's launcher unpacks/loads the nested dependency JARs and invokes your <code>main()</code>, which calls <code>SpringApplication.run()</code>. That creates the <code>ApplicationContext</code>, which triggers component scanning (discovering your <code>@Component</code>/<code>@Service</code>/etc. classes) and auto-configuration (evaluating every conditional auto-config class against your classpath and properties).</p>
@@ -2136,7 +2163,7 @@ noscript .reveal{opacity:1;}
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-06">
     <summary><span class="iq-num">06</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">"Auto-configuration means Spring Boot decides everything for you, with no way to override it." Why is this wrong?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Auto-configuration is built entirely around <em>backing off</em>, not overriding. Nearly every auto-configured bean is annotated <code>@ConditionalOnMissingBean</code> — the moment you define your own bean of that type, the auto-configured default simply never activates. The "magic" only ever fills a gap you haven't already filled.</p>
@@ -2144,7 +2171,7 @@ noscript .reveal{opacity:1;}
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-07">
     <summary><span class="iq-num">07</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">The same property needs a different value in staging vs. production, but you want one build artifact deployed unchanged to both. How do you structure this?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Don't bake environment-specific values into the JAR at all — rely on Spring Boot's property-source precedence. Either use profile-specific files (<code>application-staging.yml</code>, <code>application-prod.yml</code>) selected via <code>spring.profiles.active</code> at deploy time, or — more common in containerized deployments — set environment variables per environment and let those override the base <code>application.yml</code> automatically, since env vars outrank file-based config.</p>
@@ -2152,7 +2179,7 @@ noscript .reveal{opacity:1;}
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-08">
     <summary><span class="iq-num">08</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Given that <code>@ConfigurationProperties</code> is generally preferred, when is a plain <code>@Value</code> still the right tool?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>For a single, standalone value used in exactly one place — a feature-flag boolean read by one class, a one-off timeout — a whole <code>@ConfigurationProperties</code> record is unnecessary ceremony. <code>@Value("${feature.new-checkout:false}")</code> is simpler, and the default-value syntax handles the common case cleanly.</p>
@@ -2162,7 +2189,7 @@ noscript .reveal{opacity:1;}
 
   <div class="iq-group-label">AOP &amp; Proxies</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-09">
     <summary><span class="iq-num">09</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why can't Spring AOP intercept a call to a <code>private</code> method, even with a pointcut that seems to match it?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Spring's proxy-based AOP can only intercept calls that arrive through the proxy — and a <code>private</code> method can never be called from outside the class in the first place, by Java's own access rules. Every call to it is necessarily an internal, same-object call, which is exactly the self-invocation path that bypasses the proxy entirely, every single time.</p>
@@ -2170,7 +2197,7 @@ noscript .reveal{opacity:1;}
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-10">
     <summary><span class="iq-num">10</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A developer extracts an inline block into a new <code>private</code> helper method within the same service, marks a nearby method <code>@Cacheable</code>, and calls the helper internally. Caching never seems to take effect. Why?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>This is self-invocation again, just dressed differently. If the <code>@Cacheable</code> method is being called from another method in the <em>same class</em> — regardless of how recently that call site was refactored or how the helper method is structured — the call goes through <code>this</code>, not through the container-managed proxy, so the caching advice never runs.</p>
@@ -2178,7 +2205,7 @@ noscript .reveal{opacity:1;}
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-11">
     <summary><span class="iq-num">11</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">You need to log an audit entry every time any repository's <code>save()</code> method is called, across dozens of repositories, without touching each one. How would you design this?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>This is a textbook cross-cutting concern — exactly what AOP exists for. Define an <code>@Aspect</code> bean with an <code>@Around</code> (or <code>@AfterReturning</code>) advice whose pointcut expression targets the pattern <code>execution(* org.springframework.data.repository.Repository+.save(..))</code> (or more narrowly, your own repository package), capturing the target object and arguments to write the audit entry.</p>
@@ -2186,7 +2213,7 @@ noscript .reveal{opacity:1;}
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-12">
     <summary><span class="iq-num">12</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Two beans in the same application end up proxied differently — one via JDK dynamic proxy, one via CGLIB. What actually determines which one Spring picks?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>It comes down to whether the bean's class implements at least one interface. If it does, Spring defaults to a JDK dynamic proxy implementing that same interface. If the bean is a concrete class with no interface, Spring has no interface to implement a proxy against, so it falls back to CGLIB — generating a runtime subclass of the bean's own class instead.</p>
@@ -2196,7 +2223,7 @@ noscript .reveal{opacity:1;}
 
   <div class="iq-group-label">Real-Time, RPC &amp; Observability</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-13">
     <summary><span class="iq-num">13</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">A gRPC unary call is "1 request, 1 response" — the same shape as a REST GET. What's actually meaningfully different about it?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>The shape is the same, but the mechanics differ throughout the stack. The payload is protobuf — a compact binary encoding against a strict, code-generated schema — versus JSON's self-describing text. The transport is HTTP/2, which multiplexes many calls over one connection without head-of-line blocking at the application level, versus REST typically riding plain HTTP/1.1.</p>
@@ -2204,7 +2231,7 @@ noscript .reveal{opacity:1;}
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-14">
     <summary><span class="iq-num">14</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">"It's fine to expose every actuator endpoint in production — they're all read-only." What's wrong with this?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Several actuator endpoints aren't purely read-only in the safe sense at all: <code>/actuator/env</code> can expose secrets embedded in configuration, <code>/actuator/heapdump</code> exposes a full memory snapshot (potentially including sensitive in-memory data), and <code>/actuator/loggers</code> lets a caller <em>change</em> log levels at runtime — a genuine write operation, and a way to flood logs or hide activity.</p>
@@ -2212,7 +2239,7 @@ noscript .reveal{opacity:1;}
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-15">
     <summary><span class="iq-num">15</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A live-updating WebSocket dashboard works perfectly in staging (one instance) but randomly drops updates in production, which runs three instances behind a load balancer. Diagnose it.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>This is almost certainly the default in-memory broker being per-instance. A client connects to whichever instance the load balancer routes it to; a broadcast triggered on a <em>different</em> instance never reaches that client, since the two instances don't share subscription state. "Randomly drops" is the natural symptom of load-balanced traffic being distributed across instances that each only know about their own local subscribers.</p>
@@ -2220,7 +2247,7 @@ noscript .reveal{opacity:1;}
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-16">
     <summary><span class="iq-num">16</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">A team is debating gRPC vs. REST for a brand-new internal service. What's the actual decision criterion, beyond "gRPC is faster"?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>"Faster" is real but rarely decisive on its own — plenty of internal services are nowhere near the throughput where protobuf's efficiency matters. The sharper questions: does this need streaming (gRPC has first-class support; REST doesn't)? Is this consumed by a browser or only by other backend services (gRPC needs a proxy for browser access; REST doesn't)? Does the team value a strictly enforced, code-generated contract over the flexibility (and debuggability with a browser or curl) of plain JSON?</p>
@@ -2230,7 +2257,7 @@ noscript .reveal{opacity:1;}
 
   <div class="iq-group-label">Cross-Topic Scenarios</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-17">
     <summary><span class="iq-num">17</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Trace, mechanism by mechanism, what happens when an HTTP request arrives with invalid data and your service throws a business exception.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>The embedded server hands the request to Spring MVC, which binds the JSON body to your DTO. If <code>@Valid</code> is present and a constraint fails, Bean Validation throws <code>MethodArgumentNotValidException</code> before your controller method body ever runs — caught by your <code>@RestControllerAdvice</code>'s handler for that type, returning a 400 with field-level errors.</p>
@@ -2238,7 +2265,7 @@ noscript .reveal{opacity:1;}
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-18">
     <summary><span class="iq-num">18</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">"Since @PostConstruct runs during bean initialization, it's safe to call other @Transactional methods on the same bean from inside it." True or false?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>False, and for a subtle reason on top of the usual one. AOP proxies are created in the <em>second</em> <code>BeanPostProcessor</code> phase — which runs <em>after</em> <code>@PostConstruct</code>. So inside <code>@PostConstruct</code>, the proxy doesn't exist yet at all; even calling the method through what looks like the bean reference is still hitting the raw, un-proxied target object.</p>
@@ -2246,7 +2273,7 @@ noscript .reveal{opacity:1;}
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-19">
     <summary><span class="iq-num">19</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A code reviewer flags a new <code>@Service</code> class with 15 constructor-injected dependencies. What's actually wrong, and how does Spring's own design point at the fix?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Fifteen dependencies is a design smell, not a DI problem — it's an unmistakable sign this one class has taken on far too many responsibilities. Constructor injection is deliberately unforgiving about this: unlike field injection, which can hide an enormous, sprawling dependency list, a bloated constructor signature makes the problem visually obvious the moment you look at the class.</p>
@@ -2256,7 +2283,7 @@ noscript .reveal{opacity:1;}
 
   <div class="iq-group-label">DI &amp; Bean Configuration Gotchas</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-20">
     <summary><span class="iq-num">20</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A developer puts <code>@Autowired</code> on a <code>static</code> field, expecting the container to inject it like any other field. It stays <code>null</code>. Why?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Spring's dependency injection operates on bean <em>instances</em> — after a bean is constructed, Spring reflectively sets its instance fields (or calls its setters/constructor) as part of that specific object's lifecycle. A <code>static</code> field doesn't belong to any instance at all; it belongs to the class itself, and it exists in memory before any bean lifecycle has run, before the <code>ApplicationContext</code> even starts. There is no instance-level injection point for Spring to act on, so the field is silently left exactly as it was — <code>null</code> — with no error, because from Spring's point of view there's nothing wrong: it successfully injected every instance field on every bean it created.</p>
@@ -2264,7 +2291,7 @@ noscript .reveal{opacity:1;}
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-21">
     <summary><span class="iq-num">21</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">When do you reach for <code>@Component</code> versus an <code>@Bean</code> method in a <code>@Configuration</code> class?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p><code>@Component</code> (and its specializations — <code>@Service</code>, <code>@Repository</code>, <code>@Controller</code>) is for a class you own and can annotate directly; component scanning finds it and registers it as a bean with essentially no ceremony. It stops being an option the moment the class comes from a third-party library — you can't add an annotation to a JAR you don't control.</p>
@@ -2274,7 +2301,7 @@ noscript .reveal{opacity:1;}
 
   <div class="iq-group-label">Security Integration</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-22">
     <summary><span class="iq-num">22</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q"><code>BCryptPasswordEncoder.encode("password123")</code> is called twice on the exact same string and produces two completely different output strings. Is this a bug?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Not a bug — this is BCrypt working exactly as designed. Every call to <code>encode()</code> generates a fresh, cryptographically random salt, then folds that salt directly into the output string alongside the hash itself — the format is roughly <code>$2a$&lt;cost&gt;$&lt;22-char salt&gt;&lt;31-char hash&gt;</code>. Different random salt in, different final string out, even for byte-for-byte identical input.</p>
@@ -2282,7 +2309,7 @@ noscript .reveal{opacity:1;}
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-23">
     <summary><span class="iq-num">23</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A user's granted authority is stored and returned exactly as the string <code>REPORT_EXPORT</code>. A developer writes <code>@PreAuthorize("hasRole('REPORT_EXPORT')")</code> expecting it to match. It never does. Why?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p><code>hasRole()</code> isn't a generic string-contains check — it silently prepends <code>ROLE_</code> before comparing, so <code>hasRole('REPORT_EXPORT')</code> actually checks for a granted authority of <code>ROLE_REPORT_EXPORT</code>, not <code>REPORT_EXPORT</code>. Since the authority was granted as the bare string with no prefix, the two never match, and the check fails closed — the user is denied, with nothing in the response to explain why the "obviously correct" annotation didn't work.</p>
@@ -2292,7 +2319,7 @@ noscript .reveal{opacity:1;}
 
   <div class="iq-group-label">Performance &amp; Production</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-24">
     <summary><span class="iq-num">24</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Alerts start firing for "HikariCP pool exhausted" on a service that's run fine for months, right after a burst of increased traffic. Walk through how you'd actually diagnose this rather than just raising <code>maximum-pool-size</code>.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>The instinct to immediately bump <code>maximum-pool-size</code> is exactly the trap here — it can mask either of two structurally different problems, and only one of them is actually fixed by a bigger pool. First check <code>hikaricp.connections.pending</code> via Actuator/Micrometer: if it spikes only during the traffic burst and recovers between bursts, that's consistent with a genuinely undersized pool for the new load — raising the size is the correct fix.</p>
@@ -2300,7 +2327,7 @@ noscript .reveal{opacity:1;}
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-25">
     <summary><span class="iq-num">25</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A method is annotated <code>@Async</code> and <code>@EnableAsync</code> is present on a configuration class. In production, under real concurrency, it behaves worse than the synchronous version it replaced. What was most likely missed?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p><code>@EnableAsync</code> alone doesn't provide a bounded, reusable thread pool — it only switches on Spring's async proxy machinery. Without an explicit <code>ThreadPoolTaskExecutor</code> bean (typically named <code>taskExecutor</code>, or referenced explicitly via <code>@Async("beanName")</code>), Spring silently falls back to <code>SimpleAsyncTaskExecutor</code>, which doesn't pool threads at all — it spins up a brand-new thread for every single invocation and never reuses or caps them.</p>
@@ -2410,6 +2437,8 @@ noscript .reveal{opacity:1;}
 <footer class="site-foot">Spring Boot — The Backend Engineering Layer. <a href="index.html#spring-boot" style="color:var(--accent-ink);font-weight:600;">← Back to the trailhead</a></footer>
 
 </main>
+<script src="search-index.js"></script>
+<script src="site-search.js"></script>
 <script>
 (function(){
 "use strict";

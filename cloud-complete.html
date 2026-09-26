@@ -388,12 +388,39 @@ noscript .reveal{opacity:1;}
   .navlink{font-size:.8rem;padding:.45rem .7rem;}
   .contents-btn{font-size:.8rem;padding:.45rem .8rem;}
 }
+/* ---- site search ---- */
+.site-search{position:relative;flex:1;max-width:420px;margin:0 1.2rem;}
+.site-search__box{display:flex;align-items:center;gap:.5rem;background:var(--surface-2);border-radius:var(--r-pill);padding:.5rem .9rem;transition:background var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);}
+.site-search__box:focus-within{background:var(--surface);box-shadow:0 0 0 2px var(--accent);}
+.site-search__icon{flex:none;width:15px;height:15px;color:var(--muted);}
+.site-search__input{flex:1;min-width:0;border:none;background:none;outline:none;font-family:var(--font-body);font-size:.87rem;color:var(--ink);}
+.site-search__input::placeholder{color:var(--muted);}
+.site-search__kbd{flex:none;font-family:var(--font-mono);font-size:.68rem;color:var(--muted);background:var(--surface);border-radius:5px;padding:.1rem .4rem;box-shadow:var(--shadow-sm);}
+.site-search__results{position:absolute;top:calc(100% + 8px);left:0;right:0;max-height:min(70vh,480px);overflow-y:auto;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:.5rem;display:none;z-index:50;}
+.site-search.is-open .site-search__results{display:block;}
+.site-search__empty{padding:1rem;font-size:.85rem;color:var(--muted);text-align:center;}
+.site-search__item{display:block;padding:.65rem .8rem;border-radius:10px;text-decoration:none;color:inherit;cursor:pointer;}
+.site-search__item:hover,.site-search__item.is-active{background:var(--tint);}
+.site-search__item-title{font-weight:700;font-size:.88rem;display:block;}
+.site-search__item-meta{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:.4rem;margin-top:.2rem;}
+.site-search__item-type{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;background:var(--surface-2);padding:.1rem .4rem;border-radius:999px;}
+.site-search mark{background:var(--tint-strong);color:inherit;border-radius:3px;padding:0 .1em;}
+@media (max-width:820px){.site-search{order:3;flex-basis:100%;max-width:none;margin:.6rem 0 0;}}
+[id]{scroll-margin-top:90px;}
 </style>
 <noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript>
 
 <header class="topnav">
   <div class="topnav__inner">
     <a class="wordmark" href="index.html#cloud"><span class="wordmark__mark">C</span>Cloud Fundamentals</a>
+    <div class="site-search" id="siteSearch">
+      <div class="site-search__box">
+        <svg class="site-search__icon" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" class="site-search__input" id="siteSearchInput" placeholder="Search any topic or question…" autocomplete="off" aria-label="Search notes" aria-expanded="false" aria-controls="siteSearchResults">
+        <span class="site-search__kbd">/</span>
+      </div>
+      <div class="site-search__results" id="siteSearchResults"></div>
+    </div>
     <nav class="navlinks">
       <a class="navlink" href="index.html#cloud">← All topics</a>
       <div class="contents" id="contents">
@@ -461,7 +488,7 @@ noscript .reveal{opacity:1;}
 
   <p class="reveal">Before "cloud" meant anything specific, it meant one thing: someone else owns the hardware, and you rent capacity instead of buying it. Everything else — the acronyms, the pricing models, the service catalogs — is detail on top of that one shift. But the detail matters, because it determines exactly where the line is drawn between "the provider's problem" and "your 3am page." That line moves depending on which service model you pick, and misunderstanding where it sits is the single most common way teams get burned in production.</p>
 
-  <h3 class="sub reveal">IaaS, PaaS, SaaS, FaaS — same stack, different ownership line</h3>
+  <h3 class="sub reveal" id="iaas-paas-saas-faas-same-stack-different-ownership-line">IaaS, PaaS, SaaS, FaaS — same stack, different ownership line</h3>
   <p class="reveal">These four models describe the same vertical stack — physical hardware, virtualization, OS, runtime, application, data — cut at different heights. Lower down the stack you keep for yourself, the more control and operational burden you carry; higher up the provider abstracts away, the less you can tune but the less you have to babysit.</p>
 
   <div class="tbl-wrap reveal">
@@ -489,7 +516,7 @@ noscript .reveal{opacity:1;}
     <p class="diagram-cap">The "stack you own" shrinks monotonically as you move right — but it never hits zero. Even at the FaaS end you still own your function's logic, its IAM permissions, and every bug you ship inside it.</p>
   </div>
 
-  <h3 class="sub reveal">Deployment models: where the infrastructure physically lives</h3>
+  <h3 class="sub reveal" id="deployment-models-where-the-infrastructure-physically-lives">Deployment models: where the infrastructure physically lives</h3>
   <p class="reveal">Service model is about ownership of layers; deployment model is about ownership of the infrastructure itself, and the two are independent choices.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -503,7 +530,7 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">The Shared Responsibility Model</h3>
+  <h3 class="sub reveal" id="the-shared-responsibility-model">The Shared Responsibility Model</h3>
   <p class="reveal">Every public cloud provider draws the same line, phrased almost identically: they secure <i>of</i> the cloud, you secure <i>in</i> the cloud. "Of the cloud" means physical data centers, the hypervisor, the network backbone, the hardware supply chain — things you could never audit yourself even if you wanted to. "In the cloud" means everything you configure on top: your VPC rules, your IAM policies, your encryption settings, whether that storage bucket is public or not, whether your database has a password on it at all.</p>
 
   <div class="callout callout--warn reveal">
@@ -547,10 +574,10 @@ noscript .reveal{opacity:1;}
 
   <p class="reveal">Compute is the layer most people picture when they hear "cloud": a machine, somewhere, running your code. But the interesting engineering happens in how that compute gets sized, replaced, and scaled without you sitting at a terminal doing it by hand. Four patterns cover almost everything you'll actually deploy: virtual machines, elastic VM fleets, managed containers, and serverless functions — each trading control for less operational surface area.</p>
 
-  <h3 class="sub reveal">Virtual machines: the IaaS baseline</h3>
+  <h3 class="sub reveal" id="virtual-machines-the-iaas-baseline">Virtual machines: the IaaS baseline</h3>
   <p class="reveal">EC2, Compute Engine, and Azure VMs all do the same job: hand you a virtual machine carved out of the provider's physical fleet, with a choice of instance family and size. Instance types are usually grouped by what they're optimized for — general purpose (balanced CPU/RAM), compute-optimized (high CPU-to-RAM ratio for CPU-bound workloads), memory-optimized (in-memory caches, large JVM heaps), storage-optimized (high IOPS for databases), and GPU/accelerated instances for ML workloads. Sizing an instance correctly — matching the family to the actual bottleneck, not just picking "the big one" — is the first and cheapest lever in cost optimization, revisited in chapter 8.</p>
 
-  <h3 class="sub reveal">The classic elastic-compute pattern: Load Balancer + Auto Scaling Group</h3>
+  <h3 class="sub reveal" id="the-classic-elastic-compute-pattern-load-balancer-auto">The classic elastic-compute pattern: Load Balancer + Auto Scaling Group</h3>
   <p class="reveal">A single VM is a single point of failure and a fixed capacity ceiling. The pattern that fixes both at once is old, boring, and still how most of the internet is actually built: put a load balancer in front, and put the instances behind it in an Auto Scaling Group (ASG) instead of managing them individually.</p>
 
   <div class="panel diagram-panel reveal">
@@ -578,7 +605,7 @@ health_check_grace_period: 90s</code></pre>
     <div class="callout__body"><b class="h">What a health check actually checks</b><p><code>health_check_type</code> and a target group's health check are abstract until something concrete answers them. For a real Java service, that concrete thing is almost always Spring Boot Actuator's <code>/actuator/health</code> endpoint — the load balancer or ASG polls it on an interval, and a non-200 response is what actually triggers "unhealthy, terminate and replace." The same packaged artifact — a Spring Boot JAR wrapped in a slim JRE container image — is what gets deployed across ECS/Fargate, Cloud Run, and EKS alike, making it this chapter's one concrete Java-flavored compute example (Elastic Beanstalk, already covered earlier in this module as a PaaS option, is the same JAR deployed a third way).</p></div>
   </div>
 
-  <h3 class="sub reveal">Managed containers: how much of the cluster do you want to touch?</h3>
+  <h3 class="sub reveal" id="managed-containers-how-much-of-the-cluster-do-you-want-to">Managed containers: how much of the cluster do you want to touch?</h3>
   <p class="reveal">Containers sit between VMs and serverless — you get packaging and portability, but someone still has to run the orchestrator. The providers split this into two tiers: managed Kubernetes, where they run the control plane but you still own the worker nodes and workload configuration, and fully managed container runtimes, where you hand over a container image and never think about a cluster at all.</p>
 
   <div class="duo reveal">
@@ -602,7 +629,7 @@ health_check_grace_period: 90s</code></pre>
     </div>
   </div>
 
-  <h3 class="sub reveal">Serverless functions</h3>
+  <h3 class="sub reveal" id="serverless-functions">Serverless functions</h3>
   <p class="reveal">Lambda, Cloud Functions, and Azure Functions push the ownership line as far as it goes: you write a function, attach a trigger — an HTTP request, a queue message, a storage event, a schedule — and the provider handles everything else, including scaling the number of concurrent executions up and down, including to zero. You're billed per invocation and per millisecond of execution, not for idle capacity.</p>
   <p class="reveal">The catch is the operating envelope. Functions have hard execution-time limits (historically 15 minutes on Lambda), no guaranteed local disk beyond ephemeral scratch space, and a <b>cold start</b>: when no warm execution environment exists, the platform has to provision one — download your code, start the runtime, initialize your handler — before your first line of business logic runs. For a function inside a VPC that also needs to attach an elastic network interface, cold starts get materially worse.</p>
 
@@ -652,7 +679,7 @@ health_check_grace_period: 90s</code></pre>
 
   <p class="reveal">"Storage" in the cloud isn't one product, because "store some bytes" isn't one problem. A photo upload, a database's data files, and a shared configuration directory mounted by fifty app servers all need fundamentally different access semantics — and each has its own dedicated service, with its own durability guarantees and its own pricing model.</p>
 
-  <h3 class="sub reveal">Object storage — S3, Blob Storage, Cloud Storage</h3>
+  <h3 class="sub reveal" id="object-storage-s3-blob-storage-cloud-storage">Object storage — S3, Blob Storage, Cloud Storage</h3>
   <p class="reveal">Object storage is a flat key-value store: you PUT a blob under a key, you GET it back over HTTP, and there's no filesystem hierarchy underneath, no partial writes, no file locking. Durability comes from the provider replicating every object across multiple devices and, usually, multiple facilities — S3 famously advertises "11 nines" of durability, meaning the odds of losing an object you stored are vanishingly small, though that says nothing about <i>availability</i> (whether you can reach it right now) or about whether you accidentally deleted it yourself.</p>
   <p class="reveal">Cost is managed through storage classes: hot tiers for frequently accessed data, cheaper tiers for data you rarely touch but still need quickly, and archive tiers for data you almost never touch and can tolerate minutes-to-hours of retrieval latency for.</p>
 
@@ -694,10 +721,10 @@ health_check_grace_period: 90s</code></pre>
     <p class="diagram-cap">A lifecycle policy is the difference between an S3 bill that grows forever and one that reflects how often data actually gets read — nobody has to run a cron job to move or delete objects.</p>
   </div>
 
-  <h3 class="sub reveal">Block storage — EBS, Azure Disks, Persistent Disk</h3>
+  <h3 class="sub reveal" id="block-storage-ebs-azure-disks-persistent-disk">Block storage — EBS, Azure Disks, Persistent Disk</h3>
   <p class="reveal">Block storage is a raw volume, attached over the network to exactly one compute instance at a time, formatted with a normal filesystem (ext4, XFS, NTFS) just like a physical disk. This is what databases and boot volumes sit on — it needs consistent low-latency IOPS and it needs to survive independently of the instance, which is why you can detach an EBS volume from a dead instance and reattach it to a replacement.</p>
 
-  <h3 class="sub reveal">File storage — EFS, Azure Files, Filestore</h3>
+  <h3 class="sub reveal" id="file-storage-efs-azure-files-filestore">File storage — EFS, Azure Files, Filestore</h3>
   <p class="reveal">File storage provides a shared POSIX filesystem that many instances can mount concurrently — the thing block storage explicitly cannot do. This is the right answer for shared configuration, shared upload directories across a fleet of web servers, or any workload that assumes normal file-locking semantics across multiple readers and writers.</p>
 
   <div class="tbl-wrap reveal">
@@ -761,10 +788,10 @@ health_check_grace_period: 90s</code></pre>
 
   <p class="reveal">A Virtual Private Cloud (VPC on AWS/GCP, VNet on Azure) is your own logically isolated slice of the provider's network — nobody else's traffic can see into it by default, and nothing inside it can reach the outside world unless you explicitly wire up a path. Everything downstream — subnets, routes, firewalls, peering — is about drawing that wiring deliberately instead of by accident.</p>
 
-  <h3 class="sub reveal">Subnets, CIDR blocks, and route tables</h3>
+  <h3 class="sub reveal" id="subnets-cidr-blocks-and-route-tables">Subnets, CIDR blocks, and route tables</h3>
   <p class="reveal">A VPC is carved into subnets, each pinned to a single Availability Zone and each assigned a slice of the VPC's IP range — a CIDR block like <code>10.0.1.0/24</code>. A subnet is <b>public</b> if its route table sends <code>0.0.0.0/0</code> traffic to an internet gateway, and <b>private</b> if it doesn't — private subnets typically route outbound traffic through a NAT gateway instead, so instances can reach the internet to pull updates without being directly reachable from it. The route table is the actual decision-maker here: "public" and "private" are just labels for how a given subnet's route table happens to be configured.</p>
 
-  <h3 class="sub reveal">Security Groups vs NACLs</h3>
+  <h3 class="sub reveal" id="security-groups-vs-nacls">Security Groups vs NACLs</h3>
   <p class="reveal">Both are firewalls, but they operate at different layers with fundamentally different semantics, and conflating them is one of the more common sources of "why can't this instance reach that instance" debugging sessions.</p>
 
   <div class="tbl-wrap reveal">
@@ -785,12 +812,12 @@ health_check_grace_period: 90s</code></pre>
     <div class="callout__body"><b class="h">Use them together, not instead of each other</b><p>Security groups are your day-to-day access control — "this app tier talks to that database tier on port 5432, nothing else." NACLs are a second, coarser layer that's useful precisely because it's stateless and ordered: you can hard-deny a specific CIDR range at the subnet boundary regardless of what any instance's security group says, which is exactly the kind of defense-in-depth control a single stateful layer can't give you.</p></div>
   </div>
 
-  <h3 class="sub reveal">Connecting VPCs: peering and transit gateways</h3>
+  <h3 class="sub reveal" id="connecting-vpcs-peering-and-transit-gateways">Connecting VPCs: peering and transit gateways</h3>
   <p class="reveal">VPC peering creates a direct, non-transitive network link between two VPCs — traffic flows as if they were one network, but peering doesn't chain, so if A peers with B and B peers with C, A still can't reach C through B. Once you have more than a handful of VPCs to connect, that non-transitive property turns into an unmanageable mesh of point-to-point connections, which is exactly what a transit gateway solves: a single hub that every VPC (and on-prem VPN) attaches to once, turning an N² peering problem into an N-connection hub-and-spoke.</p>
 
   <p class="reveal">Traffic leaving a private subnet for another provider service still has to get there somehow, and by default that path runs through a NAT gateway, paying its per-GB processing fee both ways. <b>VPC Endpoints</b> give that traffic a private path instead. A <b>Gateway endpoint</b> is free and route-table-based, and covers exactly two destinations — S3 and DynamoDB — by adding a route that sends traffic for that service directly across the provider's internal network. An <b>Interface endpoint</b> is PrivateLink-backed — it provisions an ENI with a private IP inside your subnet — and covers most other services (Secrets Manager, SQS, CloudWatch, and dozens more) for a small hourly-plus-per-GB cost. Either kind matters for two reasons at once: cost, since routed traffic skips the NAT gateway's per-GB processing charge entirely, and security, since the traffic never traverses the public internet, even briefly.</p>
 
-  <h3 class="sub reveal">Load balancers and CDN</h3>
+  <h3 class="sub reveal" id="load-balancers-and-cdn">Load balancers and CDN</h3>
   <p class="reveal">Load balancers come in two layers: L4 balancers route on IP and TCP/UDP port without looking at the payload, which makes them fast and protocol-agnostic; L7 balancers understand HTTP and can route on host header, path, or cookie, enabling things like path-based routing to different backend services behind one balancer. The routing algorithms themselves — round robin, least connections, consistent hashing — and CDN edge-caching mechanics are covered in full in the <b>System Design</b> module's Load Balancing chapter; this module only needs you to recognize which layer a given cloud load balancer product operates at (an AWS ALB is L7, an NLB is L4).</p>
 
   <div class="panel diagram-panel reveal">
@@ -857,7 +884,7 @@ health_check_grace_period: 90s</code></pre>
 
   <p class="reveal">Running a database yourself means owning patching, replication topology, failover orchestration, and backup verification — all before you've written a single query for your actual product. Managed data services exist to take that operational surface off your plate, at the cost of some control and, usually, a premium on the compute you're renting.</p>
 
-  <h3 class="sub reveal">Managed relational vs managed NoSQL</h3>
+  <h3 class="sub reveal" id="managed-relational-vs-managed-nosql">Managed relational vs managed NoSQL</h3>
   <p class="reveal">RDS and Cloud SQL run familiar engines — Postgres, MySQL, SQL Server — but handle patching, automated backups, and failover for you. DynamoDB, Firestore, and Cosmos DB are provider-native NoSQL stores built around horizontal partitioning from day one, trading relational query flexibility for near-limitless, low-latency scaling on simple access patterns (get-by-key, narrow query patterns). The choice between them is the same relational-vs-NoSQL trade-off as anywhere else — it's just that the cloud provider now owns the operational half of whichever one you pick.</p>
 
   <div class="callout callout--mistake reveal">
@@ -865,7 +892,7 @@ health_check_grace_period: 90s</code></pre>
     <div class="callout__body"><b class="h">The Lambda-to-RDS connection exhaustion trap</b><p>A long-lived Spring Boot service holds one small, stable HikariCP connection pool for its entire lifetime — a handful of connections, reused across every request. Serverless doesn't work that way: each concurrent Lambda execution environment is its own separate process with its own connection pool, so a traffic spike to a few hundred concurrent invocations can open a few hundred database connections almost instantly. Against a connection cap that's often only in the low hundreds on a burstable-tier database instance, that spike alone can exhaust every available connection and start failing requests that have nothing to do with the burst. The fix is a pooling proxy — RDS Proxy on AWS, or the Cloud SQL Auth Proxy on GCP — sitting between the functions and the database, multiplexing many function-side connections down to a small, stable number of real database connections.</p></div>
   </div>
 
-  <h3 class="sub reveal">Read replicas, Multi-AZ, and cross-region — three different jobs</h3>
+  <h3 class="sub reveal" id="read-replicas-multi-az-and-cross-region-three-different-jobs">Read replicas, Multi-AZ, and cross-region — three different jobs</h3>
   <p class="reveal">These three sound similar and get confused constantly, but they solve three different problems. A <b>read replica</b> is an asynchronous copy used to offload read traffic from the primary — it scales reads, and it's usually eventually consistent by some small lag. A <b>Multi-AZ</b> deployment keeps a synchronous standby in a second Availability Zone purely for automatic failover — it's not normally used to serve read traffic, and it protects you against losing an AZ, not against a bad deploy or corrupted data, since the standby mirrors the primary byte-for-byte in near real time. <b>Cross-region replication</b> is what protects you against losing an entire region, and it typically becomes the backbone of a disaster recovery plan rather than a high-availability one.</p>
 
   <div class="tbl-wrap reveal">
@@ -891,10 +918,10 @@ health_check_grace_period: 90s</code></pre>
     <p class="diagram-cap">Three layers of protection, not one: the standby covers "a data center caught fire," the cross-region replica covers "the whole region is unreachable" — losing the primary doesn't mean losing the other two.</p>
   </div>
 
-  <h3 class="sub reveal">Managed caching and managed messaging</h3>
+  <h3 class="sub reveal" id="managed-caching-and-managed-messaging">Managed caching and managed messaging</h3>
   <p class="reveal">Managed caching (ElastiCache, Memorystore, Azure Cache for Redis) hosts Redis or Memcached without you operating the cluster — the internals of Redis itself, eviction policies, and cache-aside vs write-through patterns are covered in depth in the <b>Caching &amp; Redis</b> module and aren't re-derived here. Managed messaging (SQS, Pub/Sub, Service Bus) gives you queues and topics as a service; where you need ordered, replayable, high-throughput event streaming rather than a simple queue, that's the domain of the <b>Kafka</b> module.</p>
 
-  <h3 class="sub reveal">Backup and point-in-time recovery, by default</h3>
+  <h3 class="sub reveal" id="backup-and-point-in-time-recovery-by-default">Backup and point-in-time recovery, by default</h3>
   <p class="reveal">This is the quiet, unglamorous advantage of managed data services: automated backups and point-in-time recovery (PITR) — the ability to restore a database to any second within a retention window, not just to the last nightly snapshot — ship as a checkbox rather than a project. Self-hosting the same guarantee means building and testing your own backup pipeline, verifying restores actually work, and doing it all again after every schema migration.</p>
 
   <div class="callout callout--real reveal">
@@ -948,7 +975,7 @@ health_check_grace_period: 90s</code></pre>
 
   <p class="reveal">IAM is the layer that answers "who can do what" for every other service in this module — every VPC rule, every storage bucket, every database has an IAM policy sitting somewhere upstream of it deciding who's even allowed to try. The building blocks are simple: a <b>user</b> is an identity (a person or a service), a <b>group</b> bundles users together, a <b>role</b> is a set of permissions that can be <i>assumed</i> temporarily rather than owned permanently, and a <b>policy</b> is the actual document listing which actions are allowed on which resources.</p>
 
-  <h3 class="sub reveal">Least privilege, and why roles beat long-lived keys</h3>
+  <h3 class="sub reveal" id="least-privilege-and-why-roles-beat-long-lived-keys">Least privilege, and why roles beat long-lived keys</h3>
   <p class="reveal">The principle of least privilege says a principal should hold exactly the permissions it needs to do its job, no more — not "admin because it was easier," not "read-write on everything in case we need it later." The reason roles are preferred over long-lived access keys is that a role's credentials are issued on assumption, expire automatically (often within an hour), and never need to be stored anywhere — there's no secret sitting in a config file or a CI variable that can leak, get committed to a public repo, or outlive the person who created it.</p>
 
   <pre class="reveal"><code>{
@@ -987,7 +1014,7 @@ health_check_grace_period: 90s</code></pre>
     </div>
   </div>
 
-  <h3 class="sub reveal">OIDC federation for CI/CD: no stored secret at all</h3>
+  <h3 class="sub reveal" id="oidc-federation-for-ci-cd-no-stored-secret-at-all">OIDC federation for CI/CD: no stored secret at all</h3>
   <p class="reveal">The best version of "prefer roles over keys" removes the standing credential entirely. Instead of storing a long-lived cloud access key as a CI secret, a pipeline like GitHub Actions can present a short-lived OIDC identity token — signed by GitHub, scoped to that specific repo and workflow — and exchange it for temporary cloud credentials via an identity federation trust relationship. If that repo secret store leaked, there's nothing durable in it to steal.</p>
 
   <div class="panel diagram-panel reveal">
@@ -1130,7 +1157,7 @@ health_check_grace_period: 90s</code></pre>
 
   <p class="reveal">Everything in the previous seven chapters is a building block. This chapter is about the judgment calls that separate a cloud architecture that survives a bad week from one that doesn't — and a cloud bill that makes sense from one that quietly triples.</p>
 
-  <h3 class="sub reveal">Regions vs Availability Zones — designing for two different failure radii</h3>
+  <h3 class="sub reveal" id="regions-vs-availability-zones-designing-for-two-different">Regions vs Availability Zones — designing for two different failure radii</h3>
   <p class="reveal">A region is a geographic area (<code>us-east-1</code>, <code>westeurope</code>); an Availability Zone is one or more physically separate, independently powered and networked data centers inside that region. Spreading across AZs protects you against a single data center going dark — power loss, a fiber cut, a cooling failure — while spreading across regions protects you against something that takes out an entire geography, and often also serves a second purpose: putting compute physically closer to users on the other side of the planet.</p>
 
   <div class="panel diagram-panel reveal">
@@ -1149,7 +1176,7 @@ health_check_grace_period: 90s</code></pre>
     <p class="diagram-cap">This is the same VPC layout from chapter 4, extended along two independent axes: multiple AZs give you high availability within a region; a second region gives you disaster recovery when the whole region — not just one data center — is the thing that fails.</p>
   </div>
 
-  <h3 class="sub reveal">The Well-Architected Framework</h3>
+  <h3 class="sub reveal" id="the-well-architected-framework">The Well-Architected Framework</h3>
   <p class="reveal">AWS, Azure, and GCP each publish a version of this, and while the exact wording differs, the six pillars converge on the same checklist for reviewing any architecture before it ships.</p>
 
   <div class="tbl-wrap reveal">
@@ -1166,7 +1193,7 @@ health_check_grace_period: 90s</code></pre>
     </table>
   </div>
 
-  <h3 class="sub reveal">Practical cost levers</h3>
+  <h3 class="sub reveal" id="practical-cost-levers">Practical cost levers</h3>
   <p class="reveal">Cost optimization is rarely one big decision — it's a handful of small, repeatable habits applied consistently across every resource in an account.</p>
   <ul class="reveal">
     <li><b>Right-sizing</b> — match instance family and size to actual CPU/memory utilization instead of guessing high "to be safe."</li>
@@ -1225,88 +1252,88 @@ aws ec2 stop-instances --instance-ids $(
 
   <div class="iq-group-label">Internals &amp; Why</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-01">
     <summary><span class="iq-num">01</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Security Group vs NACL — why do both exist instead of just one firewall layer?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>They exist at different scopes and with different statefulness because they solve different problems. A security group is attached to an instance or ENI, is stateful (return traffic for an allowed request is automatically permitted), and only supports allow rules — it's designed to be the fine-grained, per-workload access control you configure constantly: "this app tier can talk to that database tier on 5432." A NACL is attached to a subnet, is stateless (you must explicitly allow both the request and its return traffic), supports both allow and deny rules, and evaluates numbered rules in order until the first match. That combination — stateless, ordered, deny-capable — makes NACLs good at exactly one thing security groups can't do cleanly: hard-blocking a specific CIDR range at the subnet boundary regardless of what any individual instance's security group permits. In practice, security groups do almost all the daily work, and NACLs sit underneath as a coarser, defense-in-depth backstop — losing either layer on its own leaves a gap the other was specifically designed to cover.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-02">
     <summary><span class="iq-num">02</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">How does the Shared Responsibility Model actually shift as you move from IaaS to SaaS?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>The line the provider draws — "of the cloud" is always theirs — never moves. What moves is how much of "in the cloud" they've absorbed on your behalf. On IaaS, you're responsible for the guest OS patching, the runtime, the application, the network ACLs, and your data — the provider only covers physical security, the hypervisor, and the physical network. On PaaS, the provider takes over OS and runtime patching, so your responsibility narrows to application code, its configuration, and your data. On SaaS, you're down to your data and how you configure user-level settings and access — the vendor owns the application itself. The trap is assuming this narrowing responsibility means narrowing risk to zero: even on SaaS, you're still fully responsible for who has an account, what permissions they have, and what data you put into it — identity and data governance never leave your side of the line, no matter how far up the stack you go.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-03">
     <summary><span class="iq-num">03</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">What actually happens during a Lambda cold start, and why do VPC-attached functions make it worse?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>When an invocation arrives and no warm execution environment exists — because this is the first call, or every warm instance is already busy handling a concurrent request, or the instance was recycled after being idle — the platform has to provision a fresh sandbox: download and unpack your deployment package, initialize the language runtime, run any module-level or static initialization code in your handler, and only then invoke your actual function logic. All of that happens before your code starts doing useful work, and it's pure added latency on top of the invocation. Attaching a function to a VPC historically made this materially worse because the platform also had to provision and attach an elastic network interface (ENI) to that execution environment before it could reach anything inside the VPC — an extra, comparatively slow step. Providers have optimized this over time (pre-warmed ENI pools, for example), but the general lesson holds: every dependency you add to the cold path — VPC attachment, large deployment packages, heavy static initialization — is latency you're paying on the invocations that matter most, the unpredictable ones. That severity gap is far from uniform across runtimes, either — a JVM-based function commonly adds 1-3+ seconds versus tens to low-hundreds of milliseconds for Node.js or Python, which is exactly why AWS Lambda SnapStart (restoring execution from a pre-initialized JVM snapshot instead of cold-booting every time) has become the standard mitigation for latency-sensitive Java functions.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-04">
     <summary><span class="iq-num">04</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">How do read replicas achieve read scaling while a Multi-AZ standby doesn't, if both are just "another copy of the database"?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>The difference is in what each copy is built to guarantee. A Multi-AZ standby is kept synchronously (or near-synchronously) up to date specifically so that failover is instantaneous and lossless — every committed write on the primary must also be durably applied to the standby before it's considered committed, which is exactly why it's usually not exposed for reads: opening it up to read traffic would compete with the synchronous replication stream and risk adding latency to every write, undermining the one job the standby exists to do. A read replica, by contrast, is asynchronous by design — writes commit on the primary immediately, and the replica catches up shortly after, which introduces some replication lag but completely decouples read traffic from the write path. That decoupling is precisely what lets you scale reads horizontally by adding more replicas without touching write latency at all; you're explicitly trading replication lag for read throughput, a trade the synchronous Multi-AZ standby was never designed to make.</p></div>
   </details>
 
   <div class="iq-group-label">Trade-offs</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-05">
     <summary><span class="iq-num">05</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">When would you choose Fargate or Cloud Run over managing your own EKS/GKE cluster, and what do you give up?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Choose Fargate or Cloud Run when the workload is a straightforward set of stateless services and the team's priority is shipping fast without hiring for Kubernetes operations — no nodes to patch or right-size, no cluster autoscaler to tune, scale-to-zero economics on idle traffic, and a much smaller blast radius when something goes wrong because there's no shared control plane or node fleet to reason about. What you give up is the full Kubernetes ecosystem: custom resource definitions, operators, service meshes, DaemonSets, fine-grained scheduling constraints (node affinity, taints/tolerations), and often the portability of running the exact same manifests unchanged on-prem or on another cloud. If your organization is already deep in the Kubernetes ecosystem — using Helm charts, operators for stateful services, or a service mesh for traffic shaping — moving to a fully managed container runtime usually means either losing those capabilities or fighting the platform to approximate them. The honest framing is: EKS/GKE is "the provider manages the hardest 20% of Kubernetes for you," while Fargate/Cloud Run is "you don't get Kubernetes at all, you get containers as a managed primitive" — pick based on whether you actually need the Kubernetes API surface or just need containers to run reliably.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-06">
     <summary><span class="iq-num">06</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Reserved Instances / Savings Plans vs Spot vs On-Demand — how do you actually decide the mix for a given workload?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>The decision hinges on two axes for each workload: how predictable is the baseline load, and how tolerant is the workload of sudden interruption. Reserved Instances and Savings Plans are a commitment trade — you promise steady usage over one or three years in exchange for a meaningful discount, so they belong on your known, steady-state floor of capacity: the minimum fleet size you're confident you'll run regardless of traffic swings. Spot instances trade availability for the deepest discount of all, since the provider can reclaim that capacity on short notice — that's fine, even ideal, for stateless batch processing, CI runners, or fault-tolerant distributed compute that can checkpoint or simply retry elsewhere, and it's a bad idea for anything stateful or latency-sensitive that can't gracefully absorb an interruption. On-Demand fills the gap for everything unpredictable: the burst above your reserved floor, workloads too new to have a usage pattern yet, or anything you're not confident enough about to commit to. A mature cost strategy usually looks like reserved capacity for the floor, spot for interruption-tolerant elastic load, and on-demand as the flexible remainder — not one instance-purchasing model applied uniformly across an entire account.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-07">
     <summary><span class="iq-num">07</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Object, block, and file storage all "store data" — what actually decides which one a given workload needs?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>The deciding factor is access pattern, not data size or cost. A database's data files need consistent, low-latency, block-level IOPS and are only ever touched by the single instance running that database — that's block storage's exact use case, and it's why you can't put a Postgres data directory on an object store; the access semantics simply don't match (no partial in-place writes, no guaranteed low millisecond latency). A media-heavy application serving millions of independent files to different HTTP clients is object storage's exact use case: flat namespace, virtually unlimited scale, HTTP-native access, no need for POSIX semantics. A workload where multiple instances need to read and write the same files concurrently with real file-locking behavior — a shared upload directory behind a fleet of web servers, or a legacy app that assumes a mounted network drive — is file storage's exact use case, since it's the only one of the three built for concurrent multi-client POSIX access. Picking the wrong one isn't a performance tuning problem you fix later; it's usually a rewrite, because the API and consistency guarantees are fundamentally different, not just differently priced.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-08">
     <summary><span class="iq-num">08</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Managed NoSQL (DynamoDB/Firestore) vs managed relational (RDS/Cloud SQL) — when does the trade actually favor NoSQL?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Managed NoSQL wins when your access patterns are known in advance and narrow — get-by-key, a handful of query shapes you can pre-model with indexes — and when you need scale and latency guarantees that stay flat no matter how large the dataset grows, since these stores are partitioned horizontally by design rather than bolted on afterward. It also wins operationally when you want zero capacity planning: DynamoDB's on-demand mode, for instance, scales throughput automatically without you provisioning read/write capacity by hand. Managed relational wins the moment you need ad-hoc querying, multi-row transactions across different entity types, complex joins, or strong relational integrity constraints — the things a query planner and a schema are good at and a key-value/document model actively resists. The trap is picking NoSQL for its scalability story on a workload that actually needs relational query flexibility — you end up reimplementing joins and multi-record consistency in application code, which is strictly worse than letting a relational engine that was built for exactly that do the job.</p></div>
   </details>
 
   <div class="iq-group-label">Traps</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-09">
     <summary><span class="iq-num">09</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A team says "we're covered on disaster recovery, we run Multi-AZ." What's wrong with that statement?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Multi-AZ protects against exactly one failure mode: an entire Availability Zone becoming unreachable. It does nothing for a regional outage, because both AZs in a Multi-AZ pair live in the same region and share the same regional control plane and, often, the same regional dependencies. It also does nothing for a bad deploy, a buggy migration, or data corruption, because the standby is a synchronous replica — it faithfully mirrors every write the primary makes, including the destructive ones, within moments. If someone runs a migration that drops the wrong column or a bug silently corrupts rows, that corruption propagates to the standby just as fast as a legitimate write would. Real disaster recovery needs two things Multi-AZ doesn't provide on its own: a cross-region replica or backup target that a regional outage can't touch, and a point-in-time-recoverable backup that lets you roll back to before the bad event happened, since a live synchronous replica by definition can't do that. Multi-AZ is a high-availability tool; DR requires cross-region infrastructure and tested backups layered on top of it.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-10">
     <summary><span class="iq-num">10</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A wildcard IAM policy and a hardcoded access key both "just worked" in staging for months. Why is that not evidence they're safe?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Both of these are failures that are invisible until something else goes wrong, which is exactly what makes them dangerous — they don't cause outages or bugs on their own, so nothing in normal operation surfaces them. A wildcard policy only matters the moment that principal's credentials are compromised or that principal's code has a bug that lets an attacker control its actions — at which point "worked fine for months" becomes "the blast radius was everything, the whole time." A hardcoded access key in a config file or committed to a repository is a latent leak waiting for the repository to go public, a laptop to get compromised, or a build log to accidentally print it — none of which are things staging usage would ever exercise. The absence of an incident is not evidence of a safe configuration; it's evidence that the specific trigger condition for the risk hasn't happened yet. This is precisely why least-privilege reviews and secret-scanning need to run as standing practice, not as a reaction to something having already gone wrong.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-11">
     <summary><span class="iq-num">11</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A team migrates a steady, high-throughput internal service to Lambda expecting savings and simplicity. Why might the bill go up instead?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Serverless pricing is built around paying for exactly the compute you use, per invocation and per millisecond — which is a fantastic deal for spiky or infrequent traffic where an always-on server would otherwise sit idle most of the day. A steady, high-throughput workload inverts that math: the service is basically always busy, so there's no idle time being saved, and per-invocation billing at that volume can add up to more than a right-sized, reserved, always-on fleet would cost for the same total compute-seconds. On top of the raw cost, a steady workload also doesn't benefit from serverless's main non-cost advantage — elastic scale-to-zero — since it's never actually near zero. The lesson generalizes: serverless is a tool for variable, unpredictable, or intermittent load, not a default upgrade path for every workload, and the same "it'll just be cheaper and simpler" assumption applies just as wrongly to moving a steady batch job there as it does to a steady web service.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-12">
     <summary><span class="iq-num">12</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">"S3 gives us 11 nines of durability, so our data is safe." Where does this reasoning break down?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Durability is a statement about the probability of the provider's infrastructure silently losing an object once it's been stored — it says nothing about availability (can you reach it right now during an outage), and nothing at all about the far more common ways data actually disappears in practice: an engineer or a script with overly broad IAM permissions deleting the wrong prefix, a misconfigured lifecycle policy expiring objects earlier than intended, a bucket policy accidentally left public and its contents exfiltrated or tampered with, or an application bug overwriting good data with bad. None of those are durability failures from the provider's side — the object storage system did exactly what it was told, faithfully. "Durable" only protects against the storage medium itself losing your bytes; it does nothing to protect against you, your code, or your IAM policy telling it to delete or expose those bytes. Real protection against those failure modes is versioning, MFA-delete, least-privilege IAM, and backups in a separate account or region — controls you have to add on top, not something the durability number already covers.</p></div>
   </details>
 
   <div class="iq-group-label">Scenario</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-13">
     <summary><span class="iq-num">13</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Design the storage and networking for a globally-distributed application from scratch. Walk through your reasoning.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Start with networking: deploy a VPC per region you need presence in, each with public and private subnets spread across at least two or three AZs, following the standard layout — public subnet fronting a load balancer, private subnet for application servers reachable only from that load balancer, and a deeper private subnet for data services reachable only from the app tier. Put a CDN in front of anything static or cacheable so most user requests never leave the edge, and use global DNS (latency-based or geo-routing) to send users to their nearest regional entry point rather than a single global load balancer. For storage, object storage should be replicated cross-region for static assets and backups, since it's the natural fit for globally distributed, HTTP-accessible content; the primary database should run Multi-AZ within its home region for HA, with cross-region read replicas in the other regions both for disaster recovery and to serve local reads with lower latency, accepting the eventual-consistency trade-off on cross-region reads. Connect the regional VPCs with a transit gateway rather than a full peering mesh, since that scales cleanly as you add more regions later. Every one of these decisions is a specific instance of a pattern already covered: AZ redundancy for HA (chapter 8), cross-region replication for DR and latency (chapter 5), CDN and load-balancer layering (chapter 4), and object storage's replication model (chapter 3) — the "from scratch" design is really just composing those patterns deliberately instead of accidentally.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-14">
     <summary><span class="iq-num">14</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Your CI pipeline needs to deploy to a cloud account, but security has banned storing long-lived cloud credentials in CI secrets. How do you make deployments work?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Set up OIDC federation between the CI provider and the cloud account instead of storing an access key at all. In GitHub Actions terms: register GitHub's OIDC issuer as a trusted identity provider in the cloud account, then create an IAM role whose trust policy only accepts tokens whose claims match the exact repository and, ideally, the exact branch or environment the deploy workflow runs from. At deploy time, the workflow requests a short-lived OIDC token from GitHub, presents it to the cloud's STS-equivalent endpoint, and receives temporary credentials scoped to that role — valid for roughly an hour and never persisted anywhere. The deploy role itself should carry only the permissions the deployment actually needs (push to this container registry, update this ECS service or this specific CloudFormation/Terraform state) rather than broad admin rights, applying least privilege on top of the federation. The net effect satisfies security's requirement exactly: there is no long-lived secret in the CI system to leak, rotate, or forget about, because the credential that exists is temporary and minted fresh on every run. The OIDC/OAuth2 mechanics underneath this are the same protocol covered in the Security &amp; Auth module — this is just that protocol wired up for a machine identity instead of a human login.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-15">
     <summary><span class="iq-num">15</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Finance flags that the cloud bill tripled last quarter, and a lot of it looks like dev/test environments running 24/7. How do you fix this systematically, not just once?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>First, get visibility: enforce a tagging policy (at minimum <code>env</code>, <code>team</code>, <code>project</code>) on every resource, ideally via a policy-as-code guardrail that blocks untagged resources from being created at all, so cost can actually be attributed instead of showing up as one undifferentiated number. Second, set budgets with alerts per team or environment so a runaway trend pages someone before it becomes a quarter-end surprise rather than after. Third, and this is the direct fix for the specific symptom described, automate teardown of non-production environments outside business hours — a scheduled job that stops (or fully tears down, if the environment is defined as infrastructure-as-code and can be recreated on demand) dev and staging resources nightly and on weekends, since idle non-prod compute running 24/7 is one of the single most common and most fixable sources of cloud waste. Fourth, revisit instance purchasing: any non-prod baseline that does need to stay up around the clock is a candidate for smaller instance sizes and, where interruption is tolerable, spot pricing. None of this is a one-time cleanup — it only stays fixed if tagging and budgets are enforced going forward and the teardown automation is treated as a standing piece of infrastructure, not a script someone ran once.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-16">
     <summary><span class="iq-num">16</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Design the disaster recovery strategy for a payment-processing service that must survive a full regional outage with under 15 minutes of RPO and RTO.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>A 15-minute RPO/RTO against a full regional outage rules out Multi-AZ alone immediately, since it never leaves the region — this needs cross-region infrastructure as the core of the design. For the database, run a cross-region read replica kept as close to real-time as the engine allows, and pre-provision (not just plan on paper) the promotion procedure that turns that replica into a writable primary, since discovering how to do that during the actual incident blows the RTO budget by itself. For compute, keep a warm standby stack in the second region — an ASG at reduced capacity behind its own load balancer, continuously deployed alongside the primary region so it's never running stale code — rather than a cold stack that has to be provisioned from scratch during the failover, which would also blow the RTO. Route53 (or the equivalent DNS failover service) with health checks against the primary region automates the traffic cutover itself, since a manual DNS change under incident pressure is another RTO risk. Layer backups with tested point-in-time recovery on top of the replication, specifically because for a payment system the actual disaster scenario worth worrying about most is often data corruption or a bad deploy, not just a regional outage — and a live replica alone doesn't protect against that, per the Multi-AZ trap discussed earlier in this module. Finally, this entire failover procedure needs to be tested on a schedule, with a real game-day exercise, because an RPO/RTO number that has never been rehearsed is a guess, not a guarantee.</p></div>
   </details>
@@ -1378,6 +1405,8 @@ aws ec2 stop-instances --instance-ids $(
 
 </main>
 
+<script src="search-index.js"></script>
+<script src="site-search.js"></script>
 <script>
 (function(){
 "use strict";

@@ -388,6 +388,25 @@ noscript .reveal{opacity:1;}
   .navlink{font-size:.8rem;padding:.45rem .7rem;}
   .contents-btn{font-size:.8rem;padding:.45rem .8rem;}
 }
+/* ---- site search ---- */
+.site-search{position:relative;flex:1;max-width:420px;margin:0 1.2rem;}
+.site-search__box{display:flex;align-items:center;gap:.5rem;background:var(--surface-2);border-radius:var(--r-pill);padding:.5rem .9rem;transition:background var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);}
+.site-search__box:focus-within{background:var(--surface);box-shadow:0 0 0 2px var(--accent);}
+.site-search__icon{flex:none;width:15px;height:15px;color:var(--muted);}
+.site-search__input{flex:1;min-width:0;border:none;background:none;outline:none;font-family:var(--font-body);font-size:.87rem;color:var(--ink);}
+.site-search__input::placeholder{color:var(--muted);}
+.site-search__kbd{flex:none;font-family:var(--font-mono);font-size:.68rem;color:var(--muted);background:var(--surface);border-radius:5px;padding:.1rem .4rem;box-shadow:var(--shadow-sm);}
+.site-search__results{position:absolute;top:calc(100% + 8px);left:0;right:0;max-height:min(70vh,480px);overflow-y:auto;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:.5rem;display:none;z-index:50;}
+.site-search.is-open .site-search__results{display:block;}
+.site-search__empty{padding:1rem;font-size:.85rem;color:var(--muted);text-align:center;}
+.site-search__item{display:block;padding:.65rem .8rem;border-radius:10px;text-decoration:none;color:inherit;cursor:pointer;}
+.site-search__item:hover,.site-search__item.is-active{background:var(--tint);}
+.site-search__item-title{font-weight:700;font-size:.88rem;display:block;}
+.site-search__item-meta{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:.4rem;margin-top:.2rem;}
+.site-search__item-type{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;background:var(--surface-2);padding:.1rem .4rem;border-radius:999px;}
+.site-search mark{background:var(--tint-strong);color:inherit;border-radius:3px;padding:0 .1em;}
+@media (max-width:820px){.site-search{order:3;flex-basis:100%;max-width:none;margin:.6rem 0 0;}}
+[id]{scroll-margin-top:90px;}
 </style>
 </head>
 <body>
@@ -396,6 +415,14 @@ noscript .reveal{opacity:1;}
 <header class="topnav">
   <div class="topnav__inner">
     <a class="wordmark" href="index.html#jpa-hibernate"><span class="wordmark__mark">J</span>JPA &amp; Hibernate</a>
+    <div class="site-search" id="siteSearch">
+      <div class="site-search__box">
+        <svg class="site-search__icon" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" class="site-search__input" id="siteSearchInput" placeholder="Search any topic or question…" autocomplete="off" aria-label="Search notes" aria-expanded="false" aria-controls="siteSearchResults">
+        <span class="site-search__kbd">/</span>
+      </div>
+      <div class="site-search__results" id="siteSearchResults"></div>
+    </div>
     <nav class="navlinks">
       <a class="navlink" href="index.html#jpa-hibernate">← All topics</a>
       <div class="contents" id="contents">
@@ -459,7 +486,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">The mismatch, concretely</h3>
+  <h3 class="sub reveal" id="the-mismatch-concretely">The mismatch, concretely</h3>
   <div class="duo reveal">
     <div class="panel"><h4><span class="sw"></span>Object model</h4><ul><li>Identity: two objects can be "the same" by reference, not just equal values</li><li>Inheritance: a <code>Manager</code> IS-A <code>Employee</code></li><li>Navigable graphs: <code>order.getCustomer().getAddress()</code></li><li>In-memory, no inherent query language</li></ul></div>
     <div class="panel"><h4><span class="sw"></span>Relational model</h4><ul><li>Identity: a row is just data, "sameness" means equal column values</li><li>No native inheritance — modeled via extra tables/columns</li><li>Relationships via foreign keys, traversed by joins, not references</li><li>Set-based, queried declaratively (SQL)</li></ul></div>
@@ -572,7 +599,7 @@ noscript .reveal{opacity:1;}
 }</code></pre>
   </div>
 
-  <h3 class="sub reveal">ID generation strategies</h3>
+  <h3 class="sub reveal" id="id-generation-strategies">ID generation strategies</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Strategy</th><th>How it works</th><th>Trade-off</th></tr></thead>
@@ -593,7 +620,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Inheritance mapping: three strategies, three different trade-offs</h3>
+  <h3 class="sub reveal" id="inheritance-mapping-three-strategies-three-different-trade">Inheritance mapping: three strategies, three different trade-offs</h3>
   <p class="reveal">A Java class hierarchy — a <code>Payment</code> superclass with <code>CardPayment</code> and <code>BankTransferPayment</code> subclasses — doesn't map onto relational tables for free. <code>@Inheritance</code> picks one of three concrete table layouts, and each one trades query simplicity against schema cleanliness in a different direction.</p>
 
   <div class="code-window reveal">
@@ -635,7 +662,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">@Embeddable and @EmbeddedId: value objects and composite keys</h3>
+  <h3 class="sub reveal" id="embeddable-and-embeddedid-value-objects-and-composite-keys">@Embeddable and @EmbeddedId: value objects and composite keys</h3>
   <p class="reveal"><code>@Embeddable</code> lets a plain Java class — no identity of its own, no table of its own — be inlined as a group of columns directly on the owning entity's table. The classic example is an <code>Address</code>: conceptually its own object in Java, but with no reason to live in a separate table behind its own foreign key.</p>
 
   <div class="code-window reveal">
@@ -677,7 +704,7 @@ noscript .reveal{opacity:1;}
 }</code></pre>
   </div>
 
-  <h3 class="sub reveal">@Enumerated: STRING vs. ORDINAL</h3>
+  <h3 class="sub reveal" id="enumerated-string-vs-ordinal">@Enumerated: STRING vs. ORDINAL</h3>
   <p class="reveal">An enum field needs <code>@Enumerated</code> to tell Hibernate how to store it as a column, and the two options aren't a stylistic choice — one of them is a well-known, slow-motion data-corruption trap.</p>
 
   <div class="code-window reveal">
@@ -789,7 +816,7 @@ noscript .reveal{opacity:1;}
 }</code></pre>
   </div>
 
-  <h3 class="sub reveal">Owning side vs. inverse side</h3>
+  <h3 class="sub reveal" id="owning-side-vs-inverse-side">Owning side vs. inverse side</h3>
   <p class="reveal">In any bidirectional relationship, exactly one side <strong>owns</strong> the foreign key column — that's the side without <code>mappedBy</code>, and the side whose in-memory state Hibernate actually looks at to decide what SQL to write. The other side (with <code>mappedBy = "fieldNameOnOwner"</code>) is purely a convenience for navigating backwards in Java; changing <em>only</em> the inverse side's collection, without touching the owning side, is silently ignored at flush time.</p>
 
   <div class="panel diagram-panel reveal">
@@ -818,7 +845,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">@ManyToMany with @JoinTable</h3>
+  <h3 class="sub reveal" id="manytomany-with-jointable">@ManyToMany with @JoinTable</h3>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">Student.java</span></div>
     <pre><code><span class="tk-kw">@ManyToMany</span>
@@ -831,7 +858,7 @@ noscript .reveal{opacity:1;}
   </div>
   <p class="reveal"><code>@JoinTable</code> names the actual junction table SQL needs to represent a many-to-many relationship — no entity class corresponds to that table by default (though you can promote it to a real entity if the join table needs its own extra columns, like an enrollment date).</p>
 
-  <h3 class="sub reveal">@OneToOne: User &amp; UserProfile</h3>
+  <h3 class="sub reveal" id="onetoone-user-userprofile">@OneToOne: User &amp; UserProfile</h3>
   <p class="reveal">A one-to-one relationship usually splits a rarely-needed or optional block of data — a profile, settings, an extended bio — off the main entity's table. Same cardinality as embedding it directly (chapter 2's <code>@Embeddable</code>), but modeled as two separate tables and entities instead of one.</p>
 
   <div class="code-window reveal">
@@ -866,7 +893,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Default fetch types &amp; cascade types</h3>
+  <h3 class="sub reveal" id="default-fetch-types-cascade-types">Default fetch types &amp; cascade types</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Annotation</th><th>Default fetch</th></tr></thead>
@@ -982,7 +1009,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">LAZY vs. EAGER</h3>
+  <h3 class="sub reveal" id="lazy-vs-eager">LAZY vs. EAGER</h3>
   <p class="reveal">A <strong>LAZY</strong> association loads a proxy placeholder initially, and only issues the actual query the first time you access it. An <strong>EAGER</strong> association loads immediately, as part of the original query (or a follow-up one right after).</p>
 
   <div class="callout callout--mistake reveal">
@@ -993,7 +1020,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">The N+1 problem</h3>
+  <h3 class="sub reveal" id="the-n-1-problem">The N+1 problem</h3>
   <p class="reveal">Fetch a list of N parent entities, then lazily access a related collection on each one inside a loop — that's 1 query for the parents, plus N more queries (one per parent), for N+1 total where 1 or 2 well-designed queries would have sufficed.</p>
 
   <div class="code-window reveal">
@@ -1104,7 +1131,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Entity states</h3>
+  <h3 class="sub reveal" id="entity-states">Entity states</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>State</th><th>Meaning</th></tr></thead>
@@ -1152,7 +1179,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Dirty checking</h3>
+  <h3 class="sub reveal" id="dirty-checking">Dirty checking</h3>
   <p class="reveal">For every <strong>managed</strong> entity, Hibernate compares its current field values against a snapshot taken when it was first loaded — at flush time (end of transaction, or an explicit <code>flush()</code>), any field that changed gets an <code>UPDATE</code> statement generated automatically. You never call <code>save()</code> to persist a change to a managed entity's field — simply setting the field and letting the transaction commit is enough.</p>
 
   <div class="code-window reveal">
@@ -1164,7 +1191,7 @@ noscript .reveal{opacity:1;}
 }                                     <span class="tk-com">// on commit, Hibernate detects the change and issues UPDATE</span></code></pre>
   </div>
 
-  <h3 class="sub reveal">flush() vs. commit() — not the same operation</h3>
+  <h3 class="sub reveal" id="flush-vs-commit-not-the-same-operation">flush() vs. commit() — not the same operation</h3>
   <p class="reveal"><code>flush()</code> pushes every pending change as real SQL to the database — but on its own, it does not end the transaction, release any locks that SQL took, or make the change durable or visible to any <em>other</em> transaction. <code>commit()</code> is the one that actually ends the transaction: it flushes first if there's anything pending, then makes everything durable, visible to the rest of the world, and releases the locks that were held. Treating the two as interchangeable is a common source of confusion — flushing is "send the SQL now"; committing is "and now it's really, permanently done."</p>
 
   <div class="callout callout--warn reveal">
@@ -1287,7 +1314,7 @@ noscript .reveal{opacity:1;}
 <span class="tk-typ">List</span>&lt;Product&gt; findExpensiveNative(<span class="tk-kw">@Param</span>(<span class="tk-str">"min"</span>) <span class="tk-typ">BigDecimal</span> min);</code></pre>
   </div>
 
-  <h3 class="sub reveal">@NamedQuery: defined once, on the entity itself</h3>
+  <h3 class="sub reveal" id="namedquery-defined-once-on-the-entity-itself">@NamedQuery: defined once, on the entity itself</h3>
   <p class="reveal">Instead of scattering a JPQL string next to whichever repository method happens to need it, <code>@NamedQuery</code> declares it once on the entity class, gives it a name, and lets it be looked up by that name wherever it's needed. Hibernate parses every named query when the persistence unit boots, so a typo in the JPQL surfaces immediately at startup instead of at first invocation.</p>
 
   <div class="code-window reveal">
@@ -1306,7 +1333,7 @@ noscript .reveal{opacity:1;}
     .getResultList();</code></pre>
   </div>
 
-  <h3 class="sub reveal">DTO projections: SELECT new ...(...) instead of a whole entity</h3>
+  <h3 class="sub reveal" id="dto-projections-select-new-instead-of-a-whole-entity">DTO projections: SELECT new ...(...) instead of a whole entity</h3>
   <p class="reveal">A JPQL query doesn't have to return whole managed entities — a constructor expression (<code>SELECT new fully.qualified.DtoClass(...)</code>) builds a plain, unmanaged DTO object directly from selected columns, one instance per row, with no persistence-context tracking at all. This is the DTO-projection syntax the Fetch Strategies chapter's N+1 fix ("map to a DTO before the transaction ends") was referring to.</p>
 
   <div class="code-window reveal">
@@ -1418,7 +1445,7 @@ query.where(filters.toArray(<span class="tk-kw">new</span> <span class="tk-typ">
     </div>
   </div>
 
-  <h3 class="sub reveal">Second-level cache</h3>
+  <h3 class="sub reveal" id="second-level-cache">Second-level cache</h3>
   <p class="reveal">Unlike the first-level cache (the persistence context, scoped to one transaction), the second-level cache is <strong>shared across sessions</strong> — a separate cache region keyed by entity type, backed by a provider like Ehcache, Caffeine, or Infinispan. It caches individual entities by ID, collections, and optionally query results (the query cache) — nothing is cached by default; it's opt-in per entity via <code>@Cacheable</code>.</p>
 
   <div class="code-window reveal">
@@ -1456,7 +1483,7 @@ query.where(filters.toArray(<span class="tk-kw">new</span> <span class="tk-typ">
     <p class="diagram-cap">The two caches aren't alternatives — they're nested. Every entity that reaches the always-on 1st-level cache <em>may</em> also be sitting in the opt-in, cross-session 2nd-level cache one layer further out; losing track of which layer you're reasoning about is the most common source of "why isn't this cached" confusion.</p>
   </div>
 
-  <h3 class="sub reveal">Hibernate-specific annotations</h3>
+  <h3 class="sub reveal" id="hibernate-specific-annotations">Hibernate-specific annotations</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Annotation</th><th>What it does</th></tr></thead>
@@ -1545,7 +1572,7 @@ query.where(filters.toArray(<span class="tk-kw">new</span> <span class="tk-typ">
 
   <p class="reveal">A <code>@Transactional</code> method's <strong>propagation</strong> setting decides what happens to the transaction boundary when that method is called from inside another transactional method — does it share the caller's transaction, or does it get one of its own? Get this wrong and you either lose data you needed to keep, or keep data you needed to lose.</p>
 
-  <h3 class="sub reveal">Propagation: REQUIRED, REQUIRES_NEW, and NESTED</h3>
+  <h3 class="sub reveal" id="propagation-required-requires-new-and-nested">Propagation: REQUIRED, REQUIRES_NEW, and NESTED</h3>
   <p class="reveal"><code>REQUIRED</code> is the default: the method joins whatever transaction is already open on the calling thread, or starts a brand-new one if there isn't one. Almost every <code>@Transactional</code> method in a typical codebase runs under this default, and for most call chains it's exactly right — one business operation, one atomic unit of work, one commit or one rollback.</p>
   <p class="reveal">The default breaks down the moment part of the work has to survive even when the rest fails. Think of an audit log: the rule "record every payment attempt, successful or not" is meaningless if the audit row vanishes right along with the failed payment it was supposed to document. That's what <code>REQUIRES_NEW</code> is for — it suspends whatever transaction is currently open, opens a completely independent one, commits or rolls back <em>that</em> transaction on its own, and only then resumes the caller's original transaction. <code>NESTED</code> sits in between: it opens a savepoint inside the caller's existing transaction, so the nested part alone can roll back without failing the whole thing — but because a savepoint still lives physically inside the outer transaction, if the outer transaction itself rolls back, the savepoint (and everything in it) rolls back too.</p>
 
@@ -1605,7 +1632,7 @@ query.where(filters.toArray(<span class="tk-kw">new</span> <span class="tk-typ">
     </div>
   </div>
 
-  <h3 class="sub reveal">The self-invocation trap: calling @Transactional from inside the same class</h3>
+  <h3 class="sub reveal" id="the-self-invocation-trap-calling-transactional-from-inside">The self-invocation trap: calling @Transactional from inside the same class</h3>
   <p class="reveal">springboot-complete.html's Aspect-Oriented Programming chapter already covers the general mechanism: Spring's proxy-based AOP can only intercept calls that arrive through the container-managed proxy, and a call made via <code>this</code> from inside the same class never touches it. <code>@Transactional</code> runs on exactly that same proxy mechanism, which makes this one of the most common real-world "why isn't my rollback working" bugs — not a bug in Spring at all, just a call that was never going to be advised in the first place.</p>
   <p class="reveal">Call a <code>@Transactional</code> method from another method in the <em>same</em> class, and the annotation is silently ignored — no transaction opens, no rollback happens on failure, and nothing logs an error to explain why, because as far as the JVM is concerned it's just an ordinary method call on <code>this</code>.</p>
 
@@ -1652,7 +1679,7 @@ query.where(filters.toArray(<span class="tk-kw">new</span> <span class="tk-typ">
 
   <p class="reveal">The alternative fix, without introducing a new bean, is self-injecting a proxy of the same bean — <code>@Autowired @Lazy UserService self;</code> inside <code>UserService</code> itself — and calling <code>self.saveUser(form)</code> instead of <code>this.saveUser(form)</code>. It works because it forces the call through Spring's injected proxy reference rather than the raw <code>this</code>, but most teams find a genuinely separate bean easier to reason about and test.</p>
 
-  <h3 class="sub reveal">Rollback rules: checked vs. unchecked exceptions</h3>
+  <h3 class="sub reveal" id="rollback-rules-checked-vs-unchecked-exceptions">Rollback rules: checked vs. unchecked exceptions</h3>
   <p class="reveal">Spring's default rollback rule surprises almost everyone the first time they hit it: an <strong>unchecked</strong> exception (anything extending <code>RuntimeException</code>) triggers a rollback automatically, but a <strong>checked</strong> exception (extending <code>Exception</code> directly — <code>IOException</code>, <code>SQLException</code>) does <em>not</em> roll back by default. Spring inherited this rule from EJB's original convention: checked exceptions were historically treated as expected, recoverable business outcomes rather than failures, so the framework assumed you'd want the transaction to commit and handle the exception yourself.</p>
 
   <div class="code-window reveal">
@@ -1721,7 +1748,7 @@ query.where(filters.toArray(<span class="tk-kw">new</span> <span class="tk-typ">
 }</code></pre>
   </div>
 
-  <h3 class="sub reveal">readOnly = true: a free performance win, when it's true</h3>
+  <h3 class="sub reveal" id="readonly-true-a-free-performance-win-when-it-s-true">readOnly = true: a free performance win, when it's true</h3>
   <p class="reveal"><code>@Transactional(readOnly = true)</code> tells Spring and Hibernate that a transaction will only read data, never write it. Hibernate uses that promise to skip dirty checking entirely for the entities loaded in it — there's no need to keep a snapshot of each entity's loaded state and compare it against the current state at flush time, since nothing is ever going to change. For a read-heavy endpoint loading hundreds of entities per request, skipping that snapshot-and-compare work on every single one is a real, measurable, entirely free performance gain — no code change beyond adding the flag.</p>
 
   <div class="code-window reveal">
@@ -1741,7 +1768,7 @@ query.where(filters.toArray(<span class="tk-kw">new</span> <span class="tk-typ">
     </div>
   </div>
 
-  <h3 class="sub reveal">Isolation levels: what one transaction can see of another</h3>
+  <h3 class="sub reveal" id="isolation-levels-what-one-transaction-can-see-of-another">Isolation levels: what one transaction can see of another</h3>
   <p class="reveal">Isolation level decides which of three classic read anomalies a transaction is exposed to when it runs concurrently with others. Each one is a different way that what you read stops matching what's actually, durably true in the database:</p>
 
   <div class="tbl-wrap reveal">
@@ -1782,7 +1809,7 @@ query.where(filters.toArray(<span class="tk-kw">new</span> <span class="tk-typ">
     </div>
   </div>
 
-  <h3 class="sub reveal">Optimistic vs. pessimistic locking</h3>
+  <h3 class="sub reveal" id="optimistic-vs-pessimistic-locking">Optimistic vs. pessimistic locking</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th></th><th>Optimistic</th><th>Pessimistic</th></tr></thead>
@@ -1942,102 +1969,102 @@ query.where(filters.toArray(<span class="tk-kw">new</span> <span class="tk-typ">
 
   <div class="iq-group-label">Internals &amp; Why</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-01">
     <summary><span class="iq-num">01</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does dirty checking need to keep a separate snapshot of an entity's loaded state, instead of just tracking "has setX() been called"?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Hibernate entities are plain Java objects — it can't reliably intercept every field mutation without bytecode instrumentation (which some setups do use, but it's not guaranteed or portable). Comparing the current state against the original loaded snapshot at flush time works regardless of *how* the field changed, and — as a side benefit — naturally avoids issuing a needless UPDATE if a field was set back to its original value before flush.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-02">
     <summary><span class="iq-num">02</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does a LAZY association work fine when accessed inside the transaction, but throw when accessed from a controller after the service method returns?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>A LAZY field holds a proxy, not the real data — the proxy only knows how to fetch when a live Hibernate session backs it. Once the <code>@Transactional</code> method returns, Spring closes that session as part of ending the transaction. Any access to the still-unfetched proxy afterward (in a controller, or during JSON serialization) has no session left to fetch through, hence <code>LazyInitializationException</code>.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-03">
     <summary><span class="iq-num">03</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does Hibernate's <code>equals()</code>/<code>hashCode()</code> guidance for entities differ from ordinary Java objects?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>An entity's ID is often null before it's persisted (with <code>IDENTITY</code>/<code>SEQUENCE</code> generation), so basing equals()/hashCode() purely on the ID means a transient entity's hash changes the moment it's saved — breaking it if it was already placed in a <code>HashSet</code>/<code>HashMap</code> before persisting. The common guidance is either using a business/natural key that's stable from creation, or a carefully-written ID-based equals() that accounts for this transient-to-persistent transition explicitly, rather than a naive IDE-generated equals() over all fields (which also breaks under Hibernate's lazy proxies).</p></div>
   </details>
 
   <div class="iq-group-label">Trade-offs</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-04">
     <summary><span class="iq-num">04</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Why not just make every association EAGER, to eliminate LazyInitializationException as a category of bug entirely?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>EAGER associations load unconditionally, every time the parent loads — including in code paths that never actually need them. This can silently turn a simple "fetch one order" call into a query that also pulls its customer, and that customer's address, and so on, wherever EAGER associations chain together — sometimes called an unintentional N+1 in the *other* direction, or simply over-fetching. LAZY plus deliberate fetch strategies (join fetch, entity graphs) per actual use case is more code, but avoids paying for data nobody asked for on the common path.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-05">
     <summary><span class="iq-num">05</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">JPQL is portable across databases; native SQL isn't. When is giving up that portability still the right call?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>When the feature you need (a window function, a database-specific full-text search operator, a vendor extension) genuinely doesn't exist in JPQL — the "portability" JPQL offers is only real if you'd actually ever migrate databases, which most production systems never do. Paying a real performance or capability cost today to preserve a portability option you'll likely never exercise is often the wrong trade — native queries for the genuinely hard cases, JPQL for the rest, is the pragmatic default.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-06">
     <summary><span class="iq-num">06</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Optimistic locking with automatic retry, versus pessimistic locking — why isn't the retry-based approach just strictly better since it never blocks anyone?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Under high contention, "never blocks" becomes "does the same work repeatedly and throws it away each time" — every failed optimistic attempt did real work (loading the entity, running business logic, attempting the update) before discovering the conflict, then must retry from scratch. Pessimistic locking's blocked thread does no wasted work; it simply waits its turn. At low contention, optimistic wins clearly (blocking is pure overhead for a conflict that almost never happens); at high contention on a true hotspot, that calculus flips.</p></div>
   </details>
 
   <div class="iq-group-label">Traps</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-07">
     <summary><span class="iq-num">07</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A REST controller returns a JPA entity directly as JSON, and serialization throws a lazy-initialization error only for some records, seemingly at random. What's really going on?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Not random at all — it fails specifically for records where the JSON serializer happens to touch a LAZY field that hasn't been initialized yet, and succeeds for records where either the field was already accessed within the transaction, or the serializer's field-visit order happens not to reach it. Serializing entities directly is fragile precisely because it exposes proxy internals to code that has no idea a database round-trip might be needed — mapping to a DTO before returning from the service layer avoids this entire category of bug.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-08">
     <summary><span class="iq-num">08</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A bidirectional <code>@OneToMany</code>/<code>@ManyToOne</code> relationship has both entities' <code>toString()</code> auto-generated by an IDE to include all fields. What happens the first time it's logged?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Infinite recursion: the parent's toString() includes the children collection, each child's toString() includes the parent, which includes the children again — a <code>StackOverflowError</code> the moment anything calls toString() (including many logging frameworks' default object formatting). The fix is excluding the back-reference from toString()/equals()/hashCode() on one side of the relationship, which most Lombok/IDE generators let you do explicitly.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-09">
     <summary><span class="iq-num">09</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A batch job calls <code>save()</code> in a loop for 10,000 entities inside one transaction, and memory usage climbs until it OOMs. Why?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Every saved entity stays managed in the persistence context for the entire transaction's lifetime — 10,000 (or more, in a larger batch) tracked entities plus their dirty-checking snapshots accumulate in memory without ever being released until commit. The fix is periodically calling <code>flush()</code> and then <code>clear()</code> on the persistence context (e.g. every 100-500 entities) to actually push changes to the database and detach them from tracking, keeping memory bounded.</p></div>
   </details>
 
   <div class="iq-group-label">Scenario</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-10">
     <summary><span class="iq-num">10</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">An endpoint listing orders with their line items is fast in dev with 5 test orders but times out in production with 50,000 orders. Diagnose and fix.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Classic N+1 that's invisible at small scale (5 extra queries are unnoticeable; 50,000 extra queries are catastrophic). First confirm with SQL logging or a profiler — count actual queries executed for the endpoint. Fix with <code>JOIN FETCH</code> or an <code>@EntityGraph</code> on the specific query powering this endpoint, and add an integration test asserting a bounded query count (many teams use a query-counting assertion specifically to prevent an N+1 regression from silently returning later).</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-11">
     <summary><span class="iq-num">11</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Two users click "confirm booking" on the last available seat within milliseconds of each other. Design the entity/locking approach so exactly one succeeds.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Add a <code>@Version</code> field to the seat/inventory entity. Both requests load the same version; whichever commits first wins normally and bumps the version; the second's update matches zero rows, throws <code>OptimisticLockException</code>, and that request should be caught and turned into a clean "sorry, just taken" response (not a generic 500 error) — optimistic locking is the right default here since a double-booking attempt is rare relative to overall traffic, and correctness (not raw throughput) is what actually matters for this specific operation.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-12">
     <summary><span class="iq-num">12</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A legacy entity has a bidirectional <code>@ManyToMany</code> with no owning-side discipline enforced — developers update either side inconsistently across the codebase. What do you actually do about it?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Add paired helper methods on the owning entity (<code>addCourse(Course c)</code>/<code>removeCourse(Course c)</code>) that update both sides of the association together, and — this is the actual fix, not just a suggestion — make the raw collection field private/unexposed so callers can't bypass the helper and touch just one side again. Code review and documentation alone won't stop the same mistake recurring; making the incorrect usage structurally harder (or impossible) is what actually holds.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-13">
     <summary><span class="iq-num">13</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A read-heavy product catalog (millions of reads, rare updates) is causing noticeable database load. What JPA/Hibernate-level lever would you pull first, before reaching for an external cache like Redis?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>The second-level cache is exactly this scenario's textbook fit: read-heavy, rarely-updated entities, where stale-read risk is low and the payoff (avoiding a database round-trip on the vast majority of reads) is high. Enable <code>@Cacheable</code> with a query cache for the catalog's lookup queries, backed by a distributed-capable provider if the app runs on multiple instances. An external cache (Redis) is a reasonable *next* step for cross-service sharing or if the dataset is too large for an in-process cache, but the JPA-native second-level cache is the more direct first lever for this specific "read-heavy, JPA-only" shape.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-14">
     <summary><span class="iq-num">14</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Guess the outcome</span><span class="iq-q">A service loads an entity, detaches it (session closes), modifies a field on the now-detached object, then calls <code>merge()</code> in a new transaction. What happens to the change?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>It's persisted — <code>merge()</code> copies the detached object's current field state onto a (possibly newly-loaded) managed entity with the same ID inside the new persistence context, and that managed copy is what gets dirty-checked and flushed. The important subtlety: <code>merge()</code> returns a <em>different</em> object reference than the one you passed in — continuing to modify the original detached instance after calling merge() has no further effect, a common source of "I changed it again but it didn't save" confusion.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-15">
     <summary><span class="iq-num">15</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A <code>@Transactional</code> service method throws a checked <code>IOException</code> when a downstream call fails, yet QA finds the partial database writes from earlier in the method are still committed. What's going on, and what's the one-line fix?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Spring's default rollback policy only triggers on unchecked exceptions (<code>RuntimeException</code> and its subclasses) — a checked exception like <code>IOException</code>, even though it clearly signals failure, is treated by the default policy as an expected, recoverable outcome and does not trigger a rollback on its own. So the transaction genuinely completes normally from Spring's point of view: the method threw a checked exception, which isn't automatically fatal to the transaction, and everything written before the throw commits exactly as if nothing went wrong.</p>
       <p>The fix is one attribute: <code>@Transactional(rollbackFor = Exception.class)</code> on the method, which tells Spring to roll back on any exception, checked or unchecked. Most teams just apply this as a blanket default rather than reasoning about individual exception types case by case — the "checked exceptions are recoverable business outcomes" assumption Spring inherited from EJB rarely matches how modern codebases actually use checked exceptions.</p>
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-16">
     <summary><span class="iq-num">16</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A teammate reports: "<code>@Transactional</code> is on the method, I can see it in the debugger, but a failed write is still ending up committed in production." Walk through how you'd diagnose it.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Rollback debugging has three usual suspects, worth checking in this order. First, self-invocation: is this method being called from another method in the same class via <code>this</code> (or from a <code>@PostConstruct</code>, before the proxy even exists)? If so, the call never touches the proxy and no transaction is running at all, no matter what the debugger shows on the annotation itself. Second, exception type: is the failure a checked exception, and is <code>rollbackFor</code> set? Spring's default silently lets checked exceptions commit. Third — and the one people check last but should check first — is the exception actually being caught somewhere inside the method (or a method it calls) and never rethrown? A caught-and-logged exception never reaches Spring's advice at all, so as far as the proxy is concerned the method returned successfully.</p>
       <p>Confirming which of the three it is takes minutes: put a breakpoint on the relevant <code>catch</code> block (or on <code>TransactionInterceptor</code> itself) and check whether the call path ever actually left the proxy and whether an exception genuinely propagated out of the method.</p>
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-17">
     <summary><span class="iq-num">17</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">What's the actual difference between <code>getReference()</code> and <code>find()</code> when the row might not exist?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p><code>find()</code> hits the database immediately — if no row matches the ID, it returns <code>null</code>, full stop, and you find out right away. <code>getReference()</code> never touches the database at that point at all: it hands back an uninitialized lazy proxy, built purely from the ID you gave it, on the assumption a matching row exists. That assumption is only checked the first time you actually access a field on the proxy — if the row genuinely doesn't exist, that's when it throws <code>EntityNotFoundException</code>, potentially far away from the line that called <code>getReference()</code>. It's the right call specifically when you only need the reference to set up an association (<code>order.setCustomer(entityManager.getReference(Customer.class, id))</code>) and never intend to read the customer's own fields — no wasted SELECT for data you were never going to use.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-18">
     <summary><span class="iq-num">18</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does <code>@OneToMany</code> default to LAZY while <code>@ManyToOne</code> defaults to EAGER?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>The two defaults were chosen around how expensive the worst case is, not around consistency with each other. A <code>@ManyToOne</code> points at exactly one row via a single foreign key already sitting on the owning table — loading it eagerly is a cheap, bounded, single-row lookup (often even foldable into the original query as a join), so the spec's designers judged the convenience of "it's just there" worth the small, predictable cost. A <code>@OneToMany</code> collection has no such bound — it could be 3 rows or 3 million, and the spec has no way to know which at mapping time. Defaulting that to EAGER would mean an innocuous-looking <code>findById()</code> on a busy entity could silently pull an enormous, unbounded collection into memory on every single call. LAZY-by-default avoids that unpredictable cliff, at the cost of needing deliberate fetch strategies (join fetch, entity graphs) on the specific paths that do need the collection.</p></div>
   </details>
@@ -2114,6 +2141,8 @@ query.where(filters.toArray(<span class="tk-kw">new</span> <span class="tk-typ">
 
 </main>
 
+<script src="search-index.js"></script>
+<script src="site-search.js"></script>
 <script>
 (function(){
 "use strict";

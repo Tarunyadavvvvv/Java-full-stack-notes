@@ -388,12 +388,39 @@ noscript .reveal{opacity:1;}
   .navlink{font-size:.8rem;padding:.45rem .7rem;}
   .contents-btn{font-size:.8rem;padding:.45rem .8rem;}
 }
+/* ---- site search ---- */
+.site-search{position:relative;flex:1;max-width:420px;margin:0 1.2rem;}
+.site-search__box{display:flex;align-items:center;gap:.5rem;background:var(--surface-2);border-radius:var(--r-pill);padding:.5rem .9rem;transition:background var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);}
+.site-search__box:focus-within{background:var(--surface);box-shadow:0 0 0 2px var(--accent);}
+.site-search__icon{flex:none;width:15px;height:15px;color:var(--muted);}
+.site-search__input{flex:1;min-width:0;border:none;background:none;outline:none;font-family:var(--font-body);font-size:.87rem;color:var(--ink);}
+.site-search__input::placeholder{color:var(--muted);}
+.site-search__kbd{flex:none;font-family:var(--font-mono);font-size:.68rem;color:var(--muted);background:var(--surface);border-radius:5px;padding:.1rem .4rem;box-shadow:var(--shadow-sm);}
+.site-search__results{position:absolute;top:calc(100% + 8px);left:0;right:0;max-height:min(70vh,480px);overflow-y:auto;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:.5rem;display:none;z-index:50;}
+.site-search.is-open .site-search__results{display:block;}
+.site-search__empty{padding:1rem;font-size:.85rem;color:var(--muted);text-align:center;}
+.site-search__item{display:block;padding:.65rem .8rem;border-radius:10px;text-decoration:none;color:inherit;cursor:pointer;}
+.site-search__item:hover,.site-search__item.is-active{background:var(--tint);}
+.site-search__item-title{font-weight:700;font-size:.88rem;display:block;}
+.site-search__item-meta{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:.4rem;margin-top:.2rem;}
+.site-search__item-type{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;background:var(--surface-2);padding:.1rem .4rem;border-radius:999px;}
+.site-search mark{background:var(--tint-strong);color:inherit;border-radius:3px;padding:0 .1em;}
+@media (max-width:820px){.site-search{order:3;flex-basis:100%;max-width:none;margin:.6rem 0 0;}}
+[id]{scroll-margin-top:90px;}
 </style>
 <noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript>
 
 <header class="topnav">
   <div class="topnav__inner">
     <a class="wordmark" href="index.html#microservices"><span class="wordmark__mark">M</span>Microservices</a>
+    <div class="site-search" id="siteSearch">
+      <div class="site-search__box">
+        <svg class="site-search__icon" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" class="site-search__input" id="siteSearchInput" placeholder="Search any topic or question…" autocomplete="off" aria-label="Search notes" aria-expanded="false" aria-controls="siteSearchResults">
+        <span class="site-search__kbd">/</span>
+      </div>
+      <div class="site-search__results" id="siteSearchResults"></div>
+    </div>
     <nav class="navlinks">
       <a class="navlink" href="index.html#microservices">← All topics</a>
       <div class="contents" id="contents">
@@ -459,7 +486,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Bounded contexts: the unit decomposition actually happens around</h3>
+  <h3 class="sub reveal" id="bounded-contexts-the-unit-decomposition-actually-happens">Bounded contexts: the unit decomposition actually happens around</h3>
   <p class="reveal">Domain-Driven Design's <strong>bounded context</strong> — the area of a domain where one model, its terms, and its rules stay internally consistent — is the idea underneath every good service boundary. The same word means something different depending which context it's in:</p>
   <ul class="reveal">
     <li><strong>Orders context</strong> — line items, totals, fulfillment status</li>
@@ -468,7 +495,7 @@ noscript .reveal{opacity:1;}
   </ul>
   <p class="reveal">A service boundary should line up with a bounded context, not an arbitrary slice of the codebase — it's the largest unit that can change internally without forcing another team's model to change in lockstep.</p>
 
-  <h3 class="sub reveal">Cutting by business capability, not by technical layer</h3>
+  <h3 class="sub reveal" id="cutting-by-business-capability-not-by-technical-layer">Cutting by business capability, not by technical layer</h3>
   <p class="reveal">There are two instincts for where to draw the lines, and only one of them survives contact with production.</p>
   <div class="duo reveal">
     <div class="panel">
@@ -505,7 +532,7 @@ noscript .reveal{opacity:1;}
     <p class="diagram-cap">Each service is a complete vertical slice — API, logic, and data — for one business capability. None of them shares a database with another, which is what actually makes independent deployment safe.</p>
   </div>
 
-  <h3 class="sub reveal">Database-per-service: the rule that makes the split real</h3>
+  <h3 class="sub reveal" id="database-per-service-the-rule-that-makes-the-split-real">Database-per-service: the rule that makes the split real</h3>
   <p class="reveal">Splitting the code into separate deployables while leaving one shared database underneath is the most common way teams accidentally rebuild a monolith — the moment two services read and write the same tables, a schema change in one needs sign-off from every other team touching them, the exact coordination cost decomposition was supposed to remove. <strong>Database-per-service</strong> fixes this: each service's data is private, and anything another service needs comes through its API or a published event, never a direct query.</p>
   <div class="callout callout--mistake reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3L2 20h20L12 3z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M12 9.5v4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17" r="1.1" fill="currentColor"/></svg></div>
@@ -592,7 +619,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Synchronous vs asynchronous, briefly</h3>
+  <h3 class="sub reveal" id="synchronous-vs-asynchronous-briefly">Synchronous vs asynchronous, briefly</h3>
   <div class="duo reveal">
     <div class="panel">
       <h4><span class="sw"></span>Synchronous</h4>
@@ -612,7 +639,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">The real decision: temporal coupling vs eventual consistency</h3>
+  <h3 class="sub reveal" id="the-real-decision-temporal-coupling-vs-eventual-consistency">The real decision: temporal coupling vs eventual consistency</h3>
   <p class="reveal">A synchronous call creates <strong>temporal coupling</strong>: the caller and callee both have to be up, healthy, and reachable at the exact same instant for the call to succeed. If the callee is slow, the caller is slow. If the callee is down, the caller fails too — and if that caller is itself being called synchronously by something else, the failure keeps propagating backward through the whole chain. Async breaks that coupling: the callee can be completely down, and the message just sits in the queue until it recovers — the caller already got to move on. That safety isn't free — you've traded immediate consistency for <strong>eventual</strong> consistency, and taken on real complexity: messages can arrive out of order or get delivered more than once, and something has to reason about both.</p>
   <p class="reveal">The decision framework, in one line: use synchronous calls when the caller genuinely cannot proceed without an answer right now (validating a card before showing "payment accepted" on screen); use asynchronous messaging when the caller can proceed and the receiver's work can happen a moment later without anyone noticing (sending a welcome email after signup, updating a search index after a product edit).</p>
 
@@ -650,7 +677,7 @@ noscript .reveal{opacity:1;}
     <div class="accordion__body">Yes — and that's a fair trade, not a free lunch. Instead of "the caller sees an error right now," the failure mode becomes "the effect arrives later than expected, or needs a retry." That still needs handling: durable queues, retries with a dead-letter queue for poison messages, and idempotent consumers so a redelivered message doesn't double-charge a card. The System Design module's messaging chapter and the Kafka module both cover that machinery in depth — async doesn't remove the need for resilience thinking, it just relocates where you apply it.</div>
   </details>
 
-  <h3 class="sub reveal">Concrete client choices: RestTemplate, WebClient, and Feign</h3>
+  <h3 class="sub reveal" id="concrete-client-choices-resttemplate-webclient-and-feign">Concrete client choices: RestTemplate, WebClient, and Feign</h3>
   <p class="reveal">Everything above is the decision framework for synchronous calls — but "make a synchronous call" still means picking an actual HTTP client, and Spring Boot shops have shipped three genuinely different answers to that over the years. Knowing which one is current, which one is legacy, and which one hides the HTTP call behind a method signature entirely is exactly the concrete detail interviewers expect on top of the framework above.</p>
   <p class="reveal"><strong>RestTemplate</strong> is the original blocking client: every call ties up one caller thread for the full round trip, doing nothing else while it waits on the network. It still works and still shows up constantly in older codebases, but Spring has placed it in <strong>maintenance mode</strong> — no new features are coming, and it should be avoided in new code.</p>
   <p class="reveal"><strong>WebClient</strong> is the non-blocking replacement: instead of a thread per in-flight request, it runs on a small, fixed-size event-loop that hands a request off to the network layer and moves on to serve other work the moment it would otherwise have to wait. A handful of event-loop threads carry far more concurrent in-flight requests than a thread-per-request model ever could on the same hardware — which is exactly why WebClient is the default choice for any new synchronous inter-service call today. It supports <code>.timeout()</code> directly on the call chain, composes cleanly with circuit breakers, and handles errors non-blockingly through its reactive <code>Mono</code>/<code>Flux</code> types instead of a thrown exception unwinding a blocked thread.</p>
@@ -770,7 +797,7 @@ PaymentResponse resp = webClient.<span class="tk-fn">get</span>()
     </div>
   </div>
 
-  <h3 class="sub reveal">Client-side vs server-side discovery</h3>
+  <h3 class="sub reveal" id="client-side-vs-server-side-discovery">Client-side vs server-side discovery</h3>
   <div class="duo reveal">
     <div class="panel">
       <h4><span class="sw"></span>Client-side discovery</h4>
@@ -790,7 +817,7 @@ PaymentResponse resp = webClient.<span class="tk-fn">get</span>()
     </div>
   </div>
 
-  <h3 class="sub reveal">The registration lifecycle</h3>
+  <h3 class="sub reveal" id="the-registration-lifecycle">The registration lifecycle</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>Instance starts</b></div>
@@ -814,7 +841,7 @@ PaymentResponse resp = webClient.<span class="tk-fn">get</span>()
     </div>
   </div>
 
-  <h3 class="sub reveal">The API Gateway pattern</h3>
+  <h3 class="sub reveal" id="the-api-gateway-pattern">The API Gateway pattern</h3>
   <p class="reveal">An API Gateway is the single entry point clients talk to instead of calling services directly. Three things make it worth the extra hop:</p>
   <ul class="reveal">
     <li><strong>Routing</strong> — mapping an external path or host to the right internal service, so clients never need to know the internal topology</li>
@@ -836,7 +863,7 @@ PaymentResponse resp = webClient.<span class="tk-fn">get</span>()
     <div class="accordion__body">It would, if it were one instance — but in practice a gateway is deployed as a horizontally scaled, stateless fleet behind its own load balancer, the same way any other critical service is made highly available. The real risk isn't availability so much as the gateway becoming a dumping ground for business logic that belongs in a service — it should stay focused on routing and cross-cutting concerns, not domain rules.</div>
   </details>
 
-  <h3 class="sub reveal">The classic Spring Cloud Netflix stack: Eureka Server &amp; Client</h3>
+  <h3 class="sub reveal" id="the-classic-spring-cloud-netflix-stack-eureka-server-client">The classic Spring Cloud Netflix stack: Eureka Server &amp; Client</h3>
   <p class="reveal">Everything above is deliberately platform-agnostic — client vs server-side discovery, the registration/heartbeat lifecycle in the abstract, and Kubernetes' DNS-based answer to all of it. But a huge share of Spring Boot microservices running today — and an even larger share of what actually gets asked in interviews — were built before Kubernetes was the default target, on the <strong>Spring Cloud Netflix stack</strong>: Eureka for discovery, Config Server for configuration, and Feign (previous chapter) for the calls between them. This isn't a replacement for the framing above — it's the concrete implementation layer underneath it, still common outside Kubernetes, and worth knowing cold even if you deploy exclusively to Kubernetes today, because plenty of real jobs don't.</p>
   <p class="reveal">Standing up a Eureka registry is one annotation: <code>@EnableEurekaServer</code> on a dedicated Spring Boot application turns it into the registry itself — nothing else has to be built. Every other microservice becomes a <strong>Eureka Client</strong> just by adding the client dependency (auto-detected) or explicitly annotating with <code>@EnableDiscoveryClient</code>, and from that point on it handles registration automatically.</p>
 
@@ -873,7 +900,7 @@ eureka:
 
   <p class="reveal">The <strong>Eureka Dashboard</strong>, served at <code>http://localhost:8761</code> by default, is a real-time view straight into the registry — every registered service, every instance behind it, and each instance's current status. It's the fastest way to answer "is this instance actually registered" during an incident, without grepping logs.</p>
 
-  <h3 class="sub reveal">Config Server: centralized, Git-backed configuration</h3>
+  <h3 class="sub reveal" id="config-server-centralized-git-backed-configuration">Config Server: centralized, Git-backed configuration</h3>
   <p class="reveal">Config Server flips the usual "bundle <code>application.yml</code> inside the jar" model inside out. <code>@EnableConfigServer</code> — again, one annotation, on its own dedicated Spring Boot application — turns it into a config server backed by a Git repository holding one config file per service (<code>order-service.yml</code>, <code>payment-service.yml</code>, and so on). Every microservice becomes a <strong>Config Client</strong>: instead of shipping its own local <code>application.yml</code>, it points at the Config Server from a <code>bootstrap.yml</code> and pulls its actual configuration at startup.</p>
 
   <div class="code-window reveal">
@@ -992,7 +1019,7 @@ spring:
     </div>
   </div>
 
-  <h3 class="sub reveal">Circuit breaker: stop calling a dependency that's already drowning</h3>
+  <h3 class="sub reveal" id="circuit-breaker-stop-calling-a-dependency-that-s-already">Circuit breaker: stop calling a dependency that's already drowning</h3>
   <p class="reveal">When a downstream dependency gets slow or starts failing, the naive behavior — keep calling it, the same way you always do — makes things strictly worse. Every caller's thread sits blocked waiting on a response that isn't coming, the caller's own thread pool fills up with stuck requests, and the failure spreads to whoever's calling <em>you</em>. A circuit breaker wraps a call to a dependency and tracks its failure rate; once that failure rate crosses a threshold, the breaker stops even attempting the call — it fails immediately, cheaply, without touching the network. That protects your own threads from piling up on a dead dependency, and — just as importantly — gives the dependency room to actually recover instead of getting hammered by retries while it's already struggling.</p>
 
   <div class="panel diagram-panel reveal">
@@ -1030,7 +1057,7 @@ spring:
     <div class="accordion__body">A timeout only bounds how long a single call waits before giving up — it does nothing to stop the next call, or the one after that, from making the exact same doomed attempt. A circuit breaker adds memory across calls: once enough recent calls have failed, it stops trying altogether for a while. Timeouts bound one call's cost; circuit breakers bound the cost of repeatedly rediscovering the same outage.</div>
   </details>
 
-  <h3 class="sub reveal">Bulkhead: contain the blast radius per dependency</h3>
+  <h3 class="sub reveal" id="bulkhead-contain-the-blast-radius-per-dependency">Bulkhead: contain the blast radius per dependency</h3>
   <p class="reveal">A ship is built with watertight compartments so one damaged compartment floods without sinking the whole vessel. The bulkhead pattern applies the same idea to resource isolation: each downstream dependency gets its <em>own</em> bounded pool of resources, so one dependency exhausting its pool can't starve the resources needed to call other, perfectly healthy dependencies.</p>
   <div class="panel diagram-panel reveal">
     <ul class="soft-tree">
@@ -1078,7 +1105,7 @@ spring:
     <p class="diagram-cap">The failure mode the isolated pools above exist to prevent: with one thread pool shared across all three dependencies instead of one pool each, Payments alone going slow — not even failing, just slow — climbs toward consuming every thread in that shared pool. Inventory and Shipping calls then queue behind it and time out waiting for a thread that never frees up, even though both dependencies are completely healthy.</p>
   </div>
 
-  <h3 class="sub reveal">Wiring it up: Resilience4j annotations, stacked</h3>
+  <h3 class="sub reveal" id="wiring-it-up-resilience4j-annotations-stacked">Wiring it up: Resilience4j annotations, stacked</h3>
   <p class="reveal">Everything above is the mental model an interview answer draws on; Resilience4j is the library that turns it into a few lines of working Spring Boot code. Circuit breaker, bulkhead, and retry are three separate annotations — and true to the point above, they're meant to stack directly on the same method rather than being reached for one at a time in isolation.</p>
 
   <div class="code-window reveal">
@@ -1123,7 +1150,7 @@ spring:
 
   <p class="reveal">Resilience4j wasn't the first library to make this pattern mainstream in Spring — <strong>Hystrix</strong>, Netflix's original circuit breaker and part of the same Spring Cloud Netflix family as Eureka and Feign covered elsewhere in this module, filled this exact role for years before Netflix put it into maintenance mode in 2018. Resilience4j is its actively maintained successor and the modern standard for new Spring Boot code, but Hystrix is still worth recognizing by name — "whatever happened to Hystrix" is exactly the kind of legacy-systems question that surfaces once an interviewer has confirmed you know the current library.</p>
 
-  <h3 class="sub reveal">Retry with exponential backoff + jitter</h3>
+  <h3 class="sub reveal" id="retry-with-exponential-backoff-jitter">Retry with exponential backoff + jitter</h3>
   <p class="reveal">Retrying a failed call seems harmless in isolation — but a naive retry (fail, immediately try again) done by every client at once turns a struggling dependency into a completely dead one: at the exact moment it needs less load to recover, it gets hit with a wave of simultaneous retries on top of its original load. <strong>Exponential backoff</strong> fixes the "immediately" part — each retry waits longer than the last (100ms, 200ms, 400ms, 800ms...), giving the dependency real breathing room. <strong>Jitter</strong> fixes a subtler problem: if every client computes the exact same backoff schedule, they all retry at the exact same moments — still a synchronized wave, just spaced out. Adding a small random offset to each delay spreads retries smoothly over time instead of in lockstep pulses.</p>
 
   <div class="code-window reveal">
@@ -1147,7 +1174,7 @@ spring:
     </div>
   </div>
 
-  <h3 class="sub reveal">Timeout budgets across a call chain</h3>
+  <h3 class="sub reveal" id="timeout-budgets-across-a-call-chain">Timeout budgets across a call chain</h3>
   <p class="reveal">In a chain A → B → C, each hop's timeout has to leave enough room for everything that happens after it — including that hop's own retries. If A gives up on B after 800ms total, and B sets its own timeout to C at 750ms, B has left itself almost no budget to retry a failed call to C before A already gave up and moved on. The retry that might have succeeded never gets the chance to matter.</p>
   <div class="callout callout--warn reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" fill="none"/><path d="M12 7v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg></div>
@@ -1221,10 +1248,10 @@ spring:
     </div>
   </div>
 
-  <h3 class="sub reveal">Why a distributed operation can't just be one ACID transaction</h3>
+  <h3 class="sub reveal" id="why-a-distributed-operation-can-t-just-be-one-acid">Why a distributed operation can't just be one ACID transaction</h3>
   <p class="reveal">Placing an order might need to charge a card (Payments' database), reserve stock (Inventory's database), and schedule a shipment (Shipping's database) — three separate databases, each privately owned by a different service, precisely because of the database-per-service rule from chapter 1. A single ACID transaction requires one database (or at least one transaction coordinator with direct control over all participating resources) — there's no single database here to wrap a <code>BEGIN...COMMIT</code> around. Something has to take over ACID's job of "all of this happens, or none of it does" in a world where each step commits independently, in a different service, at a different time.</p>
 
-  <h3 class="sub reveal">Two-phase commit (2PC) — technically possible, rarely used here</h3>
+  <h3 class="sub reveal" id="two-phase-commit-2pc-technically-possible-rarely-used-here">Two-phase commit (2PC) — technically possible, rarely used here</h3>
   <p class="reveal">2PC is the classic distributed-transaction protocol: a coordinator asks every participant to <em>prepare</em> (lock the affected rows, do the work, but don't commit yet) — and only once every participant votes yes does the coordinator tell everyone to actually commit. It's a real solution to atomicity across systems, but it comes with a cost that makes it a poor fit for microservice boundaries specifically.</p>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
@@ -1244,10 +1271,10 @@ spring:
     </div>
   </div>
 
-  <h3 class="sub reveal">Saga: a sequence of local transactions, undone forward when needed</h3>
+  <h3 class="sub reveal" id="saga-a-sequence-of-local-transactions-undone-forward-when">Saga: a sequence of local transactions, undone forward when needed</h3>
   <p class="reveal">A saga replaces one distributed transaction with a sequence of small <strong>local</strong> transactions, each owned by a single service, each committing independently and publishing an event (or triggering a call) that kicks off the next step. If step three fails, there's no way to "roll back" steps one and two — they already committed, in different databases, and other things may have already reacted to them. Instead, each earlier step defines a <strong>compensating transaction</strong>: a new, forward-moving action that undoes that step's effect. "Refund the payment" compensates "charge the payment" — it doesn't erase the charge from history, it adds a new transaction that cancels its effect.</p>
 
-  <h3 class="sub reveal">The dual-write problem — and the outbox pattern that fixes it</h3>
+  <h3 class="sub reveal" id="the-dual-write-problem-and-the-outbox-pattern-that-fixes-it">The dual-write problem — and the outbox pattern that fixes it</h3>
   <p class="reveal">That "committing independently and publishing an event" step glosses over a real trap. The local database commit and the broker publish are two completely separate systems, reached by two separate network calls, with no transaction spanning both of them. Crash after the commit but before the publish, and the event is silently lost — the business data change is real and durable, but nothing ever tells the next step in the saga it happened. Publish first and crash before the commit lands, and it's worse: downstream services react to an event describing a change that never actually committed, with no matching row to back it up. This is the <strong>dual-write problem</strong>: whenever a single logical change requires writing to two different systems, there's a window where one write succeeds and the other doesn't, and nothing atomic covers both of them together.</p>
   <p class="reveal">The standard fix is the <strong>transactional outbox pattern</strong>: instead of publishing to the broker directly, the service writes the event into an <code>outbox</code> table in the exact same local database transaction as the business data change. Both rows commit together or roll back together, so atomicity is back — enforced by the one database that was capable of providing it all along. A separate relay process (or a change-data-capture tool like Debezium, tailing the database's write-ahead log or binlog) then reads unpublished rows out of the outbox table and delivers them to the broker asynchronously, retrying until the publish succeeds and only then marking the row as sent.</p>
 
@@ -1376,7 +1403,7 @@ spring:
     </div>
   </div>
 
-  <h3 class="sub reveal">Strangler fig: migrate by routing, not by rewriting</h3>
+  <h3 class="sub reveal" id="strangler-fig-migrate-by-routing-not-by-rewriting">Strangler fig: migrate by routing, not by rewriting</h3>
   <p class="reveal">Named after the strangler fig vine, which grows around a host tree and gradually takes over its structure until the original tree can be removed — the pattern migrates a monolith the same way. A facade (usually the API gateway) sits in front of both the monolith and any new services. Traffic for a given capability routes to whichever one currently owns it. Early on, almost everything still goes to the monolith, with one small capability freshly extracted to a new service. Capability by capability, more traffic routes to new services and less to the monolith — until eventually the monolith handles nothing at all and can be safely retired.</p>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
@@ -1406,7 +1433,7 @@ spring:
     </div>
   </div>
 
-  <h3 class="sub reveal">Service mesh: moving cross-cutting concerns into infrastructure</h3>
+  <h3 class="sub reveal" id="service-mesh-moving-cross-cutting-concerns-into">Service mesh: moving cross-cutting concerns into infrastructure</h3>
   <p class="reveal">An Istio-style service mesh deploys a small proxy — a <strong>sidecar</strong> — alongside every single service instance. Every byte of network traffic in or out of that instance passes through its sidecar first. Once traffic flows through a sidecar instead of directly between application code, a large set of cross-cutting concerns can move out of every service's codebase and into that shared proxy layer: mutual TLS between services, automatic retries, circuit breaking, load balancing, fine-grained traffic routing (canary releases by percentage), and rich observability — all without a single line of code changing inside the services themselves.</p>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
@@ -1502,7 +1529,7 @@ spring:
 
   <p class="reveal">The conceptual framing — metrics, logs, and traces as the three observability pillars, and what each one answers — already lives in the System Design module's Observability chapter, and isn't re-derived here. What's specific to microservices is the mechanics of keeping one trace connected as a request crosses dozens of independently deployed services.</p>
 
-  <h3 class="sub reveal">Trace context propagation: the part that actually breaks in practice</h3>
+  <h3 class="sub reveal" id="trace-context-propagation-the-part-that-actually-breaks-in">Trace context propagation: the part that actually breaks in practice</h3>
   <p class="reveal">A single incoming request gets one <strong>trace ID</strong> — an identifier for the entire end-to-end journey across every service it touches. Each individual hop within that journey gets its own <strong>span ID</strong>, nested under the trace, recording exactly how long that one hop took. The mechanism only works if that trace ID (and the current span's ID, as its parent) gets forwarded on <em>every single hop</em> — as an HTTP header on a REST call, as gRPC metadata on a typed call, and — the case that actually trips teams up — attached to the message itself when a request crosses a message queue, since there's no live call to carry a header on at that point; the context has to be serialized into the message and read back out by whatever consumes it.</p>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
@@ -1596,7 +1623,7 @@ spring:
     </div>
   </div>
 
-  <h3 class="sub reveal">Contract testing: catching a breaking change before it ships</h3>
+  <h3 class="sub reveal" id="contract-testing-catching-a-breaking-change-before-it-ships">Contract testing: catching a breaking change before it ships</h3>
   <p class="reveal">A consumer and a provider service are built and deployed by different teams, on different schedules — nothing stops the provider from renaming a field or changing a response shape in a way that quietly breaks every consumer, with neither side finding out until it's in production. <strong>Consumer-driven contract testing</strong> (the Pact-style approach) closes that gap without requiring a full end-to-end environment for every change: the consumer team writes a contract describing exactly the request it will send and the response shape it expects back. That contract then runs against the provider's actual code in the provider's own CI pipeline — if the provider's real response no longer satisfies the contract, the provider's build fails right there, before the change ever reaches a shared environment or production. Both sides can keep evolving independently; the contract is what keeps them honest about compatibility.</p>
 
   <div class="panel diagram-panel reveal">
@@ -1710,98 +1737,98 @@ spring:
 
   <div class="iq-group-label">Internals &amp; Why</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-01">
     <summary><span class="iq-num">01</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does an open circuit breaker fail immediately instead of just letting the existing timeout handle it?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>A timeout still lets a request tie up a caller thread for its full duration before failing, and it has no memory — the very next request repeats the identical doomed attempt. An open circuit breaker skips the network call entirely, failing in microseconds instead of seconds, which protects the caller's own thread pool and latency budget, and — just as importantly — stops adding load to a dependency that's actively trying to recover. Timeouts bound the cost of one call; the breaker bounds the cost of endlessly repeating the same failed call.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-02">
     <summary><span class="iq-num">02</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does bulkhead isolation still matter even with a circuit breaker already in place?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>A circuit breaker only trips once a failure-rate threshold is crossed — a dependency that's merely slow, not yet failing outright, keeps looking "healthy" to the breaker while its calls quietly tie up shared resources one request at a time. If every dependency shares one thread pool, that slow dependency alone can exhaust the pool and starve calls to completely healthy dependencies, well before the breaker ever reacts. Bulkhead isolation bounds the blast radius during exactly that window — regardless of whether the breaker has tripped yet — by giving each dependency its own resource budget that can't be borrowed by anything else.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-03">
     <summary><span class="iq-num">03</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does a saga need compensating transactions instead of a rollback?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>A rollback undoes uncommitted work inside a single transaction log. In a saga, each earlier step has already committed independently, in a different service's own database — there's no shared log spanning all of them to roll back, and other systems may have already reacted to that committed step. A compensating transaction is a brand-new, independent forward transaction (like "refund payment") that cancels the effect of an earlier one — it adds to history rather than erasing from it, which is the only option available once each step owns and commits its own data.</p></div>
   </details>
 
   <div class="iq-group-label">Trade-offs</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-04">
     <summary><span class="iq-num">04</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Sync vs async communication — what's actually being traded, beyond "sync is simpler"?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Sync trades availability for immediacy: you get an answer right now, but the caller's success is temporally coupled to the callee being up at that exact instant, and failures cascade backward through the whole chain. Async trades immediacy for availability: the callee can be down entirely and the caller still succeeds, but the system now has to tolerate eventual consistency and handle messages that might arrive late, out of order, or more than once. Neither is strictly better — the choice depends on whether the caller can actually proceed without an immediate answer.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-05">
     <summary><span class="iq-num">05</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Choreography vs orchestration for a saga — when would you actually pick one over the other?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Choreography works well for a small number of steps where the flow is simple enough that tracing it across a few event handlers is manageable — it avoids introducing a new coordinator as a coupling point. Once the saga grows to many steps with several different failure and compensation paths, or spans several teams, the cost of choreography's smeared-out visibility outweighs its simplicity — that's the signal to move to orchestration, where the whole flow (and every compensation) lives in one place, at the cost of that orchestrator becoming a dependency every step now shares.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-06">
     <summary><span class="iq-num">06</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Service mesh vs a resilience library embedded in each service (like Resilience4j) — what's the real trade-off?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>A mesh gives every service in a polyglot fleet identical retry, circuit-breaking, and mTLS behavior without each team hand-rolling (and subtly getting wrong) their own version in their own language — at the cost of running an entirely new infrastructure layer, per-pod sidecar overhead, and a harder failure mode when the mesh itself misbehaves. An embedded library gives finer-grained, code-level control specific to each service's needs with no extra infrastructure, but every service — and every language represented in the fleet — needs its own correct implementation, and behavior can quietly drift between teams over time.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-07">
     <summary><span class="iq-num">07</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Thread-pool bulkhead isolation vs semaphore isolation — what do you give up by choosing the cheaper option?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Semaphore isolation is much cheaper — no extra threads, minimal overhead — but the call still executes on the caller's own thread. A truly hung call (not just slow-but-responding) can still tie up that thread past the point you'd want to abandon it, since there's no separate pool to walk away from independently. Thread-pool isolation costs real memory and context-switching overhead per dependency, but a stuck call can be abandoned on its own dedicated thread without affecting the caller's ability to move on.</p></div>
   </details>
 
   <div class="iq-group-label">Traps</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-08">
     <summary><span class="iq-num">08</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A team wraps every individual call site in its own circuit breaker instance, rather than one breaker shared per dependency. What's wrong with that?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Failure counting gets fragmented across many separate breaker instances that never share state, so no single breaker instance ever accumulates enough failures to trip, even while the dependency as a whole is clearly unhealthy across all of them combined. A circuit breaker has to be scoped per-dependency (or at least per downstream instance), aggregating the true failure signal for that dependency — not sliced per call site, where each individual slice can look fine in isolation while the dependency is actually drowning.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-09">
     <summary><span class="iq-num">09</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A retry policy immediately retries a failed call three times with no delay between attempts. Under what condition does this make an outage strictly worse?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>When the dependency is failing because it's overloaded rather than because of a one-off transient blip. Immediate retries from every failing caller multiply the load hitting an already-struggling dependency at the exact moment it needs less load, not more — turning a partial degradation into a full outage. Exponential backoff with jitter exists specifically to avoid this: space retries out and desynchronize them across clients instead of adding to the pile-up immediately.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-10">
     <summary><span class="iq-num">10</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap · Guess the outcome</span><span class="iq-q">Service A's overall timeout is 500ms. Service B, which A calls, sets its own timeout to its downstream dependency C at 480ms, with one retry on failure. C is slow. What actually happens?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>B's first call to C times out near the 480ms mark, leaving essentially no time for B's retry to C before A's own 500ms timeout fires — A gives up and returns an error to its caller right around when B's retry would have started, let alone completed. The nested timeout budget was never big enough to fit a retry inside it. The fix is for B's timeout to C (including any retry) to fit comfortably inside a smaller fraction of A's 500ms, not right up against it.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-11">
     <summary><span class="iq-num">11</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A saga's compensating transaction for "reserve inventory" is implemented as "delete the reservation row." What breaks under a retried compensation?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>If the compensation runs twice — a retried message, a redelivered event — the second delete either errors out on an already-missing row, or worse, if the row ID gets reused, deletes an entirely unrelated reservation. Compensations must be idempotent: check the current state before acting (only delete if the reservation still exists and hasn't already been compensated) so repeated delivery is a safe no-op rather than a second, unintended side effect.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-12">
     <summary><span class="iq-num">12</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">The moment a circuit breaker trips from Closed to Open, what happens to calls already in flight against that dependency — and why doesn't the breaker just cancel them?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Tripping to Open only changes behavior for calls made after that instant — it has no way to reach into calls already on the wire and cancel them, because the breaker sits in front of the call deciding whether to let a new attempt through, not inside the network layer watching sockets that are already open. Those in-flight calls keep running against whatever timeout they were already given and independently succeed, fail, or time out, completely unaffected by the state flip happening around them. This is exactly why a circuit breaker is never a substitute for a per-call timeout: the breaker's job is stopping the next call from repeating a doomed attempt, not un-sending ones already in progress. In practice this means a burst of trips can still show a handful of slow responses trickling in right after the breaker opens — expected, and not a bug, since the calls the breaker actually protects are the ones still to come. Hystrix, Netflix's original circuit breaker and part of the same Spring Cloud Netflix family as Eureka and Feign, behaved identically here — Netflix put it into maintenance mode in 2018 once Resilience4j had emerged as the modern replacement, but this specific in-flight behavior never changed between the two.</p></div>
   </details>
 
   <div class="iq-group-label">Scenario</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-13">
     <summary><span class="iq-num">13</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">You're designing the saga for "place an order": charge payment, reserve inventory, schedule shipping. Three steps, a small team, rare failures. Choreography or orchestration?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Choreography is a reasonable fit here — three steps and one small team means the "hard to trace" downside is manageable, and there's no need to introduce a dedicated coupling point for something this simple. If this saga later grows to, say, eight steps with several different failure and compensation paths spread across multiple teams, that growth in complexity is the actual signal to migrate to orchestration, where the whole flow becomes visible and traceable in one place again.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-14">
     <summary><span class="iq-num">14</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A mobile app and a web dashboard both call the same backend services, but the mobile app keeps timing out on a slow, over-fetched response shaped for the web client's needs. What pattern addresses this directly?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Backend-for-Frontend. Instead of forcing every client through one generic gateway response shaped around whichever client needs the richest data, a Mobile BFF assembles a smaller, pre-aggregated response tailored to what the mobile app actually needs, while a separate Web BFF keeps serving the richer shape the dashboard wants — both calling the same underlying services.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-15">
     <summary><span class="iq-num">15</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A trace shows a request entering a message queue, then a completely new, disconnected trace ID starting on the consumer side. What's the likely root cause, and the fix?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>The producer never serialized the trace context into the message (or the consumer never read it back out) before publishing. There's no live connection across a queue hop to carry a header automatically — propagation has to be done explicitly, attaching the trace context to the message itself as headers/metadata, with the consumer continuing that same trace ID instead of starting a fresh one when it picks the message up.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-16">
     <summary><span class="iq-num">16</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A service updates its database, then separately calls the broker to publish an event, and crashes in between. What breaks, and what pattern fixes it?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>The crash lands in the gap between two independent systems. The database commit already succeeded, but the broker publish never happened, so the event meant to kick off the next saga step — or notify any other consumer — simply never arrives. Nothing about this looks like a failure to the service itself: its own transaction committed cleanly, so from its point of view the operation succeeded; the gap is invisible locally and only shows up later as a stuck downstream step or a support ticket asking why an order never moved to "paid." This is the dual-write problem — two separate systems, no shared transaction spanning both, and a crash in between either silently drops the event or, with the calls reversed, publishes one with no committed row behind it. The fix is the transactional outbox pattern: write the event to an outbox table inside the same local transaction as the business write, so the two commit or roll back together, and let a separate relay (or a CDC tool like Debezium reading the database's binlog) deliver unsent outbox rows to the broker asynchronously, retrying until delivery succeeds.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-17">
     <summary><span class="iq-num">17</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does pairing a Feign client with Eureka give you load balancing automatically, with no extra code?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>A <code>@FeignClient(name = "payment-service")</code> interface targets a logical service name, never a URL. When a discovery client like Eureka is on the classpath, Spring Cloud's load-balancer layer sits transparently between Feign and that name — resolving it to Eureka's current list of healthy instances and picking one per its balancing strategy on every call, refreshed continuously as instances register and deregister. None of that is code you write: it follows directly from Feign never referencing an IP or URL in the first place, which is exactly what makes "automatically load-balanced" true by default rather than something bolted on afterward.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-18">
     <summary><span class="iq-num">18</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A team deploying their Spring Boot services to Kubernetes adds a Eureka Server too, "just to be safe" for service discovery. What's actually wrong with defaulting to that?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Kubernetes already provides exactly what Eureka provides — a Service gets a stable DNS name that always resolves to a healthy pod, registration and health checks handled by the platform itself. Bolting Eureka on top doesn't add safety, it adds a second, redundant source of truth for "which instances are alive" — and the two won't always agree: Kubernetes can evict a crashed pod from its endpoints almost immediately, while Eureka is still waiting out its heartbeat-timeout window before evicting the same instance, so a caller relying on the stale Eureka view can get routed to something already dead. The right instinct isn't "add Eureka to be safe" — it's "check what platform this is actually running on." Eureka earns its place in traditional, non-Kubernetes deployments where nothing else provides a dynamic registry, not by default everywhere.</p></div>
   </details>
@@ -1878,6 +1905,8 @@ spring:
 
 </main>
 
+<script src="search-index.js"></script>
+<script src="site-search.js"></script>
 <script>
 (function(){
 "use strict";

@@ -379,6 +379,25 @@ noscript .reveal{opacity:1;}
   .navlink{font-size:.8rem;padding:.45rem .7rem;}
   .contents-btn{font-size:.8rem;padding:.45rem .8rem;}
 }
+/* ---- site search ---- */
+.site-search{position:relative;flex:1;max-width:420px;margin:0 1.2rem;}
+.site-search__box{display:flex;align-items:center;gap:.5rem;background:var(--surface-2);border-radius:var(--r-pill);padding:.5rem .9rem;transition:background var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);}
+.site-search__box:focus-within{background:var(--surface);box-shadow:0 0 0 2px var(--accent);}
+.site-search__icon{flex:none;width:15px;height:15px;color:var(--muted);}
+.site-search__input{flex:1;min-width:0;border:none;background:none;outline:none;font-family:var(--font-body);font-size:.87rem;color:var(--ink);}
+.site-search__input::placeholder{color:var(--muted);}
+.site-search__kbd{flex:none;font-family:var(--font-mono);font-size:.68rem;color:var(--muted);background:var(--surface);border-radius:5px;padding:.1rem .4rem;box-shadow:var(--shadow-sm);}
+.site-search__results{position:absolute;top:calc(100% + 8px);left:0;right:0;max-height:min(70vh,480px);overflow-y:auto;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:.5rem;display:none;z-index:50;}
+.site-search.is-open .site-search__results{display:block;}
+.site-search__empty{padding:1rem;font-size:.85rem;color:var(--muted);text-align:center;}
+.site-search__item{display:block;padding:.65rem .8rem;border-radius:10px;text-decoration:none;color:inherit;cursor:pointer;}
+.site-search__item:hover,.site-search__item.is-active{background:var(--tint);}
+.site-search__item-title{font-weight:700;font-size:.88rem;display:block;}
+.site-search__item-meta{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:.4rem;margin-top:.2rem;}
+.site-search__item-type{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;background:var(--surface-2);padding:.1rem .4rem;border-radius:999px;}
+.site-search mark{background:var(--tint-strong);color:inherit;border-radius:3px;padding:0 .1em;}
+@media (max-width:820px){.site-search{order:3;flex-basis:100%;max-width:none;margin:.6rem 0 0;}}
+[id]{scroll-margin-top:90px;}
 </style>
 </head>
 <body>
@@ -387,6 +406,14 @@ noscript .reveal{opacity:1;}
 <header class="topnav">
   <div class="topnav__inner">
     <a class="wordmark" href="index.html#java"><span class="wordmark__mark">J</span>Java Notes</a>
+    <div class="site-search" id="siteSearch">
+      <div class="site-search__box">
+        <svg class="site-search__icon" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" class="site-search__input" id="siteSearchInput" placeholder="Search any topic or question…" autocomplete="off" aria-label="Search notes" aria-expanded="false" aria-controls="siteSearchResults">
+        <span class="site-search__kbd">/</span>
+      </div>
+      <div class="site-search__results" id="siteSearchResults"></div>
+    </div>
     <nav class="navlinks">
       <a class="navlink" href="index.html#java">← All topics</a>
       <div class="contents" id="contents">
@@ -462,7 +489,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">How Java actually runs</h3>
+  <h3 class="sub reveal" id="how-java-actually-runs">How Java actually runs</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>Source</b><span>Main.java</span></div>
@@ -493,7 +520,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Primitive types</h3>
+  <h3 class="sub reveal" id="primitive-types">Primitive types</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Type</th><th>Size</th><th>Range / notes</th><th>Default</th></tr></thead>
@@ -510,7 +537,7 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">Stack vs. heap</h3>
+  <h3 class="sub reveal" id="stack-vs-heap">Stack vs. heap</h3>
   <div class="duo reveal">
     <div class="panel">
       <h4><span class="sw"></span>Stack — per thread</h4>
@@ -545,7 +572,7 @@ noscript .reveal{opacity:1;}
     </div>
   </details>
 
-  <h3 class="sub reveal">The <code>final</code> keyword</h3>
+  <h3 class="sub reveal" id="the-final-keyword">The <code>final</code> keyword</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Applied to</th><th>Effect</th></tr></thead>
@@ -558,7 +585,7 @@ noscript .reveal{opacity:1;}
   </div>
   <p class="reveal"><code>String</code> and every wrapper class (<code>Integer</code>, <code>Long</code>, <code>Boolean</code>...) are declared <code>final</code> specifically so nothing can subclass them and override their behaviour. That guarantee is part of what makes them safe to pool, cache, and share freely across threads without defensive copying — a mutable subclass of <code>String</code> could quietly violate every assumption the rest of the JDK makes about string immutability.</p>
 
-  <h3 class="sub reveal">Reflection</h3>
+  <h3 class="sub reveal" id="reflection">Reflection</h3>
   <p class="reveal">Reflection lets you inspect and invoke classes, methods, and fields <strong>at runtime</strong> — even private ones — instead of at compile time. It's how frameworks work without ever seeing your code at compile time: Spring reads your class's fields to inject dependencies, Hibernate maps columns to fields, JUnit finds and calls your test methods, all via reflection.</p>
   <pre class="reveal"><code><span class="tk-com">// Access a private field or constructor via reflection</span>
 Field f = MyClass.<span class="tk-fn">class</span>.getDeclaredField(<span class="tk-str">"secret"</span>);
@@ -572,7 +599,7 @@ Object value = f.get(instance);</code></pre>
     </div>
   </div>
 
-  <h3 class="sub reveal">Annotations</h3>
+  <h3 class="sub reveal" id="annotations">Annotations</h3>
   <p class="reveal">An annotation attaches metadata to code without changing its behaviour directly — something else (the compiler, a framework, or reflection at runtime) reads that metadata and acts on it.</p>
   <div class="duo reveal">
     <div class="panel"><h4><span class="sw"></span>Built-in</h4><ul><li><code>@Override</code> — compiler checks it really overrides a parent method</li><li><code>@Deprecated</code> — flags an API as discouraged</li><li><code>@FunctionalInterface</code> — enforces the single-abstract-method rule</li><li><code>@SuppressWarnings</code> — silences a specific compiler warning</li></ul></div>
@@ -650,7 +677,7 @@ Object value = f.get(instance);</code></pre>
     <div class="panel"><h4><span class="sw"></span>Polymorphism</h4><ul><li>One interface, many forms</li><li>Overriding = runtime</li><li>Overloading = compile-time</li></ul></div>
   </div>
 
-  <h3 class="sub reveal">Overloading vs. overriding</h3>
+  <h3 class="sub reveal" id="overloading-vs-overriding">Overloading vs. overriding</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th></th><th>Overloading</th><th>Overriding</th></tr></thead>
@@ -669,7 +696,7 @@ Object value = f.get(instance);</code></pre>
 }</code></pre>
   </div>
 
-  <h3 class="sub reveal">Abstract class vs. interface</h3>
+  <h3 class="sub reveal" id="abstract-class-vs-interface">Abstract class vs. interface</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th></th><th>Abstract class</th><th>Interface</th></tr></thead>
@@ -685,21 +712,21 @@ Object value = f.get(instance);</code></pre>
     <div class="callout__body"><b class="h">Rule of thumb</b><p>Reach for an <strong>interface</strong> to describe a capability unrelated classes can adopt. Reach for an <strong>abstract class</strong> when subclasses genuinely share state and partial implementation.</p></div>
   </div>
 
-  <h3 class="sub reveal">Composition over inheritance</h3>
+  <h3 class="sub reveal" id="composition-over-inheritance">Composition over inheritance</h3>
   <p class="reveal">Inheritance couples a subclass tightly to its parent's internals — a change deep in the parent can silently break every child (the "fragile base class" problem). Composition swaps an implementation behind an interface with no ripple effect.</p>
   <div class="callout callout--real reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M8 12h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
     <div class="callout__body"><b class="h">Real-world example</b><p>Spring's <code>PaymentService</code> depends on a <code>PaymentGateway</code> interface, not on <code>StripeGateway</code> directly. Swapping to PayPal — or mocking the gateway in a unit test — never touches <code>PaymentService</code>'s code.</p></div>
   </div>
 
-  <h3 class="sub reveal">Marker interfaces</h3>
+  <h3 class="sub reveal" id="marker-interfaces">Marker interfaces</h3>
   <p class="reveal">A marker interface declares <strong>no methods at all</strong> — it exists purely so the JVM (or a library) can check <code>instanceof</code> and flip behaviour on or off. <code>Serializable</code> and <code>Cloneable</code> are the two built-in examples; nothing about them requires a method body, they're flags.</p>
   <div class="duo reveal">
     <div class="panel"><h4><span class="sw"></span>Custom marker — auditing</h4><p style="font-size:.88rem;color:var(--ink-soft);margin:0;">Tag entities that require an audit trail (<code>interface Auditable {}</code>) — a save-pipeline checks <code>instanceof Auditable</code> and logs the change, with zero coupling to the entity's actual fields.</p></div>
     <div class="panel"><h4><span class="sw"></span>Custom marker — security</h4><p style="font-size:.88rem;color:var(--ink-soft);margin:0;">Tag classes that must never leave the process (<code>interface Sensitive {}</code>) — a serialization layer refuses to write out anything marked <code>Sensitive</code>, without needing a shared base class.</p></div>
   </div>
 
-  <h3 class="sub reveal">SOLID, in one pass</h3>
+  <h3 class="sub reveal" id="solid-in-one-pass">SOLID, in one pass</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th></th><th>Principle</th><th>In practice</th></tr></thead>
@@ -713,7 +740,7 @@ Object value = f.get(instance);</code></pre>
     </table>
   </div>
 
-  <h3 class="sub reveal">Liskov Substitution — what breaking it actually looks like</h3>
+  <h3 class="sub reveal" id="liskov-substitution-what-breaking-it-actually-looks-like">Liskov Substitution — what breaking it actually looks like</h3>
   <p class="reveal">The classic violation: making <code>Square</code> extend <code>Rectangle</code>. A rectangle's implicit contract is that width and height vary independently — any code written against that contract is entitled to assume setting one doesn't silently change the other. Force <code>Square</code> to keep both sides equal by overriding both setters, and that contract breaks the moment a <code>Rectangle</code>-typed reference actually holds a <code>Square</code> — even though a square "is-a" rectangle geometrically.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">LspViolation.java</span></div>
@@ -806,7 +833,7 @@ Object value = f.get(instance);</code></pre>
     </div>
   </div>
 
-  <h3 class="sub reveal">Why immutability — the security angle</h3>
+  <h3 class="sub reveal" id="why-immutability-the-security-angle">Why immutability — the security angle</h3>
   <p class="reveal">Strings carry file paths, DB passwords, class names, and URLs through a huge amount of security-sensitive code. A <strong>mutable</strong> string would be a live attack surface: something could change it after a security check has already approved it. Immutability is a security guarantee as much as a performance one.</p>
   <div class="callout callout--mistake reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div>
@@ -841,7 +868,7 @@ System.out.println(a.equals(c));       <span class="tk-com">// true — equals()
     </div>
   </details>
 
-  <h3 class="sub reveal">String vs. StringBuilder vs. StringBuffer</h3>
+  <h3 class="sub reveal" id="string-vs-stringbuilder-vs-stringbuffer">String vs. StringBuilder vs. StringBuffer</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th></th><th>String</th><th>StringBuilder</th><th>StringBuffer</th></tr></thead>
@@ -857,7 +884,7 @@ System.out.println(a.equals(c));       <span class="tk-com">// true — equals()
     <div class="callout__body"><b class="h">Performance tip</b><p>Concatenating strings inside a loop with <code>+</code> allocates a new object every iteration — O(n²) for n concatenations. A single <code>StringBuilder</code> drops that to O(n).</p></div>
   </div>
 
-  <h3 class="sub reveal">Wrapper classes &amp; the Integer cache</h3>
+  <h3 class="sub reveal" id="wrapper-classes-the-integer-cache">Wrapper classes &amp; the Integer cache</h3>
   <pre class="reveal"><code><span class="tk-typ">Integer</span> x = <span class="tk-fn">100</span>, y = <span class="tk-fn">100</span>;   <span class="tk-com">// cached      → x == y : true</span>
 <span class="tk-typ">Integer</span> p = <span class="tk-fn">200</span>, q = <span class="tk-fn">200</span>;   <span class="tk-com">// NOT cached  → p == q : false</span>
 <span class="tk-com">// Always compare wrapper VALUES with .equals(), never ==</span></code></pre>
@@ -929,7 +956,7 @@ System.out.println(a.equals(c));       <span class="tk-com">// true — equals()
     </div>
   </div>
 
-  <h3 class="sub reveal">Shallow vs. deep copy</h3>
+  <h3 class="sub reveal" id="shallow-vs-deep-copy">Shallow vs. deep copy</h3>
   <p class="reveal"><code>Object.clone()</code> gives you a <strong>shallow copy</strong> by default: primitive fields are duplicated, but reference fields still point at the <em>same</em> underlying objects as the original. Mutate a shared nested object through the copy, and the original changes too.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">Employee.java</span></div>
@@ -966,7 +993,7 @@ System.out.println(a.equals(c));       <span class="tk-com">// true — equals()
     <div class="callout__body"><b class="h">Common mistake</b><p>Cloning an object with a mutable field and assuming it's fully independent. Without the explicit <code>copy.address = this.address.clone()</code> line, both objects share the same <code>Address</code> — change one, and it silently changes both.</p></div>
   </div>
 
-  <h3 class="sub reveal">Serialization</h3>
+  <h3 class="sub reveal" id="serialization">Serialization</h3>
   <p class="reveal">Implementing the <code>Serializable</code> marker interface lets the JVM flatten an object into a byte stream (and rebuild it later, possibly in a different process entirely). Real-world uses: HTTP session replication, Kafka message payloads, Redis cache values.</p>
   <div class="duo reveal">
     <div class="panel"><h4><span class="sw"></span><code>transient</code></h4><ul><li>Field excluded from serialization</li><li>Becomes <code>null</code> / default after deserializing</li><li>Use for DB connections, file handles, passwords</li></ul></div>
@@ -1052,7 +1079,7 @@ System.out.println(a.equals(c));       <span class="tk-com">// true — equals()
     </div>
   </div>
 
-  <h3 class="sub reveal">The hierarchy</h3>
+  <h3 class="sub reveal" id="the-hierarchy">The hierarchy</h3>
   <div class="panel reveal">
     <ul class="soft-tree">
       <li><span class="k">Iterable</span>
@@ -1070,7 +1097,7 @@ System.out.println(a.equals(c));       <span class="tk-com">// true — equals()
     </ul>
   </div>
 
-  <h3 class="sub reveal">List implementations, by cost</h3>
+  <h3 class="sub reveal" id="list-implementations-by-cost">List implementations, by cost</h3>
   <div class="panel reveal">
     <div class="bars">
       <div class="bars__row"><span class="bars__label">ArrayList.get(i)</span><div class="bars__track"><div class="bars__fill" style="width:15%"></div></div><span class="bars__val">O(1)</span></div>
@@ -1080,7 +1107,7 @@ System.out.println(a.equals(c));       <span class="tk-com">// true — equals()
     </div>
   </div>
 
-  <h3 class="sub reveal">HashMap internals</h3>
+  <h3 class="sub reveal" id="hashmap-internals">HashMap internals</h3>
   <p class="reveal">A <code>HashMap</code> is an array of buckets. Each key's hash decides which bucket it lands in; collisions chain inside that bucket.</p>
   <div class="panel diagram-panel reveal">
     <div class="soft-buckets">
@@ -1094,7 +1121,7 @@ System.out.println(a.equals(c));       <span class="tk-com">// true — equals()
     <p class="diagram-cap">Bucket 5 shows a collision (chained as a list). Bucket 7 shows what happens past 8 entries in a table of ≥64: Java 8+ converts the chain to a red-black tree, taking worst-case lookup from O(n) to O(log n).</p>
   </div>
 
-  <h3 class="sub reveal">Fail-fast vs. fail-safe iterators</h3>
+  <h3 class="sub reveal" id="fail-fast-vs-fail-safe-iterators">Fail-fast vs. fail-safe iterators</h3>
   <div class="duo reveal">
     <div class="panel">
       <h4><span class="sw"></span>Fail-fast</h4>
@@ -1125,7 +1152,7 @@ System.out.println(a.equals(c));       <span class="tk-com">// true — equals()
     <div class="callout__body"><b class="h">Reading ahead</b><p><code>Employee::getSalary</code> is a <strong>method reference</strong> — shorthand for the lambda <code>e -&gt; e.getSalary()</code>. Both lambda syntax and method references are covered fully in the Java 8+ Features chapter; for now, read them as a compact way to pass "the behaviour of calling <code>getSalary()</code>" as an argument, without writing out a full anonymous class.</p></div>
   </div>
 
-  <h3 class="sub reveal">Stack, Queue &amp; specialised maps</h3>
+  <h3 class="sub reveal" id="stack-queue-specialised-maps">Stack, Queue &amp; specialised maps</h3>
   <div class="callout callout--mistake reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div>
     <div class="callout__body"><b class="h">Common mistake</b><p><code>Stack</code> extends <code>Vector</code> — it inherits every one of Vector's problems (synchronized on every call, legacy design). <code>ArrayDeque</code> is the modern replacement for <em>both</em> stack and queue use cases, and it isn't synchronized, so it's faster in single-threaded code.</p></div>
@@ -1137,7 +1164,7 @@ System.out.println(a.equals(c));       <span class="tk-com">// true — equals()
     <div class="panel"><h4><span class="sw"></span>WeakHashMap</h4><ul><li>Keys held via weak references</li><li>Entry disappears once the key is otherwise unreachable</li><li>Good fit for caches keyed by objects you don't own the lifecycle of</li></ul></div>
   </div>
 
-  <h3 class="sub reveal">Building an LRU cache from LinkedHashMap</h3>
+  <h3 class="sub reveal" id="building-an-lru-cache-from-linkedhashmap">Building an LRU cache from LinkedHashMap</h3>
   <p class="reveal"><code>LinkedHashMap</code> can track <strong>access order</strong> instead of insertion order — pass <code>true</code> as the third constructor argument, then override <code>removeEldestEntry()</code> to evict automatically once the cache is full. This is the entire recipe behind a surprising number of "implement an LRU cache" interview questions.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">LruCache.java</span></div>
@@ -1212,7 +1239,7 @@ System.out.println(a.equals(c));       <span class="tk-com">// true — equals()
 &lt;T <span class="tk-kw">extends</span> <span class="tk-typ">Number</span>&gt; <span class="tk-typ">double</span> <span class="tk-fn">sum</span>(List&lt;T&gt; nums) { <span class="tk-com">/* ... */</span> }</code></pre>
   </div>
 
-  <h3 class="sub reveal">Wildcards &amp; PECS</h3>
+  <h3 class="sub reveal" id="wildcards-pecs">Wildcards &amp; PECS</h3>
   <div class="duo reveal">
     <div class="panel"><h4><span class="sw"></span><code>? extends T</code></h4><ul><li>Upper bound — a read-only <strong>producer</strong></li><li>"Producer <strong>Extends</strong>"</li></ul></div>
     <div class="panel"><h4><span class="sw"></span><code>? super T</code></h4><ul><li>Lower bound — a write-only <strong>consumer</strong></li><li>"Consumer <strong>Super</strong>"</li></ul></div>
@@ -1308,7 +1335,7 @@ System.out.println(a.equals(c));       <span class="tk-com">// true — equals()
     </ul>
   </div>
 
-  <h3 class="sub reveal">Checked vs. unchecked</h3>
+  <h3 class="sub reveal" id="checked-vs-unchecked">Checked vs. unchecked</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th></th><th>Checked</th><th>Unchecked</th></tr></thead>
@@ -1320,7 +1347,7 @@ System.out.println(a.equals(c));       <span class="tk-com">// true — equals()
     </table>
   </div>
 
-  <h3 class="sub reveal">try / catch / finally &amp; try-with-resources</h3>
+  <h3 class="sub reveal" id="try-catch-finally-try-with-resources">try / catch / finally &amp; try-with-resources</h3>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">ReadFile.java</span></div>
     <pre><code><span class="tk-com">// try-with-resources (Java 7+) auto-closes, in reverse order</span>
@@ -1346,7 +1373,7 @@ System.out.println(a.equals(c));       <span class="tk-com">// true — equals()
     <div class="callout__body"><b class="h">Best practice</b><p>Catch specific exceptions, never <code>Exception</code>/<code>Throwable</code> broadly. Never swallow silently. When re-throwing as a different type, always pass the original as the <code>cause</code> — don't throw away the stack trace that explains why.</p></div>
   </div>
 
-  <h3 class="sub reveal">Designing custom exceptions</h3>
+  <h3 class="sub reveal" id="designing-custom-exceptions">Designing custom exceptions</h3>
   <p class="reveal">A custom exception earns its place when it carries information a generic <code>RuntimeException</code> can't — an error code, the offending ID, which downstream system failed. The first decision is where it sits in the hierarchy: extend <code>RuntimeException</code> when callers realistically can't do anything but log and fail (a broken invariant, a programming bug); extend <code>Exception</code> directly only when you genuinely want to force every caller to consciously handle or declare it — which in practice is rare enough that most modern codebases, and Spring itself, lean unchecked by default.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">InsufficientFundsException.java</span></div>
@@ -1428,7 +1455,7 @@ System.out.println(a.equals(c));       <span class="tk-com">// true — equals()
     </div>
   </div>
 
-  <h3 class="sub reveal">Creating threads</h3>
+  <h3 class="sub reveal" id="creating-threads">Creating threads</h3>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">ThreadStarters.java</span></div>
     <pre><code><span class="tk-com">// 1. Extend Thread — burns your one shot at inheritance</span>
@@ -1452,7 +1479,7 @@ Future&lt;Integer&gt; f = executor.submit(c);
     <div class="callout__body"><b class="h">Common mistake</b><p>Calling <code>worker.run()</code> directly instead of <code>worker.start()</code>. <code>run()</code> just executes as an ordinary method call on the <em>current</em> thread — zero concurrency, and the bug rarely surfaces until real load.</p></div>
   </div>
 
-  <h3 class="sub reveal">Java Memory Model &amp; happens-before</h3>
+  <h3 class="sub reveal" id="java-memory-model-happens-before">Java Memory Model &amp; happens-before</h3>
   <p class="reveal">The <strong>Java Memory Model (JMM)</strong> defines exactly when one thread is guaranteed to see another thread's writes. Without a happens-before relationship between two actions, the JVM and CPU are both free to reorder them — "it works on my machine" concurrency bugs are almost always a missing happens-before edge.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -1466,7 +1493,7 @@ Future&lt;Integer&gt; f = executor.submit(c);
     </table>
   </div>
 
-  <h3 class="sub reveal">Thread lifecycle</h3>
+  <h3 class="sub reveal" id="thread-lifecycle">Thread lifecycle</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>NEW</b></div>
@@ -1480,7 +1507,7 @@ Future&lt;Integer&gt; f = executor.submit(c);
     <p class="diagram-cap">From RUNNABLE, a thread can drop into BLOCKED (waiting on a lock), WAITING (<code>wait()</code>/<code>join()</code>, no timeout) or TIMED_WAITING (<code>sleep(t)</code>) — and rejoin RUNNABLE once its condition clears.</p>
   </div>
 
-  <h3 class="sub reveal">Synchronization &amp; the memory model</h3>
+  <h3 class="sub reveal" id="synchronization-the-memory-model">Synchronization &amp; the memory model</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th></th><th><code>synchronized</code></th><th><code>volatile</code></th><th>Atomic classes</th></tr></thead>
@@ -1503,7 +1530,7 @@ Future&lt;Integer&gt; f = executor.submit(c);
     </div>
   </details>
 
-  <h3 class="sub reveal">ReentrantLock, ReadWriteLock &amp; Condition</h3>
+  <h3 class="sub reveal" id="reentrantlock-readwritelock-condition">ReentrantLock, ReadWriteLock &amp; Condition</h3>
   <p class="reveal"><code>synchronized</code> covers most cases, but <code>java.util.concurrent.locks</code> exists for the cases it doesn't: a <strong>ReentrantLock</strong> can attempt a lock with a timeout, respond to interruption while waiting, and back off instead of blocking forever. None of that is possible with the implicit monitor behind <code>synchronized</code>.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">SafeUpdate.java</span></div>
@@ -1533,7 +1560,7 @@ Future&lt;Integer&gt; f = executor.submit(c);
   <p class="reveal"><strong>ReadWriteLock</strong> splits the same idea in two: unlimited concurrent readers, but a writer needs fully exclusive access with no readers or other writers active. It pays off exactly when reads vastly outnumber writes — a cache guarded by a plain <code>ReentrantLock</code> serializes every read unnecessarily, while a <code>ReentrantReadWriteLock</code> lets every reader through together and only blocks for the rare write.</p>
   <p class="reveal">A <strong><code>Condition</code></strong> (from <code>lock.newCondition()</code>) is <code>Lock</code>'s equivalent of <code>Object.wait()</code>/<code>notify()</code> — <code>await()</code>/<code>signal()</code>/<code>signalAll()</code> — except one lock can hand out several independent conditions (e.g. one for "buffer not full", one for "buffer not empty"), where a monitor only ever gives you a single wait-set. The producer-consumer walkthrough below uses the classic <code>synchronized</code>/<code>wait</code>/<code>notifyAll()</code> form, since that's what actually shows up in most codebases and interviews — but a <code>Lock</code> plus two <code>Condition</code>s solves the identical problem more explicitly.</p>
 
-  <h3 class="sub reveal">Producer-consumer: <code>wait()</code>/<code>notify()</code> and <code>BlockingQueue</code></h3>
+  <h3 class="sub reveal" id="producer-consumer-wait-notify-and-blockingqueue">Producer-consumer: <code>wait()</code>/<code>notify()</code> and <code>BlockingQueue</code></h3>
   <p class="reveal">The producer-consumer problem is the canonical use of <code>wait()</code>/<code>notify()</code>: a producer thread fills a shared, bounded buffer; a consumer thread drains it. The producer must pause when the buffer is full, the consumer must pause when it's empty, and each has to wake the other up once that stops being true.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">SharedBuffer.java</span></div>
@@ -1577,7 +1604,7 @@ queue.put(value);      <span class="tk-com">// blocks automatically when full �
     <div class="callout__body"><b class="h">Best practice</b><p>Reach for <code>ArrayBlockingQueue</code>/<code>LinkedBlockingQueue</code> over hand-written <code>wait()</code>/<code>notify()</code> in real code — same guarantees, none of the "did I remember the <code>while</code> loop" risk. The mechanics still matter to know, because it's exactly what <code>BlockingQueue</code> is built on internally, and it's a frequent whiteboard question.</p></div>
   </div>
 
-  <h3 class="sub reveal">Deadlock: causes, prevention, detection</h3>
+  <h3 class="sub reveal" id="deadlock-causes-prevention-detection">Deadlock: causes, prevention, detection</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Coffman condition</th><th>Meaning</th></tr></thead>
@@ -1598,7 +1625,7 @@ queue.put(value);      <span class="tk-com">// blocks automatically when full �
     <div class="callout__body"><b class="h">Best practice</b><p>Deadlock needs all four Coffman conditions at once — breaking just one (usually circular wait, via lock ordering) is enough to prevent it entirely.</p></div>
   </div>
 
-  <h3 class="sub reveal">Executors &amp; thread pools</h3>
+  <h3 class="sub reveal" id="executors-thread-pools">Executors &amp; thread pools</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Factory</th><th>Behaviour</th></tr></thead>
@@ -1614,7 +1641,7 @@ queue.put(value);      <span class="tk-com">// blocks automatically when full �
     <div class="callout__body"><b class="h">Performance tip</b><p>Prefer a hand-configured <code>ThreadPoolExecutor</code> with a bounded queue and named threads over the <code>Executors</code> factories, which can quietly hide an unbounded queue until it bites under load.</p></div>
   </div>
 
-  <h3 class="sub reveal">ExecutorService lifecycle: shutting down cleanly</h3>
+  <h3 class="sub reveal" id="executorservice-lifecycle-shutting-down-cleanly">ExecutorService lifecycle: shutting down cleanly</h3>
   <p class="reveal">An <code>ExecutorService</code> doesn't stop just because <code>main()</code> returns — its threads keep the JVM alive until told otherwise. Shutting one down correctly is a two-step handshake, not a single call.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -1635,7 +1662,7 @@ queue.put(value);      <span class="tk-com">// blocks automatically when full �
     <div class="callout__body"><b class="h">Common mistake</b><p>Calling <code>shutdown()</code> and assuming the pool is already gone — it isn't; <code>shutdown()</code> returns immediately while queued and in-flight tasks keep running in the background. Forgetting to call it at all is just as common, and just as costly: a live pool of non-daemon threads is a classic reason a Spring Boot app or batch job "hangs" instead of exiting after <code>main()</code> finishes.</p></div>
   </div>
 
-  <h3 class="sub reveal">Virtual threads &amp; structured concurrency (Java 21)</h3>
+  <h3 class="sub reveal" id="virtual-threads-structured-concurrency-java-21">Virtual threads &amp; structured concurrency (Java 21)</h3>
   <p class="reveal">A <strong>virtual thread</strong> is managed by the JVM rather than mapped 1:1 to an OS thread — millions can run concurrently, making blocking I/O cheap again without a reactive rewrite. <strong>Structured concurrency</strong> treats a group of subtasks as one unit: fork them inside a scope, and every child finishes — or is cancelled — before the parent moves on.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">Handler.java</span></div>
@@ -1653,7 +1680,7 @@ Response <span class="tk-fn">handle</span>(Request req) <span class="tk-kw">thro
 }</code></pre>
   </div>
 
-  <h3 class="sub reveal">CompletableFuture: composing async pipelines</h3>
+  <h3 class="sub reveal" id="completablefuture-composing-async-pipelines">CompletableFuture: composing async pipelines</h3>
   <p class="reveal">A plain <code>Future</code> only offers a blocking <code>get()</code> — no way to react when it completes, or to chain more work onto it, without tying up a thread to wait. <code>CompletableFuture</code> fixes that: each stage returns a new <code>CompletableFuture</code>, so a whole pipeline of async steps can be built up without ever blocking until the very end, if at all.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">OrderPipeline.java</span></div>
@@ -1770,7 +1797,7 @@ receipt.handle((result, ex) -&gt; ex != <span class="tk-kw">null</span> ? Receip
     </div>
   </div>
 
-  <h3 class="sub reveal">Lambdas &amp; functional interfaces</h3>
+  <h3 class="sub reveal" id="lambdas-functional-interfaces">Lambdas &amp; functional interfaces</h3>
   <pre class="reveal"><code><span class="tk-typ">Runnable</span> r = () -&gt; System.out.println(<span class="tk-str">"hi"</span>);
 Comparator&lt;String&gt; c = (a, b) -&gt; a.length() - b.length();</code></pre>
   <div class="tbl-wrap reveal">
@@ -1785,7 +1812,7 @@ Comparator&lt;String&gt; c = (a, b) -&gt; a.length() - b.length();</code></pre>
     </table>
   </div>
 
-  <h3 class="sub reveal">Optional</h3>
+  <h3 class="sub reveal" id="optional">Optional</h3>
   <pre class="reveal"><code>Optional&lt;User&gt; u = repo.findById(id);
 <span class="tk-typ">String</span> name = u.map(User::getName).orElse(<span class="tk-str">"Guest"</span>);
 <span class="tk-kw">return</span> u.orElseThrow(() -&gt; <span class="tk-kw">new</span> <span class="tk-typ">NotFoundException</span>(id));</code></pre>
@@ -1906,13 +1933,13 @@ Map&lt;Dept,Long&gt; counts = emps.stream()
 <span class="tk-typ">String</span> names = emps.stream().map(Emp::getName)
     .collect(Collectors.joining(<span class="tk-str">", "</span>, <span class="tk-str">"["</span>, <span class="tk-str">"]"</span>));</code></pre>
 
-  <h3 class="sub reveal"><code>map</code> vs. <code>flatMap</code></h3>
+  <h3 class="sub reveal" id="map-vs-flatmap"><code>map</code> vs. <code>flatMap</code></h3>
   <div class="duo reveal">
     <div class="panel"><h4><span class="sw"></span>map()</h4><ul><li>One-to-one transform</li><li><code>Stream&lt;List&lt;X&gt;&gt;</code> stays nested</li></ul></div>
     <div class="panel"><h4><span class="sw"></span>flatMap()</h4><ul><li>One-to-many, then flattens</li><li><code>Stream&lt;List&lt;X&gt;&gt;</code> → <code>Stream&lt;X&gt;</code></li></ul></div>
   </div>
 
-  <h3 class="sub reveal"><code>reduce()</code>: folding a stream to one value</h3>
+  <h3 class="sub reveal" id="reduce-folding-a-stream-to-one-value"><code>reduce()</code>: folding a stream to one value</h3>
   <p class="reveal">Where <code>collect()</code> builds a new collection, <code>reduce()</code> folds the whole stream down to a single value by repeatedly combining an accumulator with the next element — the same shape as a running total.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">PayrollTotal.java</span></div>
@@ -1927,13 +1954,13 @@ Optional&lt;Emp&gt; highestPaid = emps.stream()
   </div>
   <p class="reveal">The two-argument form always returns a value — <code>identity</code> is the fallback for an empty stream. The one-argument form returns <code>Optional&lt;T&gt;</code> instead, because there's no safe default to hand back. <code>identity</code> must be a true identity for the operation — <code>0</code> for addition, <code>1</code> for multiplication — or the very first combination silently produces the wrong answer.</p>
 
-  <h3 class="sub reveal">Primitive streams</h3>
+  <h3 class="sub reveal" id="primitive-streams">Primitive streams</h3>
   <p class="reveal"><code>Stream&lt;Integer&gt;</code> boxes every single element — exactly the autoboxing cost the Strings &amp; Wrapper Classes chapter warns about, multiplied across potentially millions of elements. <code>IntStream</code>, <code>LongStream</code> and <code>DoubleStream</code> avoid that entirely by working on unboxed primitives, with <code>mapToInt()</code>/<code>mapToObj()</code> converting in and out.</p>
   <pre class="reveal"><code><span class="tk-typ">int</span> total = emps.stream()
     .mapToInt(Emp::getSalary)   <span class="tk-com">// Stream&lt;Integer&gt; → IntStream, no boxing from here on</span>
     .sum();                     <span class="tk-com">// IntStream ships sum()/average()/max() directly — no reduce() needed</span></code></pre>
 
-  <h3 class="sub reveal">Parallel streams</h3>
+  <h3 class="sub reveal" id="parallel-streams">Parallel streams</h3>
   <p class="reveal"><code>list.parallelStream()</code> splits work across the common <strong>ForkJoinPool</strong> — the same pool the JDK uses internally for CPU-intensive recursive tasks (divide-and-conquer algorithms), which is exactly the profile a parallel stream fits best. It's a genuine win only for large, CPU-bound, stateless work; small collections, I/O, or ordered/stateful logic tend to get slower, not faster.</p>
   <div class="callout callout--warn reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a1 1 0 0 0 .86 1.5h18.64a1 1 0 0 0 .86-1.5L13.71 3.86a1 1 0 0 0-1.72 0Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
@@ -1999,7 +2026,7 @@ Optional&lt;Emp&gt; highestPaid = emps.stream()
     </div>
   </div>
 
-  <h3 class="sub reveal">The request lifecycle</h3>
+  <h3 class="sub reveal" id="the-request-lifecycle">The request lifecycle</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>Load driver</b></div>
@@ -2030,7 +2057,7 @@ Optional&lt;Emp&gt; highestPaid = emps.stream()
     <div class="callout__body"><b class="h">Best practice</b><p>Always use <code>PreparedStatement</code>, never string-concatenated SQL — it's the standard defence against SQL injection, and it lets the database cache the query plan across calls.</p></div>
   </div>
 
-  <h3 class="sub reveal">Transactions</h3>
+  <h3 class="sub reveal" id="transactions">Transactions</h3>
   <p class="reveal">Connections default to <code>autoCommit(true)</code> — every statement commits the instant it runs. For anything multi-step, disable it explicitly and control the boundary yourself.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">TransferService.java</span></div>
@@ -2050,7 +2077,7 @@ Optional&lt;Emp&gt; highestPaid = emps.stream()
   </div>
   <p class="reveal">A <strong>savepoint</strong> allows a <em>partial</em> rollback — <code>rollback(savepoint)</code> undoes only the work after that point, not the whole transaction.</p>
 
-  <h3 class="sub reveal">Isolation levels, by symptom</h3>
+  <h3 class="sub reveal" id="isolation-levels-by-symptom">Isolation levels, by symptom</h3>
   <p class="reveal">Each isolation level is defined by exactly which of these three symptoms it refuses to allow. More isolation means fewer anomalies, more locking, and less concurrency — it's a dial, not a free upgrade.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -2075,7 +2102,7 @@ Optional&lt;Emp&gt; highestPaid = emps.stream()
   </div>
   <p class="reveal"><code>READ_COMMITTED</code> is the practical default (Postgres and SQL Server both ship it) — it stops the genuinely dangerous case, reading data that might never actually get committed, while leaving room for concurrent throughput. <code>SERIALIZABLE</code> gives up the most concurrency in exchange for behaving as if every transaction ran one at a time, in some order.</p>
 
-  <h3 class="sub reveal">Batch processing</h3>
+  <h3 class="sub reveal" id="batch-processing">Batch processing</h3>
   <pre class="reveal"><code>PreparedStatement ps = con.prepareStatement(<span class="tk-str">"INSERT INTO logs(msg) VALUES (?)"</span>);
 <span class="tk-kw">for</span> (String msg : messages) {
     ps.setString(<span class="tk-fn">1</span>, msg);
@@ -2083,7 +2110,7 @@ Optional&lt;Emp&gt; highestPaid = emps.stream()
 }
 ps.executeBatch();          <span class="tk-com">// one round-trip for every row</span></code></pre>
 
-  <h3 class="sub reveal">Connection pooling</h3>
+  <h3 class="sub reveal" id="connection-pooling">Connection pooling</h3>
   <p class="reveal">Opening a connection is expensive — a fresh TCP handshake plus authentication, every time. A pool keeps a set of live connections ready to reuse.</p>
   <div class="duo reveal">
     <div class="panel"><h4><span class="sw"></span>release() vs. close()</h4><ul><li><code>release()</code> returns the connection to the pool</li><li>It does <strong>not</strong> actually close the underlying socket</li><li>Calling raw <code>close()</code> on a pooled connection is exactly what returns it — the pool intercepts it</li></ul></div>
@@ -2159,7 +2186,7 @@ ps.executeBatch();          <span class="tk-com">// one round-trip for every row
     </div>
   </div>
 
-  <h3 class="sub reveal">Classic I/O: streams, readers, writers</h3>
+  <h3 class="sub reveal" id="classic-i-o-streams-readers-writers">Classic I/O: streams, readers, writers</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th></th><th>Bytes</th><th>Characters</th></tr></thead>
@@ -2197,14 +2224,14 @@ ps.executeBatch();          <span class="tk-com">// one round-trip for every row
     <div class="callout__body"><b class="h">This is the Decorator pattern</b><p>Wrapping one stream inside another to add behaviour without touching the wrapped class is exactly the Decorator pattern, covered later in the Design Patterns chapter — <code>java.io</code> has been using it since Java 1.0.</p></div>
   </div>
 
-  <h3 class="sub reveal">NIO: <code>Path</code> &amp; <code>Files</code></h3>
+  <h3 class="sub reveal" id="nio-path-files">NIO: <code>Path</code> &amp; <code>Files</code></h3>
   <p class="reveal">Java 7's NIO.2 replaced the old, error-prone <code>java.io.File</code> with <code>Path</code> and the static <code>Files</code> helper — clearer error handling, and most common operations in one line.</p>
   <pre class="reveal"><code><span class="tk-typ">Path</span> p = Paths.get(<span class="tk-str">"data.txt"</span>);
 List&lt;String&gt; lines = Files.readAllLines(p);
 Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpenOption.APPEND);
 <span class="tk-typ">boolean</span> exists = Files.exists(p);</code></pre>
 
-  <h3 class="sub reveal">Channels, buffers &amp; <code>WatchService</code></h3>
+  <h3 class="sub reveal" id="channels-buffers-watchservice">Channels, buffers &amp; <code>WatchService</code></h3>
   <div class="duo reveal">
     <div class="panel"><h4><span class="sw"></span>Channels &amp; buffers</h4><ul><li>A <code>Channel</code> moves data between a source and a <code>Buffer</code></li><li>Buffers can be read from and written to in either direction</li><li>Foundation for non-blocking, high-throughput I/O</li></ul></div>
     <div class="panel"><h4><span class="sw"></span>WatchService</h4><ul><li>Subscribes to file-system events on a directory</li><li>Notified on create/modify/delete, no polling loop needed</li><li>Used by hot-reload tools, log tailers, config watchers</li></ul></div>
@@ -2278,7 +2305,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     </div>
   </div>
 
-  <h3 class="sub reveal">JVM architecture</h3>
+  <h3 class="sub reveal" id="jvm-architecture">JVM architecture</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>.class bytecode</b></div>
@@ -2291,7 +2318,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     </div>
   </div>
 
-  <h3 class="sub reveal">ClassLoader subsystem</h3>
+  <h3 class="sub reveal" id="classloader-subsystem">ClassLoader subsystem</h3>
   <p class="reveal">Class loading is three ordered phases: <strong>Loading → Linking</strong> (verify, prepare, resolve) <strong>→ Initialization</strong>.</p>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
@@ -2304,7 +2331,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     <p class="diagram-cap">The <strong>parent-delegation model</strong>: a loader asks its parent first. This is why application code can never shadow <code>java.lang.String</code> — Bootstrap already has the real one loaded before Application ever gets a chance.</p>
   </div>
 
-  <h3 class="sub reveal">Runtime memory areas</h3>
+  <h3 class="sub reveal" id="runtime-memory-areas">Runtime memory areas</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Area</th><th>Shared?</th><th>Stores</th></tr></thead>
@@ -2321,7 +2348,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     <div class="callout__body"><b class="h">Note</b><p><strong>PermGen → Metaspace:</strong> Java 8 replaced the fixed-size PermGen with a native-memory Metaspace that grows automatically — eliminating most of the once-common <code>PermGen OutOfMemoryError</code>s.</p></div>
   </div>
 
-  <h3 class="sub reveal">Heap generations &amp; GC</h3>
+  <h3 class="sub reveal" id="heap-generations-gc">Heap generations &amp; GC</h3>
   <p class="reveal"><strong>Generational hypothesis:</strong> most objects die young. New objects are born in <strong>Eden</strong>; survivors copy between two survivor spaces, then get promoted to <strong>Old Gen</strong> after surviving enough cycles.</p>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
@@ -2348,7 +2375,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     </table>
   </div>
 
-  <h3 class="sub reveal">Reference strength &amp; leaks</h3>
+  <h3 class="sub reveal" id="reference-strength-leaks">Reference strength &amp; leaks</h3>
   <div class="duo reveal">
     <div class="panel"><h4><span class="sw"></span>Strong</h4><ul><li>Default — never GC'd while reachable</li></ul></div>
     <div class="panel"><h4><span class="sw"></span>Soft</h4><ul><li>Cleared only under memory pressure</li><li>Good fit for caches</li></ul></div>
@@ -2436,7 +2463,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     </div>
   </div>
 
-  <h3 class="sub reveal">Creational</h3>
+  <h3 class="sub reveal" id="creational">Creational</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Pattern</th><th>Intent</th><th>Java / Spring example</th></tr></thead>
@@ -2458,7 +2485,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
 }</code></pre>
   </div>
 
-  <h3 class="sub reveal">Structural</h3>
+  <h3 class="sub reveal" id="structural">Structural</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Pattern</th><th>Intent</th></tr></thead>
@@ -2475,7 +2502,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     <div class="callout__body"><b class="h">Pitfall</b><p><strong>Adapter</strong> is for code you genuinely can't change (legacy, third-party) — if you can modify the code, just fix the design instead of adapting around it. <strong>Facade</strong> can quietly become a "god class" if it keeps absorbing responsibility — keep it a coordinator, not a dumping ground. <strong>Proxy</strong> controls access; <strong>Decorator</strong> adds behaviour — easy to confuse, very different intent.</p></div>
   </div>
 
-  <h3 class="sub reveal">Behavioural</h3>
+  <h3 class="sub reveal" id="behavioural">Behavioural</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Pattern</th><th>Intent</th></tr></thead>
@@ -2577,7 +2604,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
 
   <div class="iq-group-label">JVM &amp; Memory Internals</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-01">
     <summary><span class="iq-num">01</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does the JVM use a generational garbage collector instead of just scanning the entire heap every time?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Scanning the whole heap every time you need to reclaim memory would mean the cost of a GC pause grows with total heap size — on a multi-gigabyte heap, that's an unacceptable pause. The generational hypothesis (empirically true for almost all real programs) says <strong>most objects die young</strong> — a request-scoped DTO, a temporary string, a loop variable's boxed wrapper. So the JVM optimises for that: new objects go into a small Eden space that gets scanned constantly and cheaply (Minor GC), and only objects that survive multiple collections get promoted to Old Gen, which is scanned rarely.</p>
@@ -2585,7 +2612,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-02">
     <summary><span class="iq-num">02</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Two services run identical code, but one has frequent multi-second GC pauses and the other doesn't. What would you actually check?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Identical code doesn't mean identical behaviour — the difference is almost always in <strong>what's alive and how much of it there is</strong>, or the GC configuration itself. Checklist, roughly in order of how often it's the actual cause:</p>
@@ -2599,7 +2626,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-03">
     <summary><span class="iq-num">03</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">Why can calling <code>String.intern()</code> make performance <em>worse</em>, not better?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>The intuition is "pooling saves memory, so interning everything should help." But the string pool has a cost too: it's a fixed-size hash table (tunable via <code>-XX:StringTableSize</code>, but still finite), and interning a string that's genuinely unique — say, a parsed UUID or a request ID — just permanently grows the pool with an entry that will <strong>never be reused</strong> and, in older JVMs living in PermGen, could itself contribute to memory pressure that's harder to reclaim than an ordinary heap object.</p>
@@ -2607,7 +2634,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-04">
     <summary><span class="iq-num">04</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A service throws <code>OutOfMemoryError: Metaspace</code> only after a day of frequent hot-redeploys in a dev environment — never in production, which redeploys rarely. What's going on?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>This is the classic <strong>classloader leak</strong>. Every hot-redeploy (or every dynamic class-reloading framework doing its job) creates a <em>new</em> classloader for the redeployed code. If even one object from the old classloader's classes is still referenced somewhere else — a thread that didn't get shut down, a static field in a framework class, a registered JDBC driver, a <code>ThreadLocal</code> that was never cleaned up — the GC can't unload the entire old classloader, because unloading requires <strong>zero</strong> live references to any class it loaded.</p>
@@ -2615,7 +2642,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-05">
     <summary><span class="iq-num">05</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Why doesn't the JVM just return freed heap memory to the operating system immediately after every GC cycle?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Returning memory to the OS means unmapping pages — an actual syscall with real cost — and re-requesting (and re-zeroing) them the moment the application allocates again. Most workloads have a fairly stable working-set size: memory usage goes up and down within a range, not monotonically toward zero. Eagerly returning memory optimises for a case (heap usage permanently dropping) that's much rarer than the case it would hurt (heap usage fluctuating normally), so most collectors keep freed regions available for reuse by default and only return memory to the OS after usage stays low for a sustained period.</p>
@@ -2625,7 +2652,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
 
   <div class="iq-group-label">Collections Internals</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-06">
     <summary><span class="iq-num">06</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does a HashMap's capacity specifically have to be a power of two?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Bucket index is computed as <code>(capacity − 1) &amp; hash</code> — a bitwise AND — rather than <code>hash % capacity</code>. That bit trick is only mathematically equivalent to modulus when capacity is a power of two, because <code>capacity − 1</code> then becomes a run of all-1 bits (e.g. 16 → 15 → <code>01111</code>), and ANDing with it just keeps the low bits of the hash, exactly matching what modulus by a power of two would produce — but at a fraction of the CPU cost, since AND is a single cycle and integer division isn't.</p>
@@ -2633,7 +2660,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-07">
     <summary><span class="iq-num">07</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">You insert 1,000,000 entries into <code>new HashMap&lt;&gt;()</code> with no initial capacity specified. What actually happens internally, and why is it slower than it needs to be?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Default capacity is 16 with a 0.75 load factor. Every time size exceeds capacity × 0.75, the table <strong>doubles and every single entry gets rehashed into the new table</strong> — 16 → 32 → 64 → 128 ... all the way past 1,000,000. That's roughly 17 resize events, each one re-inserting every entry that exists at that point. The total rehashing work across all those resizes is proportional to the final size, so it's not catastrophic asymptotically — but it's a large constant-factor waste of CPU and allocates and discards 17 progressively larger backing arrays along the way.</p>
@@ -2643,7 +2670,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-08">
     <summary><span class="iq-num">08</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A custom key class's <code>equals()</code> compares every field, but its <code>hashCode()</code> only hashes one of them. What's the concrete production symptom?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>This one is subtle precisely because it doesn't violate the equals/hashCode contract — the contract only requires that equal objects produce equal hashes, and a hash based on a subset of the equality-determining fields is still <em>consistent</em> in that narrower sense; it's just a bad hash. The real-world symptom: <strong>the map still works correctly, just badly</strong>. Every key with the same value for that one hashed field lands in the same bucket regardless of how different their other fields are — turning what should be a near-uniform O(1) map into one with a few enormous buckets and many empty ones, degrading toward O(n) lookups for the popular values.</p>
@@ -2651,7 +2678,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-09">
     <summary><span class="iq-num">09</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Is <code>ConcurrentHashMap</code> not being fail-fast a bug, or a deliberate design choice?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Deliberate — and arguably the entire point. Fail-fast (throwing <code>ConcurrentModificationException</code>) exists to surface bugs early in <em>single-threaded-assumption</em> code, where concurrent mutation during iteration signals a real logic error. But <code>ConcurrentHashMap</code> is explicitly built to be mutated by many threads at once — that's its whole reason to exist — so treating a concurrent write during iteration as an error would make the class unusable for its own core purpose.</p>
@@ -2661,7 +2688,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
 
   <div class="iq-group-label">Concurrency Traps</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-10">
     <summary><span class="iq-num">10</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A counter guarded by <code>synchronized</code> still produces wrong totals under concurrent load. The lock is clearly there — what's actually wrong?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>The overwhelmingly common cause: the threads aren't actually synchronizing on the <strong>same monitor</strong>. Classic variants:</p>
@@ -2676,7 +2703,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-11">
     <summary><span class="iq-num">11</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Why can throwing more threads at a purely CPU-bound task make it slower, not faster?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Once thread count passes the number of available CPU cores, extra threads don't add real parallelism — they add <strong>context-switching overhead</strong>: the OS scheduler now has to save and restore more thread states, cache lines that one thread warmed up get evicted by the next thread scheduled onto that core, and for CPU-bound work there's no I/O wait for other threads to usefully fill. Past the core count, you're paying coordination cost for zero additional throughput.</p>
@@ -2684,7 +2711,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-12">
     <summary><span class="iq-num">12</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">You inherit a codebase with <code>synchronized(this)</code> scattered across many classes, and occasional production deadlocks. How do you fix it without a full rewrite?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>The underlying problem: <code>synchronized(this)</code> locks on the object's own public monitor — anyone holding a reference to that object can lock on it too, from completely unrelated code, creating lock-ordering dependencies you can't see or control from inside the class. That's exactly the setup for accidental circular wait between two objects that happen to call into each other under load.</p>
@@ -2692,7 +2719,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-13">
     <summary><span class="iq-num">13</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">How can two threads observe genuinely different values for the same plain (non-<code>volatile</code>) variable, with no exception ever thrown?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Without a happens-before edge, the Java Memory Model doesn't guarantee <em>when</em> — or even <em>whether</em> — a write becomes visible to another thread. In practice this shows up because of CPU core-local caches: a write from Thread A can sit in that core's cache without being flushed to main memory, and Thread B (running on a different core, reading from its own cache or from main memory) simply never sees it, or sees a stale value, indefinitely. No exception fires because nothing is "wrong" from the JVM's point of view — the code just didn't ask for a visibility guarantee.</p>
@@ -2700,7 +2727,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-14">
     <summary><span class="iq-num">14</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Guess the output</span><span class="iq-q">Two threads each run <code>for (int i = 0; i &lt; 100_000; i++) total++;</code> on a shared, plain <code>int total</code>. What does <code>total</code> equal at the end?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Almost certainly <strong>less than 200,000</strong> — and not the same number on every run. <code>total++</code> is read, increment, write — three separate steps. Two threads can both read the same value, both compute the same incremented result, and both write it back, so one thread's increment is silently lost. Run it enough times and you'll see a different final total on almost every execution — that non-determinism <em>is</em> the answer, not "it's fine because it's just addition."</p>
@@ -2710,7 +2737,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
 
   <div class="iq-group-label">Strings, Objects &amp; Equality</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-15">
     <summary><span class="iq-num">15</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Guess the output</span><span class="iq-q">A form handler does <code>if (request.getParameter("mode") == "fast")</code>. Walk through every way this can silently fail.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>This compiles fine and can even <em>pass</em> in a quick manual test, which is what makes it dangerous. <code>getParameter()</code> returns a string built by the servlet container from raw request bytes — it is never the pooled literal <code>"fast"</code>, so <code>==</code> compares two different heap objects and is <strong>always <code>false</code></strong>, regardless of the actual parameter value. It can appear to "work" during development only if a developer happens to test with a code path where a literal was compared instead, masking the bug until real traffic hits it in a way that exposes the always-false branch.</p>
@@ -2718,7 +2745,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-16">
     <summary><span class="iq-num">16</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">Overriding <code>equals()</code> without <code>hashCode()</code> doesn't break anything the day you ship it. Why does it fail weeks later instead of immediately?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>The default <code>Object.hashCode()</code> (identity-based) is still internally consistent by itself — the same object always returns the same hash, so it never <em>contradicts</em> itself. Code that only ever compares objects directly with <code>.equals()</code>, or that never happens to put two "logically equal" instances into the same <code>HashSet</code>/<code>HashMap</code> during initial testing, will never notice the mismatch. The bug only becomes visible the first time two <em>different objects</em> that your custom <code>equals()</code> considers equal are inserted into a hash-based collection — since their default hash codes differ, they land in different buckets and the collection treats them as distinct, silently producing "duplicate" entries that <code>equals()</code> would say shouldn't exist.</p>
@@ -2726,7 +2753,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-17">
     <summary><span class="iq-num">17</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Guess the output</span><span class="iq-q"><code>Integer a = 127, b = 127; Integer c = 128, d = 128; System.out.println((a == b) + " " + (c == d));</code></span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Prints <code>true false</code>. The JLS mandates caching for autoboxed <code>Integer</code> values from −128 to 127 (implementations may cache more, but never less), so <code>a</code> and <code>b</code> autobox to the <em>same</em> cached object — <code>==</code> is true. 128 is outside that guaranteed range, so <code>c</code> and <code>d</code> autobox to two distinct heap objects — <code>==</code> is false, even though both hold the value 128.</p>
@@ -2736,7 +2763,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
 
   <div class="iq-group-label">Exceptions &amp; Resilience</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-18">
     <summary><span class="iq-num">18</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">"Catch <code>Exception</code>, log it, move on" prevents crashes. Why is it still considered an anti-pattern?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>It optimises for the wrong failure mode. A crash is loud, immediate, and gets fixed fast because someone notices right away. Catching everything broadly turns unknown failures — including genuine bugs like a <code>NullPointerException</code> from a real defect — into a swallowed log line that a request continues past, often leaving the system in a partially-updated, logically inconsistent state that nobody notices until much later, if ever. You've traded a visible, fast-to-diagnose failure for a silent, slow-to-diagnose one.</p>
@@ -2744,7 +2771,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-19">
     <summary><span class="iq-num">19</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Guess the output</span><span class="iq-q"><code>try { return 1; } finally { return 2; }</code> — and a variant: <code>try { throw new RuntimeException("A"); } finally { throw new RuntimeException("B"); }</code>. What happens in each?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>The first returns <strong>2</strong> — <code>finally</code> runs after the try's return value is computed but before it's actually handed back, and a <code>return</code> inside <code>finally</code> discards the pending one entirely, with no warning. The second propagates only exception <strong>"B"</strong> — exception "A" is completely discarded, not chained, not suppressed, simply gone, because the exception thrown while <code>finally</code> is unwinding replaces whatever was already propagating.</p>
@@ -2752,7 +2779,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-20">
     <summary><span class="iq-num">20</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">You need retry-with-backoff around a flaky downstream call. Where does exception design actually intersect with the retry logic itself?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>The critical design decision is distinguishing <strong>which exceptions mean "retry might help"</strong> from which mean "retrying will never help." A network timeout or a 503 is transient — retrying with backoff is reasonable. A 400 Bad Request or a validation failure is not transient — retrying the exact same malformed request will fail identically every time and just delays the inevitable failure while wasting the downstream's capacity. Catching broad exception types and retrying blindly is how a single bad request turns into a retry storm that makes an already-struggling downstream service worse.</p>
@@ -2762,7 +2789,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
 
   <div class="iq-group-label">JDBC &amp; Persistence</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-21">
     <summary><span class="iq-num">21</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">In production under real load, requests start failing with "connection pool exhausted." It never happens in staging. What's your checklist?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Staging rarely reproduces this because it needs real concurrency to surface. In order of likelihood:</p>
@@ -2776,7 +2803,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-22">
     <summary><span class="iq-num">22</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Why would leaving <code>autoCommit</code> enabled during a bulk insert of 10,000 rows make it dramatically slower than disabling it first?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>With <code>autoCommit(true)</code> (the default), <strong>every single insert commits as its own transaction</strong> — meaning every row forces the database to flush its transaction log to durable storage before returning. Ten thousand rows means ten thousand durability-guaranteeing disk flushes, and that fsync cost, not the actual insert work, dominates the total time.</p>
@@ -2786,7 +2813,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
 
   <div class="iq-group-label">Design &amp; Architecture</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-23">
     <summary><span class="iq-num">23</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">When does reaching for a Singleton actually become a code smell rather than a good design choice?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Singleton is a legitimate answer to "there must be exactly one of this, and it needs a single well-known access point" — a logging framework, a configuration object, a connection pool. It becomes a smell the moment it's used as a substitute for proper dependency management: a global mutable state bag that any class can reach into from anywhere, which makes unit testing painful (you can't easily substitute a test double for a hardcoded <code>Singleton.getInstance()</code> call), and hides a class's real dependencies from its constructor signature.</p>
@@ -2794,7 +2821,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-24">
     <summary><span class="iq-num">24</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">You need to add timing/logging around every method call on a service, without touching any of the existing service classes. Which pattern, and how does it actually work under the hood?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p><strong>Proxy</strong> — specifically, this is what Spring AOP does for you every time you use <code>@Transactional</code> or a custom <code>@LogExecutionTime</code> annotation. At startup, the framework generates a proxy object implementing the same interface (or subclassing the concrete class, via CGLIB, if there's no interface) that wraps the real bean. Every call goes through the proxy first, which runs your cross-cutting logic (start a timer, log entry/exit), delegates to the real method, then runs more logic (log the elapsed time), all without a single line of the original service class changing.</p>
@@ -2802,7 +2829,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-25">
     <summary><span class="iq-num">25</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A team implements order status changes using the Strategy pattern, expecting each "strategy" to know when to transition to the next one. What goes wrong?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>This is the Strategy/State mix-up showing up as a real bug. Strategy assumes the <em>client</em> picks which implementation to use, explicitly, from outside — it's not designed to have implementations autonomously decide to hand control to a different implementation. Order status (<code>Pending → Shipped → Delivered</code>) is a <strong>State</strong> problem: the object's behaviour should change based on internal transitions the object manages itself, without the client ever choosing which "strategy" applies.</p>
@@ -2812,7 +2839,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
 
   <div class="iq-group-label">Streams &amp; Generics</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-26">
     <summary><span class="iq-num">26</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">A "simple" refactor turns a tight for-loop into a Stream one-liner. Why can this make a hot-path method measurably slower?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Streams add real overhead compared to a raw loop: boxing primitives (unless you're careful to use <code>IntStream</code>/<code>LongStream</code>/<code>DoubleStream</code>), allocating lambda objects and intermediate pipeline stages, and going through several layers of virtual dispatch that a JIT-compiled plain loop simply doesn't have. For a method called millions of times per second in a genuinely hot path, that overhead is real and measurable — a for-loop over a primitive array can be an order of magnitude faster.</p>
@@ -2820,7 +2847,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-27">
     <summary><span class="iq-num">27</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A developer adds <code>.parallelStream()</code> inside a web request handler to "speed things up." Under real concurrent load, requests start timing out. Why?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Every <code>parallelStream()</code> call in the entire JVM — across every request, every thread — shares <strong>one common <code>ForkJoinPool</code></strong>, sized by default to the number of CPU cores. Under a single request, or in a benchmark, this looks like a speedup. Under real concurrent traffic, every simultaneous request is now competing for that same small, shared pool — and if any of the parallelised work happens to block (a nested blocking call, I/O, a lock wait), it can starve the pool for <em>every other request in the system</em> using parallel streams at that moment, not just its own.</p>
@@ -2828,7 +2855,7 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-28">
     <summary><span class="iq-num">28</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Edge case</span><span class="iq-q">Why does <code>List&lt;Integer&gt;[] arr = new List&lt;Integer&gt;[10];</code> fail to compile, and what would you actually do instead?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Arrays in Java are <strong>reified</strong> — they know their own element type at runtime and enforce it on every write (<code>ArrayStoreException</code> if you try to store the wrong type). Generics are <strong>erased</strong> — <code>List&lt;Integer&gt;</code> and <code>List&lt;String&gt;</code> are the identical class at runtime. Allowing a generic array would let you store a <code>List&lt;String&gt;</code> into what the runtime sees as an untyped <code>List[]</code>, defeating the array's own runtime type-safety check silently — the compiler rejects generic array creation specifically to prevent that hole.</p>
@@ -2910,6 +2937,8 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
 
 </main>
 
+<script src="search-index.js"></script>
+<script src="site-search.js"></script>
 <script>
 (function(){
 "use strict";

@@ -388,6 +388,25 @@ noscript .reveal{opacity:1;}
   .navlink{font-size:.8rem;padding:.45rem .7rem;}
   .contents-btn{font-size:.8rem;padding:.45rem .8rem;}
 }
+/* ---- site search ---- */
+.site-search{position:relative;flex:1;max-width:420px;margin:0 1.2rem;}
+.site-search__box{display:flex;align-items:center;gap:.5rem;background:var(--surface-2);border-radius:var(--r-pill);padding:.5rem .9rem;transition:background var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);}
+.site-search__box:focus-within{background:var(--surface);box-shadow:0 0 0 2px var(--accent);}
+.site-search__icon{flex:none;width:15px;height:15px;color:var(--muted);}
+.site-search__input{flex:1;min-width:0;border:none;background:none;outline:none;font-family:var(--font-body);font-size:.87rem;color:var(--ink);}
+.site-search__input::placeholder{color:var(--muted);}
+.site-search__kbd{flex:none;font-family:var(--font-mono);font-size:.68rem;color:var(--muted);background:var(--surface);border-radius:5px;padding:.1rem .4rem;box-shadow:var(--shadow-sm);}
+.site-search__results{position:absolute;top:calc(100% + 8px);left:0;right:0;max-height:min(70vh,480px);overflow-y:auto;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:.5rem;display:none;z-index:50;}
+.site-search.is-open .site-search__results{display:block;}
+.site-search__empty{padding:1rem;font-size:.85rem;color:var(--muted);text-align:center;}
+.site-search__item{display:block;padding:.65rem .8rem;border-radius:10px;text-decoration:none;color:inherit;cursor:pointer;}
+.site-search__item:hover,.site-search__item.is-active{background:var(--tint);}
+.site-search__item-title{font-weight:700;font-size:.88rem;display:block;}
+.site-search__item-meta{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:.4rem;margin-top:.2rem;}
+.site-search__item-type{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;background:var(--surface-2);padding:.1rem .4rem;border-radius:999px;}
+.site-search mark{background:var(--tint-strong);color:inherit;border-radius:3px;padding:0 .1em;}
+@media (max-width:820px){.site-search{order:3;flex-basis:100%;max-width:none;margin:.6rem 0 0;}}
+[id]{scroll-margin-top:90px;}
 </style>
 </head>
 <body>
@@ -396,6 +415,14 @@ noscript .reveal{opacity:1;}
 <header class="topnav">
   <div class="topnav__inner">
     <a class="wordmark" href="index.html#git"><span class="wordmark__mark">G</span>Git Notes</a>
+    <div class="site-search" id="siteSearch">
+      <div class="site-search__box">
+        <svg class="site-search__icon" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" class="site-search__input" id="siteSearchInput" placeholder="Search any topic or question…" autocomplete="off" aria-label="Search notes" aria-expanded="false" aria-controls="siteSearchResults">
+        <span class="site-search__kbd">/</span>
+      </div>
+      <div class="site-search__results" id="siteSearchResults"></div>
+    </div>
     <nav class="navlinks">
       <a class="navlink" href="index.html#git">← All topics</a>
       <div class="contents" id="contents">
@@ -467,7 +494,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Centralized vs. distributed</h3>
+  <h3 class="sub reveal" id="centralized-vs-distributed">Centralized vs. distributed</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th></th><th>Centralized (SVN, CVS)</th><th>Distributed (Git)</th></tr></thead>
@@ -606,7 +633,7 @@ git clone &lt;url&gt;                   <span class="tk-com"># copy a remote rep
     </div>
   </div>
 
-  <h3 class="sub reveal">Refs &amp; detached HEAD</h3>
+  <h3 class="sub reveal" id="refs-detached-head">Refs &amp; detached HEAD</h3>
   <p class="reveal">A <strong>branch</strong> is nothing but a lightweight, movable pointer to a commit — a 40-byte file under <code>.git/refs/heads/</code> holding a single hash. That's why creating a branch is O(1): no files are copied, only a pointer is written. <code>HEAD</code> is a pointer to whichever branch (or, sometimes, commit) you currently have checked out.</p>
 
   <div class="callout callout--warn reveal">
@@ -735,7 +762,7 @@ git blame file.txt         <span class="tk-com"># who last changed each line</sp
 git push                   <span class="tk-com"># send commits to the remote</span></code></pre>
   </div>
 
-  <h3 class="sub reveal">File lifecycle</h3>
+  <h3 class="sub reveal" id="file-lifecycle">File lifecycle</h3>
   <div class="panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>Untracked</b><span>new file</span></div>
@@ -748,7 +775,7 @@ git push                   <span class="tk-com"># send commits to the remote</sp
     </div>
   </div>
 
-  <h3 class="sub reveal">Modern file-level commands</h3>
+  <h3 class="sub reveal" id="modern-file-level-commands">Modern file-level commands</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Command</th><th>What it does</th></tr></thead>
@@ -880,7 +907,7 @@ git merge --no-ff feature      <span class="tk-com"># always create a merge comm
 git merge --squash feature     <span class="tk-com"># stage the combined diff as one new commit</span></code></pre>
   </div>
 
-  <h3 class="sub reveal">Resolving conflicts</h3>
+  <h3 class="sub reveal" id="resolving-conflicts">Resolving conflicts</h3>
   <p class="reveal">A conflict happens when both branches changed the same lines (or one edited a file the other deleted) and Git can't automatically reconcile them.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">conflict-markers.txt</span></div>
@@ -1017,7 +1044,7 @@ git rebase --abort          <span class="tk-com"># bail out completely -- back t
     </div>
   </div>
 
-  <h3 class="sub reveal">Interactive rebase</h3>
+  <h3 class="sub reveal" id="interactive-rebase">Interactive rebase</h3>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">interactive-rebase.sh</span></div>
     <pre><code>git rebase -i HEAD~4   <span class="tk-com"># edit the last 4 commits</span>
@@ -1040,7 +1067,7 @@ git rebase --abort          <span class="tk-com"># bail out completely -- back t
     </div>
   </div>
 
-  <h3 class="sub reveal">Cherry-pick</h3>
+  <h3 class="sub reveal" id="cherry-pick">Cherry-pick</h3>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">cherry-pick.sh</span></div>
     <pre><code>git cherry-pick &lt;commit&gt;   <span class="tk-com"># apply just this one commit onto the current branch</span></code></pre>
@@ -1109,7 +1136,7 @@ git rebase --abort          <span class="tk-com"># bail out completely -- back t
     </div>
   </div>
 
-  <h3 class="sub reveal">Fetch vs. pull</h3>
+  <h3 class="sub reveal" id="fetch-vs-pull">Fetch vs. pull</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th></th><th><code>git fetch</code></th><th><code>git pull</code></th></tr></thead>
@@ -1146,7 +1173,7 @@ git push --force-with-lease  <span class="tk-com"># a safer force-push -- see ca
     </div>
   </div>
 
-  <h3 class="sub reveal">Clone vs. fork</h3>
+  <h3 class="sub reveal" id="clone-vs-fork">Clone vs. fork</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th></th><th>Clone</th><th>Fork</th></tr></thead>
@@ -1166,7 +1193,7 @@ git fetch upstream
 git merge upstream/main       <span class="tk-com"># or: git rebase upstream/main</span></code></pre>
   </div>
 
-  <h3 class="sub reveal">.gitignore &amp; SSH vs. HTTPS</h3>
+  <h3 class="sub reveal" id="gitignore-ssh-vs-https">.gitignore &amp; SSH vs. HTTPS</h3>
   <p class="reveal">HTTPS remotes authenticate via tokens/credentials and work through most corporate firewalls; SSH uses key pairs — no password prompt on every push, once your public key is registered with the host.</p>
 
   <div class="callout callout--warn reveal">
@@ -1257,7 +1284,7 @@ build/
     </div>
   </div>
 
-  <h3 class="sub reveal">git reset — three modes</h3>
+  <h3 class="sub reveal" id="git-reset-three-modes">git reset — three modes</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Mode</th><th>Moves branch pointer</th><th>Staging area</th><th>Working directory</th></tr></thead>
@@ -1309,7 +1336,7 @@ git reset --hard  HEAD~1   <span class="tk-com"># undo commit AND throw away the
     </div>
   </div>
 
-  <h3 class="sub reveal">revert vs. reset</h3>
+  <h3 class="sub reveal" id="revert-vs-reset">revert vs. reset</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th></th><th><code>git revert</code></th><th><code>git reset</code></th></tr></thead>
@@ -1326,7 +1353,7 @@ git reset --hard  HEAD~1   <span class="tk-com"># undo commit AND throw away the
     <pre><code>git revert &lt;commit&gt;     <span class="tk-com"># safely undo an already-pushed commit via a new "undo" commit</span></code></pre>
   </div>
 
-  <h3 class="sub reveal">git restore — modern, file-level undo</h3>
+  <h3 class="sub reveal" id="git-restore-modern-file-level-undo">git restore — modern, file-level undo</h3>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">restore.sh</span></div>
     <pre><code>git restore file.txt               <span class="tk-com"># discard working-directory changes to this file</span>
@@ -1334,7 +1361,7 @@ git restore --staged file.txt      <span class="tk-com"># unstage it, but keep t
 git restore --source=HEAD~2 f.txt  <span class="tk-com"># pull this file's contents from an older commit</span></code></pre>
   </div>
 
-  <h3 class="sub reveal">git reflog — the safety net</h3>
+  <h3 class="sub reveal" id="git-reflog-the-safety-net">git reflog — the safety net</h3>
   <p class="reveal">Reflog records every movement of <code>HEAD</code> — every commit, reset, checkout, and rebase. Entries still reachable from some branch stick around for roughly 90 days by default (<code>gc.reflogExpire</code>) — but the actual safety-net case this chapter cares about, an entry no branch points at anymore, only gets roughly <strong>30 days</strong> by default (<code>gc.reflogExpireUnreachable</code>) before <code>git gc</code> is free to prune it for good.</p>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">reflog.sh</span></div>
@@ -1412,7 +1439,7 @@ git reset --hard HEAD@{2}     <span class="tk-com"># jump back to a previous sta
     </div>
   </div>
 
-  <h3 class="sub reveal">git stash</h3>
+  <h3 class="sub reveal" id="git-stash">git stash</h3>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">stash.sh</span></div>
     <pre><code>git stash               <span class="tk-com"># save uncommitted changes, clean the working dir</span>
@@ -1433,7 +1460,7 @@ git stash drop          <span class="tk-com"># delete a stash you no longer need
     </div>
   </div>
 
-  <h3 class="sub reveal">Tags</h3>
+  <h3 class="sub reveal" id="tags">Tags</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Type</th><th>Command</th><th>Stores</th></tr></thead>
@@ -1511,7 +1538,7 @@ git push --tags         <span class="tk-com"># push every tag at once</span></co
     </div>
   </div>
 
-  <h3 class="sub reveal">Branching strategies</h3>
+  <h3 class="sub reveal" id="branching-strategies">Branching strategies</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Strategy</th><th>Idea</th><th>Best for</th></tr></thead>
@@ -1552,7 +1579,7 @@ git push --tags         <span class="tk-com"># push every tag at once</span></co
     </div>
   </div>
 
-  <h3 class="sub reveal">Pull/merge requests &amp; code review</h3>
+  <h3 class="sub reveal" id="pull-merge-requests-code-review">Pull/merge requests &amp; code review</h3>
   <p class="reveal">A PR (GitHub) / MR (GitLab) proposes merging one branch into another — the vehicle for review, discussion, and automated checks before anything lands.</p>
 
   <div class="duo reveal">
@@ -1640,7 +1667,7 @@ git push --tags         <span class="tk-com"># push every tag at once</span></co
     </div>
   </div>
 
-  <h3 class="sub reveal">GitHub</h3>
+  <h3 class="sub reveal" id="github">GitHub</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Feature</th><th>What it does</th></tr></thead>
@@ -1658,7 +1685,7 @@ git push --tags         <span class="tk-com"># push every tag at once</span></co
   <p class="reveal">Which of these actually earns its keep depends on team size and process maturity, not a checklist: branch protection and CODEOWNERS start mattering the moment more than a couple of people can push to <code>main</code>, while Actions and Packages only pay off once you've decided to keep CI/CD and artifact hosting on the same platform as your code instead of bolting on a separate tool.</p>
   <p class="reveal">Authentication has moved on from plain passwords: Personal Access Tokens (fine-grained, scoped) for HTTPS, SSH keys for passwordless push/pull, and deploy keys or GitHub Apps for automation.</p>
 
-  <h3 class="sub reveal">GitLab</h3>
+  <h3 class="sub reveal" id="gitlab">GitLab</h3>
   <p class="reveal">GitLab positions itself as an integrated, all-in-one DevOps platform — SCM, CI/CD, container registry, security scanning, and issue tracking bundled into one product, available as SaaS or fully self-managed.</p>
 
   <div class="tbl-wrap reveal">
@@ -1861,7 +1888,7 @@ deploy:
     </div>
   </div>
 
-  <h3 class="sub reveal">Git hooks</h3>
+  <h3 class="sub reveal" id="git-hooks">Git hooks</h3>
   <p class="reveal">A hook is just an executable script Git runs automatically at a specific lifecycle point — living in <code>.git/hooks/</code>, one file per hook name, with the executable bit set. They run <strong>locally</strong>, before anything ever reaches a remote or a CI pipeline.</p>
 
   <div class="tbl-wrap reveal">
@@ -1900,7 +1927,7 @@ fi</code></pre>
     <div class="accordion__body">Client-side hooks (<code>pre-commit</code>, <code>commit-msg</code>, <code>pre-push</code>) run on the developer's own machine — fast feedback, but skippable (<code>--no-verify</code>) and never guaranteed to have run at all. Server-side hooks (<code>pre-receive</code>, <code>update</code>, <code>post-receive</code>) run on the Git server itself when a push arrives — they can't be bypassed by the pushing client, which is why anything that must be a hard rule (message format, no force-push, no secrets) belongs server-side or in a platform's branch-protection settings, not just a local hook.</div>
   </details>
 
-  <h3 class="sub reveal">Repository security</h3>
+  <h3 class="sub reveal" id="repository-security">Repository security</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Practice</th><th>What it protects against</th></tr></thead>
@@ -1995,7 +2022,7 @@ fi</code></pre>
     </div>
   </div>
 
-  <h3 class="sub reveal">git bisect — binary search through history</h3>
+  <h3 class="sub reveal" id="git-bisect-binary-search-through-history">git bisect — binary search through history</h3>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">bisect.sh</span></div>
     <pre><code>git bisect start
@@ -2014,7 +2041,7 @@ git bisect reset               <span class="tk-com"># done -- return to where yo
     </div>
   </div>
 
-  <h3 class="sub reveal">Power tools</h3>
+  <h3 class="sub reveal" id="power-tools">Power tools</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Command</th><th>What it does</th></tr></thead>
@@ -2029,7 +2056,7 @@ git bisect reset               <span class="tk-com"># done -- return to where yo
     </table>
   </div>
 
-  <h3 class="sub reveal">Submodule vs. subtree</h3>
+  <h3 class="sub reveal" id="submodule-vs-subtree">Submodule vs. subtree</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th></th><th>Submodule</th><th>Subtree</th></tr></thead>
@@ -2041,7 +2068,7 @@ git bisect reset               <span class="tk-com"># done -- return to where yo
     </table>
   </div>
 
-  <h3 class="sub reveal">Troubleshooting table</h3>
+  <h3 class="sub reveal" id="troubleshooting-table">Troubleshooting table</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Problem</th><th>Fix</th></tr></thead>
@@ -2059,7 +2086,7 @@ git bisect reset               <span class="tk-com"># done -- return to where yo
     </table>
   </div>
 
-  <h3 class="sub reveal">Best practices, in one pass</h3>
+  <h3 class="sub reveal" id="best-practices-in-one-pass">Best practices, in one pass</h3>
   <div class="duo reveal">
     <div class="panel"><h4><span class="sw"></span>Do</h4><ul><li>Commit small, atomic, logical units</li><li>Write imperative-mood messages ("Add," not "Added")</li><li>Follow Conventional Commits (<code>feat:</code>, <code>fix:</code>, <code>docs:</code>) for automated changelogs</li><li>Keep feature branches short-lived; pull/rebase frequently</li><li>Protect main with required reviews + CI</li></ul></div>
     <div class="panel"><h4><span class="sw"></span>Avoid</h4><ul><li><code>git push --force</code> on shared branches (use <code>--force-with-lease</code>)</li><li>Rebasing public/pushed history</li><li>Committing secrets or large binaries without LFS</li><li>Giant "misc fixes" commits mixing unrelated changes</li><li>Working directly on <code>main</code></li></ul></div>
@@ -2139,93 +2166,93 @@ Closes #142</code></pre>
 
   <div class="iq-group-label">Internals &amp; Why</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-01">
     <summary><span class="iq-num">01</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does Git store snapshots instead of diffs, if diffs are so much smaller?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Snapshots make history operations trivially fast and simple: checking out any commit means reading its tree directly, with no need to replay a chain of diffs from some base version. Diff-based systems (like older CVS/SVN) can make certain operations — like a full checkout of very old history — noticeably slower, since they have to reconstruct a version by applying deltas. Git gets the storage efficiency back a different way: identical file content across commits is stored only once (content-addressing), and periodic packfile compression applies delta-encoding at the storage layer without changing the snapshot model applications and commands actually reason about.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-02">
     <summary><span class="iq-num">02</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why is a Git commit's hash affected by its parent commit's hash, not just its own content?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>A commit object literally includes its parent's hash as part of its own content, which then gets hashed. This chains every commit to everything before it — changing anything in a historical commit (even one line, or the message) changes that commit's hash, which changes every child commit's hash, cascading all the way to the current tip. This is what makes Git history tamper-evident: you can't quietly alter something three commits back without every subsequent hash visibly changing.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-03">
     <summary><span class="iq-num">03</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">What actually happens on disk when you run <code>git branch new-feature</code>?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Git writes a single new file at <code>.git/refs/heads/new-feature</code> containing the 40-character hash of the current commit — nothing else happens. No files are copied, no history is duplicated. This is exactly why branching in Git is O(1) regardless of repository size, unlike systems where a "branch" means a full filesystem copy.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-04">
     <summary><span class="iq-num">04</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Git has <code>reset</code>, <code>revert</code>, <code>restore</code>, and <code>reflog</code> — four different "undo" commands. Why not just one?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Because they undo different things, at different layers, with different safety guarantees. <code>reset</code> moves the branch pointer itself backward, and optionally drags the index and working directory along with it (<code>--soft</code>/<code>--mixed</code>/<code>--hard</code>) — it rewrites history, so it's only safe on commits nobody else has pulled yet. <code>revert</code> is reset's shared-history-safe counterpart: instead of moving anything backward, it creates a brand-new commit that applies the inverse diff, which is why it's the correct tool once a bad commit is already on a shared branch. <code>restore</code> is scoped to just the working directory and the index — it never touches commits or branch pointers at all, which is exactly why modern Git split it out of the old, overloaded <code>checkout</code> command. <code>reflog</code> isn't really an "undo" in the same sense; it's a local, per-repository log of every position <code>HEAD</code> has ever occupied, and it's the recovery mechanism that makes an accidental <code>reset --hard</code> survivable — the "lost" commit's hash is still sitting in the reflog (and the object database) until garbage collection eventually prunes it. The line worth stating explicitly: <code>reset</code>/<code>restore</code> operate on your own local view and can rewrite or discard state, <code>revert</code> is the one safe to use once something is shared, and <code>reflog</code> is the safety net underneath all three.</p></div>
   </details>
 
   <div class="iq-group-label">Trade-offs</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-05">
     <summary><span class="iq-num">05</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Your team wants both a clean, linear main-branch history AND full traceability of every individual commit a contributor made. Can you have both?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Not fully — it's a genuine trade-off. Squash-merge gives you the cleanest main-branch history (one commit per feature) but discards the individual commits entirely. Rebase-merge preserves individual commits in a linear history, but requires each commit to be independently sensible (no "WIP" or "fix typo" noise) since they all land on main permanently. Regular merge commits preserve everything, including messy in-progress commits, at the cost of a noisier log with merge commits scattered throughout. Most teams pick squash-merge for exactly this reason — they value main's readability more than preserving a feature branch's exact commit-by-commit story, which usually only mattered during review anyway.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-06">
     <summary><span class="iq-num">06</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Why would a team choose Git Flow over trunk-based development in 2026, when trunk-based is widely considered the "modern" default?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Trunk-based development assumes you can deploy continuously and hide unfinished work behind feature flags — that assumption breaks down for shipped, versioned software (embedded firmware, mobile apps with app-store review delays, on-prem enterprise software with scheduled release trains) where you genuinely need to maintain multiple released versions in parallel and backport hotfixes to older ones. Git Flow's develop/release/hotfix structure exists specifically to support that multi-version maintenance reality — it's not obsolete, it's matched to a different deployment model than continuous SaaS delivery.</p></div>
   </details>
 
   <div class="iq-group-label">Traps</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-07">
     <summary><span class="iq-num">07</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A developer runs <code>git pull</code> on a branch with local, uncommitted changes and gets unexpected merge conflicts in files they never touched. What likely happened?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p><code>git pull</code> is fetch + merge (or rebase) — it tries to reconcile the remote's new commits with your local branch state <em>including uncommitted changes</em> if they overlap with incoming changes on the same lines, even in files unrelated to what the developer was actively working on if the remote touched them too. The safer habit is committing or stashing local work before pulling, or using <code>git fetch</code> first to review what's incoming before merging it in deliberately.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-08">
     <summary><span class="iq-num">08</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">You revert a merge commit on main with <code>git revert -m 1 &lt;merge-commit&gt;</code>. Weeks later you try to re-merge that same feature branch, and none of its changes show up. Why?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>The revert commit exists in history as an explicit "undo" of every change the merge introduced. Git sees that main already contains the inverse of the feature branch's changes, so a plain re-merge appears to have "nothing new" to bring in relative to that undone state. To properly re-apply the feature later, you typically need to revert the revert commit first (undoing the undo), then merge again — a classic, easy-to-miss gotcha with reverted merges specifically.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-09">
     <summary><span class="iq-num">09</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A CI pipeline step runs <code>git clone --depth 1</code> for speed, and later a <code>git log</code>-based versioning script in the same pipeline silently produces wrong version numbers. What's the connection?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>A shallow clone (<code>--depth 1</code>) only fetches the single most recent commit — deliberately discarding the rest of history to save time and bandwidth. Any tooling that depends on full history (counting commits since the last tag for a version number, walking parent commits, running <code>git log</code> across a range) will silently see an artificially truncated history and produce wrong results, often with no error at all. The fix is either fetching full history for jobs that need it, or explicitly fetching just the tags/depth actually required (<code>git fetch --deepen</code> or <code>--tags</code>).</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-10">
     <summary><span class="iq-num">10</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">Someone adds <code>node_modules/</code> to <code>.gitignore</code> in a repo where it was already accidentally committed months ago. They're confused why <code>git status</code> still shows it as tracked. What's missing?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p><code>.gitignore</code> only controls whether Git starts tracking a <em>new</em>, currently-untracked file or directory — it has zero effect on something already committed. They need <code>git rm -r --cached node_modules/</code> to explicitly stop tracking it (leaving the actual files on disk untouched) and then commit that removal — only after that will the <code>.gitignore</code> entry actually take effect going forward.</p></div>
   </details>
 
   <div class="iq-group-label">Scenario</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-11">
     <summary><span class="iq-num">11</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">You accidentally committed and pushed a database password to a public repository. Walk through your response in order.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>(1) Rotate/revoke the credential immediately, before anything else — treat it as compromised the second it was pushed publicly. (2) Remove it from history using <code>git filter-repo</code> (or BFG Repo-Cleaner; the older <code>filter-branch</code> is deprecated and slower). (3) Force-push the rewritten history, and have every collaborator re-clone rather than pull, since their local history still contains the old commits. (4) Audit anywhere else it might have been cached — CI logs, forks, third-party mirrors. Removing it from Git history without rotating it first is the single most common mistake here — the secret is compromised the moment it's pushed, regardless of what you later do to history.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-12">
     <summary><span class="iq-num">12</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Your feature branch is 40 commits behind main and you need to open a PR. How do you bring it up to date, and does your answer change if a teammate is also committing to your feature branch?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>If it's genuinely just your branch, unshared: <code>git fetch && git rebase origin/main</code> for a clean linear history against main, resolving any conflicts as they surface commit-by-commit. If a teammate is also actively committing to the same feature branch, rebasing would rewrite commit hashes they've already built on top of — <code>git merge origin/main</code> instead, accepting one extra merge commit in exchange for not breaking their local history. The deciding factor is always "has anyone else already pulled this branch," not personal preference for a cleaner log.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-13">
     <summary><span class="iq-num">13</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Two developers both modified the same function in the same file on different branches, and merging produces a conflict. Walk through resolving it.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Run the merge, then <code>git status</code> to see which files are conflicted. Open each one, find the <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>/<code>=======</code>/<code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> markers, and manually decide the correct combined content — sometimes one side wins, sometimes both changes need merging together, sometimes neither is fully right and a new version is needed. Remove the markers entirely, <code>git add</code> the resolved file, then commit (or <code>git rebase --continue</code> if this happened during a rebase). If it goes badly, <code>git merge --abort</code> backs out completely to the pre-merge state. Prevent recurrence with smaller, shorter-lived branches and more frequent syncing with main.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-14">
     <summary><span class="iq-num">14</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A new hire asks why your team enforces Conventional Commits (<code>feat:</code>, <code>fix:</code>, <code>docs:</code>) via a <code>commit-msg</code> hook instead of just asking people nicely in the PR template. What's the actual justification?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Beyond readability, Conventional Commits are machine-parseable: tooling can auto-generate a changelog by scanning commit prefixes, and can auto-determine semantic version bumps (a <code>fix:</code> is a patch release, a <code>feat:</code> is a minor release, a <code>BREAKING CHANGE:</code> footer forces a major release) without a human deciding the version number by hand. A PR template is a suggestion a rushed developer can ignore; a <code>commit-msg</code> hook that rejects a malformed message actually blocks the commit from being created at all — enforcement versus a polite request.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-15">
     <summary><span class="iq-num">15</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Your repository has grown to 4GB, mostly from binary assets committed over several years, and clones are now painfully slow. What's your remediation plan?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Migrate large binary assets to Git LFS going forward (pointer files replace the actual binary content in the main history), and for the historical bloat already in the repo, use <code>git filter-repo</code> to rewrite history and move existing large blobs into LFS retroactively (or simply purge genuinely unneeded historical binaries). This requires a force-push and a full team re-clone, same as the secret-removal scenario — communicate it as a coordinated, scheduled migration, not a surprise. Going forward, add a <code>pre-commit</code> hook or CI check that rejects new commits containing large files outside LFS, so the problem doesn't quietly recur.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-16">
     <summary><span class="iq-num">16</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Guess the outcome</span><span class="iq-q">You run <code>git reset --hard origin/main</code> to "clean up" your local branch before starting new work. What have you actually done?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>You've discarded every local commit and uncommitted change your branch had that wasn't already on <code>origin/main</code> — permanently, for anything uncommitted. If any of your local commits hadn't been pushed anywhere, they're now recoverable only via <code>git reflog</code> (and only because they were committed at some point); any uncommitted edits in your working directory are gone with no recovery path at all. "Clean up my branch" almost always actually means something safer, like <code>git switch -c fresh-branch origin/main</code> to start clean without destroying the old one.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-17">
     <summary><span class="iq-num">17</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">You accidentally committed to <code>main</code> (or just the wrong branch) — walk through the fix.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>First figure out which of two situations you're actually in, because the fix is different for each. If the work is still uncommitted, don't touch <code>main</code> at all — <code>git stash</code> it, <code>git switch</code> to the branch it should have gone on, then <code>git stash pop</code> to bring the changes back exactly where they belong. If you already ran <code>git commit</code> on <code>main</code>, the fix is a cherry-pick, not a revert: switch to the correct branch and <code>git cherry-pick &lt;commit&gt;</code> to replay that exact commit there, then go back to <code>main</code> and <code>git reset --hard HEAD~1</code> (or reset to the commit just before it) to remove it — as long as nobody has pulled <code>main</code> since, this is completely safe, because you're only rewriting your own local, unpushed tip. The one thing that changes the whole answer is whether <code>main</code> has already been pushed and possibly pulled by someone else: at that point, <code>reset --hard</code> plus a force-push would be rewriting shared history, so you <code>revert</code> the unwanted commit on <code>main</code> instead and let the cherry-pick land the fix on the correct branch as a separate, forward-only change. The recurring check behind almost every "I made a mistake" Git question is the same one: has this been pushed and pulled by anyone else yet — if no, rewrite freely; if yes, only ever add new commits that fix it forward.</p></div>
   </details>
@@ -2289,6 +2316,8 @@ Closes #142</code></pre>
 
 </main>
 
+<script src="search-index.js"></script>
+<script src="site-search.js"></script>
 <script>
 (function(){
 "use strict";

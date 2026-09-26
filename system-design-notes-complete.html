@@ -388,12 +388,39 @@ noscript .reveal{opacity:1;}
   .navlink{font-size:.8rem;padding:.45rem .7rem;}
   .contents-btn{font-size:.8rem;padding:.45rem .8rem;}
 }
+/* ---- site search ---- */
+.site-search{position:relative;flex:1;max-width:420px;margin:0 1.2rem;}
+.site-search__box{display:flex;align-items:center;gap:.5rem;background:var(--surface-2);border-radius:var(--r-pill);padding:.5rem .9rem;transition:background var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);}
+.site-search__box:focus-within{background:var(--surface);box-shadow:0 0 0 2px var(--accent);}
+.site-search__icon{flex:none;width:15px;height:15px;color:var(--muted);}
+.site-search__input{flex:1;min-width:0;border:none;background:none;outline:none;font-family:var(--font-body);font-size:.87rem;color:var(--ink);}
+.site-search__input::placeholder{color:var(--muted);}
+.site-search__kbd{flex:none;font-family:var(--font-mono);font-size:.68rem;color:var(--muted);background:var(--surface);border-radius:5px;padding:.1rem .4rem;box-shadow:var(--shadow-sm);}
+.site-search__results{position:absolute;top:calc(100% + 8px);left:0;right:0;max-height:min(70vh,480px);overflow-y:auto;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:.5rem;display:none;z-index:50;}
+.site-search.is-open .site-search__results{display:block;}
+.site-search__empty{padding:1rem;font-size:.85rem;color:var(--muted);text-align:center;}
+.site-search__item{display:block;padding:.65rem .8rem;border-radius:10px;text-decoration:none;color:inherit;cursor:pointer;}
+.site-search__item:hover,.site-search__item.is-active{background:var(--tint);}
+.site-search__item-title{font-weight:700;font-size:.88rem;display:block;}
+.site-search__item-meta{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:.4rem;margin-top:.2rem;}
+.site-search__item-type{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;background:var(--surface-2);padding:.1rem .4rem;border-radius:999px;}
+.site-search mark{background:var(--tint-strong);color:inherit;border-radius:3px;padding:0 .1em;}
+@media (max-width:820px){.site-search{order:3;flex-basis:100%;max-width:none;margin:.6rem 0 0;}}
+[id]{scroll-margin-top:90px;}
 </style>
 <noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript>
 
 <header class="topnav">
   <div class="topnav__inner">
     <a class="wordmark" href="index.html#system-design"><span class="wordmark__mark">S</span>System Design</a>
+    <div class="site-search" id="siteSearch">
+      <div class="site-search__box">
+        <svg class="site-search__icon" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" class="site-search__input" id="siteSearchInput" placeholder="Search any topic or question…" autocomplete="off" aria-label="Search notes" aria-expanded="false" aria-controls="siteSearchResults">
+        <span class="site-search__kbd">/</span>
+      </div>
+      <div class="site-search__results" id="siteSearchResults"></div>
+    </div>
     <nav class="navlinks">
       <a class="navlink" href="index.html#system-design">← All topics</a>
       <div class="contents" id="contents">
@@ -467,13 +494,13 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Vertical vs horizontal scaling</h3>
+  <h3 class="sub reveal" id="vertical-vs-horizontal-scaling">Vertical vs horizontal scaling</h3>
   <div class="duo reveal">
     <div class="panel"><h4><span class="sw"></span>Vertical scaling (scale up)</h4><ul><li>Add more CPU, RAM, or faster disks to the same machine</li><li>Simple — no architecture or code changes required</li><li>Hits a hardware ceiling, and the machine stays a single point of failure</li></ul></div>
     <div class="panel"><h4><span class="sw"></span>Horizontal scaling (scale out)</h4><ul><li>Add more machines and spread load across them</li><li>Near-unlimited headroom, and no single box failing takes the system down</li><li>Requires a load balancer and — the hard part — a plan for shared state</li></ul></div>
   </div>
 
-  <h3 class="sub reveal">Stateless vs stateful services</h3>
+  <h3 class="sub reveal" id="stateless-vs-stateful-services">Stateless vs stateful services</h3>
   <p class="reveal">Horizontal scaling only works cleanly if any instance can handle any request. That's trivial for a service that keeps no memory of previous requests (<strong>stateless</strong>) — a load balancer can send request #1 to server A and request #2 to server B without either server needing to know about the other. It breaks the moment a service keeps session data, in-progress uploads, or cached per-user state in its own process memory (<strong>stateful</strong>) — now a user has to keep hitting the <em>same</em> server, which quietly reintroduces the single-machine ceiling you were trying to escape.</p>
   <p class="reveal">The fix is moving that state somewhere shared — Redis, a database, a distributed cache — so the app server itself holds nothing that can't be reconstructed from a shared store. That single decision is what makes both horizontal scaling and zero-downtime deploys possible: you can kill an instance, spin up a new one, or route around a crash, and no user session is lost, because the session was never actually tied to that instance in the first place.</p>
 
@@ -482,7 +509,7 @@ noscript .reveal{opacity:1;}
     <div class="callout__body"><b class="h">Default to stateless, even when sticky sessions look tempting</b><p>Pinning a user to "their" server is often reached for as a shortcut around building shared state — but it caps how evenly you can load-balance, and a server crash loses every session pinned to it. Push session/user state into Redis or a database from day one; it costs a network hop, but it buys you the ability to scale and deploy without ceremony.</p></div>
   </div>
 
-  <h3 class="sub reveal">The standard scalable architecture</h3>
+  <h3 class="sub reveal" id="the-standard-scalable-architecture">The standard scalable architecture</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>Clients</b><span>web / mobile</span></div>
@@ -501,7 +528,7 @@ noscript .reveal{opacity:1;}
     <p class="diagram-cap">The shape you'll draw in almost every interview: static content served from the edge, dynamic requests hitting stateless compute that fans out to whichever backing services the request needs, with the database itself scaled independently underneath — replicated for reads, sharded for writes.</p>
   </div>
 
-  <h3 class="sub reveal">Three-tier architecture</h3>
+  <h3 class="sub reveal" id="three-tier-architecture">Three-tier architecture</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Tier</th><th>Responsibility</th><th>Examples</th></tr></thead>
@@ -513,7 +540,7 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">Key metrics — the vocabulary you estimate with</h3>
+  <h3 class="sub reveal" id="key-metrics-the-vocabulary-you-estimate-with">Key metrics — the vocabulary you estimate with</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Metric</th><th>What it tells you</th></tr></thead>
@@ -526,7 +553,7 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">Latency numbers every engineer should know</h3>
+  <h3 class="sub reveal" id="latency-numbers-every-engineer-should-know">Latency numbers every engineer should know</h3>
   <div class="panel reveal">
     <div class="bars">
       <div class="bars__row"><div class="bars__label">L1 cache reference</div><div class="bars__track"><div class="bars__fill" style="width:3%"></div></div><div class="bars__val">~1 ns</div></div>
@@ -613,7 +640,7 @@ noscript .reveal{opacity:1;}
     <div class="meta-row"><span class="chip chip--tint">7 min read</span></div>
   </div>
 
-  <h3 class="sub reveal">Load balancing algorithms</h3>
+  <h3 class="sub reveal" id="load-balancing-algorithms">Load balancing algorithms</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Algorithm</th><th>How it picks a server</th><th>Good for</th></tr></thead>
@@ -626,7 +653,7 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">L4 vs L7 load balancing</h3>
+  <h3 class="sub reveal" id="l4-vs-l7-load-balancing">L4 vs L7 load balancing</h3>
   <div class="duo reveal">
     <div class="panel"><h4><span class="sw"></span>L4 — transport layer</h4><ul><li>Routes on IP address and port only — never opens the payload</li><li>Very fast, protocol-agnostic (works for anything over TCP/UDP)</li><li>Can't route by URL path, header, or do SSL termination</li></ul></div>
     <div class="panel"><h4><span class="sw"></span>L7 — application layer</h4><ul><li>Understands HTTP — reads the URL path, headers, cookies</li><li>Can do content-based routing, SSL termination, per-route rules</li><li>Slightly higher cost per request from actually parsing the payload</li></ul></div>
@@ -713,7 +740,7 @@ noscript .reveal{opacity:1;}
     <div class="meta-row"><span class="chip chip--tint">11 min read</span></div>
   </div>
 
-  <h3 class="sub reveal">SQL vs NoSQL</h3>
+  <h3 class="sub reveal" id="sql-vs-nosql">SQL vs NoSQL</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th></th><th>SQL (relational)</th><th>NoSQL</th></tr></thead>
@@ -726,7 +753,7 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">The four NoSQL families</h3>
+  <h3 class="sub reveal" id="the-four-nosql-families">The four NoSQL families</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Type</th><th>Example</th><th>Use case</th></tr></thead>
@@ -739,7 +766,7 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">Replication: primary-replica vs multi-primary</h3>
+  <h3 class="sub reveal" id="replication-primary-replica-vs-multi-primary">Replication: primary-replica vs multi-primary</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>Writes</b><span>from app servers</span></div>
@@ -760,7 +787,7 @@ noscript .reveal{opacity:1;}
 
   <p class="reveal">Multi-primary replication flips this: more than one node accepts writes, removing the single-writer bottleneck but reintroducing a much harder problem — two primaries can accept conflicting writes to the same row at nearly the same time, and something has to reconcile them (last-write-wins, vector clocks, or application-level merge logic). Most systems default to primary-replica specifically to avoid this class of problem, and only reach for multi-primary when write throughput or multi-region write latency genuinely demands it.</p>
 
-  <h3 class="sub reveal">Sharding strategies</h3>
+  <h3 class="sub reveal" id="sharding-strategies">Sharding strategies</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Strategy</th><th>How keys map to shards</th><th>Failure mode</th></tr></thead>
@@ -849,7 +876,7 @@ noscript .reveal{opacity:1;}
     <div class="meta-row"><span class="chip chip--tint">8 min read</span></div>
   </div>
 
-  <h3 class="sub reveal">The theorem, stated correctly</h3>
+  <h3 class="sub reveal" id="the-theorem-stated-correctly">The theorem, stated correctly</h3>
   <p class="reveal">CAP theorem says a distributed data store can guarantee at most two of <strong>Consistency</strong> (every read sees the latest write), <strong>Availability</strong> (every request gets a response), and <strong>Partition tolerance</strong> (the system keeps working when network messages between nodes are lost or delayed). The common "pick any two" framing is misleading because partitions aren't optional in any real distributed system running over an actual network — they will happen. Partition tolerance isn't a choice you get to opt out of; it's a fact of life. So the only live decision CAP actually hands you is what happens <em>during</em> a partition: do you sacrifice consistency (keep serving, maybe with stale data) or sacrifice availability (refuse to answer until you can be sure you're correct)?</p>
 
   <div class="duo reveal">
@@ -880,7 +907,7 @@ noscript .reveal{opacity:1;}
     <div class="callout__body"><b class="h">PACELC — the trade-off CAP leaves out</b><p>CAP only describes behavior <em>during</em> a partition. PACELC extends it: <strong>if</strong> Partitioned, choose Availability or Consistency (the "PAC" part) — <strong>else</strong> (normal operation, no partition), choose Latency or Consistency (the "ELC" part). Even when nothing is broken, a system that wants strong consistency has to pay for it with coordination latency; a system willing to accept eventual consistency can answer faster. This is why Cassandra and DynamoDB feel fast even outside failure scenarios — they're PA/EL systems by design, not just AP ones.</p></div>
   </div>
 
-  <h3 class="sub reveal">Consistency models</h3>
+  <h3 class="sub reveal" id="consistency-models">Consistency models</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Model</th><th>Guarantee</th></tr></thead>
@@ -893,13 +920,13 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">ACID vs BASE</h3>
+  <h3 class="sub reveal" id="acid-vs-base">ACID vs BASE</h3>
   <div class="duo reveal">
     <div class="panel"><h4><span class="sw"></span>ACID (SQL default)</h4><ul><li>Atomicity, Consistency, Isolation, Durability</li><li>Transactions either fully happen or don't happen at all</li><li>The usual choice for CP-leaning systems</li></ul></div>
     <div class="panel"><h4><span class="sw"></span>BASE (NoSQL default)</h4><ul><li>Basically Available, Soft state, Eventually consistent</li><li>Prioritizes uptime and throughput over immediate consistency</li><li>The usual choice for AP-leaning systems</li></ul></div>
   </div>
 
-  <h3 class="sub reveal">Tunable consistency: the quorum formula</h3>
+  <h3 class="sub reveal" id="tunable-consistency-the-quorum-formula">Tunable consistency: the quorum formula</h3>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">quorum.txt</span></div>
     <pre><code><span class="tk-com">// N = total replicas, W = replicas that must ack a write, R = replicas read from</span>
@@ -979,7 +1006,7 @@ noscript .reveal{opacity:1;}
     <div class="meta-row"><span class="chip chip--tint">6 min read</span></div>
   </div>
 
-  <h3 class="sub reveal">The cache location chain</h3>
+  <h3 class="sub reveal" id="the-cache-location-chain">The cache location chain</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>Browser</b><span>local cache</span></div>
@@ -997,7 +1024,7 @@ noscript .reveal{opacity:1;}
     <p class="diagram-cap">A request that misses every layer above pays the full cost of the layer below it — which is exactly why each layer exists: to intercept as much traffic as possible before it reaches something slower.</p>
   </div>
 
-  <h3 class="sub reveal">What a CDN actually does</h3>
+  <h3 class="sub reveal" id="what-a-cdn-actually-does">What a CDN actually does</h3>
   <p class="reveal">A CDN is a network of edge servers, physically distributed close to users, that cache static and semi-static content — images, video, JS/CSS bundles, and increasingly whole cacheable API responses — so a user in Mumbai doesn't have to round-trip to an origin server in Virginia for every asset on a page. Two effects compound here: latency drops (a nearby edge server responds far faster than a distant origin), and origin load drops (the origin server never even sees the requests the CDN served from cache).</p>
 
   <div class="duo reveal">
@@ -1005,7 +1032,7 @@ noscript .reveal{opacity:1;}
     <div class="panel"><h4><span class="sw"></span>CDN doesn't help</h4><ul><li>Highly personalized, per-user dynamic data (a live account balance, a private feed)</li><li>Data that changes faster than any reasonable cache TTL</li><li>Write traffic — a CDN caches responses, it doesn't accelerate writes</li></ul></div>
   </div>
 
-  <h3 class="sub reveal">Failure modes — named, not re-derived</h3>
+  <h3 class="sub reveal" id="failure-modes-named-not-re-derived">Failure modes — named, not re-derived</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Failure mode</th><th>What happens</th><th>One-line fix</th></tr></thead>
@@ -1088,7 +1115,7 @@ noscript .reveal{opacity:1;}
     <div class="meta-row"><span class="chip chip--tint">8 min read</span></div>
   </div>
 
-  <h3 class="sub reveal">Why go async at all</h3>
+  <h3 class="sub reveal" id="why-go-async-at-all">Why go async at all</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>Client</b><span>fires a request</span></div>
@@ -1103,13 +1130,13 @@ noscript .reveal{opacity:1;}
   </div>
   <p class="reveal">Three separate benefits fall out of that one architectural move: <strong>decoupling</strong> (the API doesn't need to know or care how the work gets done, or by what), <strong>buffering</strong> (a burst of traffic queues up instead of taking the system down), and <strong>independent scaling</strong> (you can run 2 API instances and 50 worker instances, or vice versa, based on where the actual bottleneck is).</p>
 
-  <h3 class="sub reveal">Queue vs pub/sub</h3>
+  <h3 class="sub reveal" id="queue-vs-pub-sub">Queue vs pub/sub</h3>
   <div class="duo reveal">
     <div class="panel"><h4><span class="sw"></span>Queue (point-to-point)</h4><ul><li>Each message is consumed by exactly one consumer</li><li>Examples: RabbitMQ, Amazon SQS</li><li>Right for distributing units of work across a worker pool</li></ul></div>
     <div class="panel"><h4><span class="sw"></span>Pub/sub</h4><ul><li>Every subscriber receives every message independently</li><li>Examples: Kafka (via separate consumer groups), Amazon SNS</li><li>Right for broadcasting an event to multiple independent downstream systems</li></ul></div>
   </div>
 
-  <h3 class="sub reveal">The outbox pattern</h3>
+  <h3 class="sub reveal" id="the-outbox-pattern">The outbox pattern</h3>
   <p class="reveal">Say a service needs to update its own database <em>and</em> publish an event about that change — for example, "order placed" needs to both write the order row and notify a shipping service. These are two separate operations against two separate systems, and they can fail independently: the DB write succeeds but the publish fails (or vice versa), leaving the two systems permanently disagreeing about what happened. This is the <strong>dual-write problem</strong>, and it shows up anywhere a service talks to a database and a message broker in the same logical operation.</p>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
@@ -1136,7 +1163,7 @@ noscript .reveal{opacity:1;}
 
   <p class="reveal">Outbox solves the dual-write problem for one service talking to one broker, but plenty of workflows need a transaction to span <em>multiple services</em> — an order flow that has to reserve inventory, charge a payment, and schedule shipping, each owned by a different service with its own database, with no single database transaction able to wrap all three. The <strong>Saga pattern</strong> handles that case by breaking the workflow into a sequence of local transactions, one per service, where every step that changes state also defines a <em>compensating action</em> to undo it if a later step fails — release the reservation, refund the payment, and so on. Sagas come in two flavors: <strong>choreography</strong>, where each service simply reacts to the previous service's events with no central coordinator, and <strong>orchestration</strong>, where a central coordinator explicitly tells each service which step to run and calls the right compensations if one fails. Full coverage of choreography vs. orchestration trade-offs and worked examples lives in the Microservices module's Saga Pattern &amp; Distributed Transactions chapter — the name and the core idea, local transactions plus compensating actions, are what's worth carrying out of this one.</p>
 
-  <h3 class="sub reveal">Idempotency keys — making retries safe</h3>
+  <h3 class="sub reveal" id="idempotency-keys-making-retries-safe">Idempotency keys — making retries safe</h3>
   <p class="reveal">Outbox relays retry until they succeed, and Saga compensations undo steps after a failure — both quietly lean on an assumption that repeating an operation is safe, which isn't true by default. The classic failure case: a client sends a POST to charge a payment, the request times out with no response, and the client — correctly, since it has no way to know whether the charge actually went through — retries the exact same request. Without protection, that retry re-executes the side effect and double-charges the customer. An <strong>idempotency key</strong> fixes this cheaply: the client generates a unique ID (a UUID) once and attaches it as an <code>Idempotency-Key</code> header on both the original attempt and every retry, and the server stores the result of each completed request keyed by that ID — so a repeat request with the same key returns the cached result instantly instead of re-executing the charge. It's a small addition to the client-server contract, but it's what turns "just retry on timeout" from a data-corruption risk into a safe default.</p>
 
   <div class="summary reveal">
@@ -1201,7 +1228,7 @@ noscript .reveal{opacity:1;}
     <div class="meta-row"><span class="chip chip--tint">7 min read</span></div>
   </div>
 
-  <h3 class="sub reveal">Algorithm comparison</h3>
+  <h3 class="sub reveal" id="algorithm-comparison">Algorithm comparison</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Algorithm</th><th>How it works</th><th>Trade-off</th></tr></thead>
@@ -1230,7 +1257,7 @@ lastRefillTime = now;
 }</code></pre>
   </div>
 
-  <h3 class="sub reveal">Making it work across a cluster</h3>
+  <h3 class="sub reveal" id="making-it-work-across-a-cluster">Making it work across a cluster</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>Client</b><span>request</span></div>
@@ -1315,7 +1342,7 @@ lastRefillTime = now;
     <div class="meta-row"><span class="chip chip--tint">9 min read</span></div>
   </div>
 
-  <h3 class="sub reveal">Consistent hashing</h3>
+  <h3 class="sub reveal" id="consistent-hashing">Consistent hashing</h3>
   <p class="reveal">Both nodes and keys get hashed onto the same circular space — a <strong>ring</strong> spanning 0 to 2³². A key belongs to whichever node is the first one found going clockwise from that key's position. Look up, insert, or route a key by hashing it and walking clockwise to the nearest node — no lookup table required.</p>
 
   <div class="panel diagram-panel reveal">
@@ -1332,7 +1359,7 @@ lastRefillTime = now;
     <p class="diagram-cap">A simplified 8-slot ring. A key hashing to slot 1 or 2 belongs to Node B (the first node clockwise); a key at slot 6 or 7 belongs to Node A, wrapping around the ring.</p>
   </div>
 
-  <h3 class="sub reveal">Why this beats plain <code>hash(key) % N</code> — the single most-asked question here</h3>
+  <h3 class="sub reveal" id="why-this-beats-plain-hash-key-n-the-single-most-asked">Why this beats plain <code>hash(key) % N</code> — the single most-asked question here</h3>
   <div class="duo reveal">
     <div class="panel"><h4><span class="sw"></span>Plain hash % N</h4><ul><li>A key's owner is <code>hash(key) % N</code></li><li>Change N by even one node (add or remove) and almost every key's assigned node changes</li><li>Every node addition/removal forces a near-total data reshuffle</li></ul></div>
     <div class="panel"><h4><span class="sw"></span>Consistent hashing</h4><ul><li>A key's owner is "the first node clockwise" on a fixed-size ring</li><li>Adding or removing one node only affects the keys between it and its clockwise neighbor</li><li>Only ~1/N of all keys move, not nearly all of them</li></ul></div>
@@ -1345,7 +1372,7 @@ lastRefillTime = now;
     <div class="callout__body"><b class="h">Virtual nodes fix the uneven-load problem</b><p>With only one point per physical node on the ring, a small number of nodes can end up with wildly uneven arcs (bad luck in hash placement) — one node's arc might be 3x another's. The fix is giving each physical node many points on the ring (hundreds of "virtual nodes"), so its total owned arc is an average over many small pieces rather than one lucky or unlucky big one — load evens out across the cluster almost regardless of raw node count.</p></div>
   </div>
 
-  <h3 class="sub reveal">Snowflake IDs — unique, roughly-ordered, no coordination</h3>
+  <h3 class="sub reveal" id="snowflake-ids-unique-roughly-ordered-no-coordination">Snowflake IDs — unique, roughly-ordered, no coordination</h3>
   <p class="reveal">Generating unique IDs across many machines without a central counter (which would itself be a bottleneck and a SPOF) is a recurring need — Twitter's Snowflake scheme is the standard answer. A 64-bit ID is built entirely from local information, no network round-trip required:</p>
 
   <div class="tbl-wrap reveal">
@@ -1365,7 +1392,7 @@ lastRefillTime = now;
     <div class="callout__body"><b class="h">Why "roughly" time-ordered matters</b><p>Because the timestamp occupies the highest bits, IDs generated later almost always sort after IDs generated earlier — useful for keeping database indexes append-friendly and for sorting-by-ID as a cheap proxy for sorting-by-time. It's only "roughly" ordered because two machines can generate IDs in the same millisecond in either order relative to each other — if you need a global, exact order, Snowflake alone isn't enough.</p></div>
   </div>
 
-  <h3 class="sub reveal">Bloom filters</h3>
+  <h3 class="sub reveal" id="bloom-filters">Bloom filters</h3>
   <p class="reveal">A Bloom filter answers one narrow question extremely cheaply: is this item <em>definitely not</em> in the set, or <em>maybe</em> in it? It's a fixed-size bit array with a handful of hash functions — checking an item hashes it through each function and checks whether all the resulting bits are set; if even one isn't, the item is guaranteed absent (no false negatives), but a "yes" can occasionally be a false positive, since bits get shared across items. That asymmetry is exactly what makes it useful: it lets you skip an expensive lookup (disk read, network call, database query) for the vast majority of cases where the answer is a fast, confident "definitely not," at the cost of occasionally still doing the expensive check for a false positive.</p>
 
   <div class="callout callout--perf reveal">
@@ -1439,10 +1466,10 @@ lastRefillTime = now;
     <div class="meta-row"><span class="chip chip--tint">10 min read</span></div>
   </div>
 
-  <h3 class="sub reveal">What a distributed lock actually has to guarantee</h3>
+  <h3 class="sub reveal" id="what-a-distributed-lock-actually-has-to-guarantee">What a distributed lock actually has to guarantee</h3>
   <p class="reveal">A distributed lock needs to guarantee <strong>mutual exclusion across machines</strong>: at most one process, anywhere in the system, believes it holds the lock at any given moment — and, critically, that belief has to stay correct even when a machine crashes mid-operation, a network link drops, or a process pauses for an unpredictable amount of time (a GC pause, a slow disk, a scheduler hiccup). A single database row used naively as a lock ("acquire by inserting a row, release by deleting it") fails exactly at that seam: if the process holding the lock crashes before deleting its row, the lock is held forever — nobody else can ever acquire it, and there's no built-in mechanism to detect the holder is gone and recover.</p>
 
-  <h3 class="sub reveal">Redis-based locking — and its sharp edge</h3>
+  <h3 class="sub reveal" id="redis-based-locking-and-its-sharp-edge">Redis-based locking — and its sharp edge</h3>
   <p class="reveal">The standard fix is <code>SETNX lock:resource holderId</code> with a TTL — set atomically in one call (e.g. Redis's <code>SET key value NX PX ttl</code>), since doing the set and the expiry as two separate commands leaves a crash window where the lock has no TTL at all: the lock auto-expires if its holder crashes and never releases it. That solves the "crashed forever" case, but introduces a subtler one — a <strong>paused, not crashed</strong> client. Say a client acquires the lock, then stalls (a long GC pause, a slow network call) for longer than the TTL. The lock expires and a second client acquires it and starts working. The first client eventually wakes up, has no idea time has passed, still believes it holds the lock, and writes to the protected resource anyway — now two clients have modified the same resource, exactly the outcome the lock existed to prevent.</p>
 
   <div class="callout callout--mistake reveal">
@@ -1470,10 +1497,10 @@ lastRefillTime = now;
     <div class="callout__body"><b class="h">Redlock exists — and so does a famous fight about whether it's safe</b><p>Everything above assumes one Redis instance, which is itself a single point of failure for the lock service. Redis's own proposed fix is <strong>Redlock</strong>: acquire the same lock against N independent Redis instances (5 is the reference number) and only consider it held once a majority grant it within a tight time budget, trading a single instance's availability risk for quorum-style tolerance of individual node failures. It's also genuinely contested — Martin Kleppmann published a detailed argument that Redlock's safety guarantees don't hold up under realistic clock drift and GC/process pauses, and antirez (Redis's creator) wrote a point-by-point rebuttal defending it; the right takeaway for an interview is knowing Redlock exists and that its safety is actively debated, not picking a side.</p></div>
   </div>
 
-  <h3 class="sub reveal">ZooKeeper / etcd-style locks</h3>
+  <h3 class="sub reveal" id="zookeeper-etcd-style-locks">ZooKeeper / etcd-style locks</h3>
   <p class="reveal">An alternative that sidesteps TTL-tuning entirely: each client trying to acquire the lock creates an <strong>ephemeral sequential node</strong> (e.g. <code>/locks/resource/lock-0000000007</code>). Whoever created the lowest-numbered node holds the lock; everyone else watches the node just ahead of them in sequence and wakes up when it disappears. Because the node is <em>ephemeral</em>, it's automatically deleted the moment its owning client's session dies (crash, or the client simply stops heartbeating) — no manual TTL to tune, and no ambiguity about whether the holder is still alive, since liveness is tied directly to an active session with the coordination service itself.</p>
 
-  <h3 class="sub reveal">Consensus: how a cluster agrees on one thing</h3>
+  <h3 class="sub reveal" id="consensus-how-a-cluster-agrees-on-one-thing">Consensus: how a cluster agrees on one thing</h3>
   <p class="reveal">Locks solve "who gets to act." Consensus solves a related but harder problem: how does a cluster of machines, any of which might crash or become unreachable at any moment, agree on a single sequence of facts (who's the leader, what got written and in what order) without a human or a single trusted coordinator making the call? <strong>Raft</strong> is the algorithm most modern systems reach for, and it's built from two mechanisms worth actually understanding rather than just naming:</p>
 
   <div class="panel diagram-panel reveal">
@@ -1565,7 +1592,7 @@ lastRefillTime = now;
     <div class="meta-row"><span class="chip chip--tint">11 min read</span></div>
   </div>
 
-  <h3 class="sub reveal">Designing for failure — the system-level view</h3>
+  <h3 class="sub reveal" id="designing-for-failure-the-system-level-view">Designing for failure — the system-level view</h3>
   <p class="reveal">At the architecture level, resilience comes down to a short list of ideas repeated everywhere in this file: <strong>redundancy</strong> (no single instance of anything critical — multiple app servers, multiple DB replicas, multiple load balancers), <strong>failover</strong> (a standby or replica automatically takes over when the primary disappears), and <strong>timeouts</strong> (never wait forever on a dependency — a slow downstream call should fail fast rather than hang the caller indefinitely and let the failure cascade upstream).</p>
 
   <div class="callout callout--tip reveal">
@@ -1573,7 +1600,7 @@ lastRefillTime = now;
     <div class="callout__body"><b class="h">Retries, circuit breakers, and bulkheads exist — full depth is in the Microservices module</b><p>Three more resilience patterns are worth knowing exist, even without re-deriving them here: <strong>retry with backoff+jitter</strong> (retrying a failed call, spacing attempts out to avoid amplifying an outage), the <strong>circuit breaker</strong> (stop calling a dependency that's clearly failing, so you fail fast instead of piling up timeouts), and the <strong>bulkhead pattern</strong> (isolate resources per-dependency so one slow/failing dependency can't exhaust the thread pool or connections shared by everything else). The state machines, thresholds, and implementation details behind each of these get a full dedicated treatment in the Microservices module — this file only needs you to recognize them by name and know roughly what problem each solves.</p></div>
   </div>
 
-  <h3 class="sub reveal">The three pillars of observability</h3>
+  <h3 class="sub reveal" id="the-three-pillars-of-observability">The three pillars of observability</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Pillar</th><th>Answers</th><th>Example tools</th></tr></thead>
@@ -1585,7 +1612,7 @@ lastRefillTime = now;
     </table>
   </div>
 
-  <h3 class="sub reveal">The monitoring pipeline</h3>
+  <h3 class="sub reveal" id="the-monitoring-pipeline">The monitoring pipeline</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>Instrumented services</b><span>emit metrics, logs, traces</span></div>
@@ -1607,10 +1634,10 @@ lastRefillTime = now;
     <p class="diagram-cap">Three parallel pipelines feeding three different views of the same underlying reality — the trick during an incident is pivoting between them fast, which is exactly what a correlation ID is for.</p>
   </div>
 
-  <h3 class="sub reveal">Correlation IDs — the thread that ties it all together</h3>
+  <h3 class="sub reveal" id="correlation-ids-the-thread-that-ties-it-all-together">Correlation IDs — the thread that ties it all together</h3>
   <p class="reveal">Generate one ID per incoming request, propagate it through every log line, every metric label (where practical), and every trace span across every service that request touches. When something goes wrong, that single ID lets you pivot instantly between all three pillars for the exact same request — start from a trace that shows which hop was slow, grab that hop's correlation ID, and pull every log line across every service tagged with it, without grepping blind through unrelated traffic.</p>
 
-  <h3 class="sub reveal">SLI, SLO, SLA &amp; error budgets</h3>
+  <h3 class="sub reveal" id="sli-slo-sla-error-budgets">SLI, SLO, SLA &amp; error budgets</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Term</th><th>Meaning</th><th>Example</th></tr></thead>
@@ -1628,7 +1655,7 @@ lastRefillTime = now;
     <div class="callout__body"><b class="h">Burning the error budget fast should freeze risky launches</b><p>An error budget isn't just a scorecard — it's a release-gating mechanism. If you've already burned most of this month's 43 minutes on a handful of incidents, that's the signal to slow down: freeze risky feature launches, prioritize reliability work, and let the budget recover before spending more of it. Plenty of budget left, on the other hand, is a green light to ship faster and take on more risk — the budget converts "how reliable do we need to be" into a number you can actually make trade-off decisions against.</p></div>
   </div>
 
-  <h3 class="sub reveal">The four golden signals</h3>
+  <h3 class="sub reveal" id="the-four-golden-signals">The four golden signals</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Signal</th><th>What to watch</th></tr></thead>
@@ -1713,10 +1740,10 @@ lastRefillTime = now;
     <div class="meta-row"><span class="chip chip--tint">12 min read</span></div>
   </div>
 
-  <h3 class="sub reveal">URL Shortener — framing the problem</h3>
+  <h3 class="sub reveal" id="url-shortener-framing-the-problem">URL Shortener — framing the problem</h3>
   <p class="reveal">Functional requirements: shorten a long URL, redirect a short code back to it, support optional custom aliases and expiry, and track basic click analytics. Non-functional: highly available, low-latency redirects, and heavily read-skewed — a realistic target is around 100 million new URLs per day with a read:write ratio near 100:1, meaning caching the hot fraction of URLs does almost all of the work.</p>
 
-  <h3 class="sub reveal">Short-code generation</h3>
+  <h3 class="sub reveal" id="short-code-generation">Short-code generation</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Approach</th><th>How it works</th><th>Trade-off</th></tr></thead>
@@ -1747,7 +1774,7 @@ lastRefillTime = now;
     <div class="panel"><h4><span class="sw"></span>302 (temporary) redirect</h4><ul><li>Browsers don't cache it — every click hits your server</li><li>Full click analytics, every time</li><li>Higher origin load for popular links</li></ul></div>
   </div>
 
-  <h3 class="sub reveal">News Feed (Instagram-style) — the celebrity problem</h3>
+  <h3 class="sub reveal" id="news-feed-instagram-style-the-celebrity-problem">News Feed (Instagram-style) — the celebrity problem</h3>
   <p class="reveal">A feed system has to decide, for every post, exactly when the work of "insert this into everyone who should see it" actually happens — and the answer determines everything about how the system scales.</p>
 
   <div class="panel diagram-panel reveal">
@@ -1844,12 +1871,12 @@ lastRefillTime = now;
     <div class="meta-row"><span class="chip chip--tint">11 min read</span></div>
   </div>
 
-  <h3 class="sub reveal">Real-time chat — why WebSockets replace polling</h3>
+  <h3 class="sub reveal" id="real-time-chat-why-websockets-replace-polling">Real-time chat — why WebSockets replace polling</h3>
   <p class="reveal">Polling ("ask the server every 2 seconds if there's a new message") wastes most of its requests on "no, nothing new" and still adds up to 2 seconds of delivery lag in the best case. A <strong>persistent WebSocket connection</strong> flips the direction: the client opens one long-lived connection, and the server pushes a message down it the instant one arrives — no polling interval, no wasted requests, genuinely real-time delivery.</p>
 
   <p class="reveal"><strong>Server-Sent Events (SSE)</strong> is the simpler sibling worth knowing alongside WebSockets: it's a one-directional, server-to-client-only stream delivered over plain HTTP via the browser's <code>EventSource</code> API, which reconnects automatically if the connection drops, with none of the handshake or full-duplex machinery a WebSocket sets up. For something like live notifications or a progress bar — anywhere the client only ever receives and never needs to talk back on the same channel — SSE gets the same instant-push benefit with less protocol overhead. The trade is that it genuinely can't do bidirectional communication, so the moment the client needs to send messages back over that same connection, chat being the obvious case here, a WebSocket is the only one of the two that can do it.</p>
 
-  <h3 class="sub reveal">The presence problem: which server is this user on?</h3>
+  <h3 class="sub reveal" id="the-presence-problem-which-server-is-this-user-on">The presence problem: which server is this user on?</h3>
   <p class="reveal">A single chat server can only hold so many concurrent WebSocket connections, so any real deployment needs many chat servers behind a connection-aware layer — which immediately raises a routing question: if user A is connected to chat-server-7 and user B (connected to chat-server-3) sends A a message, how does server 3 know to forward it to server 7? The answer is a shared <strong>presence/session registry</strong> — typically Redis, mapping <code>userId → serverId</code> — that any chat server can query to find out where to route a message for any recipient, regardless of which physical server the sender or recipient happens to be attached to.</p>
 
   <div class="panel diagram-panel reveal">
@@ -1870,7 +1897,7 @@ lastRefillTime = now;
     <div class="callout__body"><b class="h">Offline delivery — persist first, push second</b><p>If the presence lookup finds no server for the recipient (they're offline), the message is still persisted to the message store as undelivered. Once the recipient reconnects, undelivered messages are flushed to them over the freshly (re)established WebSocket; while they're fully offline (app closed, no connection at all), a push notification (FCM/APNs) is what actually gets their attention, with the full message delivered once they open the app and reconnect.</p></div>
   </div>
 
-  <h3 class="sub reveal">Ride-sharing — finding nearby drivers fast</h3>
+  <h3 class="sub reveal" id="ride-sharing-finding-nearby-drivers-fast">Ride-sharing — finding nearby drivers fast</h3>
   <p class="reveal">"Find every driver within 2km" is a spatial query, and a naive answer (scan every driver's coordinates, compute distance, filter) doesn't scale past a trivial number of drivers. The standard fix — whether it's a <strong>Geohash</strong>, a <strong>Quadtree</strong>, or Uber's own <strong>H3</strong> hexagonal grid — is the same core idea: encode a location so that spatially nearby points share a common prefix. "Nearest drivers" then stops being a full scan and becomes a prefix lookup: find every driver whose location code shares your prefix, which by construction means they're nearby.</p>
 
   <div class="panel diagram-panel reveal">
@@ -1891,7 +1918,7 @@ lastRefillTime = now;
     <p class="diagram-cap">Location writes are high-frequency and write-optimized (in-memory, partitioned by region); the matching service only needs to read a small, geographically-scoped slice of that index per request, not the entire fleet.</p>
   </div>
 
-  <h3 class="sub reveal">Trip lifecycle</h3>
+  <h3 class="sub reveal" id="trip-lifecycle">Trip lifecycle</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>Requested</b><span>rider submits pickup + destination</span></div>
@@ -1971,7 +1998,7 @@ lastRefillTime = now;
     <div class="meta-row"><span class="chip chip--tint">10 min read</span></div>
   </div>
 
-  <h3 class="sub reveal">The 8-step framework</h3>
+  <h3 class="sub reveal" id="the-8-step-framework">The 8-step framework</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node is-accent"><b>1 · Requirements</b><span>Clarify functional + non-functional scope before designing anything</span></div>
@@ -2004,7 +2031,7 @@ lastRefillTime = now;
     <div class="callout__body"><b class="h">Step 8 is where the signal actually is</b><p>Almost every candidate can produce a reasonable-looking architecture diagram. Far fewer explicitly narrate what they gave up to get there — "I'm choosing AP here because a stale read is cheaper than an outage for this product" is a sentence that separates a senior answer from a junior one, and it costs nothing but saying it out loud instead of leaving it implicit.</p></div>
   </div>
 
-  <h3 class="sub reveal">The technique map — symptom to solution</h3>
+  <h3 class="sub reveal" id="the-technique-map-symptom-to-solution">The technique map — symptom to solution</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>If you're asked to solve...</th><th>Reach for...</th><th>Why</th></tr></thead>
@@ -2095,98 +2122,98 @@ lastRefillTime = now;
 
   <div class="iq-group-label">Internals &amp; Why</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-01">
     <summary><span class="iq-num">01</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does consistent hashing beat plain <code>hash(key) % N</code> when the cluster resizes?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>With <code>hash(key) % N</code>, N is baked directly into the formula, so changing it — adding or removing even one node — changes the result for almost every key, forcing a near-total data reshuffle. Consistent hashing removes N from the formula entirely by placing nodes and keys on a fixed-size ring instead — a key belongs to whichever node is first found going clockwise, so adding or removing one node only ever disturbs the small arc of keys immediately next to it, roughly 1/N of the total. Virtual nodes (many ring positions per physical node) further smooth out the uneven-arc problem a single point per node would otherwise create. This is why it's the default answer any time "nodes come and go" is part of the problem.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-02">
     <summary><span class="iq-num">02</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does Raft require a majority of the cluster's total configured nodes to elect a leader, rather than a majority of whichever nodes happen to respond?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Using the total cluster size as the denominator guarantees that any two majorities must overlap by at least one node — that overlap is the entire safety argument, since it means whoever wins the next election is guaranteed to already hold the most recently committed log entry. If a majority of responders were enough instead, a network partition could let two disjoint groups each independently believe they have a majority, electing two leaders in the same term and breaking the single-truth guarantee consensus exists to provide. It's the same underlying idea as Kafka only acknowledging an <code>acks=all</code> write once every in-sync replica has it — durability comes from a quorum of independent copies agreeing, not any one node's say-so.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-03">
     <summary><span class="iq-num">03</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does a Bloom filter never produce a false negative, but can produce a false positive?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Checking a key hashes it through several hash functions and checks whether all the resulting bits are set — if even one isn't set, the key is guaranteed to have never been inserted, since insertion always sets every one of those bits. A "yes" is less certain, because those same bits are shared across every other key ever inserted — a different key, or combination of keys, could coincidentally have set all the same bits. That asymmetry is exactly what makes it useful: a fast, trustworthy "definitely not here" lets you skip an expensive lookup for the vast majority of cases, at the cost of occasionally still doing the real lookup for a false positive.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-04">
     <summary><span class="iq-num">04</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does the outbox pattern solve the dual-write problem by adding a database table, instead of trying to make the publish itself atomic with the write?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Atomically committing across two genuinely different systems — a database and a message broker — isn't achievable; there's no shared transaction spanning both. The outbox pattern sidesteps that by converting the publish into data: a row written to an outbox table in the exact same transaction as the state change, so both commit or both roll back together. A separate relay process then does the actual cross-system hop, retrying until it succeeds — turning an unsolvable "atomic commit across two systems" problem into an easy "eventually deliver every row at least once" problem that already has well-understood solutions.</p></div>
   </details>
 
   <div class="iq-group-label">Trade-offs</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-05">
     <summary><span class="iq-num">05</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">You're designing seat inventory for a ticketing platform where two people must never be sold the same seat. CP or AP?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>CP. A wrong answer here — telling two different customers they both successfully bought the same seat — is strictly worse than a request briefly failing or timing out during a partition, so refusing to answer until the system can be sure it's correct is the right default. This sits in the same category as financial ledgers and inventory counts: cases where staying silently wrong is more damaging than staying briefly unavailable. Contrast with a social media like-count or comment feed, where staying up with slightly stale data is clearly the better trade — that's the AP end of the exact same decision.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-06">
     <summary><span class="iq-num">06</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Primary-replica replication is the default almost everywhere. When would you actually take on multi-primary's write-conflict complexity instead?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>When the single-writer bottleneck itself becomes the limiting factor — either write throughput has outgrown what one primary can absorb, or the system genuinely needs low-latency local writes in multiple regions and routing every write back to one region's primary would add too much latency. The trade being accepted is real: two primaries can now accept conflicting writes to the same row nearly simultaneously, requiring last-write-wins, vector clocks, or application-level merge logic to reconcile. Most systems avoid this entirely and only reach for it once primary-replica's constraints are demonstrably the actual bottleneck, not a theoretical one.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-07">
     <summary><span class="iq-num">07</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">For a messaging-style feed where most users follow a small, roughly even number of accounts, would you lean fan-out-on-write or fan-out-on-read?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Fan-out-on-write, and it's not close. Feed reads happen far more often than posts get written, so precomputing each follower's feed at write time keeps every read fast and cheap, while the write cost per post stays small and manageable when follower counts are modest and even. Fan-out-on-read only starts winning at the extreme tail — accounts with such enormous follower counts that pushing to everyone at once becomes a write storm — which is exactly why real systems use fan-out-on-write as the default and carve out fan-out-on-read as a per-account exception, not a global choice.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-08">
     <summary><span class="iq-num">08</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">L7 load balancing can do almost everything L4 can, plus more. When would you actually choose raw L4?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>When raw speed and protocol flexibility matter more than content-based routing — L4 never buffers or parses the payload, so it adds negligible latency and works identically for HTTP, raw TCP, gRPC, or anything else riding over TCP/UDP. That makes it the right choice for non-HTTP traffic, or as the outer entry point in front of an L7 layer, where every microsecond and CPU cycle at that outermost tier counts. For a typical HTTP API where path- or header-based routing is valuable, L7 is still the right default — L4 wins specifically when that value doesn't apply.</p></div>
   </details>
 
   <div class="iq-group-label">Traps</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-09">
     <summary><span class="iq-num">09</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A candidate adds read replicas to scale reads, then calls "the user sees stale data right after writing" a load-balancer bug. What did they get wrong?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>This isn't a load-balancer problem at all — it's replica lag, the normal, expected delay between a write landing on the primary and that write propagating to replicas. Routing the very next read to a different, not-yet-caught-up replica will surface the old value no matter how the load balancer happens to pick which replica to hit. The actual fixes are reading your own writes from the primary (or a replica known to be caught up) right after a write, or designing the UI to tolerate a brief staleness window — not touching load-balancing logic, which was never the source of the problem.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-10">
     <summary><span class="iq-num">10</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A candidate says a Redis lock with a TTL is now completely safe from race conditions. What's wrong with that claim?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>A TTL only fixes one failure mode — a holder that crashed and never released the lock. It does nothing for a holder that merely paused (a long GC pause, a slow network call) past the TTL: the lock silently expires, a second client acquires it and starts working, and the first client eventually wakes up with no idea time has passed, still believing it holds the lock, and can write to the resource anyway. Now two clients have modified the same resource — exactly what the lock was supposed to prevent. The real fix is a fencing token, checked by the protected resource itself, which rejects any write carrying a token older than the highest one already seen.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-11">
     <summary><span class="iq-num">11</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A candidate designs a rate limiter with a fixed window counter that resets every 60 seconds and calls the design complete. What did they miss?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>A fixed window resets sharply at a boundary rather than sliding continuously, so a client can send a full window's worth of requests in the last instant of one window and another full window's worth in the first instant of the next — up to double the intended rate compressed into a much shorter real time span. The fix is either a sliding window (log or counter) that has no hard reset point, or token bucket, which enforces a true average rate over time regardless of where a burst happens to land relative to any window boundary.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-12">
     <summary><span class="iq-num">12</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A candidate proposes caching a logged-in user's personalized dashboard at the CDN edge to cut latency. What's wrong with this plan?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>A CDN's edge cache is shared across every user hitting the same URL — its entire value proposition depends on the response being the same (or one of a small set of variants) for everyone requesting it. A personalized dashboard is, by definition, different per user, so caching it at a shared edge either risks serving one user's private data to another or forces the CDN to effectively bypass its cache per user, gaining nothing. CDNs help static or rarely-changing, non-personalized content; personalized dynamic data needs a different layer — an app-local or distributed cache keyed per user, not the edge.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-13">
     <summary><span class="iq-num">13</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A team pages on-call with equal urgency for "CPU &gt; 80%" and "error rate &gt; 1%" — what's wrong with that setup?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>It conflates a symptom with a cause and pages on both as if they carry equal signal. "Error rate &gt; 1%" is a symptom alert — it means real users are being affected right now, unambiguously, no matter what's causing it. "CPU &gt; 80%" is a cause-shaped alert — CPU can run hot for entirely benign reasons (a scheduled batch job, a GC cycle, a deploy warming caches) with zero actual user impact. Paging with equal urgency on both trains on-call engineers to treat pages as noisy: once people learn that a meaningful fraction of pages don't require action, they start responding to every page — including the real ones — with less urgency. The fix isn't deleting the CPU signal, it's demoting it: keep it on a dashboard or as a low-urgency, non-paging alert, and reserve page-worthy urgency for symptom-level signals proven to mean a real user is affected. When CPU genuinely is the root cause of a real incident, it surfaces naturally during triage, pulled in from the symptom outward — it doesn't need its own independent page to do that job.</p></div>
   </details>
 
   <div class="iq-group-label">Scenario</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-14">
     <summary><span class="iq-num">14</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Walk through what happens when an account with 50 million followers posts, in a system that only does fan-out-on-write. Where exactly does it break, and what's the fix?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>At post time, the system tries to push the new post into 50 million individual precomputed feed caches essentially all at once — a write storm at a scale fan-out-on-write was never built to absorb, likely saturating whatever store holds those feed caches and delaying the post's visibility for everyone. The fix is a per-account threshold: past some follower count, skip write-time fan-out entirely for that account, and instead merge its posts in at read time — fetched live and blended alongside each follower's normal precomputed feed. This makes fan-out strategy a per-account decision based on follower count, not a single global architectural choice.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-15">
     <summary><span class="iq-num">15</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">In the last 10 minutes of an interview, you're asked to add "read receipts" to the chat design (WebSockets + presence registry + durable message store). Sketch the minimum viable approach.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Reuse the exact delivery path already built: when a client renders a received message, it sends a small "read" event back over its own WebSocket connection, tagged with the message ID and reader's userId. That event is looked up in the same presence registry used for normal messages to find the sender's current server — or queued for later delivery if the sender is offline, exactly like a regular message — and the sender's client updates the message's status on receipt. The read state itself is persisted alongside the message in the durable message store, so it survives reconnects. No new infrastructure — just a second, smaller message type riding the same rails as everything else.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-16">
     <summary><span class="iq-num">16</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Driver-location writes happen roughly 100x more often than ride requests. Where would you focus your scaling effort first, and why?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>The location-write path, since it dominates traffic by a wide margin and any inefficiency there is multiplied across every driver, every few seconds, continuously — while ride requests are comparatively rare, bursty events. That means the geo-index needs to be write-optimized (in-memory, partitioned by region) rather than optimized around the matching service's read pattern, since the read side only ever touches a small, geographically-scoped slice of the index per request. Optimizing ride-matching logic first, while leaving the far higher-volume location-write path as an afterthought, would be solving the smaller of the two problems.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-17">
     <summary><span class="iq-num">17</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Two customers try to book the last seat on a flight at the exact same instant. Walk through how you'd prevent a double-booking end to end.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>The seat-selection step needs mutual exclusion across whichever app servers both requests land on — a distributed lock (or a single-row optimistic version check) scoped to that specific seat, not the whole flight. With a lock, pair it with a fencing token so a request that stalls past any TTL can't apply a stale write after losing the lock to someone else; with optimistic versioning instead, both requests read the seat's current version, and only the write that still matches that version on commit succeeds, while the other is rejected and retried against the now-updated state. Either way, this is a CP-leaning decision for this one seat: refusing to let both writes succeed is worth the brief cost of one customer seeing "sorry, just booked."</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-18">
     <summary><span class="iq-num">18</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Your service has burned 90% of this month's error budget with a week left in the period, and product wants to ship a risky feature tomorrow — what do you say?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Push back on shipping it tomorrow, and make the case with the number instead of a gut feeling: with 90% of the budget already spent and a week still to go, there's almost no room left to absorb anything going wrong, and a risky launch is exactly the kind of change most likely to spend the rest of it. An error budget isn't just a retrospective scorecard, it's meant to be used as a release-gating mechanism — the same way a financial budget gates spending, not just measures it after the fact. The concrete options are the same ones any budget conversation has: delay the risky feature until the budget resets or recovers, ship it behind a flag to a small percentage of traffic to bound the blast radius, or get explicit sign-off that the team accepts the added SLA-breach risk with eyes open. What you don't do is ship it silently and hope nothing happens — that turns the error budget into theater instead of a real decision-making tool, and the entire point of tracking SLI/SLO/error-budget in the first place is to make this exact trade-off explicit and defensible instead of a gut call.</p></div>
   </details>
@@ -2261,6 +2288,8 @@ lastRefillTime = now;
 
 </main>
 
+<script src="search-index.js"></script>
+<script src="site-search.js"></script>
 <script>
 (function(){
 "use strict";

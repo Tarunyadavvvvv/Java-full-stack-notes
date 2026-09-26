@@ -388,6 +388,25 @@ noscript .reveal{opacity:1;}
   .navlink{font-size:.8rem;padding:.45rem .7rem;}
   .contents-btn{font-size:.8rem;padding:.45rem .8rem;}
 }
+/* ---- site search ---- */
+.site-search{position:relative;flex:1;max-width:420px;margin:0 1.2rem;}
+.site-search__box{display:flex;align-items:center;gap:.5rem;background:var(--surface-2);border-radius:var(--r-pill);padding:.5rem .9rem;transition:background var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);}
+.site-search__box:focus-within{background:var(--surface);box-shadow:0 0 0 2px var(--accent);}
+.site-search__icon{flex:none;width:15px;height:15px;color:var(--muted);}
+.site-search__input{flex:1;min-width:0;border:none;background:none;outline:none;font-family:var(--font-body);font-size:.87rem;color:var(--ink);}
+.site-search__input::placeholder{color:var(--muted);}
+.site-search__kbd{flex:none;font-family:var(--font-mono);font-size:.68rem;color:var(--muted);background:var(--surface);border-radius:5px;padding:.1rem .4rem;box-shadow:var(--shadow-sm);}
+.site-search__results{position:absolute;top:calc(100% + 8px);left:0;right:0;max-height:min(70vh,480px);overflow-y:auto;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:.5rem;display:none;z-index:50;}
+.site-search.is-open .site-search__results{display:block;}
+.site-search__empty{padding:1rem;font-size:.85rem;color:var(--muted);text-align:center;}
+.site-search__item{display:block;padding:.65rem .8rem;border-radius:10px;text-decoration:none;color:inherit;cursor:pointer;}
+.site-search__item:hover,.site-search__item.is-active{background:var(--tint);}
+.site-search__item-title{font-weight:700;font-size:.88rem;display:block;}
+.site-search__item-meta{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:.4rem;margin-top:.2rem;}
+.site-search__item-type{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;background:var(--surface-2);padding:.1rem .4rem;border-radius:999px;}
+.site-search mark{background:var(--tint-strong);color:inherit;border-radius:3px;padding:0 .1em;}
+@media (max-width:820px){.site-search{order:3;flex-basis:100%;max-width:none;margin:.6rem 0 0;}}
+[id]{scroll-margin-top:90px;}
 </style>
 </head>
 <body>
@@ -396,6 +415,14 @@ noscript .reveal{opacity:1;}
 <header class="topnav">
   <div class="topnav__inner">
     <a class="wordmark" href="index.html#caching-redis"><span class="wordmark__mark">C</span>Caching &amp; Redis</a>
+    <div class="site-search" id="siteSearch">
+      <div class="site-search__box">
+        <svg class="site-search__icon" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" class="site-search__input" id="siteSearchInput" placeholder="Search any topic or question…" autocomplete="off" aria-label="Search notes" aria-expanded="false" aria-controls="siteSearchResults">
+        <span class="site-search__kbd">/</span>
+      </div>
+      <div class="site-search__results" id="siteSearchResults"></div>
+    </div>
     <nav class="navlinks">
       <a class="navlink" href="index.html#caching-redis">← All topics</a>
       <div class="contents" id="contents">
@@ -459,7 +486,7 @@ noscript .reveal{opacity:1;}
 
   <p class="reveal">Caching exists because reading from memory is orders of magnitude faster than a database round-trip (disk I/O, query parsing, network latency), and because a popular piece of data being fetched fresh from the database on every single request wastes capacity that could serve other requests instead. A high cache <strong>hit ratio</strong> on a read-heavy workload can remove the overwhelming majority of database load for a fraction of the infrastructure cost of scaling the database itself.</p>
 
-  <h3 class="sub reveal">The four placement patterns</h3>
+  <h3 class="sub reveal" id="the-four-placement-patterns">The four placement patterns</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>App</b><span>checks cache first</span></div>
@@ -574,7 +601,7 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">How an LRU cache is actually implemented</h3>
+  <h3 class="sub reveal" id="how-an-lru-cache-is-actually-implemented">How an LRU cache is actually implemented</h3>
   <p class="reveal">"Evicts whatever hasn't been touched in the longest time" is easy to say and easy to get wrong in code — the "LRU Cache" design problem is a recurring coding-interview question precisely because both <code>get</code> and <code>put</code> need to run in O(1), which rules out scanning anything on every access. The standard implementation pairs two structures: a <strong>hash map</strong> from key to a node reference, giving O(1) lookup, and a <strong>doubly-linked list</strong> holding those same nodes ordered by recency, giving O(1) reordering. Every access looks the key up in the hash map, then unlinks that node and relinks it at the head of the list — a constant number of pointer updates, regardless of how large the cache is. Eviction never has to search for a victim: it's simply whatever node currently sits at the tail.</p>
 
   <div class="panel diagram-panel reveal">
@@ -620,7 +647,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Invalidation strategies</h3>
+  <h3 class="sub reveal" id="invalidation-strategies">Invalidation strategies</h3>
   <p class="reveal">Beyond letting TTL or an eviction policy handle staleness passively, an application can invalidate <em>actively</em>: deleting or updating a specific cache key the moment its underlying data changes (the "delete on write" approach from chapter 1), publishing an invalidation event other services/instances subscribe to, or versioning cache keys (e.g. <code>product:42:v3</code>) so an old version simply stops being referenced rather than needing explicit deletion at all.</p>
 
   <div class="callout callout--tip reveal">
@@ -693,7 +720,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">The single-threaded event loop</h3>
+  <h3 class="sub reveal" id="the-single-threaded-event-loop">The single-threaded event loop</h3>
   <p class="reveal">Redis's core command execution is single-threaded — one command runs to completion before the next begins, with no interleaving. This sounds like it should be a bottleneck, but it eliminates lock contention entirely (no two commands can ever race on the same key), and because Redis operations are almost all pure in-memory data-structure manipulations, a single thread turns out to be extremely fast — commonly hundreds of thousands of operations per second on modest hardware.</p>
 
   <p class="reveal">"Single-threaded" explains why commands never race each other, but on its own it doesn't explain how one thread handles thousands of connected clients without one slow, idle connection starving everyone else — that part is what makes it an <strong>event loop</strong>. Redis relies on OS-level I/O multiplexing (<code>epoll</code> on Linux, <code>kqueue</code> on BSD/macOS) to ask the kernel a single question every iteration: "of all these open sockets, which ones actually have data ready right now?" Instead of checking each connection in turn or blocking while waiting on any one of them, the loop only spends time on the sockets the kernel just said are ready — an idle client sitting on an open connection costs the loop essentially nothing per iteration, which is how a single thread comfortably services many thousands of concurrent connections.</p>
@@ -719,7 +746,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">How Redis actually expires keys</h3>
+  <h3 class="sub reveal" id="how-redis-actually-expires-keys">How Redis actually expires keys</h3>
   <p class="reveal">Setting a TTL doesn't spin up a per-key timer — with a keyspace that can run into the millions, that would be its own scalability problem. Redis reclaims expired keys two ways, running side by side. <strong>Lazy expiration</strong> checks a key's TTL the moment something actually tries to read it: if it's past expiry, Redis deletes it right there and returns a miss, as if the key had never existed. Lazy expiration alone would leave memory held by expired keys that nobody ever reads again, so Redis also runs <strong>active expiration</strong>: a background cycle, several times a second, that samples a random batch of keys carrying a TTL, deletes whichever ones have expired, and immediately repeats if more than a quarter of that batch was expired (on the assumption there's probably more still to clean up).</p>
 
   <div class="callout callout--tip reveal">
@@ -730,7 +757,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Persistence: RDB vs. AOF</h3>
+  <h3 class="sub reveal" id="persistence-rdb-vs-aof">Persistence: RDB vs. AOF</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th></th><th>RDB (snapshot)</th><th>AOF (append-only file)</th></tr></thead>
@@ -759,7 +786,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Redis vs. Memcached</h3>
+  <h3 class="sub reveal" id="redis-vs-memcached">Redis vs. Memcached</h3>
   <p class="reveal">Memcached predates Redis and answers a narrower question well: a simple, pure in-memory key-value store for strings and blobs, nothing more, built multi-threaded from the start. Redis answers a broader one — "what if the cache could also double as a lightweight database" — backed by the richer structures and durability options covered in this chapter, at the cost of single-threaded command execution (offset by the event-loop I/O model above, not by parallel command processing).</p>
 
   <div class="duo reveal">
@@ -897,7 +924,7 @@ SET order:lock:1001 <span class="tk-str">"locked"</span> NX EX <span class="tk-f
     </div>
   </div>
 
-  <h3 class="sub reveal">Transactions &amp; other essentials</h3>
+  <h3 class="sub reveal" id="transactions-other-essentials">Transactions &amp; other essentials</h3>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">multi-exec.sh</span></div>
     <pre><code>MULTI
@@ -1008,7 +1035,7 @@ EXEC          <span class="tk-com"># both commands run as one atomic block -- no
     </div>
   </div>
 
-  <h3 class="sub reveal">Giving @Cacheable-managed entries a TTL</h3>
+  <h3 class="sub reveal" id="giving-cacheable-managed-entries-a-ttl">Giving @Cacheable-managed entries a TTL</h3>
   <p class="reveal">Nothing in the <code>ProductService</code> sample above sets an expiry — left as-is, every entry <code>@Cacheable</code> writes through Spring's Redis cache manager lives forever, which is exactly the "cache with no TTL is a memory leak" mistake flagged back in the Eviction Policies chapter. The Cache abstraction can't set a TTL per key or per operation (that's the "fine-grained" gap mentioned below), but it can apply one TTL to every entry in a given cache manager, configured once — either in Java config or a single property.</p>
 
   <div class="code-window reveal">
@@ -1036,7 +1063,7 @@ EXEC          <span class="tk-com"># both commands run as one atomic block -- no
     </div>
   </div>
 
-  <h3 class="sub reveal">RedisTemplate — when the abstraction isn't enough</h3>
+  <h3 class="sub reveal" id="redistemplate-when-the-abstraction-isn-t-enough">RedisTemplate — when the abstraction isn't enough</h3>
   <p class="reveal">Spring's Cache abstraction is deliberately provider-agnostic — it doesn't expose Redis-specific features like sorted sets, pub/sub, or fine-grained TTL per operation. <code>RedisTemplate</code> is the direct, Redis-aware client for exactly those cases.</p>
 
   <div class="code-window reveal">
@@ -1122,7 +1149,7 @@ EXEC          <span class="tk-com"># both commands run as one atomic block -- no
     </div>
   </div>
 
-  <h3 class="sub reveal">Cache stampede (thundering herd)</h3>
+  <h3 class="sub reveal" id="cache-stampede-thundering-herd">Cache stampede (thundering herd)</h3>
   <p class="reveal">A hot key expires, and dozens (or thousands) of concurrent requests all miss the cache at once, all simultaneously hammer the database to recompute the same value — the exact traffic spike the cache was supposed to prevent, concentrated into one moment.</p>
 
   <div class="tbl-wrap reveal">
@@ -1167,7 +1194,7 @@ EXEC          <span class="tk-com"># both commands run as one atomic block -- no
     </div>
   </div>
 
-  <h3 class="sub reveal">Redis Cluster &amp; replication</h3>
+  <h3 class="sub reveal" id="redis-cluster-replication">Redis Cluster &amp; replication</h3>
   <div class="duo reveal">
     <div class="panel"><h4><span class="sw"></span>Replication</h4><ul><li>Primary handles writes; replicas serve reads</li><li>Sentinel monitors primaries and promotes a replica on failure (automatic failover)</li><li>Increases read capacity and availability, not write capacity</li><li>Asynchronous by default — a replica can lag the primary, so a read routed to it can return a stale value for however far behind it currently is</li></ul></div>
     <div class="panel"><h4><span class="sw"></span>Cluster (sharding)</h4><ul><li>Data is partitioned across nodes via hash slots (16,384 total)</li><li>Each key's slot is deterministic from its hash</li><li>Scales both read <em>and</em> write capacity horizontally</li></ul></div>
@@ -1246,73 +1273,73 @@ EXEC          <span class="tk-com"># both commands run as one atomic block -- no
 
   <div class="iq-group-label">Internals &amp; Why</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-01">
     <summary><span class="iq-num">01</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why can Redis, despite being single-threaded, outperform many multi-threaded databases for typical cache workloads?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Multi-threaded databases spend real CPU time on lock acquisition/contention/context-switching to keep concurrent access safe — overhead that scales with contention. Redis's single-threaded command execution has zero locking overhead by construction (only one command ever runs at a time), and since its core operations are simple in-memory data-structure manipulations rather than disk I/O, that single thread can still push very high throughput. The trade-off is that one genuinely slow command (a huge <code>KEYS *</code> scan, say) blocks everything else behind it — there's no second thread to pick up slack.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-02">
     <summary><span class="iq-num">02</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does Redis Cluster use a fixed 16,384 hash slots rather than hashing keys directly to nodes?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Hashing directly to a node count would require re-hashing (and moving) a huge fraction of all keys every time a node is added or removed — a classic consistent-hashing problem. With a fixed number of slots, adding/removing a node just means reassigning a subset of <em>slots</em> (and migrating only the keys in those specific slots) to rebalance — the total slot count never changes, only which physical node owns which slots, making cluster resizing far less disruptive.</p></div>
   </details>
 
   <div class="iq-group-label">Trade-offs</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-03">
     <summary><span class="iq-num">03</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Why would you choose write-through caching over the more common cache-aside pattern, given write-through adds latency to every write?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Write-through guarantees the cache is never stale relative to the database, because every write updates both synchronously before returning — cache-aside's "delete on write" approach has a brief window where the next read might race with a concurrent update. For workloads where read-after-write consistency genuinely matters and read volume is high enough that keeping the cache always warm is worth the extra write latency, write-through is the more defensible choice — it's a latency-on-write vs. consistency-guarantee trade, not a strictly-better-or-worse comparison.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-04">
     <summary><span class="iq-num">04</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">An in-process cache (Caffeine) has zero network latency; Redis always costs a network round-trip. Why use Redis at all?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>An in-process cache is fast but private to one JVM instance — with multiple application instances behind a load balancer, each has its own separate, inconsistent cache, and invalidating one entry means somehow notifying every instance (a distributed problem in its own right). Redis is shared: one cache, one invalidation, consistent across every instance. The right answer is often both — Caffeine as an ultra-fast local L1 cache for the hottest data, Redis as a shared L2 layer behind it — rather than treating it as an either/or choice.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-05">
     <summary><span class="iq-num">05</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Redis vs. Memcached — when would you actually pick one over the other?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Memcached is deliberately narrow: a pure in-memory key-value store for strings/blobs, multi-threaded by design, with no persistence and nothing built in for replication or clustering. Redis does everything Memcached does and then a great deal more — Lists, Hashes, Sets, Sorted Sets, optional RDB/AOF persistence, and native replication/Cluster support — at the cost of single-threaded command execution (offset by its event-loop I/O model, not by parallel command processing). In practice, most teams reach for Redis by default, since the data-structure and persistence options mean it can absorb rate limiting, leaderboards, session storage, and pub/sub later without introducing a second caching system. Memcached still wins in the narrow case where the workload is genuinely just high-throughput get/set on simple values and that multi-threaded simplicity matters more than any of Redis's extra capabilities — or in a system already built around it, where migrating for its own sake isn't worth the effort.</p></div>
   </details>
 
   <div class="iq-group-label">Traps</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-06">
     <summary><span class="iq-num">06</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A team implements a distributed lock as <code>SETNX lock:resource "held"</code> with no expiry, to prevent two instances from processing the same job. What can go wrong?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>If the process holding the lock crashes before explicitly releasing it (deleting the key), the lock is held forever — every other instance is permanently blocked from that resource, with no automatic recovery. A distributed lock built this way needs a TTL (so a crashed holder's lock eventually expires) and ideally a unique lock value per holder (so only the actual owner's release call can delete it, preventing one instance from accidentally releasing a lock it doesn't own after its own TTL already expired and someone else acquired it).</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-07">
     <summary><span class="iq-num">07</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A cache-aside implementation deletes the cache entry <em>before</em> writing to the database, reasoning "delete first, so nobody reads stale data during the write." What's the actual risk?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>This ordering opens a worse race: after the delete but before the database write completes, a concurrent reader misses the cache, reads the (still old) value from the database, and re-populates the cache with that <em>stale</em> value — which now sits in the cache with no pending invalidation to correct it, since the intended invalidation already happened. Writing to the database <em>first</em>, then deleting the cache, narrows this window considerably (though a similar race is still theoretically possible, just harder to trigger) — ordering matters here in a genuinely non-obvious way.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-08">
     <summary><span class="iq-num">08</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A rate limiter uses <code>INCR</code> on a per-user key with a 60-second window, but resets the TTL on every request with <code>EXPIRE key 60</code>. What's the bug?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Resetting the TTL on every request means a user who never stops making requests (even at a low, technically-compliant rate) never actually has their window expire — the counter keeps sliding forward indefinitely instead of representing a genuine fixed or rolling 60-second window. The fix is only setting the expiry once, on the request that first creates the key (checking if it's a new key before calling EXPIRE), or using a sorted-set-based sliding window instead of a plain counter for genuinely accurate rate limiting.</p></div>
   </details>
 
   <div class="iq-group-label">Scenario</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-09">
     <summary><span class="iq-num">09</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A product page's cache key expires at exactly midnight (a fixed TTL set at the same time every day), and every midnight the database sees a massive traffic spike. Diagnose and fix.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>This is a cache stampede caused by synchronized expiry — many keys (or one very hot key) all set with the same fixed TTL expire at the exact same instant, and every concurrent miss recomputes independently. Fix with jittered TTLs (add a small random offset to each key's expiry so they don't all land on the same second) and/or request coalescing (a lock ensuring only the first miss actually queries the database while concurrent misses wait for that result).</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-10">
     <summary><span class="iq-num">10</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">You're designing session storage for a web application running on 20 stateless instances behind a load balancer. Where does Redis fit?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Redis as a centralized session store lets any of the 20 instances handle any request and still find the user's session, since sessions live in one shared place rather than being pinned to whichever instance the user first hit (sticky sessions) — removing sticky-session complexity and letting the load balancer distribute freely. Use a Hash per session (fields for user ID, roles, cart contents, etc.) with a TTL matching the session timeout, so expired sessions clean themselves up automatically without a separate cleanup job.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-11">
     <summary><span class="iq-num">11</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A payment endpoint must be safely retriable by clients (network timeouts causing duplicate requests) without double-charging. How does Redis help, and why isn't Redis alone sufficient?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p><code>SETNX idempotency:{requestId} "processing"</code> with a TTL gives a fast, cheap first line of defense — most retries hit this and are rejected in O(1) without ever touching the database. It's worth being precise about the actual risk here: Redis's single-threaded execution means a single <code>SETNX</code>/<code>SET NX</code> against the same key cannot have two simultaneous successes — that's not the gap. The real gaps are operational. Redis can evict the key under memory pressure or restart entirely, losing the idempotency marker outright with no record it was ever set. And the TTL itself can expire while the original request is still being processed (a slow downstream call, a retry-worthy timeout), letting a legitimate later retry sail past the check and re-execute the payment even though the first attempt never actually finished. The actual, unconditional guarantee needs a database-level unique constraint on the request/idempotency ID — Redis makes the common case fast and cheap; the database constraint is what makes the guarantee real when Redis can't be trusted 100% of the time.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-12">
     <summary><span class="iq-num">12</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Your team wants to know if adding a Redis cache in front of a specific slow database query is actually worth the added complexity. What would you measure first?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Read/write ratio and value volatility, before anything else: a cache only pays off when reads vastly outnumber writes (otherwise you're constantly invalidating a cache nobody gets to benefit from) and the data doesn't change so fast that it's stale the moment it's cached. Also worth checking: is the query actually the bottleneck (measured, via `EXPLAIN ANALYZE` or profiling — see the SQL notes' execution-plan chapter), or would an index or query rewrite fix the root cause more simply than adding a whole new caching layer with its own invalidation-correctness burden.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-13">
     <summary><span class="iq-num">13</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Guess the outcome</span><span class="iq-q">Two application instances both run <code>GET counter</code>, both see 10, both compute 11, and both run <code>SET counter 11</code>. What actually happened, and how should this have been written?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>A lost update: the counter should be 12 after two increments, but ends up at 11 because both instances read the same starting value and neither's write accounted for the other's. This is a read-modify-write race — the fix is <code>INCR counter</code> instead, which Redis executes as a single atomic command (no separate GET+SET from the client at all), completely sidestepping the race rather than requiring any application-level locking.</p></div>
   </details>
@@ -1367,6 +1394,8 @@ EXEC          <span class="tk-com"># both commands run as one atomic block -- no
 
 </main>
 
+<script src="search-index.js"></script>
+<script src="site-search.js"></script>
 <script>
 (function(){
 "use strict";

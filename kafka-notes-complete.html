@@ -388,12 +388,39 @@ noscript .reveal{opacity:1;}
   .navlink{font-size:.8rem;padding:.45rem .7rem;}
   .contents-btn{font-size:.8rem;padding:.45rem .8rem;}
 }
+/* ---- site search ---- */
+.site-search{position:relative;flex:1;max-width:420px;margin:0 1.2rem;}
+.site-search__box{display:flex;align-items:center;gap:.5rem;background:var(--surface-2);border-radius:var(--r-pill);padding:.5rem .9rem;transition:background var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);}
+.site-search__box:focus-within{background:var(--surface);box-shadow:0 0 0 2px var(--accent);}
+.site-search__icon{flex:none;width:15px;height:15px;color:var(--muted);}
+.site-search__input{flex:1;min-width:0;border:none;background:none;outline:none;font-family:var(--font-body);font-size:.87rem;color:var(--ink);}
+.site-search__input::placeholder{color:var(--muted);}
+.site-search__kbd{flex:none;font-family:var(--font-mono);font-size:.68rem;color:var(--muted);background:var(--surface);border-radius:5px;padding:.1rem .4rem;box-shadow:var(--shadow-sm);}
+.site-search__results{position:absolute;top:calc(100% + 8px);left:0;right:0;max-height:min(70vh,480px);overflow-y:auto;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:.5rem;display:none;z-index:50;}
+.site-search.is-open .site-search__results{display:block;}
+.site-search__empty{padding:1rem;font-size:.85rem;color:var(--muted);text-align:center;}
+.site-search__item{display:block;padding:.65rem .8rem;border-radius:10px;text-decoration:none;color:inherit;cursor:pointer;}
+.site-search__item:hover,.site-search__item.is-active{background:var(--tint);}
+.site-search__item-title{font-weight:700;font-size:.88rem;display:block;}
+.site-search__item-meta{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:.4rem;margin-top:.2rem;}
+.site-search__item-type{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;background:var(--surface-2);padding:.1rem .4rem;border-radius:999px;}
+.site-search mark{background:var(--tint-strong);color:inherit;border-radius:3px;padding:0 .1em;}
+@media (max-width:820px){.site-search{order:3;flex-basis:100%;max-width:none;margin:.6rem 0 0;}}
+[id]{scroll-margin-top:90px;}
 </style>
 <noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript>
 
 <header class="topnav">
   <div class="topnav__inner">
     <a class="wordmark" href="index.html#kafka"><span class="wordmark__mark">K</span>Kafka</a>
+    <div class="site-search" id="siteSearch">
+      <div class="site-search__box">
+        <svg class="site-search__icon" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" class="site-search__input" id="siteSearchInput" placeholder="Search any topic or question…" autocomplete="off" aria-label="Search notes" aria-expanded="false" aria-controls="siteSearchResults">
+        <span class="site-search__kbd">/</span>
+      </div>
+      <div class="site-search__results" id="siteSearchResults"></div>
+    </div>
     <nav class="navlinks">
       <a class="navlink" href="index.html#kafka">← All topics</a>
       <div class="contents" id="contents">
@@ -462,7 +489,7 @@ noscript .reveal{opacity:1;}
 
   <p class="reveal">Picture a notebook that you're only ever allowed to <em>add</em> to — never erase, never edit a line once it's written. Now copy that same notebook, page for page, onto two or three other machines the moment anything gets written, so a single lost or burned notebook doesn't lose the record. Finally, give every person who reads from it their own personal bookmark, so ten different readers can all be at completely different pages of the exact same notebook at once, each moving forward at their own pace. That's Kafka. The notebook is a <strong>partition</strong> — an ordered, append-only log — replicated across brokers for durability, with each consumer tracking its own <strong>offset</strong> (its bookmark) independently. It is explicitly <strong>not</strong> a traditional message queue, where a message is typically consumed once and then gone, and it is explicitly <strong>not</strong> a database, since it has no query language, no indexes on arbitrary fields, and no update-in-place — it only ever appends. Kafka occupies a third category: a durable, replayable, distributed commit log that a message queue and a database both happen to resemble from certain angles.</p>
 
-  <h3 class="sub reveal">The problem Kafka actually solves</h3>
+  <h3 class="sub reveal" id="the-problem-kafka-actually-solves">The problem Kafka actually solves</h3>
   <p class="reveal">Before an event bus like Kafka enters the picture, a system with several data-producing services and several systems that want to react to that data tends to grow point-to-point integrations — every producer wiring a direct connection to every consumer that needs its data. That relationship grows quadratically: N producers times M consumers means N×M individual integrations to build, test, and keep working as either side changes. Kafka collapses that by sitting in the middle as a shared, durable buffer — producers only need to know about the topic they're writing to, and consumers only need to know about the topic they're reading from, dropping the integration count from N×M to N+M.</p>
 
   <div class="duo reveal">
@@ -486,7 +513,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Kafka's building blocks</h3>
+  <h3 class="sub reveal" id="kafka-s-building-blocks">Kafka's building blocks</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Term</th><th>What it is</th></tr></thead>
@@ -506,7 +533,7 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">The basic shape</h3>
+  <h3 class="sub reveal" id="the-basic-shape">The basic shape</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>Producers</b><span>write records with a key + value</span></div>
@@ -518,7 +545,7 @@ noscript .reveal{opacity:1;}
     <p class="diagram-cap">Any number of independent consumer groups can attach to the same topic — each one gets its own full copy of the stream, at its own pace, without affecting any other group.</p>
   </div>
 
-  <h3 class="sub reveal">Queue and pub/sub — Kafka is both, depending on grouping</h3>
+  <h3 class="sub reveal" id="queue-and-pub-sub-kafka-is-both-depending-on-grouping">Queue and pub/sub — Kafka is both, depending on grouping</h3>
   <p class="reveal">This is one of the most commonly confused points about Kafka, and it comes down to a single rule: <strong>whether two consumers are in the same consumer group or different ones.</strong></p>
   <div class="duo reveal">
     <div class="panel">
@@ -539,7 +566,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Commit log storage internals</h3>
+  <h3 class="sub reveal" id="commit-log-storage-internals">Commit log storage internals</h3>
   <p class="reveal">Each partition is physically just a directory on disk containing a sequence of immutable <strong>segment</strong> files. Only the newest segment — the "active" one — is ever being appended to; every older segment is closed and never touched again. That single design choice is what makes two things cheap: sequential writes (always appending to one open file) and bulk deletion (an entire old segment can be dropped as one filesystem operation once it's past its retention limit, rather than deleting records one at a time).</p>
   <div class="panel diagram-panel reveal">
     <ul class="soft-tree">
@@ -555,7 +582,7 @@ noscript .reveal{opacity:1;}
     <p class="diagram-cap">A new segment is rolled over once <code>log.segment.bytes</code> (default 1GB) or <code>log.segment.ms</code> is reached — the old one closes for good and a fresh active segment opens.</p>
   </div>
 
-  <h3 class="sub reveal">Why Kafka is fast despite writing every record to disk</h3>
+  <h3 class="sub reveal" id="why-kafka-is-fast-despite-writing-every-record-to-disk">Why Kafka is fast despite writing every record to disk</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Technique</th><th>Why it matters</th></tr></thead>
@@ -648,7 +675,7 @@ noscript .reveal{opacity:1;}
 
   <p class="reveal">Think of a topic's partitions as lanes on a highway. Traffic within a single lane stays strictly in order — cars can't pass each other. But there's no ordering relationship between lanes at all; a car in lane 3 might arrive well before a car that entered lane 1 first. Splitting a topic into more partitions is exactly like adding more lanes: total throughput goes up because more cars can move in parallel, but you give up any guarantee about the relative order of cars in different lanes. Kafka never tries to hide this trade-off — it hands it to you directly through how records get assigned to partitions.</p>
 
-  <h3 class="sub reveal">How a producer picks a partition</h3>
+  <h3 class="sub reveal" id="how-a-producer-picks-a-partition">How a producer picks a partition</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Situation</th><th>Partition chosen</th></tr></thead>
@@ -679,7 +706,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Choosing a partition count</h3>
+  <h3 class="sub reveal" id="choosing-a-partition-count">Choosing a partition count</h3>
   <p class="reveal">More partitions mean more parallelism and higher aggregate throughput, but they aren't free: each one costs an open file handle and memory on every broker, and a broker failure takes longer to recover from when there are more partition leaders to re-elect. A practical rule of thumb is to divide a target total throughput by the throughput a single partition can sustain, and separately, to make sure the partition count is at least as large as the maximum number of consumers you ever expect to run in one consumer group at once.</p>
 
   <div class="callout callout--best reveal">
@@ -690,7 +717,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Ordering guarantees, precisely</h3>
+  <h3 class="sub reveal" id="ordering-guarantees-precisely">Ordering guarantees, precisely</h3>
   <p class="reveal">Kafka guarantees ordering <strong>within a single partition, and only within a single partition</strong> — never across partitions, even within the same topic. Sending records with the same key to the same partition is what preserves order for events that need to stay in sequence relative to each other (a given order's created/updated/cancelled events, for instance). True global ordering across an entire topic is achievable, but only by using a single partition for that topic — which throws away every bit of the parallelism partitioning exists to provide. In practice, the design question is almost never "how do I get global ordering" but "what's the right key to partition on so that everything that needs to stay ordered relative to each other ends up on the same partition."</p>
 
   <div class="panel reveal">
@@ -784,7 +811,7 @@ noscript .reveal{opacity:1;}
     <p class="diagram-cap">Replication factor 3 for partition orders-0 — one leader, two followers, all three physically holding a copy of the data.</p>
   </div>
 
-  <h3 class="sub reveal">In-Sync Replicas (ISR)</h3>
+  <h3 class="sub reveal" id="in-sync-replicas-isr">In-Sync Replicas (ISR)</h3>
   <p class="reveal">Not every follower is automatically trusted at every moment — a follower that's fallen behind (network blip, GC pause, a slow disk) is still a replica, but it isn't necessarily <em>caught up</em>. The <strong>ISR</strong> (in-sync replicas) is the subset of replicas that are confirmed caught up within <code>replica.lag.time.max.ms</code>. This distinction matters enormously for <code>acks=all</code>: that setting requires acknowledgment from every member of the ISR specifically — <strong>not</strong> literally every replica that happens to exist. A replica that's lagging behind isn't waited on; it's excluded from the ISR until it catches back up.</p>
 
   <p class="reveal"><code>min.insync.replicas</code> is the other half of the equation: it's the minimum ISR size required for a write to succeed at all. If the ISR ever shrinks below that number, an <code>acks=all</code> producer doesn't get a slow write — it gets a hard, immediate error. Kafka would rather refuse a write outright than accept it with too few confirmed copies backing it up. This is a deliberate <strong>fail-closed</strong> design: silently accepting a write with insufficient durability, only to lose it later in a failure, is judged worse than rejecting it up front.</p>
@@ -809,7 +836,7 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">Worked example: two failures, one partition</h3>
+  <h3 class="sub reveal" id="worked-example-two-failures-one-partition">Worked example: two failures, one partition</h3>
   <p class="reveal">This scenario is worth walking through slowly, because it's exactly the kind of reasoning that separates "I've heard of ISR" from actually understanding what it buys you. Partition <code>orders-0</code> is configured with RF=3 and <code>min.insync.replicas=2</code>. At the start, all three replicas are healthy and fully caught up: <strong>ISR = {B1, B2, B3}</strong>, with B1 as the elected leader.</p>
 
   <div class="panel diagram-panel reveal">
@@ -872,7 +899,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">The high watermark</h3>
+  <h3 class="sub reveal" id="the-high-watermark">The high watermark</h3>
   <p class="reveal">The <strong>high watermark (HW)</strong> is the highest offset that has been replicated to <em>every</em> member of the ISR. Consumers are only ever allowed to read up to the high watermark — never past it, even if the leader itself has already physically written records beyond that point. This is what guarantees a consumer can never read a record that might vanish later: if a record hasn't been confirmed by the full ISR yet, and the leader that holds it dies before it's replicated, that record can disappear during the resulting leader election. Capping consumer reads at the high watermark means a consumer is only ever shown data that's already safely durable everywhere it needs to be.</p>
 
   <details class="accordion reveal">
@@ -945,7 +972,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">The producer write path</h3>
+  <h3 class="sub reveal" id="the-producer-write-path">The producer write path</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>send()</b><span>application calls this</span></div>
@@ -974,10 +1001,10 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">The idempotent producer</h3>
+  <h3 class="sub reveal" id="the-idempotent-producer">The idempotent producer</h3>
   <p class="reveal">When a producer's request times out or the connection drops, the producer's natural response is to retry — but a retry is dangerous if the original write actually succeeded and only the acknowledgment got lost in transit; that retry would duplicate the record. The <strong>idempotent producer</strong> (<code>enable.idempotence=true</code>, on by default in modern Kafka) closes this gap: each producer instance is assigned a unique <strong>Producer ID (PID)</strong>, and every record it sends carries a per-partition, strictly increasing <strong>sequence number</strong>. The broker tracks the last sequence number it accepted for each (PID, partition) pair, and if a retried batch arrives with a sequence number it's already seen, the broker recognizes it as a duplicate and discards it rather than appending it again — giving exactly-once-per-partition writes without sacrificing ordering, and without the application doing anything differently.</p>
 
-  <h3 class="sub reveal">Worked example: retries under multiple in-flight requests</h3>
+  <h3 class="sub reveal" id="worked-example-retries-under-multiple-in-flight-requests">Worked example: retries under multiple in-flight requests</h3>
   <p class="reveal">This is one of the sharpest illustrations of why idempotence matters even when a producer isn't obviously duplicating anything. Suppose <code>max.in.flight.requests.per.connection=5</code>, meaning up to five batches can be outstanding to the broker at once before waiting for acknowledgments — good for throughput, but it opens a window where ordering can silently flip.</p>
 
   <div class="duo reveal">
@@ -1047,7 +1074,7 @@ producer.send(<span class="tk-kw">new</span> <span class="tk-typ">ProducerRecord
 });</code></pre>
   </div>
 
-  <h3 class="sub reveal">Delivery semantics — and where duplicates actually come from</h3>
+  <h3 class="sub reveal" id="delivery-semantics-and-where-duplicates-actually-come-from">Delivery semantics — and where duplicates actually come from</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Guarantee</th><th>Behavior</th></tr></thead>
@@ -1204,10 +1231,10 @@ producer.initTransactions();
     <p class="diagram-cap">The same rule from the partitioning chapter in action: max useful consumers in a group equals the partition count.</p>
   </div>
 
-  <h3 class="sub reveal">The pull model</h3>
+  <h3 class="sub reveal" id="the-pull-model">The pull model</h3>
   <p class="reveal">Consumers don't have data pushed at them — they call <code>consumer.poll()</code> whenever they're ready for more. That single design choice makes Kafka naturally back-pressure friendly: a consumer that's temporarily slow (a heavier-than-usual batch to process, a downstream dependency under load) simply calls poll() less often, and nothing on the broker side needs to know or react — there's no queue building up on the broker forcing a decision about what to drop.</p>
 
-  <h3 class="sub reveal">Rebalancing strategies</h3>
+  <h3 class="sub reveal" id="rebalancing-strategies">Rebalancing strategies</h3>
   <div class="duo reveal">
     <div class="panel">
       <h4><span class="sw"></span>Eager (stop-the-world)</h4>
@@ -1229,7 +1256,7 @@ producer.initTransactions();
     </div>
   </div>
 
-  <h3 class="sub reveal">Worked example: a cooperative rebalance, step by step</h3>
+  <h3 class="sub reveal" id="worked-example-a-cooperative-rebalance-step-by-step">Worked example: a cooperative rebalance, step by step</h3>
   <p class="reveal">Consumer group <code>billing</code> is reading a 6-partition topic. Consumer A owns partitions P0-P2; consumer B owns P3-P5. Both are steadily processing their partitions. Then a third consumer, C, joins the group.</p>
 
   <div class="panel diagram-panel reveal">
@@ -1379,7 +1406,7 @@ producer.initTransactions();
 
   <p class="reveal">Consumer offsets aren't stored client-side in some config file — they live in an internal, Kafka-managed, <strong>compacted</strong> topic called <code>__consumer_offsets</code>, keyed by (group, topic, partition), so only the latest committed offset per group/partition is retained (compaction is covered in full in the next chapter).</p>
 
-  <h3 class="sub reveal">Commit strategies</h3>
+  <h3 class="sub reveal" id="commit-strategies">Commit strategies</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Strategy</th><th>Behavior</th><th>Risk</th></tr></thead>
@@ -1402,7 +1429,7 @@ producer.initTransactions();
 }</code></pre>
   </div>
 
-  <h3 class="sub reveal">Poison pills &amp; the dead-letter queue</h3>
+  <h3 class="sub reveal" id="poison-pills-the-dead-letter-queue">Poison pills &amp; the dead-letter queue</h3>
   <p class="reveal">The commit strategies above all quietly assume <code>process(record)</code> eventually succeeds. It doesn't always. A malformed payload, a value the deserializer chokes on, or a business rule that will never validate no matter how many times it's retried — a <strong>poison pill</strong> — fails permanently, not transiently. Retry it in a loop without ever committing past it, and the consumer wedges: it can't move on to the next record, because moving on means committing an offset for a record it never actually finished processing, and the whole partition backs up behind it.</p>
 
   <p class="reveal">The standard fix is a <strong>dead-letter queue (DLQ)</strong>: catch the processing exception, publish the failed record — along with error metadata such as the original exception, a timestamp, and how many times it's already been retried — to a separate topic conventionally named <code>&lt;topic&gt;-dlq</code>, and then commit the original offset anyway. The main partition keeps moving; the failed record isn't silently dropped, it's relocated somewhere it can be triaged, inspected, and replayed later without blocking everything queued behind it.</p>
@@ -1428,7 +1455,7 @@ producer.initTransactions();
     </div>
   </div>
 
-  <h3 class="sub reveal"><code>auto.offset.reset</code> — what happens with no committed offset</h3>
+  <h3 class="sub reveal" id="auto-offset-reset-what-happens-with-no-committed-offset"><code>auto.offset.reset</code> — what happens with no committed offset</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Value</th><th>Behavior</th></tr></thead>
@@ -1440,7 +1467,7 @@ producer.initTransactions();
     </table>
   </div>
 
-  <h3 class="sub reveal">Heartbeats, liveness, and the classic poll-loop bug</h3>
+  <h3 class="sub reveal" id="heartbeats-liveness-and-the-classic-poll-loop-bug">Heartbeats, liveness, and the classic poll-loop bug</h3>
   <p class="reveal">A consumer's membership in a group depends on staying alive by two related mechanisms: a background heartbeat sent every <code>heartbeat.interval.ms</code>, and an overall <code>session.timeout.ms</code> — if no heartbeat arrives within that window, the consumer is presumed dead. Separately, and this is the one that catches people off guard, <code>max.poll.interval.ms</code> caps the maximum allowed gap between successive calls to <code>poll()</code> itself — not just heartbeats.</p>
 
   <div class="callout callout--mistake reveal">
@@ -1468,7 +1495,7 @@ producer.initTransactions();
     <p class="diagram-cap">The classic max.poll.interval.ms bug: a still-alive-but-slow consumer gets treated as dead, and its finished work gets duplicated by whoever inherits its partitions.</p>
   </div>
 
-  <h3 class="sub reveal">Worked example: computing consumer lag</h3>
+  <h3 class="sub reveal" id="worked-example-computing-consumer-lag">Worked example: computing consumer lag</h3>
   <p class="reveal">Per-partition lag is simply <code>LEO − committed offset</code> — how far behind the group's acknowledged position is from the actual end of the log.</p>
 
   <div class="panel reveal">
@@ -1548,7 +1575,7 @@ producer.initTransactions();
     </div>
   </div>
 
-  <h3 class="sub reveal">Two cleanup policies</h3>
+  <h3 class="sub reveal" id="two-cleanup-policies">Two cleanup policies</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Policy</th><th>Behavior</th><th>Best for</th></tr></thead>
@@ -1561,7 +1588,7 @@ producer.initTransactions();
   </div>
   <p class="reveal">The relevant configs are <code>retention.ms</code> (defaulting to 7 days) and <code>retention.bytes</code>. Critically, cleanup under the <code>delete</code> policy happens at the <strong>segment</strong> level, not the individual record level — an entire segment only becomes eligible for deletion once <em>every</em> record inside it is past the retention limit, and this happens regardless of whether any consumer has actually read that data yet. A consumer that's fallen far enough behind can lose access to records it never got to, simply because their segment aged out.</p>
 
-  <h3 class="sub reveal">Worked example: log compaction</h3>
+  <h3 class="sub reveal" id="worked-example-log-compaction">Worked example: log compaction</h3>
   <p class="reveal">Think of a compacted topic like a contacts app: you don't care about every previous phone number someone has ever had, only their current one. Compaction guarantees at least the latest value per key survives, regardless of how many times that key was overwritten in between.</p>
 
   <div class="duo reveal">
@@ -1600,7 +1627,7 @@ producer.initTransactions();
 
   <p class="reveal">A record with a <strong>null value</strong> is a special marker called a <strong>tombstone</strong> — it signals that the corresponding key should eventually be removed entirely, rather than just superseded by a newer value. Both <code>__consumer_offsets</code> (from the previous chapter) and Kafka Streams' internal state-store changelog topics rely on exactly this compaction behavior — they only ever need the latest value per key, never the full history of how it got there.</p>
 
-  <h3 class="sub reveal">Kafka doesn't know or care what's in your bytes</h3>
+  <h3 class="sub reveal" id="kafka-doesn-t-know-or-care-what-s-in-your-bytes">Kafka doesn't know or care what's in your bytes</h3>
   <p class="reveal">Kafka itself stores and moves raw bytes — it enforces absolutely no schema of its own on a record's key or value. That's deliberate flexibility, but it means nothing stops a producer from evolving its data shape in a way that silently breaks every consumer relying on the old shape. A <strong>Schema Registry</strong> (the Confluent-style version being the common one) exists specifically to close that gap: it's a central service that stores Avro/Protobuf/JSON schemas and enforces compatibility rules as producers and consumers evolve independently of each other, over time.</p>
 
   <p class="reveal">The mechanics are simple and deliberately lightweight: a producer registers a new schema (or looks up an existing, already-registered one) with the registry, then writes each record as <code>[magic byte][schema ID][payload]</code> — meaning only a small integer schema ID travels with every single message, not the schema itself. A consumer reads that schema ID out of the record, fetches the matching schema definition from the registry (typically cached locally after the first fetch), and uses it to correctly deserialize the payload.</p>
@@ -1703,7 +1730,7 @@ producer.initTransactions();
     </div>
   </div>
 
-  <h3 class="sub reveal">Kafka Streams &amp; ksqlDB</h3>
+  <h3 class="sub reveal" id="kafka-streams-ksqldb">Kafka Streams &amp; ksqlDB</h3>
   <div class="duo reveal">
     <div class="panel">
       <h4><span class="sw"></span>Kafka Streams</h4>
@@ -1725,7 +1752,7 @@ producer.initTransactions();
     </div>
   </div>
 
-  <h3 class="sub reveal">Kafka Connect</h3>
+  <h3 class="sub reveal" id="kafka-connect">Kafka Connect</h3>
   <p class="reveal">Kafka Connect is the standard way to move data across Kafka's boundary without hand-writing producer/consumer glue code for every integration. <strong>Source connectors</strong> pull data from an external system <em>into</em> Kafka (a JDBC source polling a database, a file source tailing logs); <strong>sink connectors</strong> push data <em>out</em> of Kafka into an external system (writing to Elasticsearch, S3, or a data warehouse). The most common source-connector use case in modern architectures is change-data-capture (CDC) — <strong>Debezium</strong>, for instance, tails a database's own write-ahead/binlog and streams every row-level change into Kafka as it happens, without the source application needing to publish anything itself.</p>
 
   <div class="panel diagram-panel reveal">
@@ -1743,10 +1770,10 @@ producer.initTransactions();
     <p class="diagram-cap">Kafka Connect's source-to-sink flow: connectors do the integration work on either side, with the Kafka topic as the durable handoff point in the middle.</p>
   </div>
 
-  <h3 class="sub reveal">KRaft</h3>
+  <h3 class="sub reveal" id="kraft">KRaft</h3>
   <p class="reveal">Kafka historically depended on an entirely separate system, ZooKeeper, to handle cluster consensus — electing the controller, storing metadata, tracking broker liveness. That meant operating two distributed systems to run one Kafka cluster. <strong>KRaft</strong> (KIP-500) removed that external dependency by implementing an internal Raft-based controller quorum directly inside Kafka itself, storing cluster metadata in its own internal log. KRaft is the current, production-default mode in modern Kafka — ZooKeeper support was fully removed as of Kafka 4.0, making KRaft not an emerging alternative but the only supported path going forward.</p>
 
-  <h3 class="sub reveal">Diagnosing common bottlenecks</h3>
+  <h3 class="sub reveal" id="diagnosing-common-bottlenecks">Diagnosing common bottlenecks</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Symptom</th><th>Likely cause</th></tr></thead>
@@ -1759,7 +1786,7 @@ producer.initTransactions();
     </table>
   </div>
 
-  <h3 class="sub reveal">Key metrics to watch</h3>
+  <h3 class="sub reveal" id="key-metrics-to-watch">Key metrics to watch</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Metric</th><th>Why it's watched</th></tr></thead>
@@ -1775,7 +1802,7 @@ producer.initTransactions();
 
   <p class="reveal">Everything above is about keeping a cluster healthy and fast — it deliberately says nothing about keeping it <em>secured</em>. Authenticating who's allowed to connect, encrypting traffic between clients and brokers, and controlling which principals can read or write which topics (SASL, mTLS, ACLs) is its own substantial topic, covered in full in the <strong>Security &amp; Auth module</strong> rather than repeated here.</p>
 
-  <h3 class="sub reveal">Kafka vs. RabbitMQ vs. Pulsar</h3>
+  <h3 class="sub reveal" id="kafka-vs-rabbitmq-vs-pulsar">Kafka vs. RabbitMQ vs. Pulsar</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th></th><th>Kafka</th><th>RabbitMQ</th><th>Pulsar</th></tr></thead>
@@ -1869,88 +1896,88 @@ producer.initTransactions();
 
   <div class="iq-group-label">Internals &amp; Why</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-01">
     <summary><span class="iq-num">01</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does acks=all wait on the ISR specifically, rather than requiring an acknowledgment from literally every replica of the partition?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Waiting on every replica that exists — rather than every replica that's currently trustworthy — would mean a single slow, GC-paused, or network-partitioned follower could stall every future write on that partition indefinitely, since it would never be able to catch up while blocking new writes at the same time. The ISR mechanism separates "replicas that physically exist" from "replicas confirmed caught up within replica.lag.time.max.ms," and acks=all only depends on the latter set. A lagging follower simply drops out of the ISR (and out of what acks=all waits on) rather than blocking progress, and rejoins automatically once it catches back up. This is precisely what lets Kafka absorb ordinary transient follower slowness without treating it as a full outage, while min.insync.replicas still guards against the ISR shrinking too far to trust.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-02">
     <summary><span class="iq-num">02</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why is Kafka able to sustain very high throughput despite persisting every single record to disk before it's considered written?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Several design choices stack together here. Writes are purely sequential appends to the currently active segment file, which run at speeds close to memory even on spinning disks — Kafka never does random-access writes. Reads are served from the operating system's page cache far more often than from the physical disk, and when data does need to move to a consumer, Kafka uses zero-copy transfer (sendfile) straight from the page cache to the network socket, skipping an extra copy through application memory entirely. On top of that, producers batch many records per request and typically compress those batches, trading a little CPU for dramatically less network and disk I/O. None of these individually would be enough, but together they let Kafka treat "durable" and "fast" as compatible rather than opposing goals.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-03">
     <summary><span class="iq-num">03</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does the high watermark exist at all — why not just let consumers read whatever the leader has most recently appended?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>A record the leader has written but hasn't yet replicated to the full ISR is not yet safe — if the leader dies before that replication completes, a newly elected leader (promoted from the ISR) might never have received that record at all, and it would simply vanish. If consumers were allowed to read that record before it was safely replicated, they could observe data that a failover then makes disappear, which is a much harder inconsistency for downstream systems to reason about than "the data just hasn't arrived yet." The high watermark — the highest offset replicated to every ISR member — is the boundary past which a record is guaranteed durable even through a leader failure, so capping consumer reads there guarantees consumers never observe something that could later un-happen.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-04">
     <summary><span class="iq-num">04</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does the idempotent producer need both a Producer ID (PID) and a per-partition sequence number, instead of just tagging each message with a random unique ID?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>A random unique ID per message would let the broker detect an exact duplicate, but it wouldn't let the broker enforce anything about <em>order</em> — it would only know "have I seen this exact ID before," not "is this the next thing I should accept from this producer." A strictly increasing, per-(PID, partition) sequence number gives the broker both pieces of information at once: it can reject an already-seen sequence number as a duplicate, and it can reject an out-of-order sequence number arriving too early, forcing retries to land in the correct order even when several requests are in flight simultaneously. The PID scopes that sequence space to one producer session, so two independent producers' sequence numbers never collide or interfere with each other's ordering.</p></div>
   </details>
 
   <div class="iq-group-label">Trade-offs</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-05">
     <summary><span class="iq-num">05</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">How would you go about choosing a topic's partition count, and what do you actually give up by simply over-provisioning it "to be safe"?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>A reasonable starting point is target throughput divided by the throughput a single partition can realistically sustain, then rounded up to at least the maximum number of consumers you'd ever expect running in one group at once, since useful parallelism caps out exactly at the partition count. Over-provisioning isn't free, though: every partition costs an open file handle and some memory on every broker holding a replica of it, and a broker failure takes longer to recover from the more partition leaders it's responsible for re-electing — so a topic with far more partitions than it needs quietly adds operational overhead and slower failover, in exchange for parallelism headroom that may never actually get used. And because growing partition count later remaps keys and can break existing ordering guarantees, the practical answer is sizing deliberately up front rather than defaulting to "as many as possible."</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-06">
     <summary><span class="iq-num">06</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">acks=all gives the strongest durability guarantee Kafka offers. Why wouldn't every producer simply always use it?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>acks=all trades latency for durability — every write has to wait for every current ISR member to confirm replication before the producer is told it succeeded, which is strictly slower than acks=1 (leader-only) or acks=0 (fire-and-forget). For genuinely high-volume, loss-tolerant data — metrics samples, non-critical telemetry, certain kinds of logs — that extra latency, multiplied across enormous message volume, can be a real cost with limited actual benefit, since losing an occasional sample doesn't meaningfully hurt the aggregate picture. The right acks setting is a direct reflection of how much a specific data stream's individual records actually matter, not a single universal best answer.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-07">
     <summary><span class="iq-num">07</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Cooperative/incremental rebalancing is clearly less disruptive than eager rebalancing. Why wasn't it the default from the very beginning?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Cooperative rebalancing is genuinely more complex to implement correctly — computing the minimal set of partitions that actually need to move, coordinating a two-phase revoke-then-assign protocol, and handling all the edge cases where that minimal-change computation itself needs to be safe under concurrent membership changes, is a harder problem than "stop everyone, recompute from scratch, restart everyone." The simpler eager protocol was a reasonable, correct starting point while the ecosystem matured; cooperative rebalancing arrived once the added complexity had been proven out, and eventually became the default once it was clearly the better trade-off for the vast majority of real workloads, where minimizing processing interruption matters far more than protocol simplicity.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-08">
     <summary><span class="iq-num">08</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">When would you choose a compacted topic over a plain delete-policy topic with a long retention period, given compaction seems to throw away more historical detail?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Compaction is the right choice when what you actually care about is "current state per key" rather than "the full history of how that state changed" — a changelog of a user's current profile fields, or a Kafka Streams state store, doesn't need every past value, only the latest one, and compaction lets that topic stay bounded in size indefinitely regardless of how many updates occur. A long-retention delete-policy topic is the better fit when the history itself is the point — an audit trail, an event-sourced ledger, anything that needs to be replayed in full to reconstruct how state arrived where it is. The trade-off is bounded size and instant "current value" lookups (compaction) versus complete historical fidelity (delete with long retention) — and compact,delete exists specifically for cases that want compaction's bounded-size property without retaining data truly forever.</p></div>
   </details>
 
   <div class="iq-group-label">Traps</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-09">
     <summary><span class="iq-num">09</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A producer with max.in.flight.requests.per.connection=5 and enable.idempotence=false notices that records occasionally land out of order on disk after a transient network failure. Diagnose exactly what's happening.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>With 5 requests allowed in flight at once, several batches can be outstanding to the broker simultaneously. If an earlier batch (say, B1, meant for offsets 100-102) hits a transient failure and needs to be retried, while a later batch sent concurrently (B2, meant for 103-105) succeeds on its first attempt, B2 lands on disk before B1's retry does — flipping the on-disk order to [B2][B1] even though B1 was logically supposed to come first. Without idempotence, the broker has no concept of "which batch was supposed to come first," so it simply appends whatever arrives, in arrival order. The fix is enabling the idempotent producer, which tags every batch with a producer ID and a strictly increasing per-partition sequence number, so the broker can reject an out-of-order arrival and force the correct order — without needing to fall back to max.in.flight.requests.per.connection=1, which would fix ordering too, but at a real throughput cost.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-10">
     <summary><span class="iq-num">10</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A team assumes a consumer-group "rebalance" and a "partition reassignment" (via kafka-reassign-partitions) are just two names for the same operation. Where does this assumption break down, and what actually goes wrong if it's acted on?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>A rebalance is a lightweight, client-side event that only changes which consumer within a group owns which partition — no data moves anywhere, since the partition's replicas stay exactly where they are on their brokers. A reassignment triggered via kafka-reassign-partitions is a heavyweight, server-side, admin-initiated operation that physically copies a partition's replica data from one broker to another. If a team treats these as interchangeable — say, expecting a reassignment to complete as fast as a rebalance, or expecting a rebalance to actually rebalance disk usage across brokers — they'll be caught off guard: a reassignment of any real size can take significant time and consume meaningful network/disk bandwidth while it copies data, and a plain rebalance does absolutely nothing to address uneven broker-level storage or replica placement.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-11">
     <summary><span class="iq-num">11</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A team enables enable.idempotence=true and tells stakeholders the pipeline now has full exactly-once processing, end to end, including its final database write. What's the gap in that claim?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>The idempotent producer only deduplicates one specific thing: a single producer's own retries writing to a single partition. It does nothing about a consumer crashing after processing a record but before committing its offset, which still causes reprocessing and duplicate handling on the consumer side. It also does nothing about atomically writing to multiple partitions or topics as one unit — that requires transactions on top of idempotence. And critically, it says nothing at all about the final database write, or any other external side effect — Kafka's exactly-once guarantees stop at Kafka's own boundary, so the database write needs its own idempotency mechanism (an idempotent upsert, a transactional outbox, or storing the processed offset in the same database transaction) to actually be safe against duplicates.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-12">
     <summary><span class="iq-num">12</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A consumer occasionally takes longer than max.poll.interval.ms to process a batch, gets kicked from its group, and the team's fix is simply raising max.poll.interval.ms to a very large value. What's wrong with that fix?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Raising the timeout doesn't fix the underlying reason processing is slow — it just gives slow processing more room to hide, and it directly delays how quickly Kafka can detect a consumer that's genuinely stuck (deadlocked, crashed, or otherwise never coming back), since the group now has to wait much longer before deciding to reassign that consumer's partitions. The more durable fix addresses the actual cause: reducing max.poll.records so each batch is smaller and finishes faster, or moving genuinely slow work (an external API call, heavy computation) off the poll loop entirely so poll() gets called again promptly. Raising the timeout is sometimes a reasonable stopgap, but treating it as the actual solution just trades a visible rebalance-and-reprocess problem for a much slower failure-detection problem.</p></div>
   </details>
 
   <div class="iq-group-label">Scenario</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-13">
     <summary><span class="iq-num">13</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Consumer lag on a critical topic has been climbing steadily for the last hour. Walk through how you'd diagnose it.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Start by confirming this is a real trend and not noise — check the lag graph over the full hour rather than a single snapshot, and compare it against the topic's incoming write rate over the same window, since lag climbing because writes suddenly doubled is a very different problem than lag climbing because processing quietly got slower. If the write rate is steady but lag still climbs, look at per-partition lag specifically — even lag concentrated on one or two partitions (a hot key, uneven partitioning) looks different from lag spread evenly across all of them (a genuine processing slowdown or too few partitions for the current load). Check whether rebalances have been happening frequently around the same window, since a rebalance storm (often caused by processing exceeding max.poll.interval.ms) directly causes lag to climb by repeatedly pausing and reassigning partitions. Finally, look at what the consumer is actually doing per record — a downstream dependency (database, external API) that's gotten slower is one of the most common root causes, and it shows up as increased per-record processing time rather than anything visible in Kafka's own metrics.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-14">
     <summary><span class="iq-num">14</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">On a topic with RF=3 and min.insync.replicas=2, a follower broker fails, and some time later the leader broker also fails. Walk through what happens to reads, writes, and the data at each stage.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>When the follower fails, the ISR shrinks from 3 down to 2 — still at or above min.insync.replicas, so nothing changes for producers or consumers: writes continue succeeding under acks=all, reads continue normally, and there's zero data loss. When the leader then fails too, Kafka runs a clean leader election from the remaining ISR, promoting the surviving replica — every record that was ever committed survives this, since committing required replication to every ISR member at the time, including the one now being promoted. But the ISR is now down to just that one promoted broker, size 1, which is below min.insync.replicas=2 — so while reads of existing data continue working fine, new acks=all writes are rejected outright with a NotEnoughReplicas-style error until at least one more replica catches up and rejoins the ISR. The system fails closed rather than silently accepting writes it can't back up to the configured durability level, and full write availability only returns once the ISR grows back to meet the minimum.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-15">
     <summary><span class="iq-num">15</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">You need to remove a field from a topic's schema that's no longer populated by any producer. What compatibility mode could block this, and how would you make the change safely?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Removing a field is actually a safe change under BACKWARD compatibility (the default) — a new schema without the field can still read old records that happen to contain it, since it simply ignores the extra data. It's FORWARD compatibility that this could threaten: an old schema expecting that field to be present, reading a new record that no longer has it, may fail or need a sensible default depending on the exact schema language's rules. Practically, the safe path is checking whether any still-running consumer is pinned to an old schema version expecting that field, deploying all consumers to a version that no longer requires it first, confirming no producers are actively writing under the old schema anymore, and only then registering the new schema without the field — letting the registry's compatibility check itself be the final guardrail rather than assuming the removal is risk-free just because BACKWARD compatibility technically permits it.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-16">
     <summary><span class="iq-num">16</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A financial ledger service needs to consume an event, write a row to its own database, and produce a confirmation event to another topic — with a hard requirement that all three either happen together or not at all. How would you build this on Kafka?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>The Kafka-to-Kafka half of this — consuming the input event and atomically producing the confirmation event, together with committing the input offset — is exactly what Kafka transactions provide: wrapping the produce calls and sendOffsetsToTransaction in a single beginTransaction/commitTransaction block guarantees they land together or not at all, and downstream consumers reading with isolation.level=read_committed never see a partially-committed transaction. The database write is the part transactions can't reach, since it's an entirely external system — the standard pattern there is the transactional outbox: write the ledger row and an "outbox" record representing the confirmation event in one single database transaction, then have a separate relay (or Debezium-style CDC connector) pick up that outbox row and publish it to Kafka. That turns the true atomic unit into "database write + outbox row," with Kafka publication happening reliably afterward — rather than trying to make one distributed transaction span both a database and Kafka directly, which neither system is really built to do.</p></div>
   </details>
@@ -2022,6 +2049,8 @@ producer.initTransactions();
 
 </main>
 
+<script src="search-index.js"></script>
+<script src="site-search.js"></script>
 <script>
 (function(){
 "use strict";

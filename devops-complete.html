@@ -388,12 +388,39 @@ noscript .reveal{opacity:1;}
   .navlink{font-size:.8rem;padding:.45rem .7rem;}
   .contents-btn{font-size:.8rem;padding:.45rem .8rem;}
 }
+/* ---- site search ---- */
+.site-search{position:relative;flex:1;max-width:420px;margin:0 1.2rem;}
+.site-search__box{display:flex;align-items:center;gap:.5rem;background:var(--surface-2);border-radius:var(--r-pill);padding:.5rem .9rem;transition:background var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);}
+.site-search__box:focus-within{background:var(--surface);box-shadow:0 0 0 2px var(--accent);}
+.site-search__icon{flex:none;width:15px;height:15px;color:var(--muted);}
+.site-search__input{flex:1;min-width:0;border:none;background:none;outline:none;font-family:var(--font-body);font-size:.87rem;color:var(--ink);}
+.site-search__input::placeholder{color:var(--muted);}
+.site-search__kbd{flex:none;font-family:var(--font-mono);font-size:.68rem;color:var(--muted);background:var(--surface);border-radius:5px;padding:.1rem .4rem;box-shadow:var(--shadow-sm);}
+.site-search__results{position:absolute;top:calc(100% + 8px);left:0;right:0;max-height:min(70vh,480px);overflow-y:auto;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:.5rem;display:none;z-index:50;}
+.site-search.is-open .site-search__results{display:block;}
+.site-search__empty{padding:1rem;font-size:.85rem;color:var(--muted);text-align:center;}
+.site-search__item{display:block;padding:.65rem .8rem;border-radius:10px;text-decoration:none;color:inherit;cursor:pointer;}
+.site-search__item:hover,.site-search__item.is-active{background:var(--tint);}
+.site-search__item-title{font-weight:700;font-size:.88rem;display:block;}
+.site-search__item-meta{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:.4rem;margin-top:.2rem;}
+.site-search__item-type{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;background:var(--surface-2);padding:.1rem .4rem;border-radius:999px;}
+.site-search mark{background:var(--tint-strong);color:inherit;border-radius:3px;padding:0 .1em;}
+@media (max-width:820px){.site-search{order:3;flex-basis:100%;max-width:none;margin:.6rem 0 0;}}
+[id]{scroll-margin-top:90px;}
 </style>
 <noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript>
 
 <header class="topnav">
   <div class="topnav__inner">
     <a class="wordmark" href="index.html#devops"><span class="wordmark__mark">D</span>DevOps</a>
+    <div class="site-search" id="siteSearch">
+      <div class="site-search__box">
+        <svg class="site-search__icon" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" class="site-search__input" id="siteSearchInput" placeholder="Search any topic or question…" autocomplete="off" aria-label="Search notes" aria-expanded="false" aria-controls="siteSearchResults">
+        <span class="site-search__kbd">/</span>
+      </div>
+      <div class="site-search__results" id="siteSearchResults"></div>
+    </div>
     <nav class="navlinks">
       <a class="navlink" href="index.html#devops">← All topics</a>
       <div class="contents" id="contents">
@@ -468,7 +495,7 @@ noscript .reveal{opacity:1;}
     <div class="callout__body"><b class="h">"You build it, you run it."</b><p>The line, popularized by Amazon's Werner Vogels, is the shortest definition of DevOps that actually works. When the people who write the code also carry the pager for it, incentives align automatically: nobody ships a lazy shortcut they'll be woken up for at 3am. DevOps is not a tool or a job title alone — Jenkins, Docker, and Kubernetes <em>implement</em> DevOps, but without this shift in ownership, the tools alone don't deliver DevOps outcomes.</p></div>
   </div>
 
-  <h3 class="sub reveal">The infinity loop — a lifecycle with no finish line</h3>
+  <h3 class="sub reveal" id="the-infinity-loop-a-lifecycle-with-no-finish-line">The infinity loop — a lifecycle with no finish line</h3>
   <p class="reveal">Traditional software delivery drew a straight line from requirements to a big-bang release. DevOps draws a loop instead, because the whole point is that operating the system in production generates the information that shapes what gets planned next.</p>
 
   <div class="panel diagram-panel reveal">
@@ -492,7 +519,7 @@ noscript .reveal{opacity:1;}
     <p class="diagram-cap">The loop closes with continuous feedback flowing from Monitor back into Plan — production reality is what tells you what to build next, not the other way around. Nothing here is a one-way pipe; every stage feeds the next one <em>and</em> feeds back into the whole.</p>
   </div>
 
-  <h3 class="sub reveal">CALMS and the Three Ways</h3>
+  <h3 class="sub reveal" id="calms-and-the-three-ways">CALMS and the Three Ways</h3>
   <p class="reveal">CALMS is the checklist people use to tell whether an organization has actually adopted DevOps or just bought the tools.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -508,7 +535,7 @@ noscript .reveal{opacity:1;}
   </div>
   <p class="reveal">Underneath CALMS sits <b>the Three Ways</b>, the operating philosophy from <i>The Phoenix Project</i>: (1) <b>Flow</b> — optimize the entire path from code to customer, not any one team's local throughput; (2) <b>Amplify feedback loops</b> — make problems visible immediately, as close to the source as possible, instead of discovering them weeks later; (3) <b>Continuous experimentation and learning</b> — treat every incident as a chance to improve the system, via blameless postmortems, rather than a chance to assign blame.</p>
 
-  <h3 class="sub reveal">DORA metrics — measuring whether it's actually working</h3>
+  <h3 class="sub reveal" id="dora-metrics-measuring-whether-it-s-actually-working">DORA metrics — measuring whether it's actually working</h3>
   <p class="reveal">Culture is hard to put a number on, so the DevOps Research and Assessment (DORA) team identified four metrics that correlate strongly with high-performing engineering organizations.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -526,7 +553,7 @@ noscript .reveal{opacity:1;}
     <div class="callout__body"><b class="h">Elite teams don't trade speed for stability</b><p>Deployment Frequency and Lead Time measure <em>velocity</em>. Change Failure Rate and MTTR measure <em>stability</em>. Intuitively you'd expect a team that deploys constantly to break things more often — but the DORA research shows the opposite: elite performers score high on <em>both</em> axes simultaneously. Small, frequent, automated, well-tested changes are inherently lower-risk than large, rare, manually-verified ones. Speed and stability aren't a trade-off once automation is strong enough — they're the same lever.</p></div>
   </div>
 
-  <h3 class="sub reveal">Shift-left and GitOps — introduced now, expanded later</h3>
+  <h3 class="sub reveal" id="shift-left-and-gitops-introduced-now-expanded-later">Shift-left and GitOps — introduced now, expanded later</h3>
   <p class="reveal">Two ideas recur constantly through the rest of this module, so it's worth naming them early even though each gets its own full chapter later.</p>
   <div class="duo reveal">
     <div class="panel">
@@ -585,7 +612,7 @@ noscript .reveal{opacity:1;}
 
   <p class="reveal">DevOps work is Linux work. CI runners, Kubernetes nodes, cloud VMs, and containers are overwhelmingly Linux, so fluency with the filesystem, the core command set, and shell scripting isn't optional trivia — it's the substrate everything else in this module runs on top of.</p>
 
-  <h3 class="sub reveal">The filesystem hierarchy</h3>
+  <h3 class="sub reveal" id="the-filesystem-hierarchy">The filesystem hierarchy</h3>
   <div class="panel diagram-panel reveal">
     <ul class="soft-tree">
       <li><span class="k">/</span><span class="d">Root of the filesystem — everything hangs off this</span>
@@ -602,7 +629,7 @@ noscript .reveal{opacity:1;}
     <p class="diagram-cap">None of this is arbitrary: config is separated from logs, which is separated from binaries, which is separated from scratch space — so backup, log rotation, and permission policies can each target exactly the directory they care about.</p>
   </div>
 
-  <h3 class="sub reveal">Essential commands by category</h3>
+  <h3 class="sub reveal" id="essential-commands-by-category">Essential commands by category</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Category</th><th>Commands</th></tr></thead>
@@ -621,7 +648,7 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">File permissions, precisely</h3>
+  <h3 class="sub reveal" id="file-permissions-precisely">File permissions, precisely</h3>
   <p class="reveal">File permissions are a perennial interview favorite because the notation looks cryptic until you decompose it once.</p>
   <pre class="reveal"><code>-rwxr-xr--   1 user group ...
  │└┬┘└┬┘└┬┘
@@ -636,7 +663,7 @@ Numeric shorthand: r=4, w=2, x=1 — sum each triad
   chmod 644 file.txt  # common for regular files (owner writes, everyone reads)
   chown user:group file   # change owner and group in one shot</code></pre>
 
-  <h3 class="sub reveal">Pipes, redirection, and a real one-liner</h3>
+  <h3 class="sub reveal" id="pipes-redirection-and-a-real-one-liner">Pipes, redirection, and a real one-liner</h3>
   <pre class="reveal"><code>cmd1 | cmd2      # pipe: stdout of cmd1 becomes stdin of cmd2
 cmd > file       # redirect stdout, overwrite
 cmd >> file      # redirect stdout, append
@@ -662,7 +689,7 @@ cmd > out 2>&1   # both stdout and stderr into one file</code></pre>
     <p class="diagram-cap"><code>cat access.log | grep "500" | awk '{print $1}' | sort | uniq -c | sort -rn | head</code> — seven single-purpose commands, none aware the others exist, producing an answer none of them could produce alone.</p>
   </div>
 
-  <h3 class="sub reveal">Process &amp; signal handling</h3>
+  <h3 class="sub reveal" id="process-signal-handling">Process &amp; signal handling</h3>
   <div class="duo reveal">
     <div class="panel">
       <h4><span class="sw"></span>SIGTERM (15)</h4>
@@ -683,7 +710,7 @@ cmd > out 2>&1   # both stdout and stderr into one file</code></pre>
   </div>
   <p class="reveal">This distinction is exactly why "graceful shutdown" matters for zero-downtime deploys (covered in Chapter 4): an orchestrator that sends SIGKILL immediately gives an in-flight request no chance to finish, while SIGTERM plus a grace period lets the process drain connections before it dies.</p>
 
-  <h3 class="sub reveal">Writing safer shell scripts</h3>
+  <h3 class="sub reveal" id="writing-safer-shell-scripts">Writing safer shell scripts</h3>
   <pre class="reveal"><code>#!/bin/bash
 set -euo pipefail
 # -e: exit immediately if any command fails
@@ -751,7 +778,7 @@ fi</code></pre>
     <div class="callout__body"><b class="h">Git internals live elsewhere</b><p>Distributed VCS internals, branching strategies, and merge-vs-rebase mechanics are covered in full depth in the dedicated Git module. This is deliberately a fast, DevOps-context recap — just enough to talk about how source control feeds the pipeline.</p></div>
   </div>
 
-  <h3 class="sub reveal">Git, in one breath</h3>
+  <h3 class="sub reveal" id="git-in-one-breath">Git, in one breath</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Concept</th><th>One-liner</th></tr></thead>
@@ -764,7 +791,7 @@ fi</code></pre>
     </table>
   </div>
 
-  <h3 class="sub reveal">Build tools across ecosystems</h3>
+  <h3 class="sub reveal" id="build-tools-across-ecosystems">Build tools across ecosystems</h3>
   <p class="reveal">Every ecosystem has its own way of turning source into a runnable artifact, but they all answer the same three questions: what are the dependencies, how do I compile/bundle, and how do I run tests.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -798,7 +825,7 @@ fi</code></pre>
     <p class="diagram-cap">Maven's lifecycle is strictly ordered — running <code>mvn verify</code> silently runs validate, compile, test, and package first. This is why <code>mvn deploy</code> alone is a complete build-and-publish command.</p>
   </div>
 
-  <h3 class="sub reveal">Enforcing a coverage gate at verify</h3>
+  <h3 class="sub reveal" id="enforcing-a-coverage-gate-at-verify">Enforcing a coverage gate at verify</h3>
   <p class="reveal">That <code>verify</code> phase is also the natural place to enforce a quality gate, not just run integration checks. The <code>jacoco-maven-plugin</code> instruments test execution to measure line and branch coverage, and its <code>check</code> goal is typically bound directly to the <code>verify</code> phase with a rule enforcing a minimum threshold — commonly <code>&lt;minimum&gt;0.80&lt;/minimum&gt;</code> line coverage. Bind it there and coverage regressions get caught the same way a failing test would: the build fails automatically the moment coverage drops below the configured line, before an artifact is ever produced.</p>
   <pre class="reveal"><code>&lt;plugin&gt;
   &lt;groupId&gt;org.jacoco&lt;/groupId&gt;
@@ -824,14 +851,14 @@ fi</code></pre>
   &lt;/executions&gt;
 &lt;/plugin&gt;</code></pre>
 
-  <h3 class="sub reveal">Artifact repositories — why "build once"</h3>
+  <h3 class="sub reveal" id="artifact-repositories-why-build-once">Artifact repositories — why "build once"</h3>
   <p class="reveal">An <b>artifact repository</b> — Nexus, JFrog Artifactory, or your Git host's own registry (GitHub Packages, GitLab Package Registry, GHCR for images) — stores versioned, immutable build outputs: JARs, npm packages, Docker images. The entire point is a single principle: <b>build once, promote the same artifact through every environment.</b></p>
   <div class="callout callout--tip reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2.5l2.1 5.9 5.9 2.1-5.9 2.1L12 18.5l-2.1-5.9-5.9-2.1 5.9-2.1L12 2.5z" fill="currentColor"/></svg></div>
     <div class="callout__body"><b class="h">Never rebuild between environments</b><p>If staging and production are each built from source separately, you're not testing the artifact you'll actually ship — you're testing a sibling of it. A different dependency resolution, a flaky network fetch, or a compiler patch version can quietly change behavior between the two builds. That's precisely how teams end up saying "it worked in staging" — because staging and production were never running the same bytes. Build the artifact exactly once, tag it immutably (a commit SHA or a semantic version, never a moving tag like <code>latest</code>), and push that identical artifact through dev → staging → prod. Artifact repos also cache dependencies, which is most of why CI gets faster once one is in place.</p></div>
   </div>
 
-  <h3 class="sub reveal">Publishing the artifact — snapshots vs releases</h3>
+  <h3 class="sub reveal" id="publishing-the-artifact-snapshots-vs-releases">Publishing the artifact — snapshots vs releases</h3>
   <p class="reveal">Publishing is declared in the build file, not assumed. Maven's <code>distributionManagement</code> block tells <code>mvn deploy</code> exactly where the artifact goes, and splits that destination in two: a <b>snapshot repository</b> for in-progress builds — a version ending in <code>-SNAPSHOT</code> is mutable, so re-deploying the same snapshot version overwrites it — and a <b>release repository</b> for finished versions, which is immutable the instant it's published; the same version number can never be re-deployed there. That immutability is exactly the guarantee "build once, promote everywhere" depends on.</p>
   <pre class="reveal"><code>&lt;distributionManagement&gt;
   &lt;snapshotRepository&gt;
@@ -844,7 +871,7 @@ fi</code></pre>
   &lt;/repository&gt;
 &lt;/distributionManagement&gt;</code></pre>
 
-  <h3 class="sub reveal">Semantic versioning</h3>
+  <h3 class="sub reveal" id="semantic-versioning">Semantic versioning</h3>
   <p class="reveal">Semantic versioning gives every artifact a version number that communicates what kind of change it contains: <code>MAJOR.MINOR.PATCH</code>. Bump <b>MAJOR</b> for breaking/incompatible changes, <b>MINOR</b> for backward-compatible new features, and <b>PATCH</b> for backward-compatible bug fixes. Automated tooling — dependency bots, deployment gates — can make decisions purely from that number (e.g., auto-merge patch bumps, require manual review on major bumps), which is only possible because the convention is agreed and enforced.</p>
 
   <div class="mini-quiz reveal">
@@ -882,7 +909,7 @@ fi</code></pre>
     </div>
   </div>
 
-  <h3 class="sub reveal">CI vs Continuous Delivery vs Continuous Deployment</h3>
+  <h3 class="sub reveal" id="ci-vs-continuous-delivery-vs-continuous-deployment">CI vs Continuous Delivery vs Continuous Deployment</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Term</th><th>Precisely what it means</th></tr></thead>
@@ -895,7 +922,7 @@ fi</code></pre>
   </div>
   <p class="reveal">The distinction that trips people up: Continuous Delivery is <em>capable</em> of deploying to prod at any time, it just chooses not to without a human sign-off. Continuous Deployment removes that choice entirely — which only works if your automated test suite, security scans, and rollback mechanisms are trustworthy enough to replace human judgment.</p>
 
-  <h3 class="sub reveal">A full pipeline, stage by stage</h3>
+  <h3 class="sub reveal" id="a-full-pipeline-stage-by-stage">A full pipeline, stage by stage</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>Checkout</b><span>pull the commit</span></div>
@@ -924,7 +951,7 @@ fi</code></pre>
     <p class="diagram-cap">Continuous Delivery and Continuous Deployment run this <em>exact same pipeline</em> — the only difference is whether "Approve" is a person clicking a button or an automated policy that passes through unattended.</p>
   </div>
 
-  <h3 class="sub reveal">Deployment strategies</h3>
+  <h3 class="sub reveal" id="deployment-strategies">Deployment strategies</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Strategy</th><th>How it works</th><th>Trade-off</th></tr></thead>
@@ -938,7 +965,7 @@ fi</code></pre>
     </table>
   </div>
 
-  <h3 class="sub reveal">Getting to zero downtime</h3>
+  <h3 class="sub reveal" id="getting-to-zero-downtime">Getting to zero downtime</h3>
   <p class="reveal">"Zero-downtime deployment" isn't one setting you flip — it's several independent mechanisms that all have to hold at once.</p>
   <div class="duo reveal">
     <div class="panel">
@@ -994,7 +1021,7 @@ fi</code></pre>
     </div>
   </div>
 
-  <h3 class="sub reveal">Controller/agent architecture</h3>
+  <h3 class="sub reveal" id="controller-agent-architecture">Controller/agent architecture</h3>
   <div class="panel diagram-panel reveal">
     <ul class="soft-tree">
       <li><span class="k">Controller</span><span class="d">Schedules jobs, serves the UI, hosts plugins — the brain, not a build box</span>
@@ -1008,7 +1035,7 @@ fi</code></pre>
     <p class="diagram-cap">Triggers that kick off a job: an SCM webhook, polling, a cron schedule, a manual click, or an upstream job finishing. The controller only orchestrates — actual build work belongs on agents.</p>
   </div>
 
-  <h3 class="sub reveal">Pipeline as code — the Jenkinsfile</h3>
+  <h3 class="sub reveal" id="pipeline-as-code-the-jenkinsfile">Pipeline as code — the Jenkinsfile</h3>
   <p class="reveal">A <code>Jenkinsfile</code> checked into the repo alongside the application code turns the pipeline itself into version-controlled, reviewable, reproducible artifact — instead of a fragile pile of clicks in a web UI. Jenkins supports two syntaxes: <b>Declarative</b>, structured and opinionated (the recommended default), and <b>Scripted</b>, full Groovy with more flexibility but a much steeper maintenance cost. Most teams write Declarative pipelines and reach for Groovy only inside shared libraries.</p>
 
   <pre class="reveal"><code>pipeline {
@@ -1084,7 +1111,7 @@ fi</code></pre>
     </div>
   </div>
 
-  <h3 class="sub reveal">The workflow / job / step / runner / matrix model</h3>
+  <h3 class="sub reveal" id="the-workflow-job-step-runner-matrix-model">The workflow / job / step / runner / matrix model</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
@@ -1112,7 +1139,7 @@ fi</code></pre>
     <p class="diagram-cap">A single push can fan out into dozens of parallel job runs — the matrix multiplies coverage without multiplying YAML.</p>
   </div>
 
-  <h3 class="sub reveal">GitHub Actions example</h3>
+  <h3 class="sub reveal" id="github-actions-example">GitHub Actions example</h3>
   <pre class="reveal"><code># .github/workflows/ci.yml
 name: CI
 on:
@@ -1130,7 +1157,7 @@ jobs:
         run: docker build -t ghcr.io/org/app:${{ github.sha }} .
         env: { TOKEN: '${{ secrets.GHCR_TOKEN }}' }</code></pre>
 
-  <h3 class="sub reveal">GitLab CI example</h3>
+  <h3 class="sub reveal" id="gitlab-ci-example">GitLab CI example</h3>
   <pre class="reveal"><code># .gitlab-ci.yml
 stages: [build, test, deploy]
 variables: { IMAGE: "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA" }
@@ -1157,7 +1184,7 @@ deploy:
     <div class="callout__body"><b class="h">Key the cache on the build file, not on nothing</b><p>A cache step only earns its keep if its key changes exactly when dependencies actually change. For Maven, cache <code>~/.m2/repository</code> keyed on <code>hashFiles('**/pom.xml')</code>; for Gradle, cache <code>~/.gradle/caches</code> keyed on <code>hashFiles('**/*.gradle*')</code>. Hashing the build file into the key means every commit that doesn't touch a dependency restores the same cache in seconds, and the cache invalidates itself automatically — no manual cache-busting required — the moment a dependency actually does change.</p></div>
   </div>
 
-  <h3 class="sub reveal">Jenkins vs a repo-native CI — when to choose which</h3>
+  <h3 class="sub reveal" id="jenkins-vs-a-repo-native-ci-when-to-choose-which">Jenkins vs a repo-native CI — when to choose which</h3>
   <div class="duo reveal">
     <div class="panel">
       <h4><span class="sw"></span>Jenkins</h4>
@@ -1216,7 +1243,7 @@ deploy:
 
   <p class="reveal"><b>Infrastructure as Code (IaC)</b> means defining infrastructure in version-controlled files instead of clicking consoles — reproducible, reviewable via pull request, auditable through Git history, and automatable in a pipeline. <b>Terraform</b> is the leading declarative, cloud-agnostic IaC tool: the same tool provisions AWS, Azure, GCP, or Kubernetes resources through provider plugins.</p>
 
-  <h3 class="sub reveal">The core workflow</h3>
+  <h3 class="sub reveal" id="the-core-workflow">The core workflow</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>init</b><span>download providers, set up backend</span></div>
@@ -1260,14 +1287,14 @@ output "public_ip" {
     </table>
   </div>
 
-  <h3 class="sub reveal">State — the concept that decides whether Terraform is safe</h3>
+  <h3 class="sub reveal" id="state-the-concept-that-decides-whether-terraform-is-safe">State — the concept that decides whether Terraform is safe</h3>
   <p class="reveal">Terraform doesn't inspect your cloud account from scratch on every run — it keeps a <b>state file</b> (<code>terraform.tfstate</code>) that records exactly which real-world resource corresponds to which block of config. <code>plan</code> is only possible because state gives Terraform something concrete to diff against. Lose the state, or let it drift out of sync, and Terraform can no longer tell what it owns.</p>
   <div class="callout callout--warn reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" fill="none"/><path d="M12 7v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg></div>
     <div class="callout__body"><b class="h">State must be remote, locked, and never hand-edited</b><p>Store state remotely — an S3 bucket with a DynamoDB lock table, or Terraform Cloud — so the whole team applies against the same source of truth. Enable <b>state locking</b> so two people (or two CI runs) can never <code>apply</code> concurrently and corrupt it. Never commit <code>terraform.tfstate</code> to Git: it routinely contains plaintext secrets (database passwords, private keys) pulled from the resources it manages, and Git history is forever. And never hand-edit the state file directly — a manual typo can permanently desynchronize Terraform's model from reality, and the blast radius of "fixing" that afterward is enormous.</p></div>
   </div>
 
-  <h3 class="sub reveal">Ansible — configuring what Terraform provisions</h3>
+  <h3 class="sub reveal" id="ansible-configuring-what-terraform-provisions">Ansible — configuring what Terraform provisions</h3>
   <p class="reveal">Ansible automates server configuration, application deployment, and orchestration. It's <b>agentless</b> — it needs nothing installed on the target beyond SSH and Python — and <b>idempotent</b>: running the same playbook twice converges to the same state without unintended side effects the second time.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -1299,7 +1326,7 @@ output "public_ip" {
   <pre class="reveal"><code>ansible-playbook -i inventory playbook.yml
 ansible all -i inventory -m ping        # ad-hoc connectivity check</code></pre>
 
-  <h3 class="sub reveal">Terraform vs Ansible — provision vs configure</h3>
+  <h3 class="sub reveal" id="terraform-vs-ansible-provision-vs-configure">Terraform vs Ansible — provision vs configure</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th></th><th>Terraform</th><th>Ansible</th></tr></thead>
@@ -1350,7 +1377,7 @@ ansible all -i inventory -m ping        # ad-hoc connectivity check</code></pre>
 
   <p class="reveal">In a GitOps model, a Git repository — not a CI server, not a person's terminal — is the single source of truth for both infrastructure and application deployment state. Every intended change is a commit: bump an image tag, adjust a replica count, add a config value. Nothing is considered "deployed" unless it's declared in Git first.</p>
 
-  <h3 class="sub reveal">The reconciliation loop</h3>
+  <h3 class="sub reveal" id="the-reconciliation-loop">The reconciliation loop</h3>
   <p class="reveal">This is the same mental model as a Kubernetes controller, covered in depth in the Kubernetes module: observe the actual state, compare it against the desired state, take action to close the gap, and repeat forever. GitOps tools — <b>Argo CD</b> and <b>Flux</b> being the two dominant ones — run exactly this loop, except the "desired state" they compare against lives in a Git repo instead of only inside the Kubernetes API's own objects. If someone manually <code>kubectl edit</code>s a live Deployment, the next reconciliation pass detects the drift and reverts it back to whatever Git says — self-healing, not just self-deploying.</p>
 
   <div class="panel diagram-panel reveal">
@@ -1371,7 +1398,7 @@ ansible all -i inventory -m ping        # ad-hoc connectivity check</code></pre>
     <p class="diagram-cap">Top row: the traditional CI-push model, where the pipeline itself must hold credentials capable of writing to production. Bottom row: GitOps flips it — an agent that already lives inside the cluster pulls from Git and reconciles; no external system ever needs write access to the cluster at all.</p>
   </div>
 
-  <h3 class="sub reveal">Why teams adopt it</h3>
+  <h3 class="sub reveal" id="why-teams-adopt-it">Why teams adopt it</h3>
   <div class="callout callout--tip reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2.5l2.1 5.9 5.9 2.1-5.9 2.1L12 18.5l-2.1-5.9-5.9-2.1 5.9-2.1L12 2.5z" fill="currentColor"/></svg></div>
     <div class="callout__body"><b class="h">Auditable, revertable, and safer by construction</b><p>Every deploy is a Git commit, so the full history of "who deployed what, when, and why" is just <code>git log</code> — auditable for free. Rolling back a bad release is <code>git revert</code>, not a scramble to remember the previous Helm values. And because the agent pulls instead of being pushed to, no CI system ever needs standing credentials with write access to the production cluster — removing one of the highest-value targets an attacker could compromise.</p></div>
@@ -1427,7 +1454,7 @@ ansible all -i inventory -m ping        # ad-hoc connectivity check</code></pre>
     <p class="diagram-cap">A distinct scan type is bolted onto every stage of the same pipeline from Chapter 4 — security isn't an extra pipeline, it's checks embedded in the one you already have.</p>
   </div>
 
-  <h3 class="sub reveal">The scan types you'll actually configure</h3>
+  <h3 class="sub reveal" id="the-scan-types-you-ll-actually-configure">The scan types you'll actually configure</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Scan type</th><th>What it checks</th><th>Real tools</th></tr></thead>
@@ -1442,13 +1469,13 @@ ansible all -i inventory -m ping        # ad-hoc connectivity check</code></pre>
     </table>
   </div>
 
-  <h3 class="sub reveal">Secrets management</h3>
+  <h3 class="sub reveal" id="secrets-management">Secrets management</h3>
   <div class="callout callout--warn reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" fill="none"/><path d="M12 7v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg></div>
     <div class="callout__body"><b class="h">Never hardcode a secret, anywhere</b><p>Not in code, not in a Dockerfile, not in a YAML manifest. Use a dedicated secrets manager — HashiCorp Vault, a cloud provider's Secrets Manager, Kubernetes Secrets combined with encryption-at-rest and an external-secrets operator, or SOPS for encrypted files in Git. Rotate credentials on a schedule regardless of whether anything went wrong, inject them at runtime rather than bake them into images, and audit every access. If a secret ever does leak — in a log, a public repo, a Slack message — rotate it immediately; assume it is already compromised the moment it's visible anywhere outside the vault.</p></div>
   </div>
 
-  <h3 class="sub reveal">Core principles</h3>
+  <h3 class="sub reveal" id="core-principles">Core principles</h3>
   <p class="reveal">The deep cryptographic and authentication/authorization theory behind these principles — TLS handshakes, OAuth flows, token internals — is covered in the Security &amp; Auth module. Here, the focus is how they show up specifically in a CI/CD and infrastructure context.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -1498,21 +1525,21 @@ ansible all -i inventory -m ping        # ad-hoc connectivity check</code></pre>
     </div>
   </div>
 
-  <h3 class="sub reveal">Per-service pipelines</h3>
+  <h3 class="sub reveal" id="per-service-pipelines">Per-service pipelines</h3>
   <p class="reveal">In a microservices architecture, each service owns its own pipeline, its own artifact, and its own deploy cadence — the entire point of splitting a monolith is that teams can ship independently without coordinating a shared release train. Most teams pair this with trunk-based development (recapped in Chapter 3, detailed in the Git module): short-lived branches, frequent merges to main, feature flags instead of long-lived feature branches.</p>
   <p class="reveal">Independent deploys cut both ways, though: once every service ships on its own schedule, a test suite that spins up the whole system just to check two services still agree on a request/response shape becomes exactly the coordination bottleneck microservices were meant to remove. Contract testing (Pact, or Spring Cloud Contract for Spring-based services) replaces that by having each consumer and provider verify independently against a shared contract, in their own pipeline, with no other service running at all — full depth on writing and verifying contracts lives in the Testing module.</p>
 
-  <h3 class="sub reveal">Building and shipping the image</h3>
+  <h3 class="sub reveal" id="building-and-shipping-the-image">Building and shipping the image</h3>
   <p class="reveal">The mechanics of writing an efficient Dockerfile — multi-stage builds, layer caching, minimal base images — are covered in full in the Docker module. In the CI/CD context, the rule that matters most is the one from Chapter 3: build the image exactly once per commit, tag it immutably with the commit SHA (never a moving tag like <code>latest</code>), push it to the registry once, and let every environment after that reference the identical tag.</p>
   <p class="reveal">If the artifact itself never changes between environments, whatever <em>does</em> differ between them has to live outside it. For a Spring Boot service that's externalized configuration: the same JAR bundles an <code>application-{profile}.yml</code> for every environment, but only one is ever active, selected purely by a <code>SPRING_PROFILES_ACTIVE</code> environment variable set differently per environment — <code>staging</code> in the staging Helm values, <code>prod</code> in the production overlay. Nothing about the JAR changes between dev, staging, and prod; only the environment variable injected alongside it does, which is exactly what makes "build once, promote everywhere" practical instead of aspirational.</p>
 
-  <h3 class="sub reveal">Deploying to the cluster, the GitOps way</h3>
+  <h3 class="sub reveal" id="deploying-to-the-cluster-the-gitops-way">Deploying to the cluster, the GitOps way</h3>
   <p class="reveal">Deploying that image doesn't mean a pipeline step runs <code>kubectl apply</code> directly — as Chapter 8 covered, that's the push model, and it means the pipeline holds cluster credentials it doesn't need to. Instead, the pipeline's last step is a commit: bump the image tag in a Helm values file or Kustomize overlay inside the GitOps repo. Argo CD or Flux, already running inside the cluster, notices the change and reconciles it — deep mechanics of the orchestration layer itself (Deployments, Services, rollout mechanics) live in the Kubernetes module.</p>
 
-  <h3 class="sub reveal">Progressive delivery with metrics-based promotion</h3>
+  <h3 class="sub reveal" id="progressive-delivery-with-metrics-based-promotion">Progressive delivery with metrics-based promotion</h3>
   <p class="reveal">A canary release is only as good as the decision about whether to keep ramping it up. Tools like Argo Rollouts or Flagger automate that decision: during a canary window, they query live metrics — error rate, p99 latency, saturation — from the observability stack and automatically promote to 100% if the numbers hold, or automatically roll back if they don't. What "the numbers hold" actually means — SLIs, SLOs, error budgets, the golden signals — is the Observability module's territory; here, the point is just that the promotion decision is driven by real production metrics, not a five-minute manual glance at a dashboard.</p>
 
-  <h3 class="sub reveal">The full walkthrough: git push to production</h3>
+  <h3 class="sub reveal" id="the-full-walkthrough-git-push-to-production">The full walkthrough: git push to production</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>git push</b><span>feature branch</span></div>
@@ -1580,110 +1607,110 @@ ansible all -i inventory -m ping        # ad-hoc connectivity check</code></pre>
 
   <div class="iq-group-label">Internals &amp; Why</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-01">
     <summary><span class="iq-num">01</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Is DevOps a tool, a role, or a culture?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Primarily a culture and a set of practices, enabled by tools. Jenkins, Docker, Terraform, and Kubernetes implement DevOps, but buying all four doesn't produce DevOps outcomes on its own — the cultural shift is shared ownership ("you build it, you run it"), an automation-first mindset toward anything repeatable, and blameless feedback loops that treat incidents as learning opportunities rather than blame assignments. A team can run the exact same tool stack as an elite performer and still ship slowly and painfully if the organizational incentives still pit Dev against Ops. The tools are necessary but not sufficient; the culture is what actually moves the DORA metrics.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-02">
     <summary><span class="iq-num">02</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">What precisely distinguishes Continuous Integration, Continuous Delivery, and Continuous Deployment?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Continuous Integration is about the codebase: every commit is merged and automatically built and tested so integration problems surface within minutes rather than at a painful merge week later. Continuous Delivery extends that guarantee to the release itself — every change that passes CI is proven release-ready, auto-deployed to staging, but production requires a manual approval gate. Continuous Deployment removes that gate entirely: any change that clears all automated checks (tests, scans, quality gates) deploys straight to production with no human in the loop. The three form a strict progression of trust in automation — CI trusts your test suite to catch integration bugs, Delivery trusts it enough to make every build releasable, and Deployment trusts it enough to actually release without asking a person first.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-03">
     <summary><span class="iq-num">03</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does Terraform need a state file — why can't it just diff the config against real cloud infrastructure directly on every run?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Cloud APIs generally can't answer "which of the thousand resources in this account belong to this particular Terraform config" without something tracking that ownership — two different Terraform configs might both create S3 buckets, and nothing about a bucket's API representation says which config is supposed to manage it. State solves this by recording, per resource, the mapping from a config block to the exact resource ID it created, plus a cached copy of that resource's last-known attributes. That's what lets <code>plan</code> compute a diff in seconds instead of re-querying and reconciling every resource type from scratch, and it's what lets Terraform know to <em>destroy</em> something when you delete its block from config, rather than just ignoring resources it no longer sees mentioned. Losing state doesn't destroy the real infrastructure, but it does destroy Terraform's ability to safely manage it going forward — which is exactly why state has to be durable, remote, and locked.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-04">
     <summary><span class="iq-num">04</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">What does idempotency mean in configuration management, and why is Ansible built around it?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Idempotency means running the same operation multiple times produces the same end state as running it once — no matter how many times you re-run a playbook, the outcome converges to the declared state without unintended side effects on repeat runs. Ansible modules are written to describe the <em>desired state</em> ("nginx should be installed and running") rather than an imperative command ("run apt-get install nginx"), and each module internally checks the current state before deciding whether to act at all — installing nginx only if it isn't already installed, restarting it only when a handler is actually notified of a real change. This matters enormously in practice: a playbook run that fails halfway through a 200-host rollout can simply be re-run from the top without fear of double-installing packages or restarting services that didn't need it, and it means configuration drift (someone manually changing a server) gets automatically corrected the next time the playbook runs.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-05">
     <summary><span class="iq-num">05</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">What is GitOps's reconciliation loop, and how is it the same mental model as a Kubernetes controller?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>A Kubernetes controller runs an endless loop: observe the current state of some resource, compare it against the desired state (the spec), and take action to close any gap — a ReplicaSet controller notices two Pods are missing and creates two more. GitOps tools like Argo CD and Flux implement the identical loop one level up: they observe the live cluster state, compare it against the manifests declared in a Git repository (the "spec" for the whole cluster, not just one resource type), and reconcile any difference by applying whatever Git says should exist. The practical consequence is the same in both cases — self-healing. Just as a controller re-creates a Pod someone manually deleted, a GitOps agent reverts a manual <code>kubectl edit</code> back to whatever Git declares, because in both models the live system is never the source of truth; the declared spec is, and the loop's whole job is making reality match it continuously rather than once.</p></div>
   </details>
 
   <div class="iq-group-label">Trade-offs</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-06">
     <summary><span class="iq-num">06</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Blue-green vs canary deployment — when would you choose one over the other?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Blue-green keeps two complete, identical environments and switches all traffic from one to the other at once — rollback is just switching the router back, essentially instant, but you pay for double the infrastructure the entire time and you find out about problems only after 100% of users are already on the new version. Canary instead releases to a small percentage of real traffic first, watches metrics, and ramps up gradually — this limits the blast radius of a bad release to a fraction of users instead of everyone, but it requires much finer-grained traffic routing (a service mesh or ingress controller capable of weighted splits) and active metrics analysis to decide when to ramp further. Choose blue-green when instant, simple, all-or-nothing rollback matters more than resource cost and you're confident in your test coverage; choose canary when you want to catch problems on live traffic before they affect everyone and you have the routing and observability infrastructure to support gradual ramp-up. Many mature setups actually combine both: blue-green for the environment swap, canary-style traffic weighting during the cutover itself.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-07">
     <summary><span class="iq-num">07</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Jenkins vs GitHub Actions/GitLab CI — what's actually being traded off?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>The trade is flexibility and control versus operational overhead. Jenkins is self-hosted, so you own the network it runs on, can install any plugin for any obscure legacy toolchain, and can wire it into on-prem systems a SaaS runner could never reach — but that means you're patching the controller, scaling agents, and hardening the whole thing yourself, and it becomes a high-value security target since it's a single system with broad access across many projects. GitHub Actions and GitLab CI trade some of that flexibility for near-zero operational burden: the platform runs and patches the runners, secrets management and RBAC are already integrated with the same permissions model as the repo, and a huge marketplace of pre-built actions covers most common needs out of the box. The decision usually comes down to whether your constraints are unusual enough (specific hardware, air-gapped networks, deeply custom orchestration) to justify owning the infrastructure, or whether a cloud-native, already-on-GitHub-or-GitLab team is better served letting the platform absorb that operational cost.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-08">
     <summary><span class="iq-num">08</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Terraform vs Ansible — why are they usually used together instead of one replacing the other?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>They solve genuinely different problems rather than competing on the same one. Terraform's strength is the lifecycle of cloud resources themselves — creating a VPC, a VM, a load balancer, a managed database — tracked through state so it knows exactly what exists and what changed. It's a poor fit for "install these seventeen packages and template this config file onto an existing server," which is exactly Ansible's strength: agentless, idempotent, push-based configuration over SSH, with no state file of its own because each task's idempotency check does that job locally. You could technically force Terraform's <code>provisioner</code> blocks to do configuration work, or force Ansible modules to call cloud APIs for provisioning, but both are working against the grain of the tool. In practice, the boundary is usually: Terraform stands up the VM/cluster/network, then Ansible runs against the hosts Terraform just created to install and configure everything that runs on them — each tool doing the half of the problem it was actually designed for.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-09">
     <summary><span class="iq-num">09</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">GitOps's pull-based deploy model vs a traditional CI push — what are you actually trading off by adopting it?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>The push model is simpler to reason about linearly — the pipeline that built the artifact is the same pipeline that deploys it, one script, one log to read top to bottom — but it requires that pipeline to hold live, standing credentials capable of writing to production, which is a large, constantly-available attack surface and a single point where a compromised CI job becomes a compromised cluster. GitOps's pull model removes that credential entirely from CI: the pipeline's job stops at committing a change to a Git repo, and an agent already living inside the cluster (which needed cluster access anyway) does the actual applying. What you're trading for that security win is directness — deploys are no longer a single traceable pipeline run but an asynchronous handoff between two systems (CI commits, the agent reconciles on its own schedule), which means "why hasn't my deploy shown up yet" now requires checking the GitOps controller's own sync status, not just the CI logs. Most teams judge the credential-isolation win worth that extra indirection, especially at any scale where compromised CI credentials would mean a compromised production cluster.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-10">
     <summary><span class="iq-num">10</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Rolling deployment vs recreate — isn't recreate strictly worse?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Not always. Rolling deployments avoid downtime by replacing instances gradually, but that means old and new versions of the application serve traffic <em>simultaneously</em> for the duration of the rollout — which is only safe if the two versions are compatible with each other and with the current database schema at the same time. Recreate stops everything old before starting anything new, which causes real downtime, but it guarantees only one version is ever running against the data at once — no mixed-version window to reason about at all. For a service where mixed-version compatibility is genuinely hard to guarantee (an incompatible message format change, a singleton batch job that can't have two instances running), the simplicity and correctness guarantee of recreate's brief downtime can be the safer choice over the complexity of making a rolling deploy actually safe. It's a real trade-off between availability and the engineering cost of guaranteeing version compatibility during the transition, not a strictly-dominated option.</p></div>
   </details>
 
   <div class="iq-group-label">Traps</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-11">
     <summary><span class="iq-num">11</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A team says their deploy script is safe because it starts with set -e. Is that enough?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>No, and this is one of the most common false-confidence bugs in shell scripting. <code>set -e</code> only catches commands that return a non-zero exit code — it does nothing for a variable that's simply unset, which bash silently treats as an empty string rather than an error. That gap is exactly how <code>rm -rf $BACKUP_DIR</code> becomes <code>rm -rf /</code>: if <code>BACKUP_DIR</code> was never set (a typo'd env var name, a missing default, a variable that only gets set in one code path), <code>set -e</code> won't stop the script, because the command didn't fail — it just quietly ran against the wrong, empty argument. The fix is <code>set -u</code>, which turns any reference to an unset variable into an immediate error. There's a third gap too: in a pipeline like <code>cmd1 | cmd2</code>, <code>set -e</code> alone only looks at the exit code of the last command in the pipe — if <code>cmd1</code> fails but <code>cmd2</code> succeeds, the failure is invisible. <code>set -o pipefail</code> closes that gap. The safe baseline is always all three together: <code>set -euo pipefail</code>, plus quoting every variable expansion.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-12">
     <summary><span class="iq-num">12</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A teammate commits terraform.tfstate to the repo "just to have a backup in version control." What's wrong with this?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Two separate problems, and the security one is the more serious of the two. First, Terraform state routinely contains plaintext values pulled straight from the resources it manages — a database's master password set as a resource attribute, a generated TLS private key, an API token — all rendered in plaintext inside the JSON state file. Committing that to Git exposes every one of those secrets to everyone with repo access, and because Git history is permanent, deleting the file in a later commit doesn't remove it — it's still sitting in history unless you rewrite it, which is its own painful operation. Second, Git provides no locking: two people applying around the same time with state tracked only via commits can each read a stale version, apply changes, and corrupt each other's view of what exists, with no mechanism to prevent the race. The correct answer is a purpose-built remote backend — an S3 bucket (versioned, encrypted) paired with a DynamoDB table for locking, or Terraform Cloud/Enterprise — which gives you both durability and the concurrency safety Git was never designed to provide for this use case.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-13">
     <summary><span class="iq-num">13</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">Why is rm -rf $TARGET_DIR considered dangerous even when it "always worked" in testing?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>It worked in testing because in every test run so far, <code>TARGET_DIR</code> happened to be set to something reasonable. The danger is the one path nobody tested: whatever sets that variable — a config file, an upstream script, an environment variable in a new CI runner — fails silently, and <code>TARGET_DIR</code> is empty. Without <code>set -u</code>, bash doesn't error on that; it just expands <code>$TARGET_DIR</code> to nothing, and the command that runs is <code>rm -rf</code> with no path argument at all in some shells, or effectively <code>rm -rf /</code> if it's concatenated into a path like <code>rm -rf "$TARGET_DIR"/*</code> that degrades to <code>rm -rf /*</code>. This is precisely why "it always worked before" is not evidence a script is safe — it's evidence the unsafe path hasn't been hit yet. The fix isn't just careful testing, it's structural: <code>set -u</code> to fail loudly on any unset variable, explicit checks like <code>: "${TARGET_DIR:?TARGET_DIR must be set}"</code> before anything destructive, and never relying on string concatenation with an unvalidated variable in a delete command.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-14">
     <summary><span class="iq-num">14</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A team hardcodes an API token directly in their GitHub Actions workflow YAML, reasoning "it's fine, the repo is private." Why isn't it fine?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Repo privacy controls who can read the code today — it does nothing about who could read it tomorrow, or who already has, or where that token ends up once the workflow runs. A hardcoded token sits permanently in Git history even if it's later removed from the current file, visible to every past and future collaborator, every fork made while it was public (if it's ever made public even briefly), and anyone who gains repo access through a compromised account or an over-permissioned integration. It also shows up in plaintext in build logs the moment any step happens to print an environment variable or a debug trace, which is a much more common leak vector than the repo itself. Encrypted secrets (GitHub Secrets, GitLab CI/CD variables) exist specifically to avoid all of this: they're injected at runtime, masked automatically in logs, scoped to specific branches or environments, and rotatable without touching a single line of committed YAML. "Private repo" is an access control on the source, not a substitute for a secrets manager — treating it as one is exactly the DevSecOps gap that shows up in almost every real-world credential leak.</p></div>
   </details>
 
   <div class="iq-group-label">Scenario</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-15">
     <summary><span class="iq-num">15</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Walk me through what happens from git push to a change actually serving production traffic.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>The push (or the PR merge, in a trunk-based flow) fires a webhook that triggers CI: checkout, build, unit tests, lint, and security scans (SAST/SCA/secret scanning) all run against the commit. If everything passes, CI builds a container image, tags it immutably with the commit SHA, and pushes it to the registry — the same artifact will be used for every environment from here on, never rebuilt. Rather than deploying directly, CI's last step is a commit to a separate GitOps repo bumping that image tag in a Helm values file or Kustomize overlay. Argo CD or Flux, already running inside the cluster, detects that commit within its polling or webhook interval and begins reconciling: it starts a canary rollout, shifting a small percentage of live traffic to the new version. Through the canary window, an analyzer (Argo Rollouts or Flagger) continuously checks real metrics — error rate, latency, saturation — against the current baseline; if they hold within threshold, traffic ramps up in stages until the new version is serving 100%, and if they don't, the rollout is automatically aborted and traffic reverts to the previous version, no human paged. The entire path after the initial pull request requires zero manual deploy steps — it's automation and metrics making every subsequent decision.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-16">
     <summary><span class="iq-num">16</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Production is down. How do you respond?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>First, acknowledge and declare an incident immediately — assign an incident commander, open a dedicated channel, and stop other work from competing for attention. Then localize before touching anything: check dashboards for the obvious signals (error rate, latency, saturation), and specifically check what changed recently — a deploy in the last hour is the single most common cause of a sudden outage, so if one happened, rolling it back is usually faster and safer than root-causing forward under pressure. If a rollback isn't the fix (or nothing recently changed), move to logs and traces to narrow down which service or dependency is actually failing, and consider mitigations that restore service without full understanding — scaling up a saturated service, failing over to a healthy region, disabling a misbehaving feature flag — because the immediate goal is restoring the user's experience, not fully understanding the failure yet. Communicate status honestly and on a cadence throughout, even if the update is "still investigating." Only after service is restored do you move to root cause, and the incident closes with a blameless postmortem: what failed, why existing safeguards (tests, alerts, canary analysis) didn't catch it earlier, and what concrete change — a new alert, a stronger test, an automated rollback trigger — prevents the same class of failure next time.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-17">
     <summary><span class="iq-num">17</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Design a CI/CD pipeline for a microservices application running on Kubernetes, from scratch.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Start from the organizational shape: each service gets its own repository (or its own path in a monorepo) and its own independent pipeline, so teams aren't blocked on each other's release schedules — trunk-based development with short-lived branches keeps merges frequent and conflicts small. Each pipeline runs the same shape of stages: build, unit test, static analysis, then a security layer of SAST, SCA, and image scanning before anything is packaged. The build output is a container image tagged immutably with the commit SHA and pushed once to a registry — never rebuilt for a later environment. Rather than the pipeline deploying directly, its final step updates a GitOps repository (a Helm chart's values or a Kustomize overlay) with the new image tag; Argo CD or Flux, running in-cluster per environment or per namespace, reconciles that change automatically, so no pipeline ever needs standing write credentials to the cluster. Roll out changes progressively — canary or blue-green — with an automated analyzer promoting or rolling back based on live metrics rather than a fixed timer. Underneath all of this, secrets come from a vault (never pipeline variables baked into an image), and the whole system is observable enough — metrics, logs, traces — that a bad canary is caught in seconds, not after it's fully rolled out. The result is a system where the human involvement is opening a pull request, and everything from merge onward is machinery making evidence-based decisions.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-18">
     <summary><span class="iq-num">18</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">CI is taking twenty minutes to build a Docker image and it's slowing the whole team down. How do you speed it up?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Start with layer ordering — copy dependency manifests (package.json, pom.xml, requirements.txt) and install dependencies <em>before</em> copying application source, so a code-only change reuses the cached dependency-install layer instead of reinstalling everything from scratch on every build (the Dockerfile mechanics behind this are covered fully in the Docker module). Multi-stage builds shrink both build time and final image size by discarding the heavy build toolchain from the final layer entirely. A slimmer base image (an alpine or distroless variant instead of a full OS image) reduces both pull time and attack surface. BuildKit's cache mounts let package manager caches (npm, pip, Maven's local repo) persist across builds without baking them into image layers at all. At the CI level, cache dependency directories between runs so a fresh runner doesn't start from zero, and — specific to microservices — only rebuild the services whose code actually changed in a given commit rather than rebuilding every service in the monorepo. Finally, parallelize whatever's actually independent: if five services changed, build all five images concurrently instead of sequentially, since nothing about one service's build depends on another's.</p></div>
   </details>
 
   <div class="iq-group-label">Java &amp; Maven Specifics</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-19">
     <summary><span class="iq-num">19</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">How do you configure a GitHub Actions pipeline to build and test a Spring Boot service efficiently?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Start from <code>actions/setup-java@v4</code> with <code>distribution: temurin</code> and <code>java-version: '21'</code> — Temurin is the Eclipse Adoptium OpenJDK build and the de facto default for CI, and pinning both matters because JDK distributions and versions can differ subtly in bundled certs and behavior. Set <code>cache: maven</code> on that same step rather than wiring a separate cache action by hand: it keys the cache on a hash of <code>pom.xml</code> automatically (the manual equivalent would be an <code>actions/cache</code> step keyed on <code>hashFiles('**/pom.xml')</code>), so <code>~/.m2/repository</code> restores in seconds on any commit that didn't touch a dependency, and only re-downloads when one actually changed. Then run a single <code>mvn -B verify</code> instead of chaining separate compile/test/package commands — <code>verify</code> already runs the full lifecycle through packaging and integration checks in the correct order, and <code>-B</code> (batch mode) strips interactive output that only adds noise to CI logs. The speed win isn't any one clever trick; it's caching dependencies so restores take seconds and trusting Maven's own lifecycle ordering instead of re-implementing it as separate pipeline steps.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-20">
     <summary><span class="iq-num">20</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">What does a JaCoCo coverage gate enforce, and where does it run in the Maven build lifecycle?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>The <code>jacoco-maven-plugin</code> instruments the JVM during test execution to record which lines and branches actually ran, then its <code>check</code> goal compares that measured coverage against a configured rule — commonly a minimum line-coverage ratio such as <code>&lt;minimum&gt;0.80&lt;/minimum&gt;</code>. That check is bound to the <code>verify</code> phase — the same phase this module's own Maven lifecycle diagram shows running right after <code>package</code> — so it executes automatically as part of <code>mvn verify</code>, and by extension any <code>mvn deploy</code>, since <code>deploy</code> silently runs everything before it. If measured coverage has dropped below the threshold, the <code>check</code> goal fails the build at that phase exactly the way a failing unit test would, which means a coverage regression is caught in CI before an artifact is ever produced — not discovered later from a report nobody was required to look at.</p></div>
   </details>
@@ -1759,6 +1786,8 @@ ansible all -i inventory -m ping        # ad-hoc connectivity check</code></pre>
 
 </main>
 
+<script src="search-index.js"></script>
+<script src="site-search.js"></script>
 <script>
 (function(){
 "use strict";

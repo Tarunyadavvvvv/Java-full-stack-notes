@@ -379,6 +379,25 @@ noscript .reveal{opacity:1;}
   .navlink{font-size:.8rem;padding:.45rem .7rem;}
   .contents-btn{font-size:.8rem;padding:.45rem .8rem;}
 }
+/* ---- site search ---- */
+.site-search{position:relative;flex:1;max-width:420px;margin:0 1.2rem;}
+.site-search__box{display:flex;align-items:center;gap:.5rem;background:var(--surface-2);border-radius:var(--r-pill);padding:.5rem .9rem;transition:background var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);}
+.site-search__box:focus-within{background:var(--surface);box-shadow:0 0 0 2px var(--accent);}
+.site-search__icon{flex:none;width:15px;height:15px;color:var(--muted);}
+.site-search__input{flex:1;min-width:0;border:none;background:none;outline:none;font-family:var(--font-body);font-size:.87rem;color:var(--ink);}
+.site-search__input::placeholder{color:var(--muted);}
+.site-search__kbd{flex:none;font-family:var(--font-mono);font-size:.68rem;color:var(--muted);background:var(--surface);border-radius:5px;padding:.1rem .4rem;box-shadow:var(--shadow-sm);}
+.site-search__results{position:absolute;top:calc(100% + 8px);left:0;right:0;max-height:min(70vh,480px);overflow-y:auto;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:.5rem;display:none;z-index:50;}
+.site-search.is-open .site-search__results{display:block;}
+.site-search__empty{padding:1rem;font-size:.85rem;color:var(--muted);text-align:center;}
+.site-search__item{display:block;padding:.65rem .8rem;border-radius:10px;text-decoration:none;color:inherit;cursor:pointer;}
+.site-search__item:hover,.site-search__item.is-active{background:var(--tint);}
+.site-search__item-title{font-weight:700;font-size:.88rem;display:block;}
+.site-search__item-meta{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:.4rem;margin-top:.2rem;}
+.site-search__item-type{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;background:var(--surface-2);padding:.1rem .4rem;border-radius:999px;}
+.site-search mark{background:var(--tint-strong);color:inherit;border-radius:3px;padding:0 .1em;}
+@media (max-width:820px){.site-search{order:3;flex-basis:100%;max-width:none;margin:.6rem 0 0;}}
+[id]{scroll-margin-top:90px;}
 </style>
 <body>
 <noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript>
@@ -386,6 +405,14 @@ noscript .reveal{opacity:1;}
 <header class="topnav">
   <div class="topnav__inner">
     <a class="wordmark" href="index.html#keycloak"><span class="wordmark__mark">K</span>Keycloak</a>
+    <div class="site-search" id="siteSearch">
+      <div class="site-search__box">
+        <svg class="site-search__icon" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" class="site-search__input" id="siteSearchInput" placeholder="Search any topic or question…" autocomplete="off" aria-label="Search notes" aria-expanded="false" aria-controls="siteSearchResults">
+        <span class="site-search__kbd">/</span>
+      </div>
+      <div class="site-search__results" id="siteSearchResults"></div>
+    </div>
     <nav class="navlinks">
       <a class="navlink" href="index.html#keycloak">← All topics</a>
       <div class="contents" id="contents">
@@ -461,7 +488,7 @@ noscript .reveal{opacity:1;}
 
 <p class="reveal">This chapter stays at the product level: what problem Keycloak exists to solve, and how it compares to buying identity as a managed service. The protocol mechanics underneath it — OAuth2, OIDC, JWTs — are covered in depth in the companion Security &amp; Auth module; this module takes those concepts as given and applies them to one concrete, production-grade product.</p>
 
-<h3 class="sub reveal">The problem: everyone reinvents login</h3>
+<h3 class="sub reveal" id="the-problem-everyone-reinvents-login">The problem: everyone reinvents login</h3>
 <p class="reveal">Without a shared identity system, every app on a team's roster ends up building the same thing badly: its own password hashing, its own session handling, its own "forgot password" flow, its own half-finished MFA. The logic is duplicated across codebases, drifts out of sync, and each copy is a separate place for a security mistake to hide.</p>
 
 <div class="duo reveal">
@@ -496,7 +523,7 @@ noscript .reveal{opacity:1;}
 <p class="diagram-cap">Keycloak sits in the middle exactly once, so every app behind it inherits SSO, MFA and federation without writing a line of auth code.</p>
 </div>
 
-<h3 class="sub reveal">What's actually in the box</h3>
+<h3 class="sub reveal" id="what-s-actually-in-the-box">What's actually in the box</h3>
 <p class="reveal">"IAM system" covers a lot of ground. In practice Keycloak's feature set splits into what users experience when signing in, and what operators use to run the thing day to day.</p>
 
 <div class="duo reveal">
@@ -521,7 +548,7 @@ noscript .reveal{opacity:1;}
 </div>
 </div>
 
-<h3 class="sub reveal">The vocabulary you need first</h3>
+<h3 class="sub reveal" id="the-vocabulary-you-need-first">The vocabulary you need first</h3>
 <p class="reveal">A handful of IAM terms recur constantly once Keycloak enters the picture. Nailing these down now saves confusion later.</p>
 
 <div class="tbl-wrap reveal">
@@ -538,7 +565,7 @@ noscript .reveal{opacity:1;}
 </table>
 </div>
 
-<h3 class="sub reveal">Why not just build it yourself?</h3>
+<h3 class="sub reveal" id="why-not-just-build-it-yourself">Why not just build it yourself?</h3>
 <div class="callout callout--tip reveal">
 <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2.5l2.1 5.9 5.9 2.1-5.9 2.1L12 18.5l-2.1-5.9-5.9-2.1 5.9-2.1L12 2.5z" fill="currentColor"/></svg></div>
 <div class="callout__body">
@@ -547,7 +574,7 @@ noscript .reveal{opacity:1;}
 </div>
 </div>
 
-<h3 class="sub reveal">Keycloak vs Okta/Auth0</h3>
+<h3 class="sub reveal" id="keycloak-vs-okta-auth0">Keycloak vs Okta/Auth0</h3>
 <p class="reveal">Keycloak isn't the only option — it's one end of a build-vs-host spectrum, with managed IDaaS platforms like Okta and Auth0 at the other end.</p>
 
 <div class="duo reveal">
@@ -616,7 +643,7 @@ noscript .reveal{opacity:1;}
 </div>
 </div>
 
-<h3 class="sub reveal">The object model, nested</h3>
+<h3 class="sub reveal" id="the-object-model-nested">The object model, nested</h3>
 <p class="reveal">A single Keycloak server can run many completely independent tenants at once. That isolation happens one level down, at the <strong>realm</strong>, and everything else you configure — clients, users, roles — lives inside one realm and is invisible to every other realm.</p>
 
 <div class="panel reveal">
@@ -652,7 +679,7 @@ noscript .reveal{opacity:1;}
 </table>
 </div>
 
-<h3 class="sub reveal">Public vs confidential clients</h3>
+<h3 class="sub reveal" id="public-vs-confidential-clients">Public vs confidential clients</h3>
 <p class="reveal">Every client falls into one of two trust categories, and the category dictates which OAuth2 flow you're allowed to use safely — the same PKCE and Authorization Code mechanics covered in the Security & Auth module apply here, Keycloak just gives you a client setting that enforces the right one.</p>
 
 <div class="tbl-wrap reveal">
@@ -682,7 +709,7 @@ noscript .reveal{opacity:1;}
 <div class="callout__body"><b class="h">B2B multi-tenancy? Reach for Organizations before realm-per-customer</b><p>Keycloak 26 graduated <strong>Organizations</strong> to GA (preview in 25), built specifically for the case above: many customer companies, each with its own members, its own IdP links, and its own branding, all sharing <em>one</em> realm instead of one realm per customer. It's now the lighter-weight default for B2B/CIAM multi-tenancy — spin up an Organization, not a whole realm, when the goal is "keep each customer's users and login separate," not full infrastructure isolation. Reach for realm-per-tenant only when a customer genuinely needs total isolation: its own signing keys, its own admin boundary, or a regulatory requirement that nothing is shared at all.</p></div>
 </div>
 
-<h3 class="sub reveal">Roles come in three flavors</h3>
+<h3 class="sub reveal" id="roles-come-in-three-flavors">Roles come in three flavors</h3>
 <p class="reveal">A role is just a name until you decide its scope. That scope — and whether it bundles other roles — is the whole design decision.</p>
 
 <div class="duo reveal">
@@ -725,7 +752,7 @@ noscript .reveal{opacity:1;}
 <p class="diagram-cap">Keycloak expands the composite at token-issuance time, so granting a user only <code>super-admin</code> still lands all four role names in <code>realm_access.roles</code> — nothing downstream can tell the difference from four separate assignments.</p>
 </div>
 
-<h3 class="sub reveal">Groups vs roles — don't conflate them</h3>
+<h3 class="sub reveal" id="groups-vs-roles-don-t-conflate-them">Groups vs roles — don't conflate them</h3>
 <p class="reveal">Roles and groups solve different problems and get confused constantly because both end up on a user's token. A role answers "what can this identity do." A group answers "who is this identity, organizationally" — and happens to be a convenient place to hang roles off of.</p>
 
 <div class="tbl-wrap reveal">
@@ -744,7 +771,7 @@ noscript .reveal{opacity:1;}
 <div class="callout__body"><b class="h">Assign roles to groups, not to people</b><p>The scalable pattern is: attach roles and attributes to a group, then manage membership by moving users in and out of it. When someone changes teams, you move one group membership instead of hunting down and re-assigning a dozen individual role grants.</p></div>
 </div>
 
-<h3 class="sub reveal">Attributes, required actions, and machine identities</h3>
+<h3 class="sub reveal" id="attributes-required-actions-and-machine-identities">Attributes, required actions, and machine identities</h3>
 <div class="duo reveal">
 <div class="panel">
 <h4><span class="sw"></span>Attributes & required actions</h4>
@@ -764,7 +791,7 @@ noscript .reveal{opacity:1;}
 </div>
 </div>
 
-<h3 class="sub reveal">Client scopes and the audience claim</h3>
+<h3 class="sub reveal" id="client-scopes-and-the-audience-claim">Client scopes and the audience claim</h3>
 <p class="reveal">A client scope is a named, reusable bundle of protocol mappers and role scope. It's easy to conflate this with OAuth2's own <code>scope</code> request parameter — the space-separated string like <code>scope=openid profile</code> — but they're two different things that just happen to share a word: the parameter is a list of names, and each name that matches a configured client scope is what actually pulls that scope's mappers and role scope into the token. Default scopes attach to every token a client requests automatically; optional scopes only get added when explicitly requested via the <code>scope</code> parameter. This is what lets several clients share the same claim definitions instead of each one redefining them from scratch.</p>
 
 <div class="panel diagram-panel reveal">
@@ -836,7 +863,7 @@ noscript .reveal{opacity:1;}
 <div class="soft-node is-accent"><b>External systems</b><span>Database, LDAP/AD federation, external IdPs (Google, SAML partners)</span></div>
 </div><p class="diagram-cap">All four layers run inside the same Quarkus process (WildFly on legacy installs) — the SPI layer is the seam that lets you swap in a different user store or authentication flow without touching anything above it.</p></div>
 
-<h3 class="sub reveal">Key internal components</h3>
+<h3 class="sub reveal" id="key-internal-components">Key internal components</h3>
 <p class="reveal">Five pieces do almost all of the work. Knowing which one owns which job stops a lot of guesswork during troubleshooting.</p>
 
 <div class="tbl-wrap reveal"><table>
@@ -850,7 +877,7 @@ noscript .reveal{opacity:1;}
 </tbody>
 </table></div>
 
-<h3 class="sub reveal">What an SPI provider actually looks like</h3>
+<h3 class="sub reveal" id="what-an-spi-provider-actually-looks-like">What an SPI provider actually looks like</h3>
 <p class="reveal">"Extension point" stays abstract until you see one. Every SPI follows the same recipe: implement the interface, package it into a JAR, drop it in Keycloak's <code>providers/</code> directory, and run <code>kc.sh build</code> so Keycloak picks it up via a <code>META-INF/services</code> registration. The Event Listener SPI is one of the simplest — Keycloak calls it for every login, logout, and admin change in the realm, which makes it a good first example of the shape.</p>
 
 <div class="code-window reveal">
@@ -874,7 +901,7 @@ noscript .reveal{opacity:1;}
 
 <p class="reveal">A matching <code>EventListenerProviderFactory</code> — registered the same way, via its own <code>META-INF/services</code> entry — is what Keycloak actually instantiates this from at runtime; the factory's only job is handing back instances of the provider above. Swap the interface and you get the same story for a custom authenticator or a custom User Storage provider: different interface, identical packaging and registration mechanics.</p>
 
-<h3 class="sub reveal">Where sessions actually live</h3>
+<h3 class="sub reveal" id="where-sessions-actually-live">Where sessions actually live</h3>
 <p class="reveal">User sessions and client sessions are not primarily a database concern — they live in Infinispan, an in-memory cache, precisely because sessions are read and touched constantly and a database round trip on every request would be slow. The database only re-enters the picture for <strong>offline sessions</strong>, which need to outlive a restart.</p>
 
 <div class="panel diagram-panel reveal"><div class="soft-flow">
@@ -890,7 +917,7 @@ noscript .reveal{opacity:1;}
 <div class="callout__body"><b class="h">Offline sessions are the exception</b><p>Offline sessions back offline refresh tokens and are persisted to the database, not just cached — that's what lets them survive a Keycloak restart for genuinely offline access.</p></div>
 </div>
 
-<h3 class="sub reveal">Token signing keys and discovery</h3>
+<h3 class="sub reveal" id="token-signing-keys-and-discovery">Token signing keys and discovery</h3>
 <p class="reveal">Each realm has its own signing keys (RSA or EC) and its own key rotation schedule. Resource servers never have to trust those keys blindly — they can discover and verify them through two well-known endpoints:</p>
 
 <div class="panel diagram-panel reveal"><div class="soft-flow">
@@ -910,7 +937,7 @@ noscript .reveal{opacity:1;}
 <div class="callout__body"><b class="h">Don't build in the master realm</b><p>The <code>master</code> realm exists to administer Keycloak itself — it is not a template for your application. Always create a dedicated realm for your app's users and clients; mixing them into master conflates who manages the server with who logs into your product.</p></div>
 </div>
 
-<h3 class="sub reveal">Scaling and high availability</h3>
+<h3 class="sub reveal" id="scaling-and-high-availability">Scaling and high availability</h3>
 <p class="reveal"><strong>How does Keycloak scale and stay highly available?</strong> Run multiple stateless Keycloak nodes behind a load balancer, all sharing one database and one distributed Infinispan cache so session state is available cluster-wide rather than pinned to a single node. Sticky sessions or distributed caching keep routing sane, database replicas absorb read load, and health endpoints let orchestrators like Kubernetes make restart and scaling decisions automatically.</p>
 
 <details class="accordion reveal">
@@ -952,7 +979,7 @@ noscript .reveal{opacity:1;}
 
 <p class="reveal">Keycloak is technically an OAuth2 Authorization Server first, an OpenID Connect Provider second. That order matters: OIDC isn't a separate protocol living next to OAuth2, it's a thin identity layer standardised on top of it. Almost every confusing default in Keycloak — why a token response includes an <code>id_token</code>, why there's a <code>/userinfo</code> endpoint, why <code>openid</code> is a scope you have to request — falls out of that one fact.</p>
 
-<h3 class="sub reveal">OAuth2 vs OIDC: two different questions</h3>
+<h3 class="sub reveal" id="oauth2-vs-oidc-two-different-questions">OAuth2 vs OIDC: two different questions</h3>
 <p class="reveal">OAuth2 was built to answer <strong>"what is this app allowed to access?"</strong> — delegated authorization, nothing more. OIDC was layered on to answer a question OAuth2 was never designed for: <strong>"who is the person sitting at the keyboard?"</strong></p>
 <div class="tbl-wrap reveal">
 <table>
@@ -971,7 +998,7 @@ noscript .reveal{opacity:1;}
 <div class="callout__body"><b class="h">OIDC = OAuth2 + an identity layer</b><p>It adds the <strong>ID token</strong> (a JWT that proves who logged in and when), the <code>/userinfo</code> endpoint (fetch profile claims with an access token), and standard scopes like <code>openid</code>, <code>profile</code>, and <code>email</code>. Keycloak's default protocol is OIDC, so unless you specifically configure a client otherwise, this identity layer is already there — not something bolted on later.</p></div>
 </div>
 
-<h3 class="sub reveal">The four roles, in Keycloak's terms</h3>
+<h3 class="sub reveal" id="the-four-roles-in-keycloak-s-terms">The four roles, in Keycloak's terms</h3>
 <p class="reveal">Every OAuth2/OIDC exchange has the same four actors. Mapping them onto Keycloak concretely removes most of the ambiguity in the spec's abstract language.</p>
 <div class="tbl-wrap reveal">
 <table>
@@ -985,7 +1012,7 @@ noscript .reveal{opacity:1;}
 </table>
 </div>
 
-<h3 class="sub reveal">The OIDC endpoints you'll actually use</h3>
+<h3 class="sub reveal" id="the-oidc-endpoints-you-ll-actually-use">The OIDC endpoints you'll actually use</h3>
 <p class="reveal">Everything a client does against Keycloak funnels through a small, fixed set of endpoints. Knowing which one does what is most of the battle when debugging a broken flow.</p>
 <div class="tbl-wrap reveal">
 <table>
@@ -1008,7 +1035,7 @@ noscript .reveal{opacity:1;}
 <div class="callout__body"><b class="h">"Is OAuth2 for authentication?"</b><p>No. OAuth2 is for <strong>authorization</strong> — granting an app access to resources. Treating a bare access token as proof of identity is one of the most common mistakes teams make with it. OIDC exists precisely to fix this, by adding the ID token as a dedicated authentication artifact.</p></div>
 </div>
 
-<h3 class="sub reveal">The Authorization Code flow (with PKCE)</h3>
+<h3 class="sub reveal" id="the-authorization-code-flow-with-pkce">The Authorization Code flow (with PKCE)</h3>
 <p class="reveal">This is <em>the</em> standard flow — the one Keycloak expects for essentially every user-facing login, whether the client is a traditional web app, a single-page app, or a mobile client. The general mechanics of why it's secure are covered in the Security &amp; Auth module's "OAuth 2.0 Deep Dive" chapter; here's how it maps onto Keycloak's actual endpoints.</p>
 
 <div class="panel diagram-panel reveal"><div class="soft-flow">
@@ -1035,7 +1062,7 @@ noscript .reveal{opacity:1;}
 <div class="callout__body"><b class="h">PKCE, in one line</b><p>The client sends a hashed <code>code_challenge</code> up front, then reveals the original <code>code_verifier</code> at token exchange. If an attacker intercepts the authorization code mid-redirect, they still can't redeem it without the verifier. It's mandatory for public clients — SPAs and mobile apps — that have no secret to keep secret in the first place.</p></div>
 </div>
 
-<h3 class="sub reveal">Choosing a grant type</h3>
+<h3 class="sub reveal" id="choosing-a-grant-type">Choosing a grant type</h3>
 <p class="reveal">Keycloak supports several grant types, but in practice only a handful are worth reaching for. The rest exist mostly to explain what <em>not</em> to do.</p>
 <div class="tbl-wrap reveal">
 <table>
@@ -1068,7 +1095,7 @@ noscript .reveal{opacity:1;}
 
 <p class="reveal">Device Code and Token Exchange aren't in that table because they aren't plain checkboxes on the standard capability tab — Device Code gets its own later-added toggle ("OAuth 2.0 Device Authorization Grant Enabled"), and Token Exchange is gated separately again, through a feature flag plus per-client permissions rather than a single switch.</p>
 
-<h3 class="sub reveal">Machine-to-machine: Client Credentials</h3>
+<h3 class="sub reveal" id="machine-to-machine-client-credentials">Machine-to-machine: Client Credentials</h3>
 <p class="reveal">Not every call to Keycloak has a human behind it. When Service A needs to call Service B with no user in the loop, there's no login to redirect to — the service authenticates as itself.</p>
 
 <div class="panel diagram-panel reveal"><div class="soft-flow">
@@ -1152,7 +1179,7 @@ noscript .reveal{opacity:1;}
 <div class="callout__body"><b class="h">Access token and ID token are not interchangeable</b><p>The ID token authenticates the user to the <em>client application</em> — it should never be sent to an API. The access token authorizes calls to <em>resource servers</em>. An API that validates an ID token instead of an access token is validating the wrong claim set entirely; its <code>aud</code> names the client, not the service.</p></div>
 </div>
 
-<h3 class="sub reveal">What's inside the JWT — the Keycloak-specific parts</h3>
+<h3 class="sub reveal" id="what-s-inside-the-jwt-the-keycloak-specific-parts">What's inside the JWT — the Keycloak-specific parts</h3>
 <p class="reveal">The general shape of a JWT — three Base64URL parts, header/payload/signature, and how to verify one — is covered in the Security &amp; Auth module's OpenID Connect &amp; JWT chapter, along with the full validation checklist and key-rotation mechanics. What's Keycloak-specific is the shape of the <em>payload</em> once it lands on your desk:</p>
 
 <div class="code-window reveal">
@@ -1188,7 +1215,7 @@ noscript .reveal{opacity:1;}
 </table>
 </div>
 
-<h3 class="sub reveal">The realm_access / resource_access gotcha</h3>
+<h3 class="sub reveal" id="the-realm-access-resource-access-gotcha">The realm_access / resource_access gotcha</h3>
 <p class="reveal">Keycloak splits roles into two separate claims, and this is where authorization checks quietly go wrong. <code>realm_access.roles</code> lists roles that apply across the whole realm — every client sees the same list. <code>resource_access</code> is keyed by client ID, and each client only sees <em>its own</em> roles nested underneath. A role called <code>admin</code> assigned at the client level for <code>billing-service</code> will never show up in <code>realm_access.roles</code> — a resource server checking the wrong claim will silently deny (or worse, silently allow) access based on a role that was never actually granted for it.</p>
 
 <div class="callout callout--tip reveal">
@@ -1196,7 +1223,7 @@ noscript .reveal{opacity:1;}
 <div class="callout__body"><b class="h">Know which claim you're supposed to be reading</b><p>Before writing an authorization check against a Keycloak token, confirm whether the role was assigned as a realm role or a client role in the admin console — that decides whether your code should look under <code>realm_access.roles</code> or <code>resource_access.&lt;your-client-id&gt;.roles</code>.</p></div>
 </div>
 
-<h3 class="sub reveal">Validating the access token</h3>
+<h3 class="sub reveal" id="validating-the-access-token">Validating the access token</h3>
 <p class="reveal">The general checklist — signature, expiry, issuer, audience — is the same one from the Security &amp; Auth module. Keycloak gives resource servers two ways to run it:</p>
 
 <div class="tbl-wrap reveal">
@@ -1225,7 +1252,7 @@ noscript .reveal{opacity:1;}
 <div class="soft-node is-accent"><b>Keycloak returns active: true/false</b><span>reflects live session &amp; revocation state</span></div>
 </div><p class="diagram-cap">Introspection buys real-time revocation truth at the cost of a network call per request — worth it for opaque tokens or high-security paths, overkill for everything else.</p></div>
 
-<h3 class="sub reveal">Refresh tokens: renewing without re-login</h3>
+<h3 class="sub reveal" id="refresh-tokens-renewing-without-re-login">Refresh tokens: renewing without re-login</h3>
 <p class="reveal">Short access-token lifespans only work because clients don't need the user to log in again every five minutes. When the access token expires, the client sends the refresh token to Keycloak's token endpoint with <code>grant_type=refresh_token</code> and gets a fresh access token back — silently, in the background.</p>
 
 <div class="panel diagram-panel reveal"><div class="soft-flow">
@@ -1305,7 +1332,7 @@ noscript .reveal{opacity:1;}
 
 <p class="reveal">Most apps only ever need the first row. The second exists for the cases where "does this role allow this action" stops being a question your code can answer on its own.</p>
 
-<h3 class="sub reveal">RBAC, ABAC, ReBAC — Keycloak's names for the same three models</h3>
+<h3 class="sub reveal" id="rbac-abac-rebac-keycloak-s-names-for-the-same-three-models">RBAC, ABAC, ReBAC — Keycloak's names for the same three models</h3>
 
 <p class="reveal">The general theory of these three authorization models, and the "role explosion" problem that pushes teams from RBAC toward ABAC, is covered in depth in the companion Security & Auth module's Authorization Models chapter. Keycloak implements all three; what matters here is how it frames and names them.</p>
 
@@ -1336,7 +1363,7 @@ noscript .reveal{opacity:1;}
 </div>
 </div>
 
-<h3 class="sub reveal">Inside Authorization Services: Resource, Scope, Policy, Permission</h3>
+<h3 class="sub reveal" id="inside-authorization-services-resource-scope-policy">Inside Authorization Services: Resource, Scope, Policy, Permission</h3>
 
 <p class="reveal">When role claims aren't enough, Keycloak's Authorization Services give you a vocabulary for describing access rules centrally, so the app never has to hardcode them. The app becomes a <strong>Policy Enforcement Point (PEP)</strong> — it asks a question — and Keycloak becomes the <strong>Policy Decision Point (PDP)</strong> — it answers.</p>
 
@@ -1421,7 +1448,7 @@ noscript .reveal{opacity:1;}
 <div class="meta-row"><span class="chip chip--tint">6 min read</span><span class="chip">Intermediate</span></div>
 </div>
 
-<h3 class="sub reveal">Delegating login: how brokering works</h3>
+<h3 class="sub reveal" id="delegating-login-how-brokering-works">Delegating login: how brokering works</h3>
 <p class="reveal">Identity brokering lets Keycloak hand off authentication to an external identity provider — Google, GitHub, Microsoft, or any other OIDC or SAML provider — instead of checking a password itself. The user still ends up with a Keycloak-issued token; they just never typed a Keycloak password to get it.</p>
 
 <div class="panel diagram-panel reveal"><div class="soft-flow">
@@ -1445,7 +1472,7 @@ noscript .reveal{opacity:1;}
 <div class="callout__body"><b class="h">Where brokering earns its keep</b><p>Three recurring use cases: social login for consumer apps, B2B single sign-on where a partner company brings its own IdP, and gradual migration — letting an old identity system keep authenticating users while Keycloak takes over everything downstream.</p></div>
 </div>
 
-<h3 class="sub reveal">Brokering vs. federation — same goal, opposite mechanics</h3>
+<h3 class="sub reveal" id="brokering-vs-federation-same-goal-opposite-mechanics">Brokering vs. federation — same goal, opposite mechanics</h3>
 <p class="reveal">Both features exist to avoid asking users for a brand-new password, but they sit on opposite sides of the authentication moment. Brokering hands the login off <em>at runtime</em>, via a redirect, to a system that authenticates the user itself. Federation has Keycloak <em>do</em> the authenticating, directly against an external store it's connected to.</p>
 
 <div class="duo reveal">
@@ -1461,7 +1488,7 @@ noscript .reveal{opacity:1;}
 </ul></div>
 </div>
 
-<h3 class="sub reveal">User federation: plugging in LDAP or Active Directory</h3>
+<h3 class="sub reveal" id="user-federation-plugging-in-ldap-or-active-directory">User federation: plugging in LDAP or Active Directory</h3>
 <p class="reveal">Federation connects Keycloak to a store that already holds your users, so nobody has to be migrated or re-registered. Existing corporate credentials just keep working — Keycloak becomes the front door, the directory stays the source of truth.</p>
 
 <div class="tbl-wrap reveal"><table>
@@ -1519,7 +1546,7 @@ noscript .reveal{opacity:1;}
 <div class="meta-row"><span class="chip chip--tint">8 min read</span><span class="chip">Advanced</span></div>
 </div>
 
-<h3 class="sub reveal">How SSO Actually Works</h3>
+<h3 class="sub reveal" id="how-sso-actually-works">How SSO Actually Works</h3>
 <p class="reveal">The trick behind single sign-on isn't magic — it's a cookie in the right place. When a user logs into the first app, Keycloak doesn't just hand back tokens; it also sets an SSO session cookie on <strong>its own domain</strong>. When the user later opens a second app and gets redirected to Keycloak for authentication, Keycloak checks for that cookie first. If a valid session exists, it issues new tokens immediately — no login form, no re-entered password.</p>
 
 <div class="panel diagram-panel reveal"><div class="soft-flow">
@@ -1532,7 +1559,7 @@ noscript .reveal{opacity:1;}
 <div class="soft-node is-accent"><b>Existing session found</b><span>tokens issued silently, no login form</span></div>
 </div><p class="diagram-cap">The cookie lives on Keycloak's domain, not the app's — that's exactly what lets any number of unrelated apps piggyback on one login.</p></div>
 
-<h3 class="sub reveal">Sessions Have Layers, Not One Timeout</h3>
+<h3 class="sub reveal" id="sessions-have-layers-not-one-timeout">Sessions Have Layers, Not One Timeout</h3>
 <p class="reveal">"How long does a login last" isn't a single answer in Keycloak — it's several independent knobs, each governing a different scope. Get them confused and you'll either force people to re-authenticate constantly or leave sessions alive far longer than intended.</p>
 
 <div class="tbl-wrap reveal"><table>
@@ -1546,7 +1573,7 @@ noscript .reveal{opacity:1;}
 </tbody>
 </table></div>
 
-<h3 class="sub reveal">Single Logout (SLO): Ending It Everywhere</h3>
+<h3 class="sub reveal" id="single-logout-slo-ending-it-everywhere">Single Logout (SLO): Ending It Everywhere</h3>
 <p class="reveal">Logging out of Keycloak ends the central SSO session — but that only matters if the connected apps actually find out about it. Keycloak propagates that logout to every client through one of two mechanisms.</p>
 
 <div class="duo reveal">
@@ -1567,7 +1594,7 @@ noscript .reveal{opacity:1;}
 <div class="callout__body"><b class="h">"I logged out of one app, but I'm still logged into the others"</b><p>The app only cleared its own local session — it never touched the Keycloak SSO session. To log out everywhere, the app must call Keycloak's end-session endpoint (OIDC RP-initiated logout). That ends the central session, which then triggers back-channel logout to notify every other connected client.</p></div>
 </div>
 
-<h3 class="sub reveal">Authentication Flows: The Login Sequence Is Configurable</h3>
+<h3 class="sub reveal" id="authentication-flows-the-login-sequence-is-configurable">Authentication Flows: The Login Sequence Is Configurable</h3>
 <p class="reveal">A Keycloak authentication flow is a sequence of steps — called executions — that a user walks through to log in. Each step is marked <strong>Required</strong>, <strong>Alternative</strong>, <strong>Conditional</strong>, or <strong>Disabled</strong>, and that marking decides whether it runs, whether it can be skipped, and whether success anywhere else in the flow makes it redundant.</p>
 
 <div class="panel diagram-panel reveal"><div class="soft-flow">
@@ -1582,7 +1609,7 @@ noscript .reveal{opacity:1;}
 
 <p class="reveal">Because flows are just configurable step sequences, you're not limited to the defaults. Copy a built-in flow and customize it to force MFA for specific users, plug in a custom authenticator via the SPI, or insert a terms-and-conditions step before login completes.</p>
 
-<h3 class="sub reveal">Multi-Factor Authentication</h3>
+<h3 class="sub reveal" id="multi-factor-authentication">Multi-Factor Authentication</h3>
 <p class="reveal">MFA in Keycloak is just another set of steps in the flow — the question is which factor, and for whom. The <em>theory</em> behind knowledge/possession/inherence factors and step-up authentication is covered in the companion Security &amp; Auth module's Authentication Mechanisms chapter; here's how it's actually wired up in Keycloak.</p>
 
 <div class="tbl-wrap reveal"><table>
@@ -1639,7 +1666,7 @@ noscript .reveal{opacity:1;}
 </div>
 </div>
 
-<h3 class="sub reveal">Spring Boot as a resource server</h3>
+<h3 class="sub reveal" id="spring-boot-as-a-resource-server">Spring Boot as a resource server</h3>
 <p class="reveal">Older Keycloak-specific adapters for Spring are deprecated. The current path is plain <strong>Spring Security OAuth2 Resource Server</strong> support, which treats Keycloak as just another OIDC-compliant issuer. Point it at the realm's issuer URL and Spring auto-discovers the JWKS endpoint, fetches the public keys, and validates every incoming JWT's signature and expiry — no manual key management.</p>
 
 <div class="code-window reveal">
@@ -1692,7 +1719,7 @@ noscript .reveal{opacity:1;}
 <p class="diagram-cap">Signature validation is generic OAuth2 — any library does it. The last step is the one only Keycloak needs, and it's the one teams forget.</p>
 </div>
 
-<h3 class="sub reveal">SPAs and the token-in-the-browser problem</h3>
+<h3 class="sub reveal" id="spas-and-the-token-in-the-browser-problem">SPAs and the token-in-the-browser problem</h3>
 <p class="reveal">Browser-based apps talk to Keycloak using <code>keycloak-js</code> or a generic OIDC library, running Authorization Code + PKCE as a public client (no client secret, since anything shipped to a browser can be read). The client's valid redirect URIs and web origins must be configured on the Keycloak client, or CORS and redirect validation reject the flow outright.</p>
 
 <div class="panel diagram-panel reveal">
@@ -1732,7 +1759,7 @@ noscript .reveal{opacity:1;}
 <div class="callout__body"><b class="h">Prefer the BFF where you can</b><p>This is the same trade-off the Security &amp; Auth module's Authentication Mechanisms chapter walks through when discussing where session state should live. Keycloak doesn't force either shape on you — but pushing token storage server-side removes an entire class of browser-based attacks for a modest architectural cost.</p></div>
 </div>
 
-<h3 class="sub reveal">Gateways: validating once instead of everywhere</h3>
+<h3 class="sub reveal" id="gateways-validating-once-instead-of-everywhere">Gateways: validating once instead of everywhere</h3>
 <p class="reveal">In a microservices layout, repeating JWT validation logic in every service is wasted effort and a consistency risk. API gateways and reverse proxies — Spring Cloud Gateway, Kong, NGINX, <code>oauth2-proxy</code> — can sit at the edge, validate the Keycloak-issued token once, and forward a verified identity downstream, so individual services trust the gateway instead of re-implementing auth.</p>
 
 <div class="panel diagram-panel reveal">
@@ -1746,7 +1773,7 @@ noscript .reveal{opacity:1;}
 <p class="diagram-cap">Downstream services get a smaller, cheaper job: trust the gateway's headers instead of re-verifying a token on every hop.</p>
 </div>
 
-<h3 class="sub reveal">Token Exchange: when the gateway needs to act as the caller, not itself</h3>
+<h3 class="sub reveal" id="token-exchange-when-the-gateway-needs-to-act-as-the-caller">Token Exchange: when the gateway needs to act as the caller, not itself</h3>
 <p class="reveal">Forwarding headers works when the downstream service is willing to trust the gateway's word for who's calling. Sometimes it insists on a real, independently-verifiable token instead — and having the gateway request one via <code>client_credentials</code> would throw away exactly the information that mattered, since that token would represent the gateway itself, not the user behind the request. <strong>Token Exchange</strong> (<code>grant_type=urn:ietf:params:oauth:grant-type:token-exchange</code>) closes that gap: the gateway hands Keycloak the caller's own token and asks for a new one scoped to the downstream service, and Keycloak issues a token that carries the original user's identity forward instead of replacing it.</p>
 
 <div class="panel diagram-panel reveal">
@@ -1762,7 +1789,7 @@ noscript .reveal{opacity:1;}
 
 <p class="reveal">This is a different mechanism from the UMA "access token for an RPT" exchange covered in the Authorization Services chapter, even though both trade one token for another at Keycloak's token endpoint. UMA's exchange is about a fine-grained permission decision on a resource; Token Exchange is about carrying identity across a service boundary without acting as someone else.</p>
 
-<h3 class="sub reveal">Managing Keycloak as code</h3>
+<h3 class="sub reveal" id="managing-keycloak-as-code">Managing Keycloak as code</h3>
 <p class="reveal">Clicking through the admin console works for one realm, once. For anything reproducible — staging, production, a second environment — drive Keycloak through its Admin REST API, the bundled <code>kcadm.sh</code> CLI, or the Terraform <code>keycloak</code> provider.</p>
 
 <div class="code-window reveal">
@@ -1819,7 +1846,7 @@ noscript .reveal{opacity:1;}
 <div class="meta-row"><span class="chip chip--tint">8 min read</span><span class="chip">Advanced</span></div>
 </div>
 
-<h3 class="sub reveal">Running it like production, not a demo</h3>
+<h3 class="sub reveal" id="running-it-like-production-not-a-demo">Running it like production, not a demo</h3>
 <p class="reveal">Every default that makes Keycloak easy to try out on <code>localhost</code> is the wrong default once real users are involved. The dev H2 database, the unbuilt Quarkus distribution, the missing TLS termination — none of these fail loudly. They fail quietly, under load, or the moment someone puts a load balancer in front of you.</p>
 
 <div class="tbl-wrap reveal">
@@ -1865,7 +1892,7 @@ noscript .reveal{opacity:1;}
 <div class="callout__body"><b class="h">Mistakes that only show up in production</b><p>Running on the H2 dev database. Forgetting to set hostname/proxy options, which breaks redirect URLs behind a load balancer. Forgetting <code>kc.sh build</code> after a config or provider change. Exposing the admin console publicly. And mismatched server clocks, which silently breaks token expiry validation.</p></div>
 </div>
 
-<h3 class="sub reveal">The proxy problem: why redirects break behind a load balancer</h3>
+<h3 class="sub reveal" id="the-proxy-problem-why-redirects-break-behind-a-load-balancer">The proxy problem: why redirects break behind a load balancer</h3>
 <p class="reveal">This is the single most common deployment bug, so it earns its own diagram. Keycloak builds its issuer URL, redirect URIs, and token endpoint URLs from the request it receives — not from what the outside world typed into its browser.</p>
 
 <div class="panel diagram-panel reveal">
@@ -1884,7 +1911,7 @@ noscript .reveal{opacity:1;}
 <div class="callout__body"><b class="h">How do you run Keycloak behind a reverse proxy or load balancer?</b><p>Set the proxy-headers option (e.g. <code>xforwarded</code>) along with the hostname setting, so Keycloak trusts the forwarded headers and generates every external URL — issuer, redirect, token endpoints — as the public address, not the internal one it actually received the request on.</p></div>
 </div>
 
-<h3 class="sub reveal">Security checklist for a live realm</h3>
+<h3 class="sub reveal" id="security-checklist-for-a-live-realm">Security checklist for a live realm</h3>
 <p class="reveal">None of this is exotic — it's the same OAuth2/OIDC hardening covered conceptually in the Security &amp; Auth module, applied as concrete Keycloak settings.</p>
 
 <div class="duo reveal">
@@ -1915,7 +1942,7 @@ noscript .reveal{opacity:1;}
 <div class="callout__body"><b class="h">Where the client stores the token matters too</b><p>Avoid <code>localStorage</code> — any injected script can read it, turning a single XSS bug into full account takeover. Prefer HttpOnly, secure cookies, or better, a Backend-for-Frontend that keeps tokens off the browser entirely. Set <code>SameSite</code> on cookies to mitigate CSRF as a bonus layer.</p></div>
 </div>
 
-<h3 class="sub reveal">When it breaks: symptom to cause</h3>
+<h3 class="sub reveal" id="when-it-breaks-symptom-to-cause">When it breaks: symptom to cause</h3>
 <div class="tbl-wrap reveal">
 <table>
 <thead><tr><th>Symptom</th><th>Likely cause</th></tr></thead>
@@ -1979,53 +2006,53 @@ noscript .reveal{opacity:1;}
 
 <div class="iq-group-label reveal">Core Concepts &amp; Architecture</div>
 
-<details class="iq-item reveal"><summary><span class="iq-num">01</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">Why is putting application end users in the master realm a mistake, even though it would technically work?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>The master realm exists to administer Keycloak itself — it holds the super-admin account and controls access to every other realm. Treating it as "just another realm" for a product's customers means a compromised or over-permissioned app user could pivot into managing the entire Keycloak instance, not just their own tenant.</p><p>In practice this shows up during access reviews: master realm role mappings should be tiny and tightly held, a handful of operations accounts at most. Seeing thousands of ordinary user accounts in master is itself a sign something was set up wrong. Every real application or tenant gets its own dedicated realm, keeping the admin boundary separate from any user population.</p></div></details>
+<details class="iq-item reveal" id="iq-interview-01"><summary><span class="iq-num">01</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">Why is putting application end users in the master realm a mistake, even though it would technically work?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>The master realm exists to administer Keycloak itself — it holds the super-admin account and controls access to every other realm. Treating it as "just another realm" for a product's customers means a compromised or over-permissioned app user could pivot into managing the entire Keycloak instance, not just their own tenant.</p><p>In practice this shows up during access reviews: master realm role mappings should be tiny and tightly held, a handful of operations accounts at most. Seeing thousands of ordinary user accounts in master is itself a sign something was set up wrong. Every real application or tenant gets its own dedicated realm, keeping the admin boundary separate from any user population.</p></div></details>
 
-<details class="iq-item reveal"><summary><span class="iq-num">02</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">PKCE is recommended for every OAuth2 client today, confidential or not. So why does Keycloak still draw a hard line requiring it specifically for public clients?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>A confidential client holds a client secret it presents at the token endpoint, so even if an authorization code is intercepted in transit, an attacker without that secret can't redeem it. A public client — a single-page app or mobile app — has no secret it can actually protect, since anything shipped to the browser or device is extractable. Without something else binding the code to the legitimate requester, an intercepted code alone would be redeemable by whoever grabbed it.</p><p>PKCE closes that gap with a per-request verifier only the real client instance holds. For confidential clients the secret already provides that binding, so PKCE there is defense-in-depth rather than the only thing stopping code interception — which is why it's mandatory for public clients specifically, while still being good hygiene everywhere else.</p></div></details>
+<details class="iq-item reveal" id="iq-interview-02"><summary><span class="iq-num">02</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">PKCE is recommended for every OAuth2 client today, confidential or not. So why does Keycloak still draw a hard line requiring it specifically for public clients?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>A confidential client holds a client secret it presents at the token endpoint, so even if an authorization code is intercepted in transit, an attacker without that secret can't redeem it. A public client — a single-page app or mobile app — has no secret it can actually protect, since anything shipped to the browser or device is extractable. Without something else binding the code to the legitimate requester, an intercepted code alone would be redeemable by whoever grabbed it.</p><p>PKCE closes that gap with a per-request verifier only the real client instance holds. For confidential clients the secret already provides that binding, so PKCE there is defense-in-depth rather than the only thing stopping code interception — which is why it's mandatory for public clients specifically, while still being good hygiene everywhere else.</p></div></details>
 
-<details class="iq-item reveal"><summary><span class="iq-num">03</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">What does Infinispan actually buy Keycloak, and why should you care as the person running it in production?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>Keycloak, running on Quarkus, keeps login sessions and related caches in Infinispan, a distributed in-memory data grid, rather than pinning them to whichever process first handled the request. That's what makes horizontal scaling and high availability actually work: any node in the cluster can serve a request tied to a session that started on a different node, because Infinispan replicates or distributes that session data across the cluster instead of keeping it node-local.</p><p>The practical consequence is that putting two Keycloak instances behind a load balancer doesn't give you real HA on its own — Infinispan needs to be clustered correctly, with working node discovery and network reachability between instances. Get that wrong and you'll see intermittent "session not found" failures whenever the load balancer happens to route a request to a node that never received that session.</p></div></details>
+<details class="iq-item reveal" id="iq-interview-03"><summary><span class="iq-num">03</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">What does Infinispan actually buy Keycloak, and why should you care as the person running it in production?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>Keycloak, running on Quarkus, keeps login sessions and related caches in Infinispan, a distributed in-memory data grid, rather than pinning them to whichever process first handled the request. That's what makes horizontal scaling and high availability actually work: any node in the cluster can serve a request tied to a session that started on a different node, because Infinispan replicates or distributes that session data across the cluster instead of keeping it node-local.</p><p>The practical consequence is that putting two Keycloak instances behind a load balancer doesn't give you real HA on its own — Infinispan needs to be clustered correctly, with working node discovery and network reachability between instances. Get that wrong and you'll see intermittent "session not found" failures whenever the load balancer happens to route a request to a node that never received that session.</p></div></details>
 
-<details class="iq-item reveal"><summary><span class="iq-num">04</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Keycloak exposes a JWKS endpoint. Why does that exist, and what happens when Keycloak rotates its signing key?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>Resource servers need Keycloak's public signing key to verify a JWT's signature without calling Keycloak on every request. The JWKS endpoint publishes the current key (and recently retired ones), and each token's header carries a <code>kid</code> identifying exactly which key signed it.</p><p>Rotation doesn't invalidate every token in flight — Keycloak starts signing new tokens with a new <code>kid</code> while JWKS keeps publishing the old public key for a while, so tokens signed before rotation still validate. A validator that only fetches JWKS once at startup and never refreshes will eventually reject perfectly valid tokens signed with a <code>kid</code> it's never seen, which is why clients should refresh their cache periodically and specifically whenever they meet an unrecognised <code>kid</code>.</p></div></details>
+<details class="iq-item reveal" id="iq-interview-04"><summary><span class="iq-num">04</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Keycloak exposes a JWKS endpoint. Why does that exist, and what happens when Keycloak rotates its signing key?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>Resource servers need Keycloak's public signing key to verify a JWT's signature without calling Keycloak on every request. The JWKS endpoint publishes the current key (and recently retired ones), and each token's header carries a <code>kid</code> identifying exactly which key signed it.</p><p>Rotation doesn't invalidate every token in flight — Keycloak starts signing new tokens with a new <code>kid</code> while JWKS keeps publishing the old public key for a while, so tokens signed before rotation still validate. A validator that only fetches JWKS once at startup and never refreshes will eventually reject perfectly valid tokens signed with a <code>kid</code> it's never seen, which is why clients should refresh their cache periodically and specifically whenever they meet an unrecognised <code>kid</code>.</p></div></details>
 
 <div class="iq-group-label reveal">OAuth2, OIDC &amp; Tokens in Keycloak</div>
 
-<details class="iq-item reveal"><summary><span class="iq-num">05</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Trace what actually happens on the wire during an Authorization Code login against Keycloak.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>The app redirects the browser to Keycloak's realm-scoped <code>/auth</code> endpoint with <code>client_id</code>, <code>redirect_uri</code>, <code>response_type=code</code>, and the requested scopes. Keycloak authenticates the user — its own login form, or a broker/federated identity behind the scenes — then redirects back to <code>redirect_uri</code> carrying a short-lived authorization code.</p><p>The app's backend then calls Keycloak's <code>/token</code> endpoint directly, server-to-server, exchanging that code — plus a client secret if confidential, or a PKCE <code>code_verifier</code> if public — for an access token, ID token, and refresh token. Because the exchange happens over a back channel, tokens never touch the browser's address bar or history, which is precisely what the deprecated Implicit flow got wrong.</p></div></details>
+<details class="iq-item reveal" id="iq-interview-05"><summary><span class="iq-num">05</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Trace what actually happens on the wire during an Authorization Code login against Keycloak.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>The app redirects the browser to Keycloak's realm-scoped <code>/auth</code> endpoint with <code>client_id</code>, <code>redirect_uri</code>, <code>response_type=code</code>, and the requested scopes. Keycloak authenticates the user — its own login form, or a broker/federated identity behind the scenes — then redirects back to <code>redirect_uri</code> carrying a short-lived authorization code.</p><p>The app's backend then calls Keycloak's <code>/token</code> endpoint directly, server-to-server, exchanging that code — plus a client secret if confidential, or a PKCE <code>code_verifier</code> if public — for an access token, ID token, and refresh token. Because the exchange happens over a back channel, tokens never touch the browser's address bar or history, which is precisely what the deprecated Implicit flow got wrong.</p></div></details>
 
-<details class="iq-item reveal"><summary><span class="iq-num">06</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">When would you reach for the Client Credentials grant instead of Authorization Code against Keycloak?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>Client Credentials is for machine-to-machine calls with no human present to authenticate — a batch job, a scheduled sync, one microservice calling another as itself. The client authenticates directly to Keycloak's <code>/token</code> endpoint with its own credentials and gets back an access token representing the client, not any user.</p><p>The trap is reaching for it inside a user-facing flow just because it's simpler to wire up — that throws away any notion of who the user is, and downstream audit logs will only ever show "the service" acted, never which end user actually triggered the action.</p></div></details>
+<details class="iq-item reveal" id="iq-interview-06"><summary><span class="iq-num">06</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">When would you reach for the Client Credentials grant instead of Authorization Code against Keycloak?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>Client Credentials is for machine-to-machine calls with no human present to authenticate — a batch job, a scheduled sync, one microservice calling another as itself. The client authenticates directly to Keycloak's <code>/token</code> endpoint with its own credentials and gets back an access token representing the client, not any user.</p><p>The trap is reaching for it inside a user-facing flow just because it's simpler to wire up — that throws away any notion of who the user is, and downstream audit logs will only ever show "the service" acted, never which end user actually triggered the action.</p></div></details>
 
-<details class="iq-item reveal"><summary><span class="iq-num">07</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">Implicit and Resource Owner Password Credentials grants are still technically supported. Why would using either be considered a mistake today?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>Implicit returned the access token directly in the browser's redirect fragment, with no back-channel exchange — tokens ended up in browser history, referrer headers, and logs, and there was no way to use a client secret since everything happened in the front channel. Authorization Code with PKCE covers the same SPA use case without ever putting a token somewhere it can leak that way.</p><p>ROPC has the client itself collect the user's actual username and password and forward them to Keycloak, which trains users to type credentials into arbitrary app UIs instead of only Keycloak's login page, defeats the point of centralising authentication, and leaves no room for redirecting to an external IdP or prompting for MFA mid-flow.</p></div></details>
+<details class="iq-item reveal" id="iq-interview-07"><summary><span class="iq-num">07</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">Implicit and Resource Owner Password Credentials grants are still technically supported. Why would using either be considered a mistake today?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>Implicit returned the access token directly in the browser's redirect fragment, with no back-channel exchange — tokens ended up in browser history, referrer headers, and logs, and there was no way to use a client secret since everything happened in the front channel. Authorization Code with PKCE covers the same SPA use case without ever putting a token somewhere it can leak that way.</p><p>ROPC has the client itself collect the user's actual username and password and forward them to Keycloak, which trains users to type credentials into arbitrary app UIs instead of only Keycloak's login page, defeats the point of centralising authentication, and leaves no room for redirecting to an external IdP or prompting for MFA mid-flow.</p></div></details>
 
-<details class="iq-item reveal"><summary><span class="iq-num">08</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A Spring Boot resource server validates Keycloak-issued JWTs fine locally, but every role-based <code>@PreAuthorize</code> check fails once deployed. What's the likely cause?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>Spring Security's default JWT authentication converter expects roles as a flat, space-delimited <code>scope</code> claim. Keycloak doesn't emit roles that way — it nests them under <code>realm_access.roles</code> for realm-level roles and <code>resource_access.{client}.roles</code> for client-level roles. The default converter never looks there, so every role check silently resolves to "no authorities," which usually shows up as unexplained 403s rather than an obvious error, since the token itself is perfectly valid.</p><p>The fix is a custom <code>JwtAuthenticationConverter</code> that reads those specific claim paths and maps them into <code>GrantedAuthority</code> objects, typically prefixed <code>ROLE_</code>, before Spring's authorization checks run. It's one of the most common real integration gotchas precisely because both sides "work" in isolation — the mismatch is purely about which JSON path the roles live under.</p></div></details>
+<details class="iq-item reveal" id="iq-interview-08"><summary><span class="iq-num">08</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A Spring Boot resource server validates Keycloak-issued JWTs fine locally, but every role-based <code>@PreAuthorize</code> check fails once deployed. What's the likely cause?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>Spring Security's default JWT authentication converter expects roles as a flat, space-delimited <code>scope</code> claim. Keycloak doesn't emit roles that way — it nests them under <code>realm_access.roles</code> for realm-level roles and <code>resource_access.{client}.roles</code> for client-level roles. The default converter never looks there, so every role check silently resolves to "no authorities," which usually shows up as unexplained 403s rather than an obvious error, since the token itself is perfectly valid.</p><p>The fix is a custom <code>JwtAuthenticationConverter</code> that reads those specific claim paths and maps them into <code>GrantedAuthority</code> objects, typically prefixed <code>ROLE_</code>, before Spring's authorization checks run. It's one of the most common real integration gotchas precisely because both sides "work" in isolation — the mismatch is purely about which JSON path the roles live under.</p></div></details>
 
 <div class="iq-group-label reveal">Authorization &amp; Federation</div>
 
-<details class="iq-item reveal"><summary><span class="iq-num">09</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">A resource server can validate a token locally against a cached JWKS key, or call Keycloak's introspection endpoint. When would you choose each?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>Local validation — checking the signature against a cached JWKS key, plus <code>exp</code>/<code>iss</code>/<code>aud</code> — is fast and needs no network round trip per request, which matters under load. But it only knows what's inside the token. If a session is killed or a token revoked before it naturally expires, a local validator has no way to find out; it'll accept the token until it expires on its own.</p><p>Calling <code>/introspect</code> asks Keycloak directly whether the token is still valid right now, so it reflects revocation immediately, at the cost of a network call — and Keycloak load — on every request. Most systems land on a middle ground: local validation plus short-lived access tokens, so the exposure window for a revoked-but-not-expired token stays small without paying the introspection cost constantly.</p></div></details>
+<details class="iq-item reveal" id="iq-interview-09"><summary><span class="iq-num">09</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">A resource server can validate a token locally against a cached JWKS key, or call Keycloak's introspection endpoint. When would you choose each?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>Local validation — checking the signature against a cached JWKS key, plus <code>exp</code>/<code>iss</code>/<code>aud</code> — is fast and needs no network round trip per request, which matters under load. But it only knows what's inside the token. If a session is killed or a token revoked before it naturally expires, a local validator has no way to find out; it'll accept the token until it expires on its own.</p><p>Calling <code>/introspect</code> asks Keycloak directly whether the token is still valid right now, so it reflects revocation immediately, at the cost of a network call — and Keycloak load — on every request. Most systems land on a middle ground: local validation plus short-lived access tokens, so the exposure window for a revoked-but-not-expired token stays small without paying the introspection cost constantly.</p></div></details>
 
-<details class="iq-item reveal"><summary><span class="iq-num">10</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Keycloak's Authorization Services give you Resources, Scopes, Policies, Permissions, and RPT tokens via UMA. When is that worth it over just checking roles embedded in the token?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>Simple role checks are cheap to reason about and need nothing beyond what's already in the JWT — fine when authorization decisions are static and few. Authorization Services centralises the actual policy decisions in Keycloak: you define resources and scopes once, and any service can ask "can this user do X to resource Y" via a permission ticket or RPT, with the policy logic — role-based, attribute-based, time-based, whatever — living in one place instead of duplicated across services.</p><p>The cost is real: extra complexity, and an extra network dependency for authorization, not just authentication. It earns its keep when rules are numerous, change often, or must stay consistent across many services so you're not reimplementing the same rule five times. It's overkill for an app with two or three static roles.</p></div></details>
+<details class="iq-item reveal" id="iq-interview-10"><summary><span class="iq-num">10</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Keycloak's Authorization Services give you Resources, Scopes, Policies, Permissions, and RPT tokens via UMA. When is that worth it over just checking roles embedded in the token?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>Simple role checks are cheap to reason about and need nothing beyond what's already in the JWT — fine when authorization decisions are static and few. Authorization Services centralises the actual policy decisions in Keycloak: you define resources and scopes once, and any service can ask "can this user do X to resource Y" via a permission ticket or RPT, with the policy logic — role-based, attribute-based, time-based, whatever — living in one place instead of duplicated across services.</p><p>The cost is real: extra complexity, and an extra network dependency for authorization, not just authentication. It earns its keep when rules are numerous, change often, or must stay consistent across many services so you're not reimplementing the same rule five times. It's overkill for an app with two or three static roles.</p></div></details>
 
-<details class="iq-item reveal"><summary><span class="iq-num">11</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">Identity brokering and User Federation both involve an "external" identity source. What's actually different, and why do people conflate them?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>With brokering, Keycloak doesn't authenticate the user itself — it redirects to an external IdP such as Google or another OIDC/SAML provider, lets that IdP do the actual login, and links or creates a local Keycloak account from the resulting token. The user's password never touches Keycloak.</p><p>User Federation is the opposite: Keycloak still runs the login screen and the authentication attempt itself, but instead of checking the password against its own database it checks against a federated directory like LDAP or AD. People conflate the two because both involve "another system holding identity," but the redirect-versus-direct-authentication distinction is the load-bearing difference — it changes who owns the login UI and where credentials actually get checked.</p></div></details>
+<details class="iq-item reveal" id="iq-interview-11"><summary><span class="iq-num">11</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">Identity brokering and User Federation both involve an "external" identity source. What's actually different, and why do people conflate them?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>With brokering, Keycloak doesn't authenticate the user itself — it redirects to an external IdP such as Google or another OIDC/SAML provider, lets that IdP do the actual login, and links or creates a local Keycloak account from the resulting token. The user's password never touches Keycloak.</p><p>User Federation is the opposite: Keycloak still runs the login screen and the authentication attempt itself, but instead of checking the password against its own database it checks against a federated directory like LDAP or AD. People conflate the two because both involve "another system holding identity," but the redirect-versus-direct-authentication distinction is the load-bearing difference — it changes who owns the login UI and where credentials actually get checked.</p></div></details>
 
-<details class="iq-item reveal"><summary><span class="iq-num">12</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">For LDAP/AD federation, what's the practical difference between import and read-through sync, and what does each cost you?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>Import mode copies user attributes into Keycloak's own store on first lookup, so Keycloak has a local, fast-to-query copy — but that copy can drift out of sync with the source directory until the next sync cycle, so a user disabled in AD might still look active in Keycloak's local copy for a while.</p><p>Read-through (no-import) mode queries LDAP live on each lookup, so it's always current, at the cost of making Keycloak's user operations only as fast and as available as the directory itself. If LDAP is slow or briefly unreachable, that latency or outage shows up directly in your login flow.</p></div></details>
+<details class="iq-item reveal" id="iq-interview-12"><summary><span class="iq-num">12</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">For LDAP/AD federation, what's the practical difference between import and read-through sync, and what does each cost you?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>Import mode copies user attributes into Keycloak's own store on first lookup, so Keycloak has a local, fast-to-query copy — but that copy can drift out of sync with the source directory until the next sync cycle, so a user disabled in AD might still look active in Keycloak's local copy for a while.</p><p>Read-through (no-import) mode queries LDAP live on each lookup, so it's always current, at the cost of making Keycloak's user operations only as fast and as available as the directory itself. If LDAP is slow or briefly unreachable, that latency or outage shows up directly in your login flow.</p></div></details>
 
 <div class="iq-group-label reveal">SSO, MFA &amp; Integration</div>
 
-<details class="iq-item reveal"><summary><span class="iq-num">13</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A user logs out of App A but is surprised to still be logged into App B afterward. What's going on, and how would you actually fix it?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>Keycloak's SSO runs on its own browser session cookie. Logging out of App A typically only ends App A's local application session, not the underlying Keycloak SSO session, unless something explicitly tells Keycloak to end that broader session too.</p><p>The fix is RP-initiated logout — redirecting the browser through Keycloak's own logout endpoint so it terminates the Keycloak session cookie itself — combined with back-channel logout, where Keycloak notifies every other client holding a session so they can invalidate their own local sessions even without the user's browser visiting them. Skipping this is one of the most common real-world "SSO logout doesn't work" bug reports.</p></div></details>
+<details class="iq-item reveal" id="iq-interview-13"><summary><span class="iq-num">13</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A user logs out of App A but is surprised to still be logged into App B afterward. What's going on, and how would you actually fix it?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>Keycloak's SSO runs on its own browser session cookie. Logging out of App A typically only ends App A's local application session, not the underlying Keycloak SSO session, unless something explicitly tells Keycloak to end that broader session too.</p><p>The fix is RP-initiated logout — redirecting the browser through Keycloak's own logout endpoint so it terminates the Keycloak session cookie itself — combined with back-channel logout, where Keycloak notifies every other client holding a session so they can invalidate their own local sessions even without the user's browser visiting them. Skipping this is one of the most common real-world "SSO logout doesn't work" bug reports.</p></div></details>
 
-<details class="iq-item reveal"><summary><span class="iq-num">14</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Keycloak lets you build custom authentication flows from Required, Alternative, Conditional, and Disabled steps. What do those settings actually control?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>A flow is an ordered sequence of authenticator steps, and each step's requirement setting decides how it combines with the others. Required means the step must succeed for the flow to continue; Alternative means any one sibling succeeding is enough; Disabled skips the step entirely; Conditional gates a sub-flow behind a runtime condition — like the user's role or which client is being used — rather than always running it.</p><p>This is what lets one realm serve very different login experiences without spinning up separate realms: username/password Required, then a Conditional sub-flow that only executes an OTP Required step when its condition is true. Regular users breeze through, while whoever matches the condition hits the extra factor.</p></div></details>
+<details class="iq-item reveal" id="iq-interview-14"><summary><span class="iq-num">14</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Keycloak lets you build custom authentication flows from Required, Alternative, Conditional, and Disabled steps. What do those settings actually control?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>A flow is an ordered sequence of authenticator steps, and each step's requirement setting decides how it combines with the others. Required means the step must succeed for the flow to continue; Alternative means any one sibling succeeding is enough; Disabled skips the step entirely; Conditional gates a sub-flow behind a runtime condition — like the user's role or which client is being used — rather than always running it.</p><p>This is what lets one realm serve very different login experiences without spinning up separate realms: username/password Required, then a Conditional sub-flow that only executes an OTP Required step when its condition is true. Regular users breeze through, while whoever matches the condition hits the extra factor.</p></div></details>
 
-<details class="iq-item reveal"><summary><span class="iq-num">15</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">You need MFA enforced for admins only, without touching regular users' login experience. How do you actually build that in Keycloak?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>Inside the realm's browser authentication flow, add a Conditional sub-flow gated by the Condition - User Role authenticator, configured to match the admin role. Inside that sub-flow, add an OTP (or WebAuthn) step marked Required.</p><p>For a regular user, the condition evaluates false, so the whole sub-flow — OTP prompt included — is skipped, leaving username/password as their only requirement. For an admin, the condition passes and OTP becomes mandatory before the flow can succeed. One flow definition now serves both populations instead of needing separate flows or separate clients per audience.</p></div></details>
+<details class="iq-item reveal" id="iq-interview-15"><summary><span class="iq-num">15</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">You need MFA enforced for admins only, without touching regular users' login experience. How do you actually build that in Keycloak?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>Inside the realm's browser authentication flow, add a Conditional sub-flow gated by the Condition - User Role authenticator, configured to match the admin role. Inside that sub-flow, add an OTP (or WebAuthn) step marked Required.</p><p>For a regular user, the condition evaluates false, so the whole sub-flow — OTP prompt included — is skipped, leaving username/password as their only requirement. For an admin, the condition passes and OTP becomes mandatory before the flow can succeed. One flow definition now serves both populations instead of needing separate flows or separate clients per audience.</p></div></details>
 
-<details class="iq-item reveal"><summary><span class="iq-num">16</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Interviewers sometimes ask you to trace a login "from theory to implementation." How would you connect the general OAuth2/OIDC picture to what Keycloak specifically does?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>As covered in the Security &amp; Auth module's OAuth2/OIDC chapters, the abstract picture is: a client redirects the resource owner to an authorization server, that server authenticates the user and obtains consent, then returns tokens the client can use against a resource server — with OIDC layering an ID token and identity claims on top of OAuth2's authorization-only model.</p><p>Keycloak is a concrete authorization server implementing exactly that shape: its <code>/auth</code> endpoint is the authorization endpoint, <code>/token</code> is the token endpoint, it issues both an OIDC ID token and OAuth2 access/refresh tokens, and it exposes the JWKS endpoint so resource servers can verify signatures. Being able to point at Keycloak's actual endpoints while narrating the generic flow is exactly what separates "knows the theory" from "has actually built on this."</p></div></details>
+<details class="iq-item reveal" id="iq-interview-16"><summary><span class="iq-num">16</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Interviewers sometimes ask you to trace a login "from theory to implementation." How would you connect the general OAuth2/OIDC picture to what Keycloak specifically does?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>As covered in the Security &amp; Auth module's OAuth2/OIDC chapters, the abstract picture is: a client redirects the resource owner to an authorization server, that server authenticates the user and obtains consent, then returns tokens the client can use against a resource server — with OIDC layering an ID token and identity claims on top of OAuth2's authorization-only model.</p><p>Keycloak is a concrete authorization server implementing exactly that shape: its <code>/auth</code> endpoint is the authorization endpoint, <code>/token</code> is the token endpoint, it issues both an OIDC ID token and OAuth2 access/refresh tokens, and it exposes the JWKS endpoint so resource servers can verify signatures. Being able to point at Keycloak's actual endpoints while narrating the generic flow is exactly what separates "knows the theory" from "has actually built on this."</p></div></details>
 
 <div class="iq-group-label reveal">Deployment &amp; Cross-Topic Scenarios</div>
 
-<details class="iq-item reveal"><summary><span class="iq-num">17</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">What are the production mistakes that trip up teams running Keycloak for real, as opposed to a local demo?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>The most common is forgetting to configure the hostname/proxy settings correctly behind a load balancer or reverse proxy — Keycloak needs to know its externally visible hostname to generate correct issuer and redirect URLs, and without that, tokens get issued with an issuer that doesn't match what clients expect, breaking validation. Close behind is forgetting to rebuild or restart after changing providers or certain config, since some changes only take effect once Keycloak reprocesses its configuration.</p><p>Others: still running on the embedded H2 database in production instead of PostgreSQL, clock skew between servers causing tokens to look already expired or signatures to appear invalid the moment they're issued, and leaving the admin console reachable from the public internet instead of restricting it to an internal network. Each individually is a "worked in the demo" problem that turns into a production incident.</p></div></details>
+<details class="iq-item reveal" id="iq-interview-17"><summary><span class="iq-num">17</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">What are the production mistakes that trip up teams running Keycloak for real, as opposed to a local demo?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>The most common is forgetting to configure the hostname/proxy settings correctly behind a load balancer or reverse proxy — Keycloak needs to know its externally visible hostname to generate correct issuer and redirect URLs, and without that, tokens get issued with an issuer that doesn't match what clients expect, breaking validation. Close behind is forgetting to rebuild or restart after changing providers or certain config, since some changes only take effect once Keycloak reprocesses its configuration.</p><p>Others: still running on the embedded H2 database in production instead of PostgreSQL, clock skew between servers causing tokens to look already expired or signatures to appear invalid the moment they're issued, and leaving the admin console reachable from the public internet instead of restricting it to an internal network. Each individually is a "worked in the demo" problem that turns into a production incident.</p></div></details>
 
-<details class="iq-item reveal"><summary><span class="iq-num">18</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Design SSO for five internal apps, add "log in with Google," and require MFA just for admins. What does the Keycloak setup look like?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>One realm covering all five apps, not five separate realms — a single realm gives shared SSO for free and is simpler to operate, whereas multiple realms would buy full isolation at the cost of more overhead and no cross-realm SSO, which isn't needed here since these are all internal apps meant to share sessions. Each app still gets its own client: confidential clients for server-side apps that can hold a secret, public clients with PKCE for any SPA.</p><p>Google is wired up as an identity provider via brokering, so users authenticate through Google without Keycloak ever owning their Google password. Roles are organised through groups, so promoting someone to admin is a group membership change rather than a per-user edit, and the admin-only MFA requirement is the Conditional-sub-flow-plus-Condition-User-Role setup described earlier, applied once at the realm level.</p></div></details>
+<details class="iq-item reveal" id="iq-interview-18"><summary><span class="iq-num">18</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Design SSO for five internal apps, add "log in with Google," and require MFA just for admins. What does the Keycloak setup look like?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>One realm covering all five apps, not five separate realms — a single realm gives shared SSO for free and is simpler to operate, whereas multiple realms would buy full isolation at the cost of more overhead and no cross-realm SSO, which isn't needed here since these are all internal apps meant to share sessions. Each app still gets its own client: confidential clients for server-side apps that can hold a secret, public clients with PKCE for any SPA.</p><p>Google is wired up as an identity provider via brokering, so users authenticate through Google without Keycloak ever owning their Google password. Roles are organised through groups, so promoting someone to admin is a group membership change rather than a per-user edit, and the admin-only MFA requirement is the Conditional-sub-flow-plus-Condition-User-Role setup described earlier, applied once at the realm level.</p></div></details>
 
-<details class="iq-item reveal"><summary><span class="iq-num">19</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A dozen microservices need to trust access tokens on every incoming request without hammering Keycloak. How do you architect that?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>Each service validates tokens locally: fetch and cache Keycloak's JWKS public keys, verify the token's signature against the key matching its <code>kid</code>, and check <code>exp</code>, <code>iss</code>, and <code>aud</code> itself, with no call to Keycloak on the request path. This is the local-validation side of the introspection trade-off, chosen here because inter-service request volume makes a per-call round trip to Keycloak both slow and a potential bottleneck or single point of failure.</p><p>The cache needs a refresh strategy: periodically on a timer, and immediately whenever a token arrives signed with a <code>kid</code> the service hasn't seen, which signals a key rotation happened. Since this trades away live revocation awareness, teams pair it with reasonably short access-token lifetimes so a compromised or revoked token's blast radius stays time-boxed even without introspection.</p></div></details>
+<details class="iq-item reveal" id="iq-interview-19"><summary><span class="iq-num">19</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A dozen microservices need to trust access tokens on every incoming request without hammering Keycloak. How do you architect that?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>Each service validates tokens locally: fetch and cache Keycloak's JWKS public keys, verify the token's signature against the key matching its <code>kid</code>, and check <code>exp</code>, <code>iss</code>, and <code>aud</code> itself, with no call to Keycloak on the request path. This is the local-validation side of the introspection trade-off, chosen here because inter-service request volume makes a per-call round trip to Keycloak both slow and a potential bottleneck or single point of failure.</p><p>The cache needs a refresh strategy: periodically on a timer, and immediately whenever a token arrives signed with a <code>kid</code> the service hasn't seen, which signals a key rotation happened. Since this trades away live revocation awareness, teams pair it with reasonably short access-token lifetimes so a compromised or revoked token's blast radius stays time-boxed even without introspection.</p></div></details>
 
-<details class="iq-item reveal"><summary><span class="iq-num">20</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">You're migrating users out of a legacy in-house database into Keycloak. What are the realistic options, and what pushes you toward one?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>For a one-time cutover, bulk-import existing users through Keycloak's Admin REST API, typically paired with an "update password" required action since you generally can't recover cleartext passwords from the legacy store to set them directly. If users still need to authenticate against the legacy system during a transition period, a custom User Storage SPI lets Keycloak authenticate directly against that store live, optionally importing the user into Keycloak's own store on their first successful login.</p><p>If the legacy system already looks like a directory rather than a bespoke database, LDAP federation is the more natural fit and needs no custom code at all. The deciding factor is whether you can afford a hard cutover: the SPI or federation route buys a gradual migration where old and new coexist, while bulk import assumes you're ready to fully commit on migration day.</p></div></details>
+<details class="iq-item reveal" id="iq-interview-20"><summary><span class="iq-num">20</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">You're migrating users out of a legacy in-house database into Keycloak. What are the realistic options, and what pushes you toward one?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary><div class="iq-body"><p>For a one-time cutover, bulk-import existing users through Keycloak's Admin REST API, typically paired with an "update password" required action since you generally can't recover cleartext passwords from the legacy store to set them directly. If users still need to authenticate against the legacy system during a transition period, a custom User Storage SPI lets Keycloak authenticate directly against that store live, optionally importing the user into Keycloak's own store on their first successful login.</p><p>If the legacy system already looks like a directory rather than a bespoke database, LDAP federation is the more natural fit and needs no custom code at all. The deciding factor is whether you can afford a hard cutover: the SPI or federation route buys a gradual migration where old and new coexist, while bulk import assumes you're ready to fully commit on migration day.</p></div></details>
 
 <div class="callout callout--tip reveal"><div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2.5l2.1 5.9 5.9 2.1-5.9 2.1L12 18.5l-2.1-5.9-5.9-2.1 5.9-2.1L12 2.5z" fill="currentColor"/></svg></div><div class="callout__body"><b class="h">Interview delivery tips</b><p>1) Name the actual endpoint or claim — <code>/auth</code>, <code>/token</code>, <code>realm_access.roles</code> — instead of speaking only in generic OAuth2 terms; it signals hands-on experience over textbook knowledge. 2) When asked to compare two mechanisms (brokering vs federation, local validation vs introspection), lead with the trade-off, not the definition. 3) Keep one end-to-end scenario ready — SSO across several apps plus an external IdP plus MFA for a subset of users — so you can narrate a full design instead of isolated facts. 4) When a scenario question involves something broken, reach for the small set of usual suspects first — clock skew, hostname/proxy misconfiguration, claim-shape mismatches — before inventing an exotic cause.</p></div></div>
 
@@ -2092,6 +2119,8 @@ noscript .reveal{opacity:1;}
 <footer class="site-foot">Keycloak — Identity in Practice. <a href="index.html#keycloak" style="color:var(--accent-ink);font-weight:600;">← Back to the trailhead</a></footer>
 
 </main>
+<script src="search-index.js"></script>
+<script src="site-search.js"></script>
 <script>
 (function(){
 "use strict";

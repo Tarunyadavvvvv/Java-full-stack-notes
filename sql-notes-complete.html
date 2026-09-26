@@ -388,6 +388,25 @@ noscript .reveal{opacity:1;}
   .navlink{font-size:.8rem;padding:.45rem .7rem;}
   .contents-btn{font-size:.8rem;padding:.45rem .8rem;}
 }
+/* ---- site search ---- */
+.site-search{position:relative;flex:1;max-width:420px;margin:0 1.2rem;}
+.site-search__box{display:flex;align-items:center;gap:.5rem;background:var(--surface-2);border-radius:var(--r-pill);padding:.5rem .9rem;transition:background var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);}
+.site-search__box:focus-within{background:var(--surface);box-shadow:0 0 0 2px var(--accent);}
+.site-search__icon{flex:none;width:15px;height:15px;color:var(--muted);}
+.site-search__input{flex:1;min-width:0;border:none;background:none;outline:none;font-family:var(--font-body);font-size:.87rem;color:var(--ink);}
+.site-search__input::placeholder{color:var(--muted);}
+.site-search__kbd{flex:none;font-family:var(--font-mono);font-size:.68rem;color:var(--muted);background:var(--surface);border-radius:5px;padding:.1rem .4rem;box-shadow:var(--shadow-sm);}
+.site-search__results{position:absolute;top:calc(100% + 8px);left:0;right:0;max-height:min(70vh,480px);overflow-y:auto;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:.5rem;display:none;z-index:50;}
+.site-search.is-open .site-search__results{display:block;}
+.site-search__empty{padding:1rem;font-size:.85rem;color:var(--muted);text-align:center;}
+.site-search__item{display:block;padding:.65rem .8rem;border-radius:10px;text-decoration:none;color:inherit;cursor:pointer;}
+.site-search__item:hover,.site-search__item.is-active{background:var(--tint);}
+.site-search__item-title{font-weight:700;font-size:.88rem;display:block;}
+.site-search__item-meta{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:.4rem;margin-top:.2rem;}
+.site-search__item-type{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;background:var(--surface-2);padding:.1rem .4rem;border-radius:999px;}
+.site-search mark{background:var(--tint-strong);color:inherit;border-radius:3px;padding:0 .1em;}
+@media (max-width:820px){.site-search{order:3;flex-basis:100%;max-width:none;margin:.6rem 0 0;}}
+[id]{scroll-margin-top:90px;}
 </style>
 </head>
 <body>
@@ -396,6 +415,14 @@ noscript .reveal{opacity:1;}
 <header class="topnav">
   <div class="topnav__inner">
     <a class="wordmark" href="index.html#sql"><span class="wordmark__mark">S</span>SQL Notes</a>
+    <div class="site-search" id="siteSearch">
+      <div class="site-search__box">
+        <svg class="site-search__icon" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" class="site-search__input" id="siteSearchInput" placeholder="Search any topic or question…" autocomplete="off" aria-label="Search notes" aria-expanded="false" aria-controls="siteSearchResults">
+        <span class="site-search__kbd">/</span>
+      </div>
+      <div class="site-search__results" id="siteSearchResults"></div>
+    </div>
     <nav class="navlinks">
       <a class="navlink" href="index.html#sql">← All topics</a>
       <div class="contents" id="contents">
@@ -461,7 +488,7 @@ noscript .reveal{opacity:1;}
 
   <p class="reveal">The relational model represents data as <strong>tables</strong> (relations) — rows are individual records, columns are typed attributes, and a schema defines the shape every row must conform to. There's no built-in concept of "order" or "the next row" — relationships between tables are expressed purely through shared column values (keys), not physical pointers.</p>
 
-  <h3 class="sub reveal">Written order vs. logical execution order</h3>
+  <h3 class="sub reveal" id="written-order-vs-logical-execution-order">Written order vs. logical execution order</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>FROM</b><span>1st</span></div>
@@ -502,7 +529,7 @@ noscript .reveal{opacity:1;}
 <span class="tk-kw">ORDER BY</span> price_with_tax;</code></pre>
   </div>
 
-  <h3 class="sub reveal">Why declarative, not imperative</h3>
+  <h3 class="sub reveal" id="why-declarative-not-imperative">Why declarative, not imperative</h3>
   <p class="reveal">You never tell SQL "loop over this table, check this condition, use this index" — you describe the desired result set, and the query <strong>optimizer</strong> (covered in depth in chapter 5) decides the actual execution strategy. This is precisely why the same query can get faster overnight with no code change: better statistics, a new index, or an upgraded optimizer can all change the chosen plan without changing a single line of SQL.</p>
 
   <div class="summary reveal">
@@ -718,7 +745,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Keys &amp; constraints</h3>
+  <h3 class="sub reveal" id="keys-constraints">Keys &amp; constraints</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Constraint</th><th>Guarantees</th></tr></thead>
@@ -751,7 +778,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Normalization</h3>
+  <h3 class="sub reveal" id="normalization">Normalization</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Form</th><th>Rule</th></tr></thead>
@@ -772,7 +799,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">A 2NF violation, worked through with real rows</h3>
+  <h3 class="sub reveal" id="a-2nf-violation-worked-through-with-real-rows">A 2NF violation, worked through with real rows</h3>
   <p class="reveal">The rule "no partial dependency" stays abstract until you watch it actually break. Below, <code>order_items</code> is keyed on <code>(order_id, product_id)</code> but also stores <code>product_name</code> — a column that depends only on <code>product_id</code>, not on the full composite key. Nothing in that schema stops the same <code>product_id</code> from showing up with two different names.</p>
 
   <div class="duo reveal">
@@ -891,7 +918,7 @@ noscript .reveal{opacity:1;}
     <div class="panel"><h4><span class="sw"></span>Hash index</h4><ul><li>O(1) exact-match lookup only</li><li>No ordering — can't support range queries at all</li><li>Used less often; mostly for pure equality-lookup workloads</li></ul></div>
   </div>
 
-  <h3 class="sub reveal">Why an index lookup is O(log n), not O(n)</h3>
+  <h3 class="sub reveal" id="why-an-index-lookup-is-o-log-n-not-o-n">Why an index lookup is O(log n), not O(n)</h3>
   <p class="reveal">A B-tree is not a binary tree — each node holds many keys at once (often hundreds, sized to fill one disk page) and branches to that many children, not just two. That branching factor is called <strong>fan-out</strong>, and it's the entire reason B-trees stay shallow as tables grow. With a fan-out of 200, a tree only 3 levels deep already indexes 200³ = 8 million rows; a 4th level takes it past a billion. Doubling the table's row count adds, at most, a thin fraction of one more level to the tree — nowhere near double the search work.</p>
 
   <div class="panel diagram-panel reveal">
@@ -920,7 +947,7 @@ noscript .reveal{opacity:1;}
 
   <p class="reveal">A lookup for one key walks exactly one path from root to leaf, reading one page per level and deciding at each node which of its many children to descend into next. That single root-to-leaf walk is the O(log n) in "index lookups are O(log n)" — the base of the logarithm is the fan-out (hundreds), so tree height barely grows at all across orders of magnitude of table growth, unlike a full table scan, whose cost grows linearly with every row added.</p>
 
-  <h3 class="sub reveal">When an index helps — and when it hurts</h3>
+  <h3 class="sub reveal" id="when-an-index-helps-and-when-it-hurts">When an index helps — and when it hurts</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Helps when</th><th>Hurts when</th></tr></thead>
@@ -952,7 +979,7 @@ noscript .reveal{opacity:1;}
 <span class="tk-kw">SELECT</span> * <span class="tk-kw">FROM</span> orders <span class="tk-kw">WHERE</span> order_date &gt; <span class="tk-str">'2026-01-01'</span>;</code></pre>
   </div>
 
-  <h3 class="sub reveal">Clustered vs. non-clustered (secondary) indexes</h3>
+  <h3 class="sub reveal" id="clustered-vs-non-clustered-secondary-indexes">Clustered vs. non-clustered (secondary) indexes</h3>
   <p class="reveal">Every table has at most <strong>one</strong> clustered index, because a clustered index's leaf nodes aren't pointers to the data — they <em>are</em> the data. The table's rows are physically stored on disk sorted by that key (in MySQL/InnoDB, this is the primary key by default, whether you think about it or not). Walk the B-tree down to a leaf and you've already arrived at the full row, with no further step needed.</p>
 
   <div class="duo reveal">
@@ -1082,7 +1109,7 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">Join algorithms</h3>
+  <h3 class="sub reveal" id="join-algorithms">Join algorithms</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Algorithm</th><th>Idea</th><th>Best when</th></tr></thead>
@@ -1221,7 +1248,7 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">How isolation is actually enforced</h3>
+  <h3 class="sub reveal" id="how-isolation-is-actually-enforced">How isolation is actually enforced</h3>
   <div class="duo reveal">
     <div class="panel"><h4><span class="sw"></span>Locking (2PL)</h4><ul><li>Shared (read) locks and exclusive (write) locks</li><li>Two-phase locking: acquire locks as needed, release them all only at commit</li><li>Readers can block writers and vice versa</li></ul></div>
     <div class="panel"><h4><span class="sw"></span>MVCC (Multi-Version Concurrency Control)</h4><ul><li>Each transaction sees a consistent snapshot of the data as of its start</li><li>Writers don't block readers — readers see an older version instead</li><li>Used by Postgres, MySQL/InnoDB, Oracle</li></ul></div>
@@ -1243,7 +1270,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Deadlocks, at the engine level</h3>
+  <h3 class="sub reveal" id="deadlocks-at-the-engine-level">Deadlocks, at the engine level</h3>
   <p class="reveal">A deadlock is two (or more) transactions each holding a lock the other needs, forming a cycle. The engine detects this by maintaining a <strong>wait-for graph</strong> — a directed graph where an edge means "transaction A is waiting on a lock held by transaction B." A cycle in that graph is a deadlock; the engine picks a victim (usually the transaction that's done the least work) and aborts it, letting the others proceed.</p>
 
   <div class="callout callout--real reveal">
@@ -1316,7 +1343,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">GROUP BY vs. window functions</h3>
+  <h3 class="sub reveal" id="group-by-vs-window-functions">GROUP BY vs. window functions</h3>
   <p class="reveal">A window function still operates over a "partition" of related rows, but returns one output row <em>per input row</em> — nothing is collapsed away. That's the distinguishing fact worth stating explicitly: <code>GROUP BY</code> reduces N rows to fewer rows; <code>OVER (PARTITION BY ...)</code> keeps all N rows, each annotated with a computed value from its group.</p>
 
   <div class="code-window reveal">
@@ -1352,7 +1379,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Window frames — controlling exactly which rows are "in view"</h3>
+  <h3 class="sub reveal" id="window-frames-controlling-exactly-which-rows-are-in-view">Window frames — controlling exactly which rows are "in view"</h3>
   <p class="reveal">An <code>OVER (ORDER BY ...)</code> clause already implies a default frame, but you can make it explicit with <code>ROWS BETWEEN ... AND ...</code>, which narrows the window down to a specific sliding range of rows around the current one instead of the whole partition. This is what makes a running total or a moving average possible in one pass, with no self-join and no slow correlated subquery.</p>
 
   <div class="code-window reveal">
@@ -1382,7 +1409,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">CTEs</h3>
+  <h3 class="sub reveal" id="ctes">CTEs</h3>
   <p class="reveal">A <code>WITH</code> clause names a subquery so it can be referenced (possibly multiple times) later in the main query — mainly a readability tool for breaking a complex query into named, sequential steps. <code>WITH RECURSIVE</code> additionally allows a CTE to reference itself, the standard way to walk hierarchical data (an org chart, a category tree) in pure SQL.</p>
 
   <div class="code-window reveal">
@@ -1406,7 +1433,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Putting it together: top-N per group</h3>
+  <h3 class="sub reveal" id="putting-it-together-top-n-per-group">Putting it together: top-N per group</h3>
   <p class="reveal">"The 3 most recent orders per customer" is the single most common window-function interview pattern, and it's just a window function and a CTE combined: rank rows within each partition with <code>ROW_NUMBER()</code>, name that query with a CTE, then filter on the computed rank from the outer query. You can't do the filtering in the same query's own <code>WHERE</code>, because <code>WHERE</code> runs before <code>SELECT</code> evaluates <code>ROW_NUMBER()</code> in logical execution order — the rank simply doesn't exist yet at that point, exactly like the SELECT-alias example back in chapter 1.</p>
 
   <div class="code-window reveal">
@@ -1431,7 +1458,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Aggregate functions &amp; HAVING vs. WHERE</h3>
+  <h3 class="sub reveal" id="aggregate-functions-having-vs-where">Aggregate functions &amp; HAVING vs. WHERE</h3>
   <div class="callout callout--tip reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2.5l2.1 5.9 5.9 2.1-5.9 2.1L12 18.5l-2.1-5.9-5.9-2.1 5.9-2.1L12 2.5z" fill="currentColor"/></svg></div>
     <div class="callout__body">
@@ -1538,7 +1565,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Common SQL interview traps</h3>
+  <h3 class="sub reveal" id="common-sql-interview-traps">Common SQL interview traps</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Trap</th><th>What actually happens</th></tr></thead>
@@ -1617,88 +1644,88 @@ noscript .reveal{opacity:1;}
 
   <div class="iq-group-label">Internals &amp; Why</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-01">
     <summary><span class="iq-num">01</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why can the exact same SQL query run with a completely different execution plan on two different days?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>SQL is declarative — the query itself never specifies an execution strategy. The optimizer picks a plan based on current table statistics (row counts, value distribution), and those statistics change as data grows and shifts. A table that doubled in size, or a value distribution that became far less selective, can flip the optimizer's cost calculation and produce a genuinely different plan for identical SQL text.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-02">
     <summary><span class="iq-num">02</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does MVCC let long-running analytical queries run without blocking the application's writes?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>The analytical query sees a consistent snapshot fixed at its start time. Concurrent writers create new row <em>versions</em> rather than mutating in place, so they never need to wait for the reader to finish, and the reader never sees a partially-committed state either. The trade-off: old row versions must be retained until no transaction still needs them, which is why long-running MVCC transactions can cause table bloat if the engine can't clean up old versions promptly.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-03">
     <summary><span class="iq-num">03</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does a composite index's column order matter so much, when the index still technically "contains" all the columns?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>A B-tree index is physically sorted by its columns in the order they're declared — sorted first by column A, and only within each A-value, sorted by column B. Searching by B alone would require scanning across every A-value, since B's values aren't contiguous without first fixing A — no better than not having the index at all for that query shape. The index genuinely only supports efficient lookups that respect its leftmost-to-rightmost sort order.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-04">
     <summary><span class="iq-num">04</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">What's actually different, mechanically, between a clustered index and a secondary (non-clustered) index — and why can that difference make the same query dramatically faster or slower depending on which one it uses?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>A clustered index's leaf nodes aren't pointers into the data — they <em>are</em> the data. The table's rows are physically stored in that key's sort order, so reaching a leaf means you already have the full row in hand; there's exactly one clustered index per table, because rows can only be physically sorted one way at a time. A secondary index's leaves store the indexed value plus a row locator instead — in InnoDB, that locator is the primary key value — so reaching a leaf only tells the engine <em>where</em> the row is, and it then has to do a second B-tree descent through the clustered index to actually fetch it, a "bookmark lookup." For a handful of point lookups that extra hop barely registers. But for a range scan returning thousands of rows, a clustered-index scan reads one contiguous stretch of pages in physical order, while the equivalent secondary-index scan pays one random-access bookmark lookup <em>per matching row</em> — and scattered random I/O across thousands of pages is dramatically slower than sequential I/O over the same data. This is exactly why a covering secondary index — one that includes every column the query needs — is such a big win: it eliminates the bookmark lookup entirely by making that second hop unnecessary.</p></div>
   </details>
 
   <div class="iq-group-label">Trade-offs</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-05">
     <summary><span class="iq-num">05</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">A table gets both heavy read traffic and heavy write traffic. You're asked to add an index to speed up a slow report query — what do you weigh before doing it?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Every index added has to be maintained on every INSERT/UPDATE/DELETE that touches its columns — on a write-heavy table, an index that speeds up an occasional report query might measurably slow down the far more frequent write path. Worth considering: does the report really need to run against the live table, or could it run against a read replica, a periodically-refreshed materialized view, or an off-peak batch job instead — sidestepping the write-path cost entirely rather than accepting it.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-06">
     <summary><span class="iq-num">06</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Why would you ever choose REPEATABLE READ or even READ COMMITTED over SERIALIZABLE, if SERIALIZABLE is strictly the "most correct"?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>SERIALIZABLE's guarantee — behaving as if transactions ran one at a time — costs real throughput, either through heavier locking or through detecting conflicts and forcing transactions to retry. Most application workloads don't actually need that strongest guarantee for every operation; READ COMMITTED is "correct enough" when occasional non-repeatable reads within a single transaction don't matter to the business logic. The right level is a deliberate choice based on what anomalies your specific workload can actually tolerate, not a default assumption that stricter is always better.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-07">
     <summary><span class="iq-num">07</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">When would you deliberately write a query with a subquery instead of an equivalent join, even knowing joins are often faster?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>When the subquery genuinely expresses the intent more clearly — "does a matching row exist" (EXISTS) reads more directly than a join that then has to be careful about not duplicating outer rows if multiple matches exist. Also, when the optimizer is smart enough to internally rewrite an EXISTS subquery into a semi-join anyway (most modern engines do this), the "subquery vs. join" distinction is purely readability with no actual performance difference — worth verifying with EXPLAIN rather than assuming either form is always faster.</p></div>
   </details>
 
   <div class="iq-group-label">Traps</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-08">
     <summary><span class="iq-num">08</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A report query filters <code>WHERE status != 'cancelled'</code> and mysteriously excludes rows where status is NULL, even though NULL clearly "isn't cancelled." Why?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Any comparison against NULL — including <code>!=</code>, <code>=</code>, <code>&lt;</code>, <code>&gt;</code> — evaluates to UNKNOWN, not TRUE, no matter what the other side is. <code>WHERE</code> only keeps rows where the condition is TRUE, so UNKNOWN rows are silently filtered out along with FALSE ones. The fix is explicit: <code>WHERE status != 'cancelled' OR status IS NULL</code>.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-09">
     <summary><span class="iq-num">09</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A developer adds <code>LIMIT 10</code> to a slow query expecting an instant speedup, but the query is just as slow as before. What's the likely explanation?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p><code>LIMIT</code> only reduces the final output rows returned — it's applied last in logical execution order (after ORDER BY). If the query has an ORDER BY on a non-indexed column, the engine still has to compute and sort the <em>entire</em> result set before it can hand back the first 10 rows. LIMIT alone doesn't help unless the sort itself can be satisfied efficiently, typically via an index that's already in the required order.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-10">
     <summary><span class="iq-num">10</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A migration adds a new index to speed up a query, and a nightly batch job that was previously fine suddenly takes 5x longer. What's the connection?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>The batch job is very likely doing large-volume INSERT/UPDATE/DELETE operations, and every one of those now has to also maintain the new index — an added cost that wasn't there before, invisible to the query the index was actually added for. This is the classic reason "just add an index" isn't a free lunch, and why index changes deserve testing against the write-heavy workloads too, not just the read query that motivated them.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-11">
     <summary><span class="iq-num">11</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">There's a B-tree index on exactly the column your WHERE clause filters on, yet EXPLAIN still shows a full sequential scan. What are the classic reasons the optimizer ignores it?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Three classic causes, all worth ruling out before assuming the optimizer simply got it wrong. Low cardinality: an index on a column with only a handful of distinct values — a boolean flag, a status enum with 3 states — barely narrows the search at all; if a value matches 30% of the table, a sequential scan genuinely is cheaper than following an index pointer for every one of those millions of matching rows, and the optimizer is right to skip it. Wrapping the column in a function: <code>WHERE YEAR(order_date) = 2024</code> can't use a plain index on <code>order_date</code>, because the index stores raw date values, not <code>YEAR()</code>'s output — the engine would have to compute the function for every single row just to check, which defeats the entire point of the index; rewriting as a sargable range (<code>order_date >= '2024-01-01' AND order_date < '2025-01-01'</code>) restores index use. Implicit type conversion: comparing an indexed column to a literal or bound parameter of a mismatched type can force the engine to convert every stored value to match, instead of just casting the one input value — the textbook case is an indexed VARCHAR column compared to an unquoted number, which makes MySQL convert the column's values to numbers for the comparison; the same class of bug shows up whenever application code or an ORM binds a parameter as the wrong type against an indexed integer column. All three share the same root cause: anything that forces a per-row computation before the comparison can even happen defeats the index's entire reason for existing, regardless of whether the column is technically indexed.</p></div>
   </details>
 
   <div class="iq-group-label">Scenario</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-12">
     <summary><span class="iq-num">12</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A dashboard query joins 5 tables and takes 8 seconds. Walk through how you'd actually diagnose it.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Run <code>EXPLAIN ANALYZE</code> first, not last — guessing at the bottleneck wastes time. Look for sequential scans on large tables (missing or unused indexes), large estimated-vs-actual row count mismatches (stale statistics), and unexpectedly expensive join algorithms (a hash join spilling to disk because it underestimated the row count, say). Fix the single most expensive step first, re-run EXPLAIN ANALYZE, and repeat — treating it as an iterative, evidence-driven process rather than guessing which of the 5 joins is "probably" the problem.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-13">
     <summary><span class="iq-num">13</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">You need "the 3 most recent orders per customer" across a table with millions of customers and orders. How do you write this efficiently?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p><code>ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date DESC)</code> in a CTE or subquery, then filter the outer query to <code>WHERE row_num &lt;= 3</code>. This is the standard "top-N per group" pattern — a window function computes the per-customer rank in one pass, avoiding a much slower correlated subquery re-executed once per customer. A composite index on <code>(customer_id, order_date)</code> makes this genuinely fast at scale.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-14">
     <summary><span class="iq-num">14</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Two concurrent transactions both try to decrement the same product's inventory count, and you end up overselling. What's happening, and how do you fix it?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Classic read-then-write race: both transactions read inventory=1, both decide there's enough stock, both decrement — ending at -1 instead of correctly rejecting the second one. Fix options: add a <code>CHECK (inventory &gt;= 0)</code> constraint so the second UPDATE fails outright; use <code>SELECT ... FOR UPDATE</code> to take a row lock before checking the value (pessimistic); or do the decrement and check atomically in one statement — <code>UPDATE products SET inventory = inventory - 1 WHERE id = ? AND inventory &gt; 0</code> and check the affected-row count is 1, not 0.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-15">
     <summary><span class="iq-num">15</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A migration needs to add a NOT NULL column to a 50-million-row production table without taking the table offline. What do you consider?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Adding a NOT NULL column directly can require rewriting every existing row (to backfill a default) while holding a lock that blocks other writes for the whole operation — genuinely risky on a large, live table. The safer pattern: add the column as nullable first (fast, metadata-only in many engines), backfill the default value in small batches to avoid one giant long-running transaction, then add the NOT NULL constraint afterward once every row already has a value — splitting one risky operation into several safe ones.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-16">
     <summary><span class="iq-num">16</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Guess the output</span><span class="iq-q">A table has 3 rows where <code>score</code> is 90, 90, 85. What does <code>SELECT score, RANK() OVER (ORDER BY score DESC) FROM scores</code> return for each row, in order?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>(90, 1), (90, 1), (85, 3) — both 90s tie for rank 1, and the next distinct value jumps straight to rank 3 (accounting for the two rows that tied ahead of it), skipping rank 2 entirely. This is exactly what distinguishes <code>RANK()</code> from <code>DENSE_RANK()</code>, which would instead produce (90, 1), (90, 1), (85, 2) with no gap.</p></div>
   </details>
@@ -1767,6 +1794,8 @@ noscript .reveal{opacity:1;}
 
 </main>
 
+<script src="search-index.js"></script>
+<script src="site-search.js"></script>
 <script>
 (function(){
 "use strict";

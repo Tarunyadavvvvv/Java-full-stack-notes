@@ -388,12 +388,39 @@ noscript .reveal{opacity:1;}
   .navlink{font-size:.8rem;padding:.45rem .7rem;}
   .contents-btn{font-size:.8rem;padding:.45rem .8rem;}
 }
+/* ---- site search ---- */
+.site-search{position:relative;flex:1;max-width:420px;margin:0 1.2rem;}
+.site-search__box{display:flex;align-items:center;gap:.5rem;background:var(--surface-2);border-radius:var(--r-pill);padding:.5rem .9rem;transition:background var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);}
+.site-search__box:focus-within{background:var(--surface);box-shadow:0 0 0 2px var(--accent);}
+.site-search__icon{flex:none;width:15px;height:15px;color:var(--muted);}
+.site-search__input{flex:1;min-width:0;border:none;background:none;outline:none;font-family:var(--font-body);font-size:.87rem;color:var(--ink);}
+.site-search__input::placeholder{color:var(--muted);}
+.site-search__kbd{flex:none;font-family:var(--font-mono);font-size:.68rem;color:var(--muted);background:var(--surface);border-radius:5px;padding:.1rem .4rem;box-shadow:var(--shadow-sm);}
+.site-search__results{position:absolute;top:calc(100% + 8px);left:0;right:0;max-height:min(70vh,480px);overflow-y:auto;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:.5rem;display:none;z-index:50;}
+.site-search.is-open .site-search__results{display:block;}
+.site-search__empty{padding:1rem;font-size:.85rem;color:var(--muted);text-align:center;}
+.site-search__item{display:block;padding:.65rem .8rem;border-radius:10px;text-decoration:none;color:inherit;cursor:pointer;}
+.site-search__item:hover,.site-search__item.is-active{background:var(--tint);}
+.site-search__item-title{font-weight:700;font-size:.88rem;display:block;}
+.site-search__item-meta{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:.4rem;margin-top:.2rem;}
+.site-search__item-type{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;background:var(--surface-2);padding:.1rem .4rem;border-radius:999px;}
+.site-search mark{background:var(--tint-strong);color:inherit;border-radius:3px;padding:0 .1em;}
+@media (max-width:820px){.site-search{order:3;flex-basis:100%;max-width:none;margin:.6rem 0 0;}}
+[id]{scroll-margin-top:90px;}
 </style>
 <noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript>
 
 <header class="topnav">
   <div class="topnav__inner">
     <a class="wordmark" href="index.html#observability"><span class="wordmark__mark">O</span>Observability</a>
+    <div class="site-search" id="siteSearch">
+      <div class="site-search__box">
+        <svg class="site-search__icon" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" class="site-search__input" id="siteSearchInput" placeholder="Search any topic or question…" autocomplete="off" aria-label="Search notes" aria-expanded="false" aria-controls="siteSearchResults">
+        <span class="site-search__kbd">/</span>
+      </div>
+      <div class="site-search__results" id="siteSearchResults"></div>
+    </div>
     <nav class="navlinks">
       <a class="navlink" href="index.html#observability">← All topics</a>
       <div class="contents" id="contents">
@@ -460,10 +487,10 @@ noscript .reveal{opacity:1;}
 
   <p class="reveal">That System Design chapter answers "what are the three pillars and why do they exist." This module answers the question that actually matters once you're running the thing in production: which tools implement each pillar, how do they work internally, and what operational practices turn raw telemetry into a system your on-call rotation can trust. Every chapter from here on assumes you already know <em>that</em> metrics/logs/traces exist and dives into <em>how</em> — Prometheus's storage model, the ELK pipeline's actual data flow, what a span really contains, the arithmetic behind a good alert.</p>
 
-  <h3 class="sub reveal">Monitoring watches for the failure modes you already thought of</h3>
+  <h3 class="sub reveal" id="monitoring-watches-for-the-failure-modes-you-already">Monitoring watches for the failure modes you already thought of</h3>
   <p class="reveal">Monitoring is fundamentally backward-looking in its design: you decide in advance what might go wrong, build a dashboard for it, and set a threshold alert. That works great for <strong>known unknowns</strong> — you know CPU exhaustion is a risk, so you graph CPU and alert above 90%. It completely fails for <strong>unknown unknowns</strong> — the failure mode nobody predicted, because nobody built a panel for it. A monitoring-only shop finds out about novel bugs from a support ticket, then scrambles to add a dashboard for next time. That's reactive by construction.</p>
 
-  <h3 class="sub reveal">Observability lets you ask questions you never anticipated</h3>
+  <h3 class="sub reveal" id="observability-lets-you-ask-questions-you-never-anticipated">Observability lets you ask questions you never anticipated</h3>
   <p class="reveal">Observability, in the Charity Majors / honeycomb.io sense that's become the industry-standard framing, is a property of your <em>telemetry</em>, not a product you install: can you ask an arbitrary question of your system's behavior after the fact, without having shipped new code to answer it? That requires two things most monitoring setups don't have — high <strong>cardinality</strong> (many unique values per field: user ID, request ID, specific pod, exact query) and high <strong>dimensionality</strong> (many fields per event, so you can slice by any combination of them). A metric like <code>http_requests_total</code> tells you the aggregate rate. A structured trace with a hundred attributes per span lets you ask "show me every request from this one customer, on this one shard, in the last 20 minutes, that touched this one code path" — a question nobody wrote a dashboard for, answered anyway.</p>
 
   <div class="panel diagram-panel reveal">
@@ -546,7 +573,7 @@ noscript .reveal{opacity:1;}
     <div class="meta-row"><span class="chip chip--tint">12 min read</span></div>
   </div>
 
-  <h3 class="sub reveal">Pull vs. push — why Prometheus scrapes</h3>
+  <h3 class="sub reveal" id="pull-vs-push-why-prometheus-scrapes">Pull vs. push — why Prometheus scrapes</h3>
   <p class="reveal">Prometheus scrapes a <code>/metrics</code> HTTP endpoint on every target at a fixed interval (commonly 15s), rather than having applications push samples to it. That's a deliberate trade-off, not an accident: pull keeps the client side trivial — a service just exposes current counter/gauge values on request, with no client-side batching, retry, or delivery logic to get wrong. The server controls the scrape rate centrally, so you can slow down or speed up collection without touching every application. And pull gives you a free, powerful signal for free: if a scrape fails, Prometheus immediately knows that specific target is unreachable — "target down" is a first-class, zero-instrumentation health signal, whereas a push model can't easily distinguish "nothing bad is happening" from "the thing that would have pushed metrics is dead."</p>
 
   <p class="reveal">Push still has a real niche: short-lived batch jobs and cron-style tasks that finish before a scrape interval would ever catch them. For those, Prometheus provides the <strong>Pushgateway</strong> — a job pushes its final metric values there once, and Prometheus scrapes the Pushgateway itself like any other target. The Pushgateway is a relay, not a general push-based ingestion path — it deliberately doesn't scale to being "Prometheus, but push" for long-running services.</p>
@@ -569,7 +596,7 @@ noscript .reveal{opacity:1;}
     <p class="diagram-cap">Even the push exception stays pull from Prometheus's point of view — the Pushgateway is just another scrape target that happens to buffer values pushed into it by jobs that can't wait around to be scraped directly.</p>
   </div>
 
-  <h3 class="sub reveal">The four metric types</h3>
+  <h3 class="sub reveal" id="the-four-metric-types">The four metric types</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Type</th><th>What it holds</th><th>Example</th></tr></thead>
@@ -593,7 +620,7 @@ sum(rate(http_requests_total{status=~"5.."}[5m]))
   /
 sum(rate(http_requests_total[5m]))</code></pre>
 
-  <h3 class="sub reveal">Exporters — instrumenting what you can't modify</h3>
+  <h3 class="sub reveal" id="exporters-instrumenting-what-you-can-t-modify">Exporters — instrumenting what you can't modify</h3>
   <p class="reveal">Not everything speaks Prometheus's exposition format natively. <strong>Exporters</strong> bridge the gap: <code>node_exporter</code> exposes host-level metrics (CPU, memory, disk, network) for machines you can't add application code to, <code>blackbox_exporter</code> probes endpoints externally (HTTP, TCP, DNS, ICMP) to check they're actually reachable, and database-specific exporters like <code>mysqld_exporter</code> or <code>redis_exporter</code> translate a system's internal stats into Prometheus's model. For your own services, a Prometheus client library (Go, Java, Python) does the same job directly in-process.</p>
 
   <div class="callout callout--warn reveal">
@@ -601,7 +628,7 @@ sum(rate(http_requests_total[5m]))</code></pre>
     <div class="callout__body"><b class="h">Cardinality explosion is the single most common real-world Prometheus incident</b><p>Every unique combination of label values creates a brand-new time series. A metric with <code>status</code> and <code>method</code> labels might have a few dozen series. Add a <code>user_id</code> or raw <code>request_id</code> label — values that are effectively unbounded — and you can go from thousands of series to tens of millions, exhausting Prometheus's memory and blowing up storage, often bringing the whole instance down. Keep labels to bounded, low-cardinality dimensions (status code, method, route <em>template</em> like <code>/users/:id</code> — never the raw interpolated path) and push anything high-cardinality (specific user, specific request) down into logs or trace attributes instead, where that kind of dimensionality actually belongs.</p></div>
   </div>
 
-  <h3 class="sub reveal">Micrometer &amp; Spring Boot Actuator — the Java instrumentation path</h3>
+  <h3 class="sub reveal" id="micrometer-spring-boot-actuator-the-java-instrumentation">Micrometer &amp; Spring Boot Actuator — the Java instrumentation path</h3>
   <p class="reveal">Everything above this point is language-agnostic — a Go binary and a Java service both just expose a <code>/metrics</code> endpoint for Prometheus to scrape. What differs is how that endpoint gets built. In the Java world it's almost never hand-written: <strong>Micrometer</strong> sits in front of it as a vendor-neutral metrics facade, playing the same role for metrics that SLF4J plays for logging. You instrument application code once against Micrometer's <code>MeterRegistry</code> API, and a swappable registry implementation underneath translates that into whichever backend you've wired up — Prometheus, Datadog, CloudWatch — without touching a single line of instrumentation code if you ever switch backends.</p>
 
   <p class="reveal">Wiring Prometheus in specifically takes two dependencies and one config line. <code>spring-boot-starter-actuator</code> brings in Actuator's endpoint machinery plus Micrometer's core; <code>micrometer-registry-prometheus</code> is the specific registry implementation that knows how to render Micrometer's internal meters in Prometheus's exposition format. Actuator ships secure-by-default — almost nothing is exposed over HTTP until you explicitly opt in — so the line that actually turns <code>/actuator/prometheus</code> on is the one that's easy to forget:</p>
@@ -640,7 +667,7 @@ public void checkout(Order order) { /* ... */ }</code></pre>
 
   <p class="reveal">That same exposure list is also why <code>health</code> rarely gets left off it: <code>/actuator/health</code> is the endpoint a Kubernetes liveness or readiness probe polls to decide whether to restart a pod or pull it out of a Service's endpoints — the platform-side probe mechanics belong to the Kubernetes module, but the payload behind that HTTP 200/503 is exactly Actuator's health aggregation (disk space, database connectivity, any custom <code>HealthIndicator</code> bean).</p>
 
-  <h3 class="sub reveal">JVM metrics Micrometer gives you for free</h3>
+  <h3 class="sub reveal" id="jvm-metrics-micrometer-gives-you-for-free">JVM metrics Micrometer gives you for free</h3>
   <p class="reveal">The moment <code>spring-boot-starter-actuator</code> is on the classpath, Micrometer's JVM binder auto-registers a set of process-level metrics with zero instrumentation code — no counter to declare, nothing to annotate, they're simply there from the first scrape. These are some of the highest-value signals in this entire chapter precisely because nobody has to remember to add them.</p>
 
   <div class="tbl-wrap reveal">
@@ -660,7 +687,7 @@ public void checkout(Order order) { /* ... */ }</code></pre>
     <div class="callout__body"><b class="h">These four are usually the first JVM dashboard panel worth building</b><p>Each answers a question a plain CPU/request-rate view can't: is memory pressure building toward an OOM, is GC the actual reason p99 latency degraded while CPU stayed flat, is a thread pool genuinely the bottleneck or just busy, and is something leaking classes on every request. Alert on <code>jvm.memory.used</code> trending toward <code>-Xmx</code> and on sustained <code>jvm.gc.pause</code> increases the same way you'd alert on any other saturation signal in the USE framework.</p></div>
   </div>
 
-  <h3 class="sub reveal">Alertmanager — turning firing rules into a page</h3>
+  <h3 class="sub reveal" id="alertmanager-turning-firing-rules-into-a-page">Alertmanager — turning firing rules into a page</h3>
   <p class="reveal">Prometheus itself only evaluates alerting rules and marks them firing or resolved — it hands the result to <strong>Alertmanager</strong>, a separate component responsible for what happens next. Alertmanager <strong>deduplicates</strong> identical alerts arriving from multiple Prometheus instances, <strong>groups</strong> related alerts into a single notification (so ten pods erroring doesn't mean ten separate pages), <strong>routes</strong> alerts to the right receiver based on labels like <code>service</code> or <code>severity</code>, and supports <strong>silences</strong> for planned maintenance windows so you don't page yourself during a known deploy.</p>
 
   <pre class="reveal"><code>route:
@@ -723,7 +750,7 @@ receivers:
 
   <p class="reveal">A Grafana panel is just a saved query against one of those data sources plus a chosen visualization (time series, heatmap, table, stat). The real leverage comes from <strong>template variables</strong>: instead of hardcoding a dashboard to one service, define a variable like <code>$service</code> or <code>$env</code> backed by a label-values query, and every panel's query references it — <code>rate(http_requests_total{service="$service", env="$env"}[5m])</code>. One dashboard definition then serves every service and environment via a dropdown, instead of hand-maintaining a near-duplicate dashboard per service.</p>
 
-  <h3 class="sub reveal">What actually belongs on a service dashboard</h3>
+  <h3 class="sub reveal" id="what-actually-belongs-on-a-service-dashboard">What actually belongs on a service dashboard</h3>
   <p class="reveal">An effective per-service dashboard leads with the signals an on-call engineer needs in the first 30 seconds of an incident: the golden signals / RED metrics (rate, errors, duration — covered in depth in Chapter 6), current error-budget burn rate, and saturation of the resources that service actually depends on (CPU, connection pool, queue depth, or consumer lag for anything consuming from Kafka). Everything below that — deep internals, secondary metrics, per-endpoint breakdowns — belongs further down or in a linked drill-down dashboard, not competing for space at the top.</p>
 
   <div class="callout callout--best reveal">
@@ -802,7 +829,7 @@ receivers:
     <div class="meta-row"><span class="chip chip--tint">11 min read</span></div>
   </div>
 
-  <h3 class="sub reveal">Structured logging — fields, not free text</h3>
+  <h3 class="sub reveal" id="structured-logging-fields-not-free-text">Structured logging — fields, not free text</h3>
   <p class="reveal">An unstructured log line like <code>"payment gateway timeout for order 8821"</code> is only searchable by string matching — filtering "all timeouts over 3 seconds for the checkout service" means writing a fragile regex and hoping the message format never changes. A structured (JSON) log line makes every piece of that a queryable field instead:</p>
 
   <pre class="reveal"><code>{"ts":"2026-08-05T02:14:11Z","level":"error","service":"checkout","trace_id":"4bf92f3577b34da6a3ce929d0e0e4736","msg":"payment gateway timeout","route":"/api/checkout","status":504,"duration_ms":3021}</code></pre>
@@ -813,7 +840,7 @@ receivers:
 
   <pre class="reveal"><code>&lt;encoder class="net.logstash.logback.encoder.LogstashEncoder" /&gt;</code></pre>
 
-  <h3 class="sub reveal">The ELK/EFK pipeline in detail</h3>
+  <h3 class="sub reveal" id="the-elk-efk-pipeline-in-detail">The ELK/EFK pipeline in detail</h3>
   <p class="reveal">Each stage does one job: a shipper tails log files or reads container stdout and forwards lines onward without heavy processing; a parser turns raw lines into structured fields; a store indexes them for fast search; and a UI queries and visualizes.</p>
 
   <div class="panel diagram-panel reveal">
@@ -836,7 +863,7 @@ receivers:
     <p class="diagram-cap">Elasticsearch pays the indexing cost at write time so any field can be searched instantly; Loki defers that cost to query time, only indexing the small label set and scanning compressed chunk contents on demand.</p>
   </div>
 
-  <h3 class="sub reveal">Loki — "like Prometheus, but for logs"</h3>
+  <h3 class="sub reveal" id="loki-like-prometheus-but-for-logs">Loki — "like Prometheus, but for logs"</h3>
   <p class="reveal">Loki's core design choice is to index <em>only</em> a small set of labels (much like Prometheus's label model — <code>service</code>, <code>namespace</code>, <code>pod</code>), not the full text of every log line. The raw log content is compressed into chunks and stored cheaply in object storage (S3/GCS), unindexed. A LogQL query first narrows to a label-matched stream, then filters the chunk content at query time:</p>
 
   <pre class="reveal"><code>{service="checkout", env="prod"} |= "timeout" | json | duration_ms > 3000</code></pre>
@@ -854,7 +881,7 @@ receivers:
     </table>
   </div>
 
-  <h3 class="sub reveal">Log levels, retention, and cost</h3>
+  <h3 class="sub reveal" id="log-levels-retention-and-cost">Log levels, retention, and cost</h3>
   <p class="reveal">Use <code>DEBUG</code> for detail you only want during active investigation (toggle it dynamically, don't ship it always-on in high-traffic hot paths — it's expensive and mostly noise); <code>INFO</code> for meaningful state changes (request handled, job completed); <code>WARN</code> for recoverable anomalies worth knowing about but not paging on; <code>ERROR</code> for failed operations that need attention; reserve <code>FATAL</code> for conditions the process can't continue past. Retention should mirror value-over-time: verbose application logs are usually cheap to drop after days-to-weeks (Elasticsearch's Index Lifecycle Management moves indices through hot → warm → cold → delete tiers automatically), while audit/compliance logs need much longer, explicit retention regardless of volume.</p>
 
   <div class="callout callout--warn reveal">
@@ -898,7 +925,7 @@ receivers:
     <div class="meta-row"><span class="chip chip--tint">12 min read</span></div>
   </div>
 
-  <h3 class="sub reveal">A trace is a tree of spans</h3>
+  <h3 class="sub reveal" id="a-trace-is-a-tree-of-spans">A trace is a tree of spans</h3>
   <p class="reveal">Every hop a request makes — an API gateway calling a service, that service calling a database or another service — is recorded as a <strong>span</strong>: a named operation with a start time, a duration, and a parent-span-id linking it to whatever called it. A <strong>trace</strong> is simply the full tree of spans sharing one trace-id, reconstructed after the fact from those parent-child links.</p>
 
   <div class="panel diagram-panel reveal">
@@ -922,7 +949,7 @@ receivers:
     <p class="diagram-cap">Each node is one span with its own start/duration/parent-id. Reading this tree instantly tells you where the 120ms actually went — mostly Order Service, and within that, mostly the Payment Service's card gateway call — without touching a single log line.</p>
   </div>
 
-  <h3 class="sub reveal">Context propagation — how a correlation ID becomes a trace</h3>
+  <h3 class="sub reveal" id="context-propagation-how-a-correlation-id-becomes-a-trace">Context propagation — how a correlation ID becomes a trace</h3>
   <p class="reveal">System Design's correlation-ID concept — one ID following a request everywhere — becomes a literal, structured trace via the W3C <strong>traceparent</strong> header, propagated on every outbound call:</p>
 
   <pre class="reveal"><code>traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
@@ -930,7 +957,7 @@ receivers:
 
   <p class="reveal">Each service receiving that header keeps the trace-id constant, generates a brand-new span-id for its own work, records the incoming span-id as its parent, and forwards its own new span-id as the <code>parent-id</code> to whatever it calls next. A trace backend reconstructs the entire tree purely from those parent-child span-id relationships once every span reports in — the header is the wire format, the tree is the reconstruction.</p>
 
-  <h3 class="sub reveal">OpenTelemetry — one instrumentation standard, swappable backends</h3>
+  <h3 class="sub reveal" id="opentelemetry-one-instrumentation-standard-swappable">OpenTelemetry — one instrumentation standard, swappable backends</h3>
   <p class="reveal"><strong>OpenTelemetry (OTel)</strong> is the vendor-neutral standard for producing this telemetry: an SDK for instrumenting code (auto-instrumentation for common frameworks, manual spans for custom logic), and a <strong>Collector</strong> that receives telemetry, processes it (batching, filtering, tail sampling), and exports it to whichever backend you choose — Jaeger, Tempo, or a commercial vendor — without changing application code. The same SDK increasingly covers metrics and logs too, which is the practical endgame: one instrumentation layer, three pillars, backend-agnostic.</p>
 
   <pre class="reveal"><code>Span span = tracer.spanBuilder("chargeCard")
@@ -942,7 +969,7 @@ try (Scope scope = span.makeCurrent()) {
     span.end();
 }</code></pre>
 
-  <h3 class="sub reveal">Sampling — you can't keep every trace</h3>
+  <h3 class="sub reveal" id="sampling-you-can-t-keep-every-trace">Sampling — you can't keep every trace</h3>
   <p class="reveal">Tracing every request in a high-traffic service is often too expensive to store. <strong>Head-based sampling</strong> decides at the very start of a trace — before anyone knows the outcome — typically a flat percentage (e.g. 1%). It's cheap and simple, but blind: it's just as likely to drop the one trace showing a rare error as any ordinary successful one. <strong>Tail-based sampling</strong> buffers all spans for a trace until it completes, then decides based on the actual outcome — keeping error traces, unusually slow traces, or specific attributes preferentially, and discarding routine fast successes. That's strictly more useful for debugging, at the cost of needing every span for a given trace routed to the same collector instance to make the decision, plus the memory/latency overhead of buffering full traces before deciding.</p>
 
   <div class="duo reveal">
@@ -1057,10 +1084,10 @@ rate(node_cpu_core_throttles_total[5m])                                # Errors 
     <div class="meta-row"><span class="chip chip--tint">12 min read</span></div>
   </div>
 
-  <h3 class="sub reveal">Picking a good SLI</h3>
+  <h3 class="sub reveal" id="picking-a-good-sli">Picking a good SLI</h3>
   <p class="reveal">A <strong>request-based SLI</strong> measures the proportion of individual requests meeting your bar — "successful requests / total requests." It directly reflects what users experience, request by request, and is the default choice for anything request/response shaped. A <strong>window-based SLI</strong> instead measures the proportion of fixed time windows that met a bar — "what fraction of 1-minute windows had p99 latency under 300ms" — which suits systems where individual "requests" don't cleanly exist (batch pipelines, cron-driven systems) but is a step removed from literal user experience, since it can hide a single very bad window among many good ones or vice versa.</p>
 
-  <h3 class="sub reveal">Why "alert at 0% budget remaining" doesn't work</h3>
+  <h3 class="sub reveal" id="why-alert-at-0-budget-remaining-doesn-t-work">Why "alert at 0% budget remaining" doesn't work</h3>
   <p class="reveal">A naive implementation checks remaining error budget against a single long window (say, the full 30-day SLO period) and pages when it nears zero. That fails in both directions. Against a <strong>sudden severe outage</strong>, the alert is too slow: a total outage burns budget fast in wall-clock terms, but diluted across a 30-day rolling window, the remaining-budget percentage barely moves for a while — precious minutes or hours pass before the threshold trips. Against a <strong>slow, low-grade leak</strong> — a small but persistent elevated error rate — evaluating on a short window instead makes it noisy: minor blips cross a short-window threshold constantly without ever threatening the actual monthly budget, training people to ignore the alert.</p>
 
   <div class="callout callout--mistake reveal">
@@ -1068,7 +1095,7 @@ rate(node_cpu_core_throttles_total[5m])                                # Errors 
     <div class="callout__body"><b class="h">A single window is always wrong for one of the two failure shapes</b><p>Pick a long window and you're slow on fast outages. Pick a short window and you're noisy on slow leaks. There's no single window length that's simultaneously fast and quiet — which is exactly why Google's SRE workbook pairs multiple windows together instead of picking one.</p></div>
   </div>
 
-  <h3 class="sub reveal">Multi-window, multi-burn-rate alerting</h3>
+  <h3 class="sub reveal" id="multi-window-multi-burn-rate-alerting">Multi-window, multi-burn-rate alerting</h3>
   <p class="reveal"><strong>Burn rate</strong> is the ratio of your actual error rate to the error rate your SLO can sustain without breaching it — a burn rate of 1 means you're consuming budget at exactly the rate that exhausts it precisely at the end of the SLO period; a burn rate of 14.4 means you'd exhaust a 30-day budget in about 2 days if sustained. The fix pairs a <strong>short window + high burn-rate threshold</strong> (catches a sudden severe outage fast — page within minutes) with a <strong>long window + lower burn-rate threshold</strong> (catches a slow leak that would eventually exhaust the budget even though no single short window looks alarming). Each pair is often itself two windows (e.g. 1h and 5m together) so the alert both fires fast and requires the condition to still be true a moment later, cutting single-spike false positives.</p>
 
   <div class="panel diagram-panel reveal">
@@ -1089,7 +1116,7 @@ rate(node_cpu_core_throttles_total[5m])                                # Errors 
     <p class="diagram-cap">Two windows, evaluated in parallel, catch two different shapes of failure that a single window can never catch equally well.</p>
   </div>
 
-  <h3 class="sub reveal">Worked example</h3>
+  <h3 class="sub reveal" id="worked-example">Worked example</h3>
   <p class="reveal">Take the familiar 99.9% SLO from System Design — a 0.1% error budget over 30 days (~43 minutes). A burn rate of <strong>14.4x</strong> sustained for just 1 hour consumes about 2% of that entire 30-day budget in that single hour (1h ÷ 30 days × 14.4 ≈ 2%) — worth an immediate page. A burn rate of <strong>1x</strong> sustained for 6 hours only consumes about 0.83% of the budget in that window — not urgent on its own, but if it keeps up for days it will exhaust the budget well before the month ends, which is why the long-window pair catches it as a lower-severity ticket rather than staying silent until it's too late.</p>
 
   <pre class="reveal"><code># Fast-burn pair: page if sustained over both 1h and 5m windows
@@ -1138,7 +1165,7 @@ sum(rate(http_requests_total{status=~"5.."}[30m])) / sum(rate(http_requests_tota
     <div class="meta-row"><span class="chip chip--tint">9 min read</span></div>
   </div>
 
-  <h3 class="sub reveal">Every page should require an action</h3>
+  <h3 class="sub reveal" id="every-page-should-require-an-action">Every page should require an action</h3>
   <p class="reveal">The single governing principle: if there's nothing a human needs to actually <em>do</em> right now, it shouldn't page. "Interesting to know" belongs on a dashboard or in a ticket queue reviewed during business hours; "requires immediate human judgment or intervention" is the only bar that justifies waking someone up. This is a direct extension of System Design's symptom-vs-cause alerting and Chapter 7's burn-rate math — both exist precisely to keep the page-worthy bar high.</p>
 
   <div class="tbl-wrap reveal">
@@ -1152,7 +1179,7 @@ sum(rate(http_requests_total{status=~"5.."}[30m])) / sum(rate(http_requests_tota
     </table>
   </div>
 
-  <h3 class="sub reveal">Routing by ownership, and the rotation itself</h3>
+  <h3 class="sub reveal" id="routing-by-ownership-and-the-rotation-itself">Routing by ownership, and the rotation itself</h3>
   <p class="reveal">Alerts should route based on which team actually owns the affected service — an Alertmanager routing tree keyed on a <code>service</code> label, or a PagerDuty/Opsgenie service-to-team mapping — rather than one generic catch-all rotation that pages whoever's up regardless of whether they can act on it. A typical rotation has a primary and a secondary/escalation on-call, rotates weekly, and includes a deliberate handoff (open incidents, recent changes, known flaky alerts) so context doesn't silently vanish between shifts. Global teams often run "follow-the-sun" rotations so no single region's engineer is paged at 3am indefinitely.</p>
 
   <div class="panel diagram-panel reveal">
@@ -1171,7 +1198,7 @@ sum(rate(http_requests_total{status=~"5.."}[30m])) / sum(rate(http_requests_tota
     <div class="callout__body"><b class="h">Alert fatigue is how real incidents get missed</b><p>Too many low-value pages don't just annoy the on-call engineer — they train them to treat every page as probably-noise, so when a genuinely severe incident pages at 3am, it gets snoozed or half-acknowledged like all the others before it. This is one of the most common real causes of a delayed response to a real outage: not a lack of monitoring, but so much bad monitoring that the good signal got lost in it. Multi-window burn-rate alerting (Chapter 7) and symptom-based alerting (System Design) directly attack this by construction — both are specifically designed so a page only fires when it's actually worth waking someone up for, which is the only real long-term fix for fatigue.</p></div>
   </div>
 
-  <h3 class="sub reveal">Runbooks — the first three steps, attached</h3>
+  <h3 class="sub reveal" id="runbooks-the-first-three-steps-attached">Runbooks — the first three steps, attached</h3>
   <p class="reveal">A runbook isn't a full incident-response manual — it's a short, linked doc attached to the alert itself telling the on-call engineer where to start: typically the service dashboard for the relevant RED/USE metrics, how to pull a trace for a representative slow or erroring request in the affected window, and where to check recent deploys or config changes. This mirrors the metrics → trace → logs debugging order from System Design's own accordion — the runbook just makes sure that order is followed even by someone unfamiliar with the service, at 3am, half awake.</p>
 
   <pre class="reveal"><code>alert: HighErrorRateCheckout
@@ -1227,7 +1254,7 @@ annotations:
     <div class="meta-row"><span class="chip chip--tint">10 min read</span></div>
   </div>
 
-  <h3 class="sub reveal">Incident roles</h3>
+  <h3 class="sub reveal" id="incident-roles">Incident roles</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Role</th><th>Job</th></tr></thead>
@@ -1239,7 +1266,7 @@ annotations:
     </table>
   </div>
 
-  <h3 class="sub reveal">Mitigate first, root-cause later</h3>
+  <h3 class="sub reveal" id="mitigate-first-root-cause-later">Mitigate first, root-cause later</h3>
   <p class="reveal">The instinct to fully understand <em>why</em> something broke before doing anything about it is exactly backwards during an active incident. Every minute of delay is more error budget burned and more users affected — so the first move is always to stop the bleeding: roll back the suspicious deploy, fail over to a healthy replica, flip a feature flag off. Full root-cause investigation happens afterward, unhurried, in the postmortem — not live, under pressure, while users are still affected.</p>
 
   <div class="panel diagram-panel reveal">
@@ -1262,10 +1289,10 @@ annotations:
     <p class="diagram-cap">The bottom loop feeds the top: action items from a postmortem often become the next chaos experiment, deliberately re-testing the exact assumption that just failed.</p>
   </div>
 
-  <h3 class="sub reveal">Blameless postmortems</h3>
+  <h3 class="sub reveal" id="blameless-postmortems">Blameless postmortems</h3>
   <p class="reveal">A blameless postmortem focuses entirely on systems and process — what allowed the failure, what made the human error easy to make, what safeguard was missing — never on which individual is at fault. This isn't a soft-hearted nicety; it's load-bearing for actually getting more reliable. A culture that assigns blame teaches people to hide near-misses and small mistakes rather than report them, because reporting invites punishment — which means the exact same landmine stays buried and unfixed, ready to be stepped on again, harder, by someone else later. Blameless culture treats every human error as a symptom of a system that made the error possible, which is the only framing that actually produces a fix instead of a scapegoat.</p>
 
-  <h3 class="sub reveal">The postmortem document</h3>
+  <h3 class="sub reveal" id="the-postmortem-document">The postmortem document</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Section</th><th>Contents</th></tr></thead>
@@ -1334,88 +1361,88 @@ annotations:
 
   <div class="iq-group-label">Internals &amp; Why</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-01">
     <summary><span class="iq-num">01</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why is Prometheus pull-based rather than push-based?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Pull keeps client-side instrumentation trivially simple — a service just exposes current counter/gauge state on a <code>/metrics</code> endpoint whenever asked, with zero client-side batching, retry, or delivery logic to get wrong. The server centrally controls scrape rate, so you can tune collection frequency without touching every instrumented service. Pull also gives you "target down" detection for free: a failed scrape immediately and unambiguously tells Prometheus that specific target is unreachable, whereas in a push model, silence is ambiguous — is nothing bad happening, or is the pusher dead? Pull integrates naturally with service discovery (Prometheus can be configured to discover and scrape targets dynamically as they come and go in Kubernetes, Consul, etc.), which is usually easier within a trusted network than requiring every ephemeral instance to know where to push to. The one place pull genuinely doesn't fit is short-lived batch jobs that finish before any scrape interval would catch them — that's what the Pushgateway exists for, and it's explicitly the exception, not a general push path.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-02">
     <summary><span class="iq-num">02</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Walk through what actually happens when a Prometheus histogram is queried with <code>histogram_quantile</code>.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>A Prometheus histogram doesn't store individual sample values — it stores cumulative counts per bucket, each labeled with a <code>le</code> ("less than or equal to") boundary you defined ahead of time, plus a total count and sum. When you query <code>histogram_quantile(0.95, ...)</code>, Prometheus first computes the rate of increase for each bucket over your window, finds which bucket the 95th-percentile falls into based on cumulative counts, and linearly interpolates within that bucket's range to produce an estimated value. That's an approximation, not an exact quantile — its accuracy depends entirely on how well your chosen bucket boundaries bracket the real distribution; too few or badly-spaced buckets and the interpolation gets sloppy. This is the key trade-off against the Summary type, which computes exact client-side quantiles but can't be meaningfully aggregated across multiple instances afterward, since you can't average pre-computed percentiles — histograms can be summed across instances first and then quantiled, summaries can't.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-03">
     <summary><span class="iq-num">03</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">How does the W3C traceparent header actually let a full trace be reconstructed across services?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>The header carries a fixed format: <code>00-{trace-id}-{parent-id}-{flags}</code>. Every service that receives it keeps the 32-hex-character trace-id unchanged for the life of the request, generates a brand-new span-id for the work it's about to do, and records the incoming header's span-id as its own parent. When it calls the next service downstream, it sends its own newly-generated span-id forward as that call's <code>parent-id</code>, with the same trace-id unchanged. No service needs to know the shape of the whole tree — each one only needs to know its immediate parent. The trace backend (Jaeger, Tempo, or any OTel-compatible store) receives every span independently, groups them by shared trace-id, and reconstructs the full tree purely from the parent-child span-id relationships once enough spans have arrived — the header is just the wire-level propagation mechanism; the tree only exists after reconstruction.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-04">
     <summary><span class="iq-num">04</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">How do Loki and Elasticsearch actually differ in how they index log data, and why does that make Loki so much cheaper?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Elasticsearch builds a full-text inverted index over essentially every field of every log line at ingest time — that's what makes arbitrary full-text search fast, but it means indexing cost scales with both log volume and the number of distinct fields, which gets expensive at scale. Loki deliberately indexes only a small, low-cardinality label set (mirroring Prometheus's label model — service, namespace, pod), and stores the actual log body as compressed, unindexed chunks in cheap object storage like S3. A LogQL query first narrows down to the matching label stream — a cheap index lookup — and only then scans the (much smaller, already-filtered) chunk contents for the actual text match, at query time rather than ingest time. That moves the expensive part of the work from "every write" to "the occasional query," which is the right trade for systems where logs are written far more often than they're searched.</p></div>
   </details>
 
   <div class="iq-group-label">Trade-offs</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-05">
     <summary><span class="iq-num">05</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Counter vs. Gauge vs. Histogram vs. Summary — when would you pick each?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Counter for anything that only accumulates — total requests, total errors, total bytes sent — always read through <code>rate()</code>, never raw. Gauge for anything that legitimately goes up and down and is meaningful at an instant — current memory usage, number of open connections, queue depth. Histogram when you need latency or size distributions that must be aggregatable across many instances — it's the default choice for request duration in almost every service, since you can sum bucket counts across pods before computing a quantile. Summary only when you need an exact client-side quantile for a single instance and don't need to aggregate across instances afterward — it's rarer in practice precisely because that aggregation limitation bites most real dashboards, which usually want a fleet-wide p95, not one pod's.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-06">
     <summary><span class="iq-num">06</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Head-based vs. tail-based trace sampling — what do you actually give up with each?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Head-based sampling decides whether to keep a trace at its very first span, before anything about its outcome is known — it's cheap, requires no cross-span coordination, and works even if spans end up scattered across many collector instances. What you give up is relevance: a flat 1% sample rate is exactly as likely to drop the one trace showing a rare, important error as any routine successful one. Tail-based sampling waits until a trace fully completes, then decides based on the actual outcome — errors, high latency, or specific attributes can be kept preferentially, which is a dramatically higher-signal sample. What you give up for that is infrastructure complexity and cost: every span belonging to one trace has to be buffered and routed to the same collector instance long enough to make the decision, which adds memory overhead and latency to the pipeline itself, and doesn't scale as trivially as head-based sampling does.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-07">
     <summary><span class="iq-num">07</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">ELK vs. Loki — when would you actually choose each?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Choose ELK when you genuinely need deep, flexible full-text search across arbitrary fields — security/audit log analysis, complex ad hoc investigation across fields nobody predicted in advance, or when Kibana's rich visualization and alerting ecosystem is already load-bearing elsewhere in the org. Choose Loki when the team is already standardized on Prometheus and Grafana and wants logs correlated the same way, at a fraction of the operational and storage cost — its label-based indexing keeps cost roughly flat regardless of log body size, at the price of not being able to do rich full-text search without first narrowing to a label-matched stream. In practice, cost is usually the deciding factor at scale: an org logging terabytes a day will feel Elasticsearch's per-field indexing cost far more acutely than a smaller org would, making Loki's cheaper model increasingly attractive as volume grows.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-08">
     <summary><span class="iq-num">08</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Per-service dashboards vs. one company-wide mega-dashboard — what's the real trade-off?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>A mega-dashboard looks efficient on paper — one place, everything visible — but in practice it becomes nobody's specific responsibility, gets cluttered with panels relevant to some teams and noise to others, and is nearly impossible to tune alert thresholds against since it mixes ownership boundaries. A per-service dashboard mirrors your actual organizational structure: the team that owns the service owns keeping its dashboard accurate, it's exactly what gets linked from that service's alerts and runbooks, and it stays small enough to actually read in the first 30 seconds of an incident. The real cost of per-service dashboards is duplication of effort across many dashboards — which is exactly what dashboard-as-code with shared template variables and reusable panel libraries is meant to solve, rather than falling back to one shared, unowned mega-dashboard.</p></div>
   </details>
 
   <div class="iq-group-label">Traps</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-09">
     <summary><span class="iq-num">09</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A team rolls out distributed tracing and declares "we now have full observability." What's wrong with that claim?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Traces answer "where did the time go for this one request" — they're excellent for understanding a single request's path but terrible for answering aggregate questions like "how many requests failed in the last hour" or "how often does this happen across the whole fleet," which is exactly what metrics exist for. Without logs, they also can't easily answer "what exactly was in the payload/error message at this moment" with full detail, since spans typically carry limited attributes, not the full context a log line would. Observability is the composition of all three pillars working together — tracing alone gives you deep visibility into one request's journey, but no aggregate counting and no full-detail event record. A team with tracing but no real metrics or logging discipline can debug one request beautifully and still have no idea how often that failure mode actually happens across their whole traffic.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-10">
     <summary><span class="iq-num">10</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A team sets one alert — "page when error budget remaining drops below 5%" — and considers their alerting complete. What's the trap?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>A single-window threshold on remaining budget fails in both directions depending on window length. If it's evaluated against the full SLO period (say 30 days), a sudden severe outage burns budget fast in real time, but the rolling 30-day percentage barely moves for a while — the alert lags well behind the actual severity of what's happening, costing precious response time. If instead it's evaluated on a short window to be more responsive, ordinary minor blips will cross the threshold constantly without ever threatening the real monthly budget, generating noise that trains people to ignore it. Neither a single long window nor a single short window can be both fast and quiet at once — that's exactly the problem multi-window, multi-burn-rate alerting solves by pairing a short-window/high-threshold check with a long-window/low-threshold check running in parallel.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-11">
     <summary><span class="iq-num">11</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A team adds a <code>user_id</code> label to a Prometheus metric "so we can debug per-user issues later." What actually happens?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Every unique combination of label values in Prometheus creates an entirely new time series stored in memory and on disk. A metric with a handful of bounded labels (status code, method) might have dozens of series total. Adding an effectively unbounded label like user_id multiplies that by however many distinct users hit the metric — potentially millions of near-unique series — which can exhaust Prometheus's memory and storage and take the instance down entirely, ironically making debugging harder, not easier, since now nothing is being scraped reliably. The fix isn't to avoid per-user debugging — it's to put per-user identifiers where high cardinality actually belongs: as attributes on a trace span or fields in a structured log line, both of which are designed for high-cardinality, high-dimensionality data, unlike a metrics time-series database.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-12">
     <summary><span class="iq-num">12</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">A team says "we've never breached our SLA, so our reliability practices must be fine." What's the trap in that reasoning?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>An SLA is a contractual promise, usually deliberately looser than your internal SLO, with financial or reputational penalties attached — it's meant to be a safety margin you never actually operate close to, not a target. A team can burn most or even all of its internal error-budget month after month, missing its own SLO repeatedly, while staying comfortably inside the looser SLA the whole time — from the outside, and from a "did we breach the contract" view, everything looks fine. But repeatedly missing your own SLO is a real signal that reliability work is being deprioritized relative to feature work, and it erodes the margin between your actual performance and the SLA line — eventually a genuinely bad incident lands you past the SLA too, and by then the underlying trend that predicted it had been visible in SLO burn for months.</p></div>
   </details>
 
   <div class="iq-group-label">Scenario</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-13">
     <summary><span class="iq-num">13</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Walk through diagnosing a slow-burn SLO violation using multi-window burn-rate alerts.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>The long-window/low-threshold pair fires first — say, a burn rate around 3-6x sustained over a 6-hour window — routed as a ticket-level alert rather than a page, since no single short window looked alarming enough to page on. First step: open the service's dashboard and look at the RED metrics trend over the past several hours to days, not just the current instant, looking for a gradual rise in error rate or p99 latency rather than a sharp step. Next, correlate that trend against recent low-grade changes — a config tweak, a gradual traffic-mix shift, a dependency's own slow degradation — often visible by overlaying deploy markers on the same dashboard. From there, pull a handful of traces for requests inside the affected time range to find the specific degraded code path, and cross-reference structured logs filtered by that trace-id for the specific error detail. The goal is to find and fix it while it's still a ticket-level slow leak — before it compounds into a fast-burn threshold breach that pages at 3am for something that had actually been visible for hours.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-14">
     <summary><span class="iq-num">14</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A service's RED-metric dashboards look completely healthy, but users are reporting the app feels slow. What do you check next?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Healthy server-side RED metrics only prove the server side of the request is behaving — they say nothing about the parts of the experience that never touch your service's request handler. Check client-side/front-end timing (page render, JavaScript execution, a slow third-party script loaded in the browser), CDN or edge cache behavior, and DNS resolution time, none of which show up in a backend service's rate/errors/duration metrics. Also check USE-style saturation signals on anything upstream of the visible symptom — a Kafka consumer group's lag climbing steadily is a classic case: it can grow for a long time without producing a single HTTP error, since the consumer is still processing correctly, just falling further behind, which eventually surfaces as "the app feels slow" through stale data rather than through any failed request your RED dashboard would catch.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-15">
     <summary><span class="iq-num">15</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Mid-incident, the on-call engineer wants to spend the first 20 minutes finding the root cause before taking any mitigating action. What do you tell them?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Stop, and mitigate first. Every minute spent diagnosing instead of restoring service is another minute of user impact and error-budget burn that a rollback or failover could have stopped immediately, especially if there was a recent deploy or config change that's an obvious rollback candidate. Root-causing live, under pressure, with users still affected, is also just worse root-causing — it's rushed, prone to jumping at the first plausible theory, and distracts from the actual priority of restoring service. The right move is to check for an easy, safe mitigation (roll back the last deploy, fail over, flip a feature flag) and take it immediately if available, then do the careful root-cause investigation afterward, unhurried, as part of the blameless postmortem where getting it right matters more than getting it fast.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-16">
     <summary><span class="iq-num">16</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">You're setting up alerting for a new payment service from scratch. Walk through picking the SLI, setting the SLO, and wiring the alerts end to end.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Start with a request-based SLI — "proportion of payment requests completed successfully within an acceptable latency" — since payments are squarely request/response-shaped and users directly experience each individual failure. Set the SLO based on business context, not an arbitrary round number: a payment path usually warrants a tighter target than a background reporting job, given real financial and trust cost per failure — something like 99.95% might be justified where a lower-stakes service would settle for 99.9%. Instrument the service to emit a Prometheus counter split by success/failure and a histogram for latency, build a dashboard leading with RED metrics and current burn rate, and wire multi-window burn-rate alerting: a short-window/high-threshold pair (e.g. 1h/5m at a high multiple) paging the payments on-call immediately for a sudden severe failure, and a long-window/low-threshold pair (e.g. 6h/30m at a lower multiple) filed as a ticket for a slow leak. Attach a runbook to the page-level alert with the first diagnostic steps, and route both alerts specifically to the team that owns the payment service, not a generic on-call rotation.</p></div>
   </details>
@@ -1494,6 +1521,8 @@ annotations:
 
 </main>
 
+<script src="search-index.js"></script>
+<script src="site-search.js"></script>
 <script>
 (function(){
 "use strict";

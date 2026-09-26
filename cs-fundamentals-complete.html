@@ -388,6 +388,25 @@ noscript .reveal{opacity:1;}
   .navlink{font-size:.8rem;padding:.45rem .7rem;}
   .contents-btn{font-size:.8rem;padding:.45rem .8rem;}
 }
+/* ---- site search ---- */
+.site-search{position:relative;flex:1;max-width:420px;margin:0 1.2rem;}
+.site-search__box{display:flex;align-items:center;gap:.5rem;background:var(--surface-2);border-radius:var(--r-pill);padding:.5rem .9rem;transition:background var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);}
+.site-search__box:focus-within{background:var(--surface);box-shadow:0 0 0 2px var(--accent);}
+.site-search__icon{flex:none;width:15px;height:15px;color:var(--muted);}
+.site-search__input{flex:1;min-width:0;border:none;background:none;outline:none;font-family:var(--font-body);font-size:.87rem;color:var(--ink);}
+.site-search__input::placeholder{color:var(--muted);}
+.site-search__kbd{flex:none;font-family:var(--font-mono);font-size:.68rem;color:var(--muted);background:var(--surface);border-radius:5px;padding:.1rem .4rem;box-shadow:var(--shadow-sm);}
+.site-search__results{position:absolute;top:calc(100% + 8px);left:0;right:0;max-height:min(70vh,480px);overflow-y:auto;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:.5rem;display:none;z-index:50;}
+.site-search.is-open .site-search__results{display:block;}
+.site-search__empty{padding:1rem;font-size:.85rem;color:var(--muted);text-align:center;}
+.site-search__item{display:block;padding:.65rem .8rem;border-radius:10px;text-decoration:none;color:inherit;cursor:pointer;}
+.site-search__item:hover,.site-search__item.is-active{background:var(--tint);}
+.site-search__item-title{font-weight:700;font-size:.88rem;display:block;}
+.site-search__item-meta{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:.4rem;margin-top:.2rem;}
+.site-search__item-type{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;background:var(--surface-2);padding:.1rem .4rem;border-radius:999px;}
+.site-search mark{background:var(--tint-strong);color:inherit;border-radius:3px;padding:0 .1em;}
+@media (max-width:820px){.site-search{order:3;flex-basis:100%;max-width:none;margin:.6rem 0 0;}}
+[id]{scroll-margin-top:90px;}
 </style>
 <body>
 <noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript>
@@ -395,6 +414,14 @@ noscript .reveal{opacity:1;}
 <header class="topnav">
   <div class="topnav__inner">
     <a class="wordmark" href="index.html#cs-fundamentals"><span class="wordmark__mark">C</span>CS Fundamentals</a>
+    <div class="site-search" id="siteSearch">
+      <div class="site-search__box">
+        <svg class="site-search__icon" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" class="site-search__input" id="siteSearchInput" placeholder="Search any topic or question…" autocomplete="off" aria-label="Search notes" aria-expanded="false" aria-controls="siteSearchResults">
+        <span class="site-search__kbd">/</span>
+      </div>
+      <div class="site-search__results" id="siteSearchResults"></div>
+    </div>
     <nav class="navlinks">
       <a class="navlink" href="index.html#cs-fundamentals">← All topics</a>
       <div class="contents" id="contents">
@@ -465,7 +492,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Why binary, specifically?</h3>
+  <h3 class="sub reveal" id="why-binary-specifically">Why binary, specifically?</h3>
   <div class="panel reveal">
     <p>A transistor is really just a switch. Building a reliable circuit that can distinguish <em>ten</em> different voltage levels (for base-10) is hard — electrical noise blurs the lines between them. Distinguishing <em>two</em> levels — "clearly on" vs. "clearly off" — is cheap and extremely reliable to build at billions-per-chip scale. Binary isn't a design choice computers made; it's the only encoding that's economical to fabricate.</p>
   </div>
@@ -477,7 +504,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Bits, bytes, and place value</h3>
+  <h3 class="sub reveal" id="bits-bytes-and-place-value">Bits, bytes, and place value</h3>
   <p class="reveal">A <strong>bit</strong> is one binary digit. A <strong>byte</strong> is 8 bits grouped together — the smallest unit most systems actually address. Binary numbers work exactly like decimal ones: each position is worth a power of the base, you just have fewer digits per position (0 or 1, instead of 0–9).</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -492,7 +519,7 @@ noscript .reveal{opacity:1;}
 64 + 16 + 8 + 2 = <span class="tk-str">90</span>
 <span class="tk-com">// So the byte 01011010 represents the unsigned decimal value 90</span></code></pre>
 
-  <h3 class="sub reveal">Hexadecimal — binary's shorthand</h3>
+  <h3 class="sub reveal" id="hexadecimal-binary-s-shorthand">Hexadecimal — binary's shorthand</h3>
   <p class="reveal">Nobody wants to read or write 64 digits of <code>0</code>s and <code>1</code>s by hand. Because 16 = 2<sup>4</sup>, exactly <strong>4 binary digits map onto 1 hex digit</strong> with no remainder — so hex is a clean, lossless shorthand for binary, which is why memory addresses, color codes, and MAC addresses are all written in hex instead of binary or decimal.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -517,7 +544,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Negative numbers: two's complement</h3>
+  <h3 class="sub reveal" id="negative-numbers-two-s-complement">Negative numbers: two's complement</h3>
   <p class="reveal">The naive approach — reserve the leftmost bit as a "sign flag" (sign-magnitude) — has two real problems: it wastes a representable value on <em>two different zeros</em> (<code>+0</code> and <code>−0</code>), and addition/subtraction need entirely separate circuits depending on the signs involved. <strong>Two's complement</strong> fixes both by choosing an encoding where ordinary binary addition just works, regardless of sign.</p>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
@@ -537,7 +564,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Text: ASCII, Unicode, and UTF-8</h3>
+  <h3 class="sub reveal" id="text-ascii-unicode-and-utf-8">Text: ASCII, Unicode, and UTF-8</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>ASCII</b><span>7-bit, 128 chars</span></div>
@@ -565,7 +592,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Floating point: the silent precision trap</h3>
+  <h3 class="sub reveal" id="floating-point-the-silent-precision-trap">Floating point: the silent precision trap</h3>
   <p class="reveal">Computers store decimals the same way they store everything — in binary. The problem: many ordinary decimal fractions (like 0.1) have no <em>exact</em> finite binary representation, the same way ⅓ has no exact finite decimal representation (0.333…). The value gets rounded to the nearest representable binary fraction, and that tiny rounding error is why floating-point arithmetic can surprise you.</p>
   <pre class="reveal"><code><span class="tk-com">// This is not a bug — it's every language's IEEE-754 doubles behaving correctly</span>
 0.1 + 0.2 == <span class="tk-str">0.30000000000000004</span>   <span class="tk-com">// not exactly 0.3</span></code></pre>
@@ -648,7 +675,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">The CPU, in four parts</h3>
+  <h3 class="sub reveal" id="the-cpu-in-four-parts">The CPU, in four parts</h3>
   <div class="duo reveal">
     <div class="panel">
       <h4><span class="sw"></span>ALU — Arithmetic Logic Unit</h4>
@@ -680,7 +707,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">The fetch-decode-execute cycle</h3>
+  <h3 class="sub reveal" id="the-fetch-decode-execute-cycle">The fetch-decode-execute cycle</h3>
   <p class="reveal">This is the loop a CPU runs, billions of times a second, for as long as it's powered on. Every program you've ever run is just this cycle repeated with different instructions.</p>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
@@ -695,7 +722,7 @@ noscript .reveal{opacity:1;}
     <p class="diagram-cap">A "program counter" register tracks which instruction is next. A conditional jump (an <code>if</code>, a loop) just overwrites the program counter instead of letting it advance normally — that's <em>all</em> control flow really is at the hardware level.</p>
   </div>
 
-  <h3 class="sub reveal">Von Neumann architecture &amp; its bottleneck</h3>
+  <h3 class="sub reveal" id="von-neumann-architecture-its-bottleneck">Von Neumann architecture &amp; its bottleneck</h3>
   <p class="reveal">Almost every general-purpose computer today follows the <strong>von Neumann</strong> design: instructions (code) and data (variables) live in the <em>same</em> memory, fetched over the <em>same</em> bus, one at a time. That shared pathway between the CPU and memory is famously called the <strong>von Neumann bottleneck</strong> — the CPU is often fast enough to process data far quicker than that single bus can deliver it.</p>
   <div class="callout callout--tip reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2.5l2.1 5.9 5.9 2.1-5.9 2.1L12 18.5l-2.1-5.9-5.9-2.1 5.9-2.1L12 2.5z" fill="currentColor"/></svg></div>
@@ -705,10 +732,10 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Machine code, assembly, and instruction sets</h3>
+  <h3 class="sub reveal" id="machine-code-assembly-and-instruction-sets">Machine code, assembly, and instruction sets</h3>
   <p class="reveal">A CPU only understands <strong>machine code</strong> — raw binary instructions specific to its <strong>instruction set architecture</strong> (ISA), like x86-64 or ARM. <strong>Assembly language</strong> is machine code with human-readable mnemonics (<code>MOV</code>, <code>ADD</code>, <code>JMP</code>) standing in 1-to-1 for the binary — it's a translation, not an abstraction. Every higher-level language eventually has to become this.</p>
 
-  <h3 class="sub reveal">How source code actually becomes execution</h3>
+  <h3 class="sub reveal" id="how-source-code-actually-becomes-execution">How source code actually becomes execution</h3>
   <div class="duo reveal">
     <div class="panel">
       <h4><span class="sw"></span>Compiled (ahead-of-time)</h4>
@@ -817,7 +844,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">What an OS actually is</h3>
+  <h3 class="sub reveal" id="what-an-os-actually-is">What an OS actually is</h3>
   <p class="reveal">Strip away the desktop icons and windows — an OS is really two things wearing a trenchcoat: a <strong>resource manager</strong> (deciding which program gets the CPU, how much memory, which files) and an <strong>abstraction layer</strong> (giving every program a clean, uniform interface instead of forcing it to speak directly to a thousand different disk controllers and network cards).</p>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
@@ -832,7 +859,7 @@ noscript .reveal{opacity:1;}
     <p class="diagram-cap">Every arrow above is one-directional by design — your app can never reach into hardware on its own. It has to ask.</p>
   </div>
 
-  <h3 class="sub reveal">Kernel mode vs. user mode</h3>
+  <h3 class="sub reveal" id="kernel-mode-vs-user-mode">Kernel mode vs. user mode</h3>
   <p class="reveal">The CPU itself enforces a hard privilege boundary. Ordinary application code runs in <strong>user mode</strong> — restricted, can't touch hardware directly, can't corrupt other programs' memory. The <strong>kernel</strong> (the OS's core) runs in <strong>kernel mode</strong> — unrestricted, full hardware access. Crossing from user to kernel mode requires a deliberate, guarded transition: a <strong>system call</strong>.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -853,7 +880,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Monolithic vs. microkernel</h3>
+  <h3 class="sub reveal" id="monolithic-vs-microkernel">Monolithic vs. microkernel</h3>
   <div class="duo reveal">
     <div class="panel">
       <h4><span class="sw"></span>Monolithic kernel</h4>
@@ -880,7 +907,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Multiprogramming, multitasking, multiprocessing</h3>
+  <h3 class="sub reveal" id="multiprogramming-multitasking-multiprocessing">Multiprogramming, multitasking, multiprocessing</h3>
   <p class="reveal">These three sound almost identical and get mixed up constantly — they describe different tricks for keeping a CPU (or CPUs) busy.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -935,7 +962,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Process vs. thread</h3>
+  <h3 class="sub reveal" id="process-vs-thread">Process vs. thread</h3>
   <p class="reveal">A <strong>process</strong> is a program in execution — code, plus its own private memory, plus everything the OS is tracking about it. A <strong>thread</strong> is a lightweight path of execution <em>inside</em> a process. Every process starts with exactly one thread; it can spawn more, and all of them share the same process's memory.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -956,7 +983,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Process states &amp; the PCB</h3>
+  <h3 class="sub reveal" id="process-states-the-pcb">Process states &amp; the PCB</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>New</b><span>being created</span></div>
@@ -978,7 +1005,7 @@ noscript .reveal{opacity:1;}
   </div>
   <p class="reveal">The OS tracks every process's state in a <strong>Process Control Block (PCB)</strong>: process ID, program counter, saved register values, memory maps, open files, and scheduling priority. A <strong>context switch</strong> is nothing more than saving the current process's PCB and loading the next one's.</p>
 
-  <h3 class="sub reveal">Process creation, zombies &amp; orphans</h3>
+  <h3 class="sub reveal" id="process-creation-zombies-orphans">Process creation, zombies &amp; orphans</h3>
   <div class="duo reveal">
     <div class="panel">
       <h4><span class="sw"></span><code>fork()</code> vs <code>exec()</code></h4>
@@ -997,7 +1024,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">Inter-process communication (IPC)</h3>
+  <h3 class="sub reveal" id="inter-process-communication-ipc">Inter-process communication (IPC)</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Mechanism</th><th>Notes</th></tr></thead>
@@ -1011,7 +1038,7 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">User-level vs. kernel-level threads</h3>
+  <h3 class="sub reveal" id="user-level-vs-kernel-level-threads">User-level vs. kernel-level threads</h3>
   <div class="duo reveal">
     <div class="panel">
       <h4><span class="sw"></span>User-level threads</h4>
@@ -1100,7 +1127,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">What "good" scheduling is optimizing for</h3>
+  <h3 class="sub reveal" id="what-good-scheduling-is-optimizing-for">What "good" scheduling is optimizing for</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Metric</th><th>Goal</th></tr></thead>
@@ -1121,7 +1148,7 @@ noscript .reveal{opacity:1;}
     </div>
   </div>
 
-  <h3 class="sub reveal">The algorithms</h3>
+  <h3 class="sub reveal" id="the-algorithms">The algorithms</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Algorithm</th><th>Idea</th><th>Trade-off</th></tr></thead>
@@ -1153,7 +1180,7 @@ noscript .reveal{opacity:1;}
     <p class="diagram-cap">MLFQ never has to guess burst time up front the way SJF does — it just watches behavior. A job that keeps finishing quickly stays fast-tracked in Queue 0; a job that keeps burning through its whole quantum outs itself as CPU-bound and sinks toward Queue 2, where it can run longer uninterrupted instead of repeatedly preempting the interactive jobs above it.</p>
   </div>
 
-  <h3 class="sub reveal">Worked example: why the ordering matters</h3>
+  <h3 class="sub reveal" id="worked-example-why-the-ordering-matters">Worked example: why the ordering matters</h3>
   <p class="reveal">Three jobs arrive at once — P1 needs 24 units of CPU time, P2 needs 3, P3 needs 3. Run them FCFS in arrival order, or reorder by SJF, and the <em>average</em> wait time changes dramatically even though the total work is identical:</p>
   <pre class="reveal"><code><span class="tk-com">// FCFS order: P1, P2, P3</span>
 Gantt:  | P1 (0-24) | P2 (24-27) | P3 (27-30) |
@@ -1262,7 +1289,7 @@ Wait:   P2=0, P3=3, P1=6     → average = <span class="tk-str">3</span></code><
     </div>
   </div>
 
-  <h3 class="sub reveal">The critical section problem</h3>
+  <h3 class="sub reveal" id="the-critical-section-problem">The critical section problem</h3>
   <p class="reveal">A <strong>race condition</strong> happens when multiple threads access shared data concurrently and the outcome depends on unpredictable timing. The <strong>critical section</strong> is the code that touches the shared resource. Any correct solution to protecting it must guarantee three things simultaneously:</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -1275,7 +1302,7 @@ Wait:   P2=0, P3=3, P1=6     → average = <span class="tk-str">3</span></code><
     </table>
   </div>
 
-  <h3 class="sub reveal">A concrete race condition: why <code>count++</code> isn't atomic</h3>
+  <h3 class="sub reveal" id="a-concrete-race-condition-why-count-isn-t-atomic">A concrete race condition: why <code>count++</code> isn't atomic</h3>
   <p class="reveal">"Race condition" sounds abstract until you see the actual interleaving. <code>count++</code> looks like one operation in Java source, but the machine never sees it that way — it's really three separate steps: read <code>count</code> into a register, add 1, write the register back to <code>count</code>. Any of those three steps can be interrupted by a switch to another thread.</p>
   <pre class="reveal"><code><span class="tk-com">// Shared state: int count = 0;  Two threads each do count++ once.</span>
 
@@ -1299,7 +1326,7 @@ write count  ← <span class="tk-str">1</span>
     </div>
   </div>
 
-  <h3 class="sub reveal">Synchronization primitives</h3>
+  <h3 class="sub reveal" id="synchronization-primitives">Synchronization primitives</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Primitive</th><th>What it is</th></tr></thead>
@@ -1323,7 +1350,7 @@ signal(S):  S++;                       <span class="tk-com">// release</span></c
     </div>
   </div>
 
-  <h3 class="sub reveal">Classic problems worth recognizing by name</h3>
+  <h3 class="sub reveal" id="classic-problems-worth-recognizing-by-name">Classic problems worth recognizing by name</h3>
   <div class="duo reveal">
     <div class="panel">
       <h4><span class="sw"></span>Producer-Consumer</h4>
@@ -1339,7 +1366,7 @@ signal(S):  S++;                       <span class="tk-com">// release</span></c
     <p>Five philosophers sit around a table with one fork between each pair — each needs <em>both</em> adjacent forks to eat. If everyone picks up their left fork simultaneously, all five wait forever for a right fork that will never be free: a perfect illustration of deadlock. The standard fix — have one philosopher pick up their <em>right</em> fork first — breaks the symmetry that caused it.</p>
   </div>
 
-  <h3 class="sub reveal">Deadlock: the four conditions</h3>
+  <h3 class="sub reveal" id="deadlock-the-four-conditions">Deadlock: the four conditions</h3>
   <p class="reveal">A deadlock is a set of threads/processes each waiting on a resource held by another in the set — nobody can proceed. Crucially, deadlock requires <strong>all four</strong> Coffman conditions to hold <em>at once</em>; breaking just one prevents it entirely.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -1353,7 +1380,7 @@ signal(S):  S++;                       <span class="tk-com">// release</span></c
     </table>
   </div>
 
-  <h3 class="sub reveal">Handling deadlock</h3>
+  <h3 class="sub reveal" id="handling-deadlock">Handling deadlock</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Strategy</th><th>How</th></tr></thead>
@@ -1478,7 +1505,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </div>
 
-  <h3 class="sub reveal">Logical vs. physical addresses</h3>
+  <h3 class="sub reveal" id="logical-vs-physical-addresses">Logical vs. physical addresses</h3>
   <p class="reveal">The address your program uses (a <strong>logical</strong>/virtual address) is not the real location in RAM (the <strong>physical</strong> address). A dedicated piece of hardware, the <strong>MMU (Memory Management Unit)</strong>, translates every single memory access from logical to physical, in real time, on every instruction — invisibly to your code.</p>
   <div class="callout callout--tip reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2.5l2.1 5.9 5.9 2.1-5.9 2.1L12 18.5l-2.1-5.9-5.9-2.1 5.9-2.1L12 2.5z" fill="currentColor"/></svg></div>
@@ -1488,7 +1515,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </div>
 
-  <h3 class="sub reveal">Fragmentation</h3>
+  <h3 class="sub reveal" id="fragmentation">Fragmentation</h3>
   <div class="duo reveal">
     <div class="panel">
       <h4><span class="sw"></span>External fragmentation</h4>
@@ -1500,7 +1527,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </div>
 
-  <h3 class="sub reveal">Paging: fixed-size chunks</h3>
+  <h3 class="sub reveal" id="paging-fixed-size-chunks">Paging: fixed-size chunks</h3>
   <p class="reveal">Logical memory is divided into fixed-size <strong>pages</strong>; physical memory into same-size <strong>frames</strong>. A per-process <strong>page table</strong> maps every page to whichever frame currently holds it. This eliminates external fragmentation completely (every hole is exactly one frame, always usable) at the cost of a little internal fragmentation in a page's last, partially-used frame.</p>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
@@ -1520,7 +1547,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </div>
 
-  <h3 class="sub reveal">Segmentation, and paging vs. segmentation</h3>
+  <h3 class="sub reveal" id="segmentation-and-paging-vs-segmentation">Segmentation, and paging vs. segmentation</h3>
   <p class="reveal"><strong>Segmentation</strong> divides memory into variable-size logical segments that match how a programmer actually thinks about a program — code, stack, heap — rather than uniform fixed-size chunks. It reintroduces external fragmentation, which is precisely the problem paging was built to avoid. Most modern systems combine both: segments for logical structure, each segment itself paged underneath.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -1533,14 +1560,14 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </table>
   </div>
 
-  <h3 class="sub reveal">Virtual memory &amp; demand paging</h3>
+  <h3 class="sub reveal" id="virtual-memory-demand-paging">Virtual memory &amp; demand paging</h3>
   <p class="reveal"><strong>Virtual memory</strong> lets a process use more memory than physically exists, by keeping only the pages it's actually touching in RAM and the rest on disk. With <strong>demand paging</strong>, a page loads only the moment it's first accessed — never speculatively in advance.</p>
   <div class="panel reveal">
     <h4><span class="sw"></span>What happens on a page fault</h4>
     <p>The CPU accesses a page that isn't currently in RAM → a trap into the kernel (a <strong>page fault</strong>) → the OS finds a free frame (evicting something if none are free — see below) → fetches the page from disk into it → updates the page table → resumes the instruction exactly where it left off, now succeeding. This entire detour is invisible to the program; it just looks like one instruction took unusually long.</p>
   </div>
 
-  <h3 class="sub reveal">Page replacement algorithms</h3>
+  <h3 class="sub reveal" id="page-replacement-algorithms">Page replacement algorithms</h3>
   <p class="reveal">When RAM is full and a new page needs a frame, something already in RAM has to be evicted. Which one you pick matters enormously.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -1568,7 +1595,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </div>
 
-  <h3 class="sub reveal">Thrashing</h3>
+  <h3 class="sub reveal" id="thrashing">Thrashing</h3>
   <p class="reveal"><strong>Thrashing</strong> is what happens when a process (or the whole system) doesn't have enough frames for its actual <strong>working set</strong> — the pages it genuinely needs in a given stretch of execution. The system spends more time swapping pages in and out than doing real work, and CPU utilization <em>collapses</em> even though everything looks "busy."</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -1581,7 +1608,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </table>
   </div>
 
-  <h3 class="sub reveal">One tier faster than RAM: CPU caches</h3>
+  <h3 class="sub reveal" id="one-tier-faster-than-ram-cpu-caches">One tier faster than RAM: CPU caches</h3>
   <p class="reveal">Back in Architecture &amp; Program Execution, the von Neumann bottleneck section promised that CPU caches and cache-friendly data structures would show up later as the fix for the CPU-to-RAM speed gap. This is that promise, paid off. Everything in this chapter so far — paging, the TLB, page replacement — has been about hiding the gap between RAM and disk. CPU caches hide the very next gap up: between the CPU core and RAM itself.</p>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
@@ -1691,7 +1718,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </div>
 
-  <h3 class="sub reveal">Files, directories, and inodes</h3>
+  <h3 class="sub reveal" id="files-directories-and-inodes">Files, directories, and inodes</h3>
   <p class="reveal">A <strong>file</strong> is a named collection of data; a <strong>directory</strong> maps human-readable names to the file's actual metadata record, called an <strong>inode</strong>. The inode holds size, permissions, timestamps, and pointers to the actual data blocks on disk — but, crucially, not the file's name.</p>
   <div class="callout callout--tip reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2.5l2.1 5.9 5.9 2.1-5.9 2.1L12 18.5l-2.1-5.9-5.9-2.1 5.9-2.1L12 2.5z" fill="currentColor"/></svg></div>
@@ -1730,7 +1757,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </table>
   </div>
 
-  <h3 class="sub reveal">The page cache — why opening a file feels instant</h3>
+  <h3 class="sub reveal" id="the-page-cache-why-opening-a-file-feels-instant">The page cache — why opening a file feels instant</h3>
   <p class="reveal">None of the directory-walk-then-follow-the-inode work above happens on every single read. The OS keeps a copy of every disk block it has recently read (or written) in an otherwise-idle region of RAM called the <strong>page cache</strong> (a.k.a. buffer cache). The <em>first</em> time a process opens a file, the OS pays real disk latency to pull those blocks in. Open the same file again — even from a completely different process — and if nothing has evicted those pages yet, there's no disk access at all: the read is satisfied straight out of RAM.</p>
   <div class="callout callout--perf reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" fill="currentColor"/></svg></div>
@@ -1741,11 +1768,11 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
   </div>
   <p class="reveal">Writes go through the same cache: a write lands in RAM immediately (marked <strong>dirty</strong>) and a background flusher thread writes it out to the actual disk shortly after, not instantly. That gap between "the write returned" and "the data is durably on disk" is exactly the crack that crash consistency has to deal with — which is what a filesystem's journal exists to protect against.</p>
 
-  <h3 class="sub reveal">Journaling: surviving a crash mid-write</h3>
+  <h3 class="sub reveal" id="journaling-surviving-a-crash-mid-write">Journaling: surviving a crash mid-write</h3>
   <p class="reveal">Updating a file's metadata is rarely one atomic disk write — growing a file, say, means updating the inode's size, allocating a new data block, and linking that block into the inode's pointer list, as separate writes. If the power dies after the first write but before the third, the filesystem's own bookkeeping is now internally inconsistent — a classic way filesystems used to get silently corrupted.</p>
   <p class="reveal">A <strong>journal</strong> (or write-ahead log) fixes this by writing a short summary of the intended changes to a dedicated log region <em>first</em>, then performing the real writes. If the system crashes mid-update, the next mount just replays or discards the journal to finish (or cleanly undo) whatever was in flight — instead of leaving the filesystem's actual data structures half-written. <strong>ext4</strong> — the default on most Linux servers, and the filesystem a backend engineer is most likely to actually deploy onto — journals its metadata this way by default, which is exactly why an ungraceful VM reboot doesn't routinely corrupt the filesystem.</p>
 
-  <h3 class="sub reveal">Disk scheduling</h3>
+  <h3 class="sub reveal" id="disk-scheduling">Disk scheduling</h3>
   <p class="reveal">On a spinning disk, the physical read/write head has to move to a track before it can read anything — that seek time dwarfs everything else. Disk scheduling algorithms exist purely to minimize total head movement across a batch of pending requests.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -1767,7 +1794,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </div>
 
-  <h3 class="sub reveal">RAID, briefly</h3>
+  <h3 class="sub reveal" id="raid-briefly">RAID, briefly</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Level</th><th>Technique</th></tr></thead>
@@ -1815,7 +1842,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </div>
 
-  <h3 class="sub reveal">The OSI 7-layer model</h3>
+  <h3 class="sub reveal" id="the-osi-7-layer-model">The OSI 7-layer model</h3>
   <p class="reveal">OSI is a <em>reference</em> model — nobody implements exactly these 7 layers in practice — but it's the shared vocabulary the entire industry uses to talk about networking. Each layer has one job and only trusts the layer directly below it.</p>
   <div class="tbl-wrap reveal">
     <table>
@@ -1839,7 +1866,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </div>
 
-  <h3 class="sub reveal">Encapsulation: how layers actually stack</h3>
+  <h3 class="sub reveal" id="encapsulation-how-layers-actually-stack">Encapsulation: how layers actually stack</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>Data</b><span>your application's payload</span></div>
@@ -1853,7 +1880,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     <p class="diagram-cap">Each layer wraps the previous layer's entire output in its own header (like nested envelopes) — the receiver's stack unwraps them in exactly the reverse order, one layer at a time, each layer only ever reading its own header.</p>
   </div>
 
-  <h3 class="sub reveal">MAC addresses, ARP, switches</h3>
+  <h3 class="sub reveal" id="mac-addresses-arp-switches">MAC addresses, ARP, switches</h3>
   <ul class="reveal">
     <li><strong>MAC address</strong> — a 48-bit hardware address, unique per network interface, used for delivery within a single local network (LAN).</li>
     <li><strong>ARP (Address Resolution Protocol)</strong> — resolves "I know this device's IP address, what's its MAC address on this LAN?"</li>
@@ -1867,7 +1894,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </div>
 
-  <h3 class="sub reveal">IP addressing</h3>
+  <h3 class="sub reveal" id="ip-addressing">IP addressing</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th></th><th>IPv4</th><th>IPv6</th></tr></thead>
@@ -1886,13 +1913,13 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </div>
 
-  <h3 class="sub reveal">Subnetting &amp; CIDR</h3>
+  <h3 class="sub reveal" id="subnetting-cidr">Subnetting &amp; CIDR</h3>
   <p class="reveal">CIDR notation (<code>/24</code>) states how many bits of an address are the fixed "network" portion versus the variable "host" portion. More network bits means a smaller subnet with fewer usable host addresses.</p>
   <pre class="reveal"><code>192.168.1.0<span class="tk-str">/24</span>  → mask 255.255.255.0   → 256 addresses (254 usable)
 192.168.1.0<span class="tk-str">/26</span>  → mask 255.255.255.192 → 64 addresses (62 usable)
 <span class="tk-com">// 2 addresses in every subnet are reserved: the network address and the broadcast address</span></code></pre>
 
-  <h3 class="sub reveal">Routing, in brief</h3>
+  <h3 class="sub reveal" id="routing-in-brief">Routing, in brief</h3>
   <p class="reveal">Routers forward packets toward their destination using routing tables, built by routing protocols: <strong>OSPF</strong> (link-state, used within one organization's network), <strong>BGP</strong> (path-vector, the actual protocol that glues the whole internet together between providers), and legacy <strong>RIP</strong> (distance-vector). <strong>ICMP</strong> carries control/error messages — it's what <code>ping</code> and <code>traceroute</code> are built on, not a data-carrying protocol itself.</p>
 
   <div class="deck-row reveal">
@@ -1959,7 +1986,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </div>
 
-  <h3 class="sub reveal">TCP vs. UDP</h3>
+  <h3 class="sub reveal" id="tcp-vs-udp">TCP vs. UDP</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th></th><th>TCP</th><th>UDP</th></tr></thead>
@@ -1980,7 +2007,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </div>
 
-  <h3 class="sub reveal">The 3-way handshake</h3>
+  <h3 class="sub reveal" id="the-3-way-handshake">The 3-way handshake</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>Client → Server</b><span>SYN</span></div>
@@ -1999,7 +2026,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </div>
 
-  <h3 class="sub reveal">Closing a connection: the 4-way teardown</h3>
+  <h3 class="sub reveal" id="closing-a-connection-the-4-way-teardown">Closing a connection: the 4-way teardown</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>Client → Server</b><span>FIN</span></div>
@@ -2021,7 +2048,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </div>
 
-  <h3 class="sub reveal">How TCP actually delivers reliability</h3>
+  <h3 class="sub reveal" id="how-tcp-actually-delivers-reliability">How TCP actually delivers reliability</h3>
   <ul class="reveal">
     <li><strong>Sequence &amp; acknowledgment numbers</strong> — every byte is numbered, so the receiver can detect gaps, drops, and out-of-order arrival.</li>
     <li><strong>Retransmission</strong> — an un-acknowledged segment gets resent, either after a timeout or immediately on 3 duplicate ACKs ("fast retransmit").</li>
@@ -2036,7 +2063,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </div>
 
-  <h3 class="sub reveal">What happens when you load a web page</h3>
+  <h3 class="sub reveal" id="what-happens-when-you-load-a-web-page">What happens when you load a web page</h3>
   <p class="reveal">This is one of the most common systems-thinking interview questions precisely because it forces you to touch every layer in order:</p>
   <pre class="reveal"><code>1. Browser checks its cache; if needed, DNS resolves the domain to an IP
 2. TCP 3-way handshake to that IP on port 443
@@ -2045,7 +2072,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
 5. Server processes the request, returns an HTTP response
 6. Browser parses the HTML, fetches additional assets (CSS/JS/images), renders</code></pre>
 
-  <h3 class="sub reveal">DNS</h3>
+  <h3 class="sub reveal" id="dns">DNS</h3>
   <p class="reveal">DNS maps human-readable names to IP addresses through a hierarchy: <strong>Root → TLD (.com) → authoritative name server</strong>. Resolvers cache answers for a TTL to avoid re-asking constantly. Common record types: <code>A</code> (IPv4), <code>AAAA</code> (IPv6), <code>CNAME</code> (alias to another name), <code>MX</code> (mail server), <code>TXT</code> (arbitrary text, often used for domain verification).</p>
   <div class="callout callout--tip reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2.5l2.1 5.9 5.9 2.1-5.9 2.1L12 18.5l-2.1-5.9-5.9-2.1 5.9-2.1L12 2.5z" fill="currentColor"/></svg></div>
@@ -2055,7 +2082,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </div>
 
-  <h3 class="sub reveal">HTTP essentials</h3>
+  <h3 class="sub reveal" id="http-essentials">HTTP essentials</h3>
   <div class="tbl-wrap reveal">
     <table>
       <thead><tr><th>Aspect</th><th>Notes</th></tr></thead>
@@ -2156,7 +2183,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
 
   <div class="iq-group-label">Data Representation &amp; Architecture</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-01">
     <summary><span class="iq-num">01</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why does two's complement make addition hardware simpler than sign-magnitude would?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>With sign-magnitude, adding a positive and a negative number isn't really addition at all — the ALU would need to compare magnitudes, figure out which is larger, subtract the smaller from the larger, and attach the sign of the larger. That's an entirely separate code path from adding two positives.</p>
@@ -2164,7 +2191,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-02">
     <summary><span class="iq-num">02</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">"Floating-point rounding errors are rare edge cases you'll basically never hit." Why is this dangerous thinking?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Rounding isn't an edge case — it's the default behavior for the vast majority of decimal fractions, because most of them have no exact finite binary representation. It shows up constantly: comparing two computed doubles with <code>==</code>, accumulating small errors across thousands of loop iterations, or summing a long column of prices.</p>
@@ -2172,7 +2199,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-03">
     <summary><span class="iq-num">03</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Compiled, interpreted, or JIT — how would you actually choose for a new language or runtime?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Ahead-of-time compilation wins when startup time barely matters and you want maximum steady-state performance with no runtime translation cost — command-line tools, embedded systems, long-running native services. Pure interpretation wins when iteration speed and portability matter more than raw throughput — scripting, glue code, rapid prototyping.</p>
@@ -2180,7 +2207,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-04">
     <summary><span class="iq-num">04</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A file uploaded from one system shows garbled characters when read by another. Before blaming the file's content, what would you check?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>This is almost always an encoding mismatch, not corrupted data. The bytes on disk are a specific encoding (commonly UTF-8), but the reading system is decoding them as if they were a different charset (Latin-1/Windows-1252 is the classic culprit) — the resulting "mojibake" is a real, deterministic transformation of real bytes, not damage.</p>
@@ -2190,7 +2217,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
 
   <div class="iq-group-label">Operating Systems Core</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-05">
     <summary><span class="iq-num">05</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">What does a context switch actually save and restore?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>The outgoing process/thread's entire CPU-visible state — the program counter, all general-purpose register values, and the stack pointer — gets written into its PCB. For a full process switch, the MMU's page-table pointer is also swapped, since the new process has an entirely different address-space mapping (and often the CPU's TLB gets flushed or tagged, since old translations are no longer valid).</p>
@@ -2198,7 +2225,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-06">
     <summary><span class="iq-num">06</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Why would a mission-critical system deliberately choose a microkernel despite the performance cost?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>In a monolithic kernel, a bug in any driver — even a rarely-touched one — runs in kernel space and can crash or corrupt the entire system. In safety-critical contexts (medical devices, avionics, some automotive systems), an isolated driver crash that's just a restartable user-space process is worth far more than the message-passing overhead it costs.</p>
@@ -2206,7 +2233,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-07">
     <summary><span class="iq-num">07</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">"Threads are always faster than processes." What's wrong with this as a blanket claim?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Threads are cheaper to <em>create and switch between</em> — that part is true. But "faster" depends entirely on what you're doing with them. Shared memory means synchronization overhead (locks, contention) that isolated processes never pay at all. A crash in one thread can take down every other thread in the process, while a crashed process is contained.</p>
@@ -2214,7 +2241,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-08">
     <summary><span class="iq-num">08</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Your web server is unresponsive under load, but CPU usage is sitting near 0%. What's your first hypothesis?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Near-zero CPU with total unresponsiveness points away from a compute-bound problem and toward everything sitting in the <strong>Waiting</strong> state — blocked on I/O that isn't completing. The classic causes: a thread-pool exhausted because every worker thread is blocked waiting on a slow or hung downstream call (a database, a third-party API), or a connection-pool exhaustion where every request is queued waiting for a connection that never frees up.</p>
@@ -2224,7 +2251,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
 
   <div class="iq-group-label">Concurrency &amp; Deadlocks</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-09">
     <summary><span class="iq-num">09</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">When is a spinlock actually the better choice over a blocking mutex?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>A blocking mutex puts the waiting thread to sleep and wakes it later — which costs at least one full context switch in each direction. If the critical section is held for less time than a context switch would even take, that overhead is pure waste; busy-waiting for a few dozen cycles and grabbing the lock the instant it's free is actually cheaper.</p>
@@ -2232,7 +2259,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-10">
     <summary><span class="iq-num">10</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">Two threads each acquire two locks, but in a different order from each other. What's the bug, and what's the actual fix?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>This is a textbook circular-wait setup: Thread A holds lock 1 and waits for lock 2; Thread B holds lock 2 and waits for lock 1. Both threads block forever — a deadlock, and one that may only manifest under specific timing, making it notoriously hard to reproduce in testing.</p>
@@ -2240,7 +2267,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-11">
     <summary><span class="iq-num">11</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Design a producer-consumer queue with a fixed-size buffer. Which primitives do you reach for, and why those specifically?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Two counting semaphores plus a mutex: one semaphore counts <em>empty</em> slots (producers wait on it before inserting), one counts <em>full</em> slots (consumers wait on it before removing), and a mutex protects the buffer's internal state during the actual insert/remove operation. Producers signal "full" after inserting; consumers signal "empty" after removing.</p>
@@ -2248,7 +2275,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-12">
     <summary><span class="iq-num">12</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Deadlock prevention vs. detection-and-recovery — when would you deliberately choose the "weaker" option?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Prevention (e.g. strict lock ordering) gives you a mathematical guarantee but constrains how code can be written everywhere, forever — every future contributor must respect the ordering rule, and it can be genuinely awkward to enforce across a large, evolving codebase. Detection-and-recovery costs nothing upfront and imposes no constraints on how locks are used, at the price of occasionally needing to kill or roll back a thread when a deadlock does occur.</p>
@@ -2258,7 +2285,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
 
   <div class="iq-group-label">Memory &amp; Virtual Memory</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-13">
     <summary><span class="iq-num">13</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Walk through exactly what happens, step by step, on a page fault.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>The CPU tries to access a logical address; the MMU's page-table lookup finds the page marked "not present" and raises a trap into the kernel. The OS's fault handler looks up where that page's data actually lives (usually on disk), finds a free physical frame — running a page-replacement algorithm to evict something if every frame is currently occupied — and issues a disk read to bring the page in.</p>
@@ -2266,7 +2293,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-14">
     <summary><span class="iq-num">14</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">"Adding more RAM always fixes a thrashing system." When is this false?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>More RAM helps only if the actual bottleneck is "not enough frames for the working set." If the real problem is a memory leak (reachable-but-unwanted memory that keeps growing) or a program with a working set that scales with load faster than any reasonable amount of RAM, adding memory just delays the inevitable — the system will eventually thrash again at a higher load level, or the leak will exhaust the new RAM too.</p>
@@ -2274,7 +2301,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-15">
     <summary><span class="iq-num">15</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Why might a resource-constrained embedded system deliberately choose FIFO page replacement despite Belady's anomaly?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>LRU's accuracy comes at a real bookkeeping cost — tracking exact recency for every page takes extra hardware support or software overhead. FIFO needs only a simple queue: cheap, predictable, minimal memory itself for the metadata. On a system with very limited RAM and CPU budget, that overhead can matter more than the (mostly theoretical) risk of Belady's anomaly, which requires a specific, somewhat contrived access pattern to actually trigger.</p>
@@ -2282,7 +2309,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-16">
     <summary><span class="iq-num">16</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A production service's response times creep up slowly over hours, then fully recover after a restart. What do you investigate?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>"Slow degradation, restart fixes it" is the signature of a resource that only grows and is never released — the classic candidates are a memory leak (a growing reachable collection, an un-removed listener) that eventually forces more frequent, longer garbage-collection pauses, or a resource leak like unclosed connections/file handles slowly exhausting a pool.</p>
@@ -2292,7 +2319,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
 
   <div class="iq-group-label">Networking</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-17">
     <summary><span class="iq-num">17</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">TCP has both sequence numbers and acknowledgment numbers. Aren't they redundant?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>They describe two independent, simultaneous data flows, since TCP connections are full-duplex. The sequence number says "here's where <em>my</em> outgoing byte stream is, starting from this segment." The acknowledgment number says "here's how much of <em>your</em> incoming byte stream I've successfully received so far." Every TCP segment (after setup) carries both, because either side can be sending data to the other at any moment.</p>
@@ -2300,7 +2327,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-18">
     <summary><span class="iq-num">18</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Trap</span><span class="iq-q">"HTTPS means you can fully trust the server you're talking to." What's wrong with this?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>TLS (what makes HTTP "HTTPS") guarantees three specific things: the traffic is encrypted in transit, it hasn't been tampered with, and the server holds a certificate proving it controls the domain it claims to be. None of that says anything about whether the server's <em>operator</em> is trustworthy, whether the server itself is secure against other attacks, or whether the content it serves is legitimate — a phishing site can have a perfectly valid TLS certificate for its own look-alike domain.</p>
@@ -2308,7 +2335,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-19">
     <summary><span class="iq-num">19</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Where would you deliberately choose UDP for something that's traditionally built on TCP?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>HTTP/3 is the concrete, real-world example: it's built on QUIC, which runs over UDP instead of TCP, specifically to solve TCP's "head-of-line blocking" — one lost packet in TCP stalls <em>every</em> stream multiplexed over that connection until it's retransmitted, even streams whose data already arrived fine. QUIC implements its own reliability and multiplexing in user space on top of UDP, so a lost packet only stalls the one stream it belonged to.</p>
@@ -2316,7 +2343,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-20">
     <summary><span class="iq-num">20</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Users in one specific region report your API is slow; everywhere else is fine. How do you narrow it down, layer by layer?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Start outside your infrastructure and work in: is it plain physical distance/latency (speed-of-light round-trip time to your server's region — sometimes the honest answer is "yes, and a CDN or regional deployment is the fix, not a code change")? Then DNS — is that region resolving to a different, perhaps overloaded or geographically distant, endpoint? Then routing — any ISP-level congestion or suboptimal BGP paths specific to that region?</p>
@@ -2326,7 +2353,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
 
   <div class="iq-group-label">Cross-Topic Scenarios</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-21">
     <summary><span class="iq-num">21</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">End to end: what actually happens, across the OS and the network, when a Java backend service accepts one incoming HTTP request?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>A packet arrives at the network card, travels up through the Data Link and Network layers, and TCP reassembles the byte stream. The OS kernel has a listening socket associated with the JVM process; it hands the completed TCP connection to that process via a system call. Somewhere in the JVM's thread pool, a thread that was <code>WAITING</code> on that socket wakes up, gets scheduled onto a CPU core (a context switch brings its saved state back), and reads the HTTP request bytes.</p>
@@ -2334,7 +2361,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-22">
     <summary><span class="iq-num">22</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">Designing a new backend service from scratch, where would you deliberately trade reliability for performance — and where would you never do that?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Good places to trade toward performance: analytics/metrics ingestion (UDP-style fire-and-forget is often fine — losing one data point among millions doesn't matter), read-heavy caches where a slightly stale value beats a slow, always-fresh one, and any internal telemetry where "best effort" was always the honest requirement, not an accident.</p>
@@ -2344,7 +2371,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
 
   <div class="iq-group-label">Scheduling, Storage &amp; Concurrency</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-23">
     <summary><span class="iq-num">23</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-off</span><span class="iq-q">SJF provably minimizes average wait time. Why does almost every general-purpose OS still favor Round Robin (or MLFQ) instead?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>SJF's optimality has two catches that matter enormously outside a batch-processing context. First, it needs burst time known (or accurately predicted) in advance — for a general-purpose interactive system, you genuinely don't know how long a request will take until it's finished. Second, "average wait time" is a batch metric; SJF says nothing about any individual job's worst case, and a sufficiently long job can be starved indefinitely by a steady stream of shorter arrivals.</p>
@@ -2352,7 +2379,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-24">
     <summary><span class="iq-num">24</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A long-running Java service starts throwing "Too many open files" after running fine for days. What's actually happening, and how do you confirm it?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>Every process has an OS-enforced limit on simultaneously open file descriptors (Linux's default <code>ulimit -n</code> is often 1024) — and sockets and pipes consume one each, exactly like literal files do. "Fine for days, then fails" is the signature of a slow leak, not a sudden spike: something is opening descriptors faster than it closes them — a missing <code>close()</code> outside a <code>finally</code>/try-with-resources, or an HTTP or database client creating a brand-new connection per call instead of pooling and reusing them.</p>
@@ -2360,7 +2387,7 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
     </div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-25">
     <summary><span class="iq-num">25</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Skip the textbook definition — what is a race condition, concretely, at the instruction level?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body">
       <p>It's not "two threads run at the same time" in the abstract — it's that an operation which looks atomic in source code is actually several separate machine steps, and another thread's steps can interleave in between yours. The canonical case is <code>count++</code> on a shared variable: read <code>count</code> into a register, add 1, write it back — three steps, not one. If Thread A reads <code>5</code>, gets preempted before writing back, and Thread B also reads <code>5</code>, increments to <code>6</code>, and writes it back, Thread A then resumes with its now-stale <code>5</code>, adds 1, and writes <code>6</code> back too — one entire increment silently vanishes.</p>
@@ -2458,6 +2485,8 @@ P0 needs 4, Available=<span class="tk-str">7</span> → <span class="tk-str">7</
 <footer class="site-foot">CS Fundamentals — The Foundations Before Java. <a href="index.html#cs-fundamentals" style="color:var(--accent-ink);font-weight:600;">← Back to the trailhead</a></footer>
 
 </main>
+<script src="search-index.js"></script>
+<script src="site-search.js"></script>
 <script>
 (function(){
 "use strict";

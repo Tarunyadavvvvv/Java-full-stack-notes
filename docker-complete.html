@@ -388,12 +388,39 @@ noscript .reveal{opacity:1;}
   .navlink{font-size:.8rem;padding:.45rem .7rem;}
   .contents-btn{font-size:.8rem;padding:.45rem .8rem;}
 }
+/* ---- site search ---- */
+.site-search{position:relative;flex:1;max-width:420px;margin:0 1.2rem;}
+.site-search__box{display:flex;align-items:center;gap:.5rem;background:var(--surface-2);border-radius:var(--r-pill);padding:.5rem .9rem;transition:background var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);}
+.site-search__box:focus-within{background:var(--surface);box-shadow:0 0 0 2px var(--accent);}
+.site-search__icon{flex:none;width:15px;height:15px;color:var(--muted);}
+.site-search__input{flex:1;min-width:0;border:none;background:none;outline:none;font-family:var(--font-body);font-size:.87rem;color:var(--ink);}
+.site-search__input::placeholder{color:var(--muted);}
+.site-search__kbd{flex:none;font-family:var(--font-mono);font-size:.68rem;color:var(--muted);background:var(--surface);border-radius:5px;padding:.1rem .4rem;box-shadow:var(--shadow-sm);}
+.site-search__results{position:absolute;top:calc(100% + 8px);left:0;right:0;max-height:min(70vh,480px);overflow-y:auto;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:.5rem;display:none;z-index:50;}
+.site-search.is-open .site-search__results{display:block;}
+.site-search__empty{padding:1rem;font-size:.85rem;color:var(--muted);text-align:center;}
+.site-search__item{display:block;padding:.65rem .8rem;border-radius:10px;text-decoration:none;color:inherit;cursor:pointer;}
+.site-search__item:hover,.site-search__item.is-active{background:var(--tint);}
+.site-search__item-title{font-weight:700;font-size:.88rem;display:block;}
+.site-search__item-meta{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:.4rem;margin-top:.2rem;}
+.site-search__item-type{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;background:var(--surface-2);padding:.1rem .4rem;border-radius:999px;}
+.site-search mark{background:var(--tint-strong);color:inherit;border-radius:3px;padding:0 .1em;}
+@media (max-width:820px){.site-search{order:3;flex-basis:100%;max-width:none;margin:.6rem 0 0;}}
+[id]{scroll-margin-top:90px;}
 </style>
 <noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript>
 
 <header class="topnav">
   <div class="topnav__inner">
     <a class="wordmark" href="index.html#docker"><span class="wordmark__mark">D</span>Docker</a>
+    <div class="site-search" id="siteSearch">
+      <div class="site-search__box">
+        <svg class="site-search__icon" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" class="site-search__input" id="siteSearchInput" placeholder="Search any topic or question…" autocomplete="off" aria-label="Search notes" aria-expanded="false" aria-controls="siteSearchResults">
+        <span class="site-search__kbd">/</span>
+      </div>
+      <div class="site-search__results" id="siteSearchResults"></div>
+    </div>
     <nav class="navlinks">
       <a class="navlink" href="index.html#docker">← All topics</a>
       <div class="contents" id="contents">
@@ -460,10 +487,10 @@ noscript .reveal{opacity:1;}
 
   <p class="reveal">Virtual machines fixed this by brute force: ship the entire machine. A VM bundles a full guest operating system — its own kernel, its own init system, its own device drivers — on top of a hypervisor that pretends to be hardware. That's real isolation, but it's expensive isolation: every VM boots a kernel from scratch, every VM duplicates the userland libraries every other VM on the same host already has, and every VM takes minutes, not milliseconds, to become useful.</p>
 
-  <h3 class="sub reveal">Containers are just processes</h3>
+  <h3 class="sub reveal" id="containers-are-just-processes">Containers are just processes</h3>
   <p class="reveal">Docker's actual insight was smaller and sharper than "ship the whole machine": don't virtualize hardware, restrict what a normal process can see and use on the kernel that's already running. A container is not a mini-VM — it has no hypervisor, no guest kernel, no boot sequence. It is a regular Linux process, started by the same kernel that's running everything else on the host, just launched inside a bubble that makes it <em>look</em> like the only thing on the machine. Run <code>ps aux</code> on the host and you will see your "containerized" process sitting right there in the host's process list, with a normal PID.</p>
 
-  <h3 class="sub reveal">Namespaces decide what a process can see</h3>
+  <h3 class="sub reveal" id="namespaces-decide-what-a-process-can-see">Namespaces decide what a process can see</h3>
   <p class="reveal">The illusion of isolation comes from Linux namespaces — a kernel feature that gives a process its own private view of some global resource, while every other process keeps seeing the unrestricted version. A container is really just a process (or process tree) launched inside a specific combination of namespaces.</p>
 
   <div class="tbl-wrap reveal">
@@ -480,7 +507,7 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
-  <h3 class="sub reveal">cgroups decide what a process can use</h3>
+  <h3 class="sub reveal" id="cgroups-decide-what-a-process-can-use">cgroups decide what a process can use</h3>
   <p class="reveal">Namespaces answer "what can this process see?" — they say nothing about resource usage. A process with its own PID namespace could still consume 100% of every CPU core and starve everything else on the host. That's the job of control groups (cgroups): a kernel accounting and limiting mechanism for CPU shares, memory ceilings, and I/O bandwidth. When you pass <code>--memory=512m --cpus=1.5</code> to <code>docker run</code>, Docker is writing those numbers into cgroup control files — the same mechanism, whether or not Docker is involved. Chapter 6 goes under the hood of exactly which files those are.</p>
 
   <div class="duo reveal">
@@ -567,7 +594,7 @@ noscript .reveal{opacity:1;}
 
   <p class="reveal">A Docker image is a read-only template: an ordered stack of filesystem layers plus metadata describing how to run a container from them. When you <code>docker run</code> an image, Docker doesn't copy that stack — it mounts all the read-only layers together via a union filesystem and adds one thin writable layer on top for the running container. Delete the container and that writable layer is gone; the image underneath is untouched and ready to spin up the next container identically.</p>
 
-  <h3 class="sub reveal">Every instruction is a layer — and a cache key</h3>
+  <h3 class="sub reveal" id="every-instruction-is-a-layer-and-a-cache-key">Every instruction is a layer — and a cache key</h3>
   <p class="reveal">Each instruction in a Dockerfile (<code>FROM</code>, <code>RUN</code>, <code>COPY</code>, <code>ADD</code>) produces exactly one new layer: a filesystem diff of what changed relative to the layer before it. Docker computes a cache key for each layer from its instruction plus the hash of every layer before it in the chain. On the next build, if a layer's cache key matches one already built, Docker reuses it instantly instead of re-executing the instruction — that's why a <code>RUN apt-get install</code> step that hasn't changed doesn't re-download packages on every build.</p>
 
   <p class="reveal">The catch is that the cache key chains forward: it's not just "did this instruction change," it's "did this instruction <em>or any instruction before it</em> change." The moment one layer's cache misses, every layer after it must rebuild too, even if their own instructions are byte-for-byte identical to last time — because their cache key includes the now-different parent hash. This is the entire reason Dockerfile instruction order is a performance decision, not just documentation order.</p>
@@ -600,7 +627,7 @@ RUN mvn package</code></pre>
 
   <p class="reveal">The Gradle equivalent is the same idea with different filenames: <code>COPY build.gradle settings.gradle .</code> then <code>RUN gradle dependencies --no-daemon</code> to warm the dependency cache, followed by <code>COPY src ./src</code> and <code>RUN gradle build</code> — dependencies stay cached, only source triggers a rebuild.</p>
 
-  <h3 class="sub reveal">Tags are pointers, digests are identities</h3>
+  <h3 class="sub reveal" id="tags-are-pointers-digests-are-identities">Tags are pointers, digests are identities</h3>
   <p class="reveal">A tag like <code>app:1.0</code> is a human-friendly, mutable label — anyone with push access can re-tag a completely different set of bytes as <code>app:1.0</code> tomorrow. A digest, written as <code>sha256:9d3c...</code>, is a cryptographic hash of the image's manifest — the exact bytes, permanently. The manifest itself is a small JSON document listing the image's config and the digest of every layer, which is what a registry actually keys its storage on. Chapter 7 goes deeper on why production pulls should reference a digest, not a tag.</p>
 
   <div class="tbl-wrap reveal">
@@ -657,7 +684,7 @@ RUN mvn package</code></pre>
 
   <p class="reveal">Building automatically as part of a pipeline — cache warming across CI runs, parallel stage builds, registry authentication — is its own topic covered in the DevOps &amp; CI/CD module. This chapter is about what the Dockerfile itself should contain, regardless of what invokes <code>docker build</code>.</p>
 
-  <h3 class="sub reveal">Multi-stage builds</h3>
+  <h3 class="sub reveal" id="multi-stage-builds">Multi-stage builds</h3>
   <p class="reveal">A naive Dockerfile installs a full compiler toolchain, builds the app, and ships that same image to production — compilers, dev dependencies, source maps and all, often north of a gigabyte. A multi-stage build uses one stage with the full toolchain purely to produce build artifacts, then starts a second, unrelated stage from a minimal runtime base and copies in only the finished output. Everything from the first stage — <code>node_modules</code>, the compiler, intermediate files — never exists in the final image at all.</p>
 
   <pre class="reveal"><code># Stage 1: build — heavy tooling, discarded at the end
@@ -712,7 +739,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=3s CMD wget -qO- http://localhost:8080/actuator/health || exit 1
 ENTRYPOINT ["java", "-jar", "app.jar"]</code></pre>
 
-  <h3 class="sub reveal">CMD vs ENTRYPOINT</h3>
+  <h3 class="sub reveal" id="cmd-vs-entrypoint">CMD vs ENTRYPOINT</h3>
   <p class="reveal"><code>ENTRYPOINT</code> is the fixed executable a container runs — it isn't replaced by arguments passed to <code>docker run</code>, only appended to. <code>CMD</code> supplies default arguments that <em>are</em> fully overridden if you pass anything after the image name at runtime. Used together, as in the example above, <code>ENTRYPOINT ["nginx"]</code> with <code>CMD ["-g", "daemon off;"]</code> means the container always runs nginx, but an operator can override just the flags with <code>docker run myimage -g "daemon on;"</code> without touching the Dockerfile.</p>
 
   <div class="tbl-wrap reveal">
@@ -727,7 +754,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]</code></pre>
     </table>
   </div>
 
-  <h3 class="sub reveal">Shell form vs exec form — and why your container won't stop gracefully</h3>
+  <h3 class="sub reveal" id="shell-form-vs-exec-form-and-why-your-container-won-t-stop">Shell form vs exec form — and why your container won't stop gracefully</h3>
   <p class="reveal">Both <code>CMD java -jar app.jar</code> and <code>CMD ["java", "-jar", "app.jar"]</code> look interchangeable, and in the happy path they behave the same — but they put a completely different process in PID 1. The first is shell form: Docker silently wraps it as <code>/bin/sh -c "java -jar app.jar"</code>, so <code>/bin/sh</code> becomes PID 1 and the JVM is merely its child. The second is exec form — a JSON array — and Docker runs <code>java</code> directly with no intervening shell, so the JVM itself is PID 1.</p>
 
   <p class="reveal">That distinction is invisible until someone runs <code>docker stop</code>, which sends <code>SIGTERM</code> to PID 1 and then waits out a grace period (10 seconds by default) before escalating to <code>SIGKILL</code>. Shells typically don't forward signals to child processes on their own — so in shell form, <code>/bin/sh</code> receives the SIGTERM and the java child never sees it at all. Docker waits the full grace period for nothing to happen, then SIGKILLs the JVM outright. Spring Boot's graceful shutdown (<code>server.shutdown=graceful</code>, draining in-flight requests, closing the connection pool cleanly) never gets the chance to run — the process is killed mid-request instead of exiting cleanly. In exec form, SIGTERM reaches the JVM directly and immediately, so the shutdown hook actually fires.</p>
@@ -739,7 +766,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]</code></pre>
 
   <p class="reveal">One more edge case in the same family: if your entrypoint forks children of its own (a shell script backgrounding a helper process, for example), PID 1 also inherits init's other job — reaping zombie processes — and most application binaries were never written to do that correctly. <code>docker run --init</code> (or building tini into the image directly) inserts a tiny real init process as PID 1 that both forwards signals correctly and reaps zombies, letting the actual app run as PID 2 without taking on responsibilities it was never designed for. Cheap insurance, worth adding by default whenever the entrypoint isn't a single direct exec of the real process.</p>
 
-  <h3 class="sub reveal">.dockerignore, non-root, and minimal bases</h3>
+  <h3 class="sub reveal" id="dockerignore-non-root-and-minimal-bases">.dockerignore, non-root, and minimal bases</h3>
   <p class="reveal">A <code>.dockerignore</code> file excludes paths from the build context before it's even sent to the Docker daemon — exclude <code>.git</code>, <code>node_modules</code>, local <code>.env</code> files, and test fixtures. For a Java project the same list needs <code>target/</code> (Maven's build-output directory), <code>build/</code> and <code>.gradle/</code> (Gradle's equivalents), compiled <code>*.class</code> files, and IDE metadata like <code>.idea/</code> or <code>*.iml</code> — none of it belongs in a build context either. This isn't just about speed: without it, a stray <code>.env</code> or AWS credentials file sitting in your project directory can get silently swept into an image layer by an overly broad <code>COPY . .</code>.</p>
 
   <p class="reveal">By default, a container's main process runs as root inside its namespace — which is not as dangerous as root on the host, but is still more privilege than most apps need, and a real risk if a container escape vulnerability is ever found in the runtime. Create an unprivileged user and switch to it with <code>USER</code> before the app starts, as shown above. For the base image itself, alpine, Debian-slim, and distroless all shrink the attack surface compared to a full Debian or Ubuntu base, but the shrinkage isn't free — the comparison below is what actually decides which one belongs under a given service (the interview section digs in further).</p>
@@ -814,7 +841,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]</code></pre>
 
   <p class="reveal">Recall from Chapter 2 that a running container is read-only image layers plus one writable layer on top. That writable layer holds everything the process writes at runtime — log files, uploaded images, a SQLite database file — and it is deleted the moment the container is removed with <code>docker rm</code>. If your database's data directory lives only in that writable layer, a routine <code>docker rm &amp;&amp; docker run</code> to deploy a new version silently deletes every row.</p>
 
-  <h3 class="sub reveal">Volumes, bind mounts, and tmpfs</h3>
+  <h3 class="sub reveal" id="volumes-bind-mounts-and-tmpfs">Volumes, bind mounts, and tmpfs</h3>
   <p class="reveal">Docker gives you three ways to attach storage that outlives — or bypasses — the container's writable layer, each suited to a different situation.</p>
 
   <div class="tbl-wrap reveal">
@@ -828,10 +855,10 @@ ENTRYPOINT ["java", "-jar", "app.jar"]</code></pre>
     </table>
   </div>
 
-  <h3 class="sub reveal">Network drivers</h3>
+  <h3 class="sub reveal" id="network-drivers">Network drivers</h3>
   <p class="reveal">By default a container joins Docker's <code>bridge</code> network — a private, NAT'd network local to the host, which is why you need <code>-p 8080:80</code> to expose a port to the outside world at all. <code>host</code> mode drops that isolation and gives the container the host's network namespace directly: no port mapping needed, slightly better network performance, but the container can now see (and bind to) every port on the host. <code>none</code> gives a container no networking at all, useful for pure batch jobs. <code>overlay</code> networks span multiple Docker hosts using VXLAN encapsulation — the mechanism Swarm (and conceptually, Kubernetes) uses so containers on different physical machines can still talk to each other as if they were on one network.</p>
 
-  <h3 class="sub reveal">Service discovery: the embedded DNS server</h3>
+  <h3 class="sub reveal" id="service-discovery-the-embedded-dns-server">Service discovery: the embedded DNS server</h3>
   <p class="reveal">Here's the detail that trips people up: the default <code>bridge</code> network does <em>not</em> resolve containers by name — that only works on a user-defined bridge network (<code>docker network create appnet</code>), which gets Docker's embedded DNS server at <code>127.0.0.11</code>. Put two containers on that network and each can resolve the other by its container name or <code>--network-alias</code>, with no manual IP wiring. This is exactly the mechanism Compose relies on to let a <code>web</code> service reach <code>db:5432</code> by name (Chapter 5) — Compose is just auto-creating a user-defined network for you.</p>
 
   <div class="panel diagram-panel reveal">
@@ -917,7 +944,7 @@ services:
 volumes:
   pgdata:</code></pre>
 
-  <h3 class="sub reveal">depends_on controls order, not readiness</h3>
+  <h3 class="sub reveal" id="depends-on-controls-order-not-readiness">depends_on controls order, not readiness</h3>
   <p class="reveal">The short-form <code>depends_on: [db]</code> only guarantees the <code>db</code> container's process has <em>started</em> before <code>web</code> starts — not that Postgres has finished initializing and is ready to accept connections, which can take a few extra seconds even after the container itself is running. Left this way, <code>web</code> frequently crash-loops on its first few restarts with "connection refused." The fix, shown above, is the long-form <code>depends_on</code> with <code>condition: service_healthy</code>, paired with an actual <code>healthcheck</code> on <code>db</code> — now <code>web</code> only starts once Postgres genuinely answers, not just once its process exists.</p>
 
   <div class="panel diagram-panel reveal">
@@ -944,7 +971,7 @@ volumes:
     </table>
   </div>
 
-  <h3 class="sub reveal">Compose vs Kubernetes</h3>
+  <h3 class="sub reveal" id="compose-vs-kubernetes">Compose vs Kubernetes</h3>
   <p class="reveal">Compose orchestrates containers on a <em>single host</em> — there's no scheduler deciding which machine runs what, no automatic rescheduling if that one host dies, no rolling updates across a fleet. That's exactly right for local development and small single-box deployments. Once you need multi-node scheduling, auto-scaling, health-gated rolling deployments, or self-healing across a cluster of machines, that's the Kubernetes module's territory — Compose files and Kubernetes manifests describe similar ideas (services, ports, environment, volumes) at very different scales.</p>
 
   <div class="mini-quiz reveal">
@@ -983,7 +1010,7 @@ volumes:
 
   <p class="reveal">"Docker" is really a stack of separate tools handing work down to each other, not one monolithic program. The <code>docker</code> CLI talks to <b>dockerd</b> (the Docker Engine daemon) over a REST API on a Unix socket. dockerd doesn't create containers itself — it delegates to <b>containerd</b>, a higher-level daemon that manages image pulls, storage, and container lifecycle. containerd, in turn, calls <b>runc</b> for each container start: a small, spec-compliant program whose entire job is to create one container according to the OCI runtime spec and exit.</p>
 
-  <h3 class="sub reveal">The docker run sequence</h3>
+  <h3 class="sub reveal" id="the-docker-run-sequence">The docker run sequence</h3>
   <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>docker CLI</b><span>docker run app:1.0</span></div>
@@ -1006,7 +1033,7 @@ volumes:
     <p class="diagram-cap">Every step here is bookkeeping — creating kernel objects and mounting a filesystem view — not booting anything, which is why this entire chain completes in milliseconds.</p>
   </div>
 
-  <h3 class="sub reveal">OverlayFS: the union filesystem</h3>
+  <h3 class="sub reveal" id="overlayfs-the-union-filesystem">OverlayFS: the union filesystem</h3>
   <p class="reveal">OverlayFS is how Docker presents many separate read-only layers plus one writable layer as a single coherent filesystem. It stacks a <code>lowerdir</code> (the image's read-only layers, ordered) under an <code>upperdir</code> (the container's writable layer), and exposes a <code>merged</code> view that's actually mounted into the container. Reading a file resolves from the topmost layer that contains it. Writing is where it gets interesting: if a process modifies a file that only exists in a <code>lowerdir</code> layer, the kernel first performs a "copy-up" — copying that file into <code>upperdir</code> — before applying the write, so the original read-only layers stay pristine and shareable across every other container built from the same image.</p>
 
   <div class="panel diagram-panel reveal">
@@ -1023,10 +1050,10 @@ volumes:
     <p class="diagram-cap">Every container started from the same image shares identical, read-only lowerdir layers on disk — only the thin upperdir differs per container, which is also why many containers from one image use far less disk than you'd expect.</p>
   </div>
 
-  <h3 class="sub reveal">cgroups v2 basics</h3>
+  <h3 class="sub reveal" id="cgroups-v2-basics">cgroups v2 basics</h3>
   <p class="reveal">Modern Docker hosts use cgroups v2's unified hierarchy — one single tree of control groups, rather than v1's separate, sometimes-inconsistent hierarchy per controller (cpu, memory, etc). A container's limits show up as real files: <code>memory.max</code> caps RAM, <code>cpu.max</code> caps CPU time as a quota/period pair, <code>pids.max</code> caps how many processes the container can fork. When <code>--memory=512m</code> is exceeded, it's the kernel's OOM killer — not Docker — that sends <code>SIGKILL</code> to the offending process, which is why a memory-limited container dies with exit code 137, not a graceful shutdown.</p>
 
-  <h3 class="sub reveal">Why milliseconds, not minutes</h3>
+  <h3 class="sub reveal" id="why-milliseconds-not-minutes">Why milliseconds, not minutes</h3>
   <p class="reveal">Back to Chapter 1's comparison: a VM's boot path runs BIOS/UEFI, a bootloader, full kernel initialization, and often an init system bringing up services — all before your application process even starts. A container's entire "start sequence" is the four steps in the diagram above: create some kernel objects, mount a union filesystem, exec one process. There is no boot, because there is no new kernel — the container is just handed a restricted view of the kernel that was already running.</p>
 
   <div class="callout callout--perf reveal">
@@ -1081,7 +1108,7 @@ volumes:
     </table>
   </div>
 
-  <h3 class="sub reveal">Tags are mutable, digests are not</h3>
+  <h3 class="sub reveal" id="tags-are-mutable-digests-are-not">Tags are mutable, digests are not</h3>
   <p class="reveal">This is worth restating from Chapter 2 because it matters most right here: <code>myapp:1.0</code> is a label a registry lets anyone with push access reassign to different bytes at any time; <code>myapp@sha256:9d3c...</code> is the content hash of one exact, unchangeable set of bytes. A production deploy that references a tag is trusting that the tag still points to what you tested; a deploy that references a digest is guaranteed to run those exact bytes, forever.</p>
 
   <pre class="reveal"><code># mutable — could be different bytes tomorrow
@@ -1090,7 +1117,7 @@ docker pull myapp:latest
 # immutable — always the exact image that was scanned and tested
 docker pull myapp@sha256:9d3c1f2b7a4e0c8d5f6b3a2e1d0c9b8a7f6e5d4c3b2a1908f7e6d5c4b3a2918</code></pre>
 
-  <h3 class="sub reveal">Push and pull only move what's missing</h3>
+  <h3 class="sub reveal" id="push-and-pull-only-move-what-s-missing">Push and pull only move what's missing</h3>
   <p class="reveal">Registries store layers individually, keyed by digest. A <code>docker push</code> checks the manifest of layer digests already present in the registry and uploads only the ones it's missing; <code>docker pull</code> does the same in reverse. A code-only change touches just the top layer, so pushing it is fast — but bumping the base image (<code>FROM node:20</code> → <code>node:22</code>) changes every downstream layer's digest, since each layer's identity depends on its own content, meaning the whole stack above it has to re-upload even though your application code didn't change a line.</p>
 
   <div class="panel diagram-panel reveal">
@@ -1104,7 +1131,7 @@ docker pull myapp@sha256:9d3c1f2b7a4e0c8d5f6b3a2e1d0c9b8a7f6e5d4c3b2a1908f7e6d5c
     <p class="diagram-cap">Only layers the registry doesn't already have are transferred — which is also why unrelated images sharing a common base layer only pay that base's transfer cost once.</p>
   </div>
 
-  <h3 class="sub reveal">Supply-chain security: signing and SBOMs</h3>
+  <h3 class="sub reveal" id="supply-chain-security-signing-and-sboms">Supply-chain security: signing and SBOMs</h3>
   <p class="reveal">Anyone who can push to a registry can, in principle, push something malicious under a trusted name. Image signing tools like cosign (part of the Sigstore project) cryptographically sign an image's digest, so a deploy-time admission check can verify the exact bytes being run were actually produced and signed by your pipeline, not tampered with in transit or swapped at the registry. An SBOM (Software Bill of Materials, typically generated with a tool like syft) is a full inventory of every package and library baked into an image — the input vulnerability scanners like Trivy or Grype need to tell you a CVE in some transitive dependency actually affects a given image. The broader theory of secrets management and supply-chain trust boundaries is covered in the Security &amp; Auth module; here, cosign and SBOMs are the concrete Docker-side mechanics of that theory.</p>
 
   <div class="callout callout--real reveal">
@@ -1148,7 +1175,7 @@ docker pull myapp@sha256:9d3c1f2b7a4e0c8d5f6b3a2e1d0c9b8a7f6e5d4c3b2a1908f7e6d5c
 
   <p class="reveal">Everything in this chapter assumes a single host running plain Docker — at cluster scale, a lot of this triage becomes the scheduler's and the Kubernetes module's job (automatic restarts, rescheduling off a failing node), but the underlying signals — exit codes, resource limits, log streams — are identical either way.</p>
 
-  <h3 class="sub reveal">Resource limits and OOM kills</h3>
+  <h3 class="sub reveal" id="resource-limits-and-oom-kills">Resource limits and OOM kills</h3>
   <p class="reveal"><code>--memory</code> and <code>--cpus</code> (or their Compose equivalents) set the cgroup ceilings from Chapter 6. Exceed the memory ceiling and the kernel OOM killer sends <code>SIGKILL</code> — the container exits with code 137, and <code>docker inspect &lt;id&gt;</code> shows <code>"OOMKilled": true</code> in its State block. Exceeding the CPU ceiling is gentler: the process is throttled (paused for portions of each scheduling period), not killed — which shows up as mysterious latency, not a crash, and is easy to misdiagnose as an application bug.</p>
 
   <p class="reveal">This gets sharper — and much easier to get wrong — the moment the process inside the container is a JVM, because for a long time the JVM had no idea it was in a container at all. Before JDK 10 (and before the 8u191 backport), the JVM sized its default heap by reading host-level memory straight out of <code>/proc/meminfo</code> — the <em>host's</em> total RAM, completely ignoring whatever <code>--memory</code> ceiling the container was actually given. Drop that JVM into a container capped at 512MB on a host with 64GB installed, and it would happily size a default heap for 64GB, start allocating toward it, blow past the cgroup ceiling almost immediately, and get OOMKilled before it finished booting.</p>
@@ -1179,13 +1206,13 @@ docker pull myapp@sha256:9d3c1f2b7a4e0c8d5f6b3a2e1d0c9b8a7f6e5d4c3b2a1908f7e6d5c
     <div class="callout__body"><b class="h">The heap flag that outlived its server</b><p>A team containerizing an old service copied its JVM flags straight from the bare-metal deploy script it was replacing — including a hardcoded <code>-Xmx12g</code>, sized years earlier for a physical box with 32GB of RAM. Nobody revisited it, because the flag "already worked." The new container was capped at 4GB. Under normal load the JVM never got near 12GB of live heap, so staging looked perfectly healthy — until a traffic spike pushed heap usage up, the JVM kept expanding toward the number it was told, sailed straight past the container's 4GB ceiling, and got OOMKilled mid-peak. The flag wasn't wrong when it was written; it was just written for a machine that no longer existed.</p></div>
   </div>
 
-  <h3 class="sub reveal">Restart policies</h3>
+  <h3 class="sub reveal" id="restart-policies">Restart policies</h3>
   <p class="reveal">A container that exits — cleanly or via OOM kill — just stays exited unless something has told Docker what to do about it. <code>--restart</code> (or Compose's <code>restart:</code>) controls that, with four options: <code>no</code> (the default — never restart automatically), <code>on-failure[:max-retries]</code> (restart only on a non-zero exit code, optionally capped at a bounded number of attempts — right for a one-shot job you want retried a few times, not forever), <code>unless-stopped</code> (always restart unless a human explicitly ran <code>docker stop</code> — the usual choice for a long-running service), and <code>always</code> (restart no matter what, even after an explicit stop, once the daemon itself restarts — rarely what you actually want, since it can silently un-stop something that was deliberately shut down). This whole mechanism is exactly what an orchestrator like Kubernetes takes over and generalizes at cluster scale — a Pod's restart policy plus the scheduler's own rescheduling logic replace single-host <code>--restart</code> entirely.</p>
 
-  <h3 class="sub reveal">Logging drivers</h3>
+  <h3 class="sub reveal" id="logging-drivers">Logging drivers</h3>
   <p class="reveal">The default <code>json-file</code> logging driver writes each container's stdout/stderr to a file on the host — simple, but unbounded by default, which can quietly fill a host's disk if nobody sets <code>max-size</code>/<code>max-file</code>. Production setups typically switch to a centralized driver (<code>gelf</code>, <code>fluentd</code>, <code>awslogs</code>) or run a log-shipping sidecar that tails <code>json-file</code> output and forwards it into whatever aggregation stack the Observability module covers — Loki, ELK, Datadog, or similar.</p>
 
-  <h3 class="sub reveal">The triage workflow</h3>
+  <h3 class="sub reveal" id="the-triage-workflow">The triage workflow</h3>
   <p class="reveal">When a container is misbehaving, the same handful of commands answer almost every question, in order: <code>docker ps -a</code> tells you its actual state (running, restarting, exited); <code>docker inspect &lt;id&gt;</code> gives you the exit code, <code>OOMKilled</code> flag, mounts, and network config; <code>docker logs -f --tail=200 &lt;id&gt;</code> shows the last thing it said before things went wrong; <code>docker stats</code> shows live CPU/memory/I/O per container if it's still running; <code>docker exec -it &lt;id&gt; sh</code> gets you a live shell inside it, if the image even has one.</p>
 
   <div class="panel diagram-panel reveal">
@@ -1255,88 +1282,88 @@ docker pull myapp@sha256:9d3c1f2b7a4e0c8d5f6b3a2e1d0c9b8a7f6e5d4c3b2a1908f7e6d5c
 
   <div class="iq-group-label">Internals &amp; Why</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-01">
     <summary><span class="iq-num">01</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Walk through exactly what happens between running <code>docker run app:1.0</code> and your process's first line of code executing.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>The docker CLI sends a request to dockerd over its REST API (typically a Unix socket). dockerd delegates the actual work to containerd, which resolves the image, checks its layers are present locally (pulling any that aren't), and hands off to runc — the low-level OCI-compliant runtime — to create one container. runc creates a new set of namespaces (PID, network, mount, user, UTS, IPC) so the process gets its own isolated view of the system, applies the cgroup limits specified at run time (memory, CPU, PIDs) by writing to cgroup control files, and has the kernel OverlayFS-mount the image's read-only layers together with a fresh writable layer into a single merged filesystem view. Only then does runc call <code>execve()</code> to replace itself with your ENTRYPOINT binary, which becomes PID 1 inside the new PID namespace. None of this involves booting a kernel — it's entirely kernel object creation and a filesystem mount, which is why the whole chain completes in milliseconds.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-02">
     <summary><span class="iq-num">02</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Why are containers so much faster to start than virtual machines, in terms of what's actually being skipped?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>A VM has to boot an entire operating system from scratch: BIOS/UEFI firmware initialization, a bootloader (GRUB or similar), full kernel initialization (device probing, driver loading, memory management setup), and usually an init system bringing services up in order — all before the application process itself ever starts, easily minutes of work. A container skips every single one of those steps because there is no new kernel involved at all; it reuses the host's already-running, already-initialized kernel. The entire container "startup" is just runc creating a handful of namespaces, writing some cgroup limit files, mounting an OverlayFS view, and calling execve() on the entrypoint — bookkeeping operations that complete in single-digit milliseconds rather than the multi-minute boot sequence a VM requires.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-03">
     <summary><span class="iq-num">03</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">What's the actual difference between namespaces and cgroups, and why does Docker need both?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Namespaces control visibility — what a process is allowed to see: its own PID tree, its own network interfaces and routing table, its own mounted filesystem, its own user/group ID mapping, its own hostname, its own IPC objects. cgroups control consumption — how much CPU time, memory, and I/O bandwidth a process (or group of processes) is allowed to use, enforced by the kernel scheduler and memory manager. They're orthogonal and both are necessary: namespaces alone would let a container see only itself while still being free to consume 100% of every CPU core and starve every other container on the host; cgroups alone would cap resource usage but leave a process able to see and potentially signal every other process on the host, defeating the point of isolation. Docker combines both because "isolated" and "resource-bounded" are two separate guarantees that happen to compose well together.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-04">
     <summary><span class="iq-num">04</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--internals">Internals</span><span class="iq-q">Explain OverlayFS and copy-on-write in the context of a Docker image.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>OverlayFS is a union filesystem that stacks a read-only <code>lowerdir</code> — the image's ordered layers — underneath one writable <code>upperdir</code>, and presents both as a single unified <code>merged</code> view, which is what actually gets mounted as the container's root filesystem. Reading a file resolves from the topmost layer that has it, walking down through the stack. Writing is where copy-on-write comes in: if a process tries to modify a file that currently only exists in a lower, read-only layer, the kernel first performs a "copy-up" — it copies that file's full contents into the upperdir — and only then applies the modification there. The original lower layers are never touched, which is exactly what lets many different containers share the same underlying image layers on disk simultaneously without stepping on each other, at the cost of a potentially expensive first write to any large inherited file.</p></div>
   </details>
 
   <div class="iq-group-label">Trade-offs</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-05">
     <summary><span class="iq-num">05</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-offs</span><span class="iq-q">Alpine vs Debian-slim vs distroless as a base image — how do you actually choose?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Alpine is tiny (often under 10MB) but built on musl libc instead of glibc, which occasionally breaks precompiled binaries or native language extensions that assume glibc, and has caused subtle DNS resolution differences in some networking stacks. Debian-slim is larger but glibc-compatible, ships a real shell and apt, and is generally the safer default when compatibility matters more than shaving megabytes. Distroless images strip out the shell and package manager entirely, leaving only the language runtime and your app — the smallest attack surface and no room for a container-escape exploit to spawn a shell, but it also means you can't <code>docker exec</code> in for live debugging, so you'd better trust the image is right before you ship it. The honest answer is: distroless for a mature, well-tested service where minimizing attack surface matters most; alpine as a solid general default; Debian-slim when you're fighting glibc compatibility issues or want a debuggable shell available.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-06">
     <summary><span class="iq-num">06</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-offs</span><span class="iq-q">Docker Compose vs Kubernetes — when do you actually need to graduate?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Compose is single-host by design: it starts containers on the machine you run it from, with no concept of scheduling work across a fleet, no automatic rescheduling if that one host goes down, and no rolling-update or canary machinery beyond what you script yourself. That's genuinely sufficient for local development and small, single-box production deployments. You need Kubernetes once any of the following becomes real: you need to schedule across multiple machines and bin-pack workloads efficiently, you need automatic self-healing when a node or pod dies, you need rolling deployments with health-gated rollout and automatic rollback, or you need horizontal auto-scaling driven by real load metrics. Reaching for Kubernetes before you actually need cluster-level guarantees just adds operational complexity for no benefit — Compose is not "worse Kubernetes," it's the right tool for a smaller problem.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-07">
     <summary><span class="iq-num">07</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-offs</span><span class="iq-q">Bind mounts vs named volumes — when would you deliberately choose the "worse" one?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Named volumes are generally the better choice for production persistent data — Docker manages their location, they're portable across hosts, and they compose cleanly with backup tooling. Bind mounts couple a container directly to a specific host path, which is exactly the wrong property in production but exactly the right one in local development: mounting your source directory into a container lets you edit code on the host and see it reflected instantly inside the running container, without rebuilding the image — invaluable for a live-reload dev loop. You'd also reach for a bind mount when you need to hand the container a host-specific file it has no other way to get, like mounting the host's Docker socket or a specific config file that varies per machine. The choice isn't "volumes are strictly better" — it's "volumes for anything you'd call data, bind mounts for anything you'd call a shortcut during development."</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-08">
     <summary><span class="iq-num">08</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--tradeoff">Trade-offs</span><span class="iq-q">Multi-stage builds vs building once and manually stripping unneeded files afterward — why is multi-stage strictly better?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Manually stripping files with something like <code>RUN rm -rf /app/node_modules/dev-only-stuff</code> only adds a new layer that hides those files from the merged view going forward — the layer that originally contained them is untouched and still fully present in the image, recoverable by anyone with <code>docker history</code> or a <code>docker save</code> tarball. It doesn't reduce the actual image size on disk in any meaningful way once you account for every layer, and it does nothing to protect against secrets or build tools that were present in an earlier layer. A multi-stage build sidesteps the problem entirely by never letting the build stage's filesystem exist in the final image at all — only files you explicitly <code>COPY --from=build</code> cross the boundary into a brand new, unrelated stage. There's no "hidden but still there" layer to worry about, because the discarded stage's layers were never part of the final image's layer stack in the first place.</p></div>
   </details>
 
   <div class="iq-group-label">Traps</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-09">
     <summary><span class="iq-num">09</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Traps</span><span class="iq-q">A team <code>docker build</code>s the same Dockerfile in CI and gets a different image size — and sometimes different behavior — each time. Why?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>The most common cause is an unpinned base image tag — <code>FROM node:20</code> silently resolves to whatever the current <code>node:20</code> patch release is on registry at build time, and that image is updated regularly. Close behind is package installation without a lockfile committed (<code>npm install</code> without <code>package-lock.json</code>, or <code>apt-get install</code> without version pins), which happily resolves to newer package versions on each build. <code>ADD</code> fetching a remote URL is another classic culprit if that URL's content changes over time. The fix across the board is the same principle: pin everything that can drift — <code>FROM node:20.11.1-alpine3.19</code> or better, a full digest; commit lockfiles and install from them (<code>npm ci</code>, not <code>npm install</code>); avoid <code>ADD &lt;url&gt;</code> in favor of a pinned, checksummed download step. A Dockerfile is a build recipe, and recipes with unpinned ingredients don't reproduce.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-10">
     <summary><span class="iq-num">10</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Traps</span><span class="iq-q">A secret was passed via <code>ENV SECRET_KEY=...</code> in an early Dockerfile layer, then a later <code>RUN rm</code> "removes" it. Is it actually gone from the image?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>No — it's still in that earlier layer. Every Dockerfile instruction produces its own immutable filesystem diff, stacked on top of the previous ones; a later <code>RUN rm</code> only adds a new layer recording "this path is absent from here forward" in the merged OverlayFS view. It does not, and structurally cannot, reach back and edit an earlier layer. Anyone who pulls the image can extract the secret with <code>docker history --no-trunc</code> to see the exact <code>ENV</code> value, or by unpacking the layer tarballs from <code>docker save</code> and grepping through them directly. The only real fix is to never let the secret enter any layer in the first place: use BuildKit's <code>--mount=type=secret</code>, which mounts a secret into a <code>RUN</code> step's filesystem as tmpfs that is never committed as a layer, or fetch the secret at container runtime from a vault/secrets manager instead of baking it in at build time.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-11">
     <summary><span class="iq-num">11</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Traps</span><span class="iq-q">A Compose stack has <code>depends_on: [db]</code>, the <code>web</code> container starts, and immediately errors with "connection refused" against Postgres. What's actually happening?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Short-form <code>depends_on</code> only guarantees that the <code>db</code> container's process has started — it says nothing about whether Postgres inside it has finished initializing and is actually accepting connections, which routinely takes a few extra seconds after the container itself reports as running. <code>web</code> starts on schedule, immediately tries to connect, and gets refused because Postgres genuinely isn't listening yet. The fix is to add a real <code>healthcheck</code> to the <code>db</code> service (something like <code>pg_isready</code>) and switch to the long-form <code>depends_on</code> syntax with <code>condition: service_healthy</code>, so Compose only starts <code>web</code> once the healthcheck actually passes. As a second line of defense, the application itself should also retry its initial connection with backoff rather than crash-looping on the first failure — infrastructure-level ordering and application-level resilience aren't substitutes for each other.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-12">
     <summary><span class="iq-num">12</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--trap">Traps</span><span class="iq-q">A bad deploy goes out, someone runs a "rollback to the same image" — and it doesn't actually roll anything back. Why?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>If the deploy pipeline references <code>latest</code> (or any other floating tag), "rolling back" by re-pulling that same tag just pulls whatever it currently points to — which might already be the broken build, or might be a newer build entirely, but is almost never guaranteed to be the last known-good bytes. The tag is a pointer that keeps getting reassigned on every push; it was never a version identifier in the first place. A rollback that actually works requires referencing an immutable identifier from the start — a digest, or a unique CI-generated tag like the git commit SHA or build number — so that "roll back" concretely means "redeploy digest sha256:abc123, which we previously verified was good," not "re-pull a label and hope."</p></div>
   </details>
 
   <div class="iq-group-label">Scenario</div>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-13">
     <summary><span class="iq-num">13</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">A container keeps getting OOMKilled under load. Walk through your diagnosis.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Start with <code>docker inspect</code> to confirm <code>"OOMKilled": true</code> and the exit code is 137, ruling out an application-level crash. Then look at the actual memory trajectory leading up to the kill via <code>docker stats</code> or the cgroup's <code>memory.current</code>/<code>memory.max</code> files directly — is usage climbing steadily across the container's whole lifetime (a leak), or does it spike sharply under load and come back down otherwise (just genuinely needing more headroom for peak traffic)? Next check whether the application runtime itself knows about the limit: a classic cause is a JVM with <code>-Xmx</code> set higher than the container's <code>--memory</code>, or set based on host memory rather than the cgroup ceiling, since older JVMs don't read cgroup limits and will happily try to grow past them. Depending on what you find, the fix is either raising the memory limit to match genuine steady-state-plus-headroom usage, fixing an actual leak if usage never plateaus, or aligning in-process memory settings (heap size, buffer pools, cache sizes) to respect the cgroup ceiling instead of the host's total memory.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-14">
     <summary><span class="iq-num">14</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">CI builds are taking 12 minutes and most of that is <code>docker build</code>. How do you speed it up without touching the application code?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>First, audit the Dockerfile's layer order: dependency-install instructions (<code>npm ci</code>, <code>pip install -r requirements.txt</code>, <code>go mod download</code>) need to sit above a <code>COPY</code> of only the manifest files, with the full source <code>COPY . .</code> coming after — that alone often turns "reinstall everything on every build" into "reinstall only when dependencies actually change." Second, enable BuildKit and add <code>--mount=type=cache</code> for the package manager's own cache directory, so even on a cache-miss layer, the package manager doesn't re-download everything from the network. Third, confirm the Dockerfile is already multi-stage, so the heavy build toolchain layer is cached and reused independently from the thin final runtime stage. Finally, if CI runners are ephemeral and don't share local disk between runs, push and pull an explicit remote build cache with <code>--cache-from</code>/<code>--cache-to</code> pointed at a registry, so layer cache survives across different runner instances rather than starting cold every time.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-15">
     <summary><span class="iq-num">15</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">Two containers started with plain <code>docker run</code> (no Compose, no <code>--network</code> flag) can't reach each other by container name. What's going on, and what's the fix?</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>With no explicit network specified, both containers land on Docker's legacy default bridge network — and the default bridge does not run Docker's embedded DNS server, so name-based resolution simply isn't available there (the old workaround was the now-deprecated <code>--link</code> flag). The fix is to create a user-defined bridge network first with <code>docker network create appnet</code>, then start both containers with <code>--network appnet</code>. User-defined bridge networks do get Docker's embedded DNS at 127.0.0.11, so each container can resolve the other by its container name (or an explicit <code>--network-alias</code>) with zero manual IP configuration. This is exactly the behavior Compose gives for free, because Compose always creates a project-scoped user-defined network rather than using the default bridge.</p></div>
   </details>
 
-  <details class="iq-item reveal">
+  <details class="iq-item reveal" id="iq-interview-16">
     <summary><span class="iq-num">16</span><div class="iq-q-wrap"><span class="iq-tag iq-tag--scenario">Scenario</span><span class="iq-q">You need to ship a Node app whose Dockerfile currently starts with <code>FROM node:20</code> and produces a 1.2GB image — cut it substantially without changing the application code.</span></div><div class="iq-chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></summary>
     <div class="iq-body"><p>Convert it to a multi-stage build: keep <code>FROM node:20 AS build</code> for the stage that runs <code>npm ci</code> and <code>npm run build</code>, then start a fresh final stage from <code>node:20-alpine</code> or a distroless Node image and <code>COPY --from=build</code> only the compiled output and a production-only <code>node_modules</code>. In that final stage, install (or copy over) dependencies with <code>npm ci --omit=dev</code> so devDependencies like webpack, eslint, and test frameworks never ship. Add a <code>.dockerignore</code> excluding <code>.git</code>, test directories, and local tooling from the build context so they can't accidentally get copied in either. Together, those four changes — multi-stage separation, a minimal base for the runtime stage, production-only dependency installs, and a proper <code>.dockerignore</code> — routinely take a naive single-stage Node image from over a gigabyte down to somewhere in the 150–250MB range, with the exact same application code running inside.</p></div>
   </details>
@@ -1406,6 +1433,8 @@ docker pull myapp@sha256:9d3c1f2b7a4e0c8d5f6b3a2e1d0c9b8a7f6e5d4c3b2a1908f7e6d5c
 
 </main>
 
+<script src="search-index.js"></script>
+<script src="site-search.js"></script>
 <script>
 (function(){
 "use strict";
