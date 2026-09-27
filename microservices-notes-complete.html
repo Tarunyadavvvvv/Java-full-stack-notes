@@ -407,6 +407,35 @@ noscript .reveal{opacity:1;}
 .site-search mark{background:var(--tint-strong);color:inherit;border-radius:3px;padding:0 .1em;}
 @media (max-width:820px){.site-search{order:3;flex-basis:100%;max-width:none;margin:.6rem 0 0;}}
 [id]{scroll-margin-top:90px;}
+
+/* ---- clickable/animated finite-state-machine diagram (circuit breaker) ---- */
+.fsm-wrap{display:flex;flex-direction:column;gap:1.1rem;}
+.fsm-controls{display:flex;justify-content:flex-end;}
+.fsm-play{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-mono);font-size:.72rem;font-weight:700;letter-spacing:.03em;background:var(--surface-2);color:var(--ink-soft);border:none;padding:.4rem .85rem;border-radius:999px;cursor:pointer;transition:background var(--dur-1) var(--ease), color var(--dur-1) var(--ease);}
+.fsm-play:hover{background:var(--tint);color:var(--accent-ink);}
+.fsm-play.is-playing{background:var(--accent);color:#fff;}
+.fsm-play svg{width:13px;height:13px;}
+.fsm{display:flex;align-items:center;justify-content:center;gap:.4rem;flex-wrap:wrap;}
+.fsm__state{display:flex;flex-direction:column;align-items:center;gap:.5rem;background:var(--surface);border:2px solid var(--border);border-radius:var(--r-lg);padding:1.1rem 1.3rem;cursor:pointer;font-family:inherit;box-shadow:var(--shadow-sm);transition:border-color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);min-width:132px;}
+.fsm__state:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.fsm__state.is-active{border-color:var(--accent);box-shadow:var(--shadow-glow), var(--shadow-md);}
+.fsm__dot{width:14px;height:14px;border-radius:50%;background:var(--muted);transition:background var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);}
+.fsm__state[data-state="closed"] .fsm__dot{background:var(--success);}
+.fsm__state[data-state="open"] .fsm__dot{background:var(--danger);}
+.fsm__state[data-state="half-open"] .fsm__dot{background:var(--warning);}
+.fsm__state.is-active .fsm__dot{box-shadow:0 0 0 5px color-mix(in srgb, currentColor 18%, transparent);}
+.fsm__state[data-state="closed"].is-active .fsm__dot{color:var(--success);}
+.fsm__state[data-state="open"].is-active .fsm__dot{color:var(--danger);}
+.fsm__state[data-state="half-open"].is-active .fsm__dot{color:var(--warning);}
+.fsm__label{font-weight:800;font-size:.92rem;letter-spacing:.02em;}
+.fsm__arrow{flex:none;width:40px;height:22px;color:var(--border-strong);transition:color var(--dur-2) var(--ease);}
+.fsm__arrow.is-active{color:var(--accent);}
+.fsm__loop{flex:none;width:26px;height:26px;color:var(--border-strong);}
+.fsm__detail{background:linear-gradient(160deg, var(--tint), var(--surface) 130%);border-radius:var(--r-lg);padding:1.1rem 1.4rem;box-shadow:var(--shadow-sm);}
+.fsm__detail-head{font-family:var(--font-mono);font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:.5rem;}
+.fsm__detail-body{font-size:.92rem;color:var(--ink-soft);margin:0;}
+.fsm__detail-body strong{color:var(--ink);}
+@media (max-width:640px){.fsm{flex-direction:column;} .fsm__arrow{transform:rotate(90deg);}}
 </style>
 <noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript>
 
@@ -1023,14 +1052,27 @@ spring:
   <p class="reveal">When a downstream dependency gets slow or starts failing, the naive behavior — keep calling it, the same way you always do — makes things strictly worse. Every caller's thread sits blocked waiting on a response that isn't coming, the caller's own thread pool fills up with stuck requests, and the failure spreads to whoever's calling <em>you</em>. A circuit breaker wraps a call to a dependency and tracks its failure rate; once that failure rate crosses a threshold, the breaker stops even attempting the call — it fails immediately, cheaply, without touching the network. That protects your own threads from piling up on a dead dependency, and — just as importantly — gives the dependency room to actually recover instead of getting hammered by retries while it's already struggling.</p>
 
   <div class="panel diagram-panel reveal">
-    <div class="soft-flow">
-      <div class="soft-node"><b>CLOSED</b><span>requests flow, failures counted</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node is-accent"><b>OPEN</b><span>fails fast, dependency not called</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node"><b>HALF-OPEN</b><span>a few trial requests let through</span></div>
+    <div class="fsm-wrap">
+      <div class="fsm-controls">
+        <button type="button" class="fsm-play" id="cbFsmPlay">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <span>Play the cycle</span>
+        </button>
+      </div>
+      <div class="fsm" id="cbFsm">
+        <button type="button" class="fsm__state is-active" data-state="closed"><span class="fsm__dot"></span><span class="fsm__label">CLOSED</span></button>
+        <svg class="fsm__arrow" data-arrow="closed-open" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <button type="button" class="fsm__state" data-state="open"><span class="fsm__dot"></span><span class="fsm__label">OPEN</span></button>
+        <svg class="fsm__arrow" data-arrow="open-halfopen" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <button type="button" class="fsm__state" data-state="half-open"><span class="fsm__dot"></span><span class="fsm__label">HALF-OPEN</span></button>
+        <svg class="fsm__loop" viewBox="0 0 24 24" fill="none" title="loops back to Closed or Open"><path d="M20 11a8 8 0 1 0-2.6 5.9" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M20 6v5h-5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="fsm__detail" id="cbFsmDetail">
+        <div class="fsm__detail-head">Closed — the normal state</div>
+        <p class="fsm__detail-body"><strong>Behavior:</strong> requests pass through normally; every success and failure is counted. <strong>Trips to Open when:</strong> the failure rate crosses the configured threshold.</p>
+      </div>
     </div>
-    <p class="diagram-cap">Closed → Open when the failure-rate threshold is crossed. Open → Half-Open once the reset timeout elapses. From Half-Open, a successful trial sends it back to Closed; a failed one sends it straight back to Open — the loop that doesn't fit in a single straight line but is the whole point of the pattern.</p>
+    <p class="diagram-cap">Click any state to see its behavior and what triggers the next transition — or hit play to watch the full cycle. Closed → Open when the failure-rate threshold is crossed. Open → Half-Open once the reset timeout elapses. From Half-Open, a successful trial sends it back to Closed; a failed one sends it straight back to Open.</p>
   </div>
 
   <div class="tbl-wrap reveal">
@@ -1939,6 +1981,63 @@ document.addEventListener("click",function(e){
     if(ex) ex.classList.add("is-shown");
   }
 });
+
+/* ---- circuit breaker state-machine diagram ---- */
+(function(){
+  var fsm = document.getElementById("cbFsm");
+  if(!fsm) return;
+  var detail = document.getElementById("cbFsmDetail");
+  var playBtn = document.getElementById("cbFsmPlay");
+  var states = ["closed","open","half-open"];
+  var info = {
+    "closed": {
+      title: "Closed — the normal state",
+      body: "<strong>Behavior:</strong> requests pass through normally; every success and failure is counted. <strong>Trips to Open when:</strong> the failure rate crosses the configured threshold."
+    },
+    "open": {
+      title: "Open — failing fast",
+      body: "<strong>Behavior:</strong> requests fail immediately — the dependency is never actually called. <strong>Moves to Half-Open when:</strong> the reset timeout elapses."
+    },
+    "half-open": {
+      title: "Half-Open — testing recovery",
+      body: "<strong>Behavior:</strong> a small number of trial requests are let through to test recovery. <strong>Then:</strong> a successful trial sends it back to Closed; a failed one sends it straight back to Open."
+    }
+  };
+  var arrowFor = { "closed":"closed-open", "open":"open-halfopen", "half-open":null };
+
+  function setState(state){
+    fsm.querySelectorAll(".fsm__state").forEach(function(btn){
+      btn.classList.toggle("is-active", btn.dataset.state === state);
+    });
+    fsm.querySelectorAll(".fsm__arrow").forEach(function(arrow){
+      arrow.classList.toggle("is-active", arrow.dataset.arrow === arrowFor[state]);
+    });
+    var d = info[state];
+    detail.innerHTML = '<div class="fsm__detail-head">' + d.title + '</div><p class="fsm__detail-body">' + d.body + '</p>';
+  }
+
+  fsm.querySelectorAll(".fsm__state").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      stopPlay();
+      setState(btn.dataset.state);
+    });
+  });
+
+  var playTimer = null;
+  function stopPlay(){
+    if(playTimer){ clearInterval(playTimer); playTimer = null; playBtn.classList.remove("is-playing"); playBtn.querySelector("span").textContent = "Play the cycle"; }
+  }
+  playBtn.addEventListener("click", function(){
+    if(playTimer){ stopPlay(); return; }
+    playBtn.classList.add("is-playing");
+    playBtn.querySelector("span").textContent = "Pause";
+    var i = states.indexOf(fsm.querySelector(".fsm__state.is-active").dataset.state);
+    playTimer = setInterval(function(){
+      i = (i + 1) % states.length;
+      setState(states[i]);
+    }, 1800);
+  });
+})();
 
 function initReveal(){
   var els=document.querySelectorAll(".reveal");

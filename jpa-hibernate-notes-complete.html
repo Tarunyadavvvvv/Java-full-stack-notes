@@ -407,6 +407,26 @@ noscript .reveal{opacity:1;}
 .site-search mark{background:var(--tint-strong);color:inherit;border-radius:3px;padding:0 .1em;}
 @media (max-width:820px){.site-search{order:3;flex-basis:100%;max-width:none;margin:.6rem 0 0;}}
 [id]{scroll-margin-top:90px;}
+
+/* ---- animated query-count simulation (N+1 vs JOIN FETCH) ---- */
+.qsim{display:flex;flex-direction:column;gap:1rem;}
+.qsim-controls{display:flex;flex-wrap:wrap;align-items:center;gap:.7rem;}
+.qsim-play{display:inline-flex;align-items:center;gap:.45rem;font-family:var(--font-mono);font-size:.74rem;font-weight:700;background:var(--danger-tint);color:var(--danger);border:none;padding:.55rem 1rem;border-radius:999px;cursor:pointer;transition:transform var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);}
+.qsim-play--fix{background:var(--tint);color:var(--accent-ink);}
+.qsim-play:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm);}
+.qsim-play:disabled{opacity:.55;cursor:default;transform:none;box-shadow:none;}
+.qsim-play svg{width:12px;height:12px;}
+.qsim-counter{margin-left:auto;font-family:var(--font-mono);font-size:.78rem;color:var(--ink-soft);background:var(--surface-2);padding:.4rem .9rem;border-radius:999px;}
+.qsim-counter strong{color:var(--ink);font-size:.95rem;}
+.qsim-counter.is-bad strong{color:var(--danger);}
+.qsim-counter.is-good strong{color:var(--success);}
+.qsim-log{background:#1B2320;border-radius:var(--r-lg);padding:1.1rem 1.3rem;min-height:172px;box-shadow:var(--shadow-md);display:flex;flex-direction:column;gap:.4rem;}
+.qsim-log__empty{color:rgba(220,234,228,.42);font-family:var(--font-mono);font-size:.82rem;font-style:italic;margin:auto;}
+.qsim-row{font-family:var(--font-mono);font-size:.78rem;color:#DCEAE4;background:rgba(255,255,255,.04);border-radius:8px;padding:.45rem .7rem;opacity:0;transform:translateX(-6px);animation:qsimIn .25s var(--ease) forwards;display:flex;align-items:center;gap:.5rem;}
+.qsim-row__n{flex:none;color:rgba(220,234,228,.42);}
+.qsim-row.is-summary{background:rgba(208,87,79,.16);color:#F3B9B5;font-weight:700;}
+.qsim-row.is-summary.is-good{background:rgba(47,163,107,.16);color:#9FE3C0;}
+@keyframes qsimIn{to{opacity:1;transform:translateX(0);}}
 </style>
 </head>
 <body>
@@ -1029,6 +1049,24 @@ noscript .reveal{opacity:1;}
 <span class="tk-kw">for</span> (<span class="tk-typ">Order</span> order : orders) {
     order.getLines().size();                       <span class="tk-com">// LAZY -- one extra query PER order</span>
 }                                                    <span class="tk-com">// N orders -> N+1 total queries</span></code></pre>
+  </div>
+
+  <div class="panel diagram-panel reveal">
+    <div class="qsim">
+      <div class="qsim-controls">
+        <button type="button" class="qsim-play" id="nplus1Play">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <span>Run the code above</span>
+        </button>
+        <button type="button" class="qsim-play qsim-play--fix" id="fetchFixPlay">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <span>Run it with JOIN FETCH instead</span>
+        </button>
+        <span class="qsim-counter" id="qsimCounter">Queries sent to the database: <strong id="qsimCount">0</strong></span>
+      </div>
+      <div class="qsim-log" id="qsimLog"><div class="qsim-log__empty">Press a button above to watch the actual queries Hibernate sends, one at a time.</div></div>
+    </div>
+    <p class="diagram-cap">This is simulating 5 orders, but the shape holds for 5,000 — every extra parent row is one more round-trip to the database. <code>JOIN FETCH</code> collapses the whole thing back to a single query, regardless of how many orders there are.</p>
   </div>
 
   <div class="tbl-wrap reveal">
@@ -2175,6 +2213,73 @@ document.addEventListener("click",function(e){
     if(ex) ex.classList.add("is-shown");
   }
 });
+
+/* ---- N+1 vs JOIN FETCH query simulation ---- */
+(function(){
+  var log = document.getElementById("qsimLog");
+  if(!log) return;
+  var countEl = document.getElementById("qsimCount");
+  var counterEl = document.getElementById("qsimCounter");
+  var n1Btn = document.getElementById("nplus1Play");
+  var fixBtn = document.getElementById("fetchFixPlay");
+  var timer = null;
+
+  function clearLog(){
+    if(timer){ clearInterval(timer); timer = null; }
+    log.innerHTML = "";
+    countEl.textContent = "0";
+    counterEl.classList.remove("is-bad","is-good");
+  }
+
+  function addRow(n, html){
+    var row = document.createElement("div");
+    row.className = "qsim-row";
+    row.innerHTML = '<span class="qsim-row__n">' + n + '</span><span>' + html + '</span>';
+    log.appendChild(row);
+    countEl.textContent = n;
+  }
+
+  function addSummary(html, good){
+    var row = document.createElement("div");
+    row.className = "qsim-row is-summary" + (good ? " is-good" : "");
+    row.innerHTML = html;
+    log.appendChild(row);
+  }
+
+  function setButtons(disabled){
+    n1Btn.disabled = disabled;
+    fixBtn.disabled = disabled;
+  }
+
+  n1Btn.addEventListener("click", function(){
+    clearLog();
+    setButtons(true);
+    counterEl.classList.add("is-bad");
+    var orders = 5, i = 0;
+    addRow(1, "SELECT * FROM orders &rarr; 5 rows");
+    timer = setInterval(function(){
+      i++;
+      if(i <= orders){
+        addRow(1 + i, "SELECT * FROM order_lines WHERE order_id = " + i + " <span style=\"opacity:.6\">(lazy load for order " + i + ")</span>");
+      } else {
+        clearInterval(timer); timer = null;
+        addSummary((1 + orders) + " queries for 5 orders — and it only gets worse as the order count grows.", false);
+        setButtons(false);
+      }
+    }, 450);
+  });
+
+  fixBtn.addEventListener("click", function(){
+    clearLog();
+    setButtons(true);
+    counterEl.classList.add("is-good");
+    setTimeout(function(){
+      addRow(1, "SELECT o.*, l.* FROM orders o JOIN order_lines l ON l.order_id = o.id &rarr; all 5 orders and their lines, in one round-trip");
+      addSummary("1 query, regardless of how many orders there are.", true);
+      setButtons(false);
+    }, 450);
+  });
+})();
 
 function initReveal(){
   var els=document.querySelectorAll(".reveal");

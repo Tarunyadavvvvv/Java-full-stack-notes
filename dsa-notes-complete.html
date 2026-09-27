@@ -260,6 +260,46 @@ tbody tr:hover{background:var(--surface-2);}
 .soft-arrow{flex:none;width:44px;height:24px;color:var(--muted);}
 .diagram-cap{font-size:.86rem;color:var(--muted);margin-top:.3rem;}
 
+/* ---- array pointer visual (two pointers / binary search / partition) ---- */
+.arr-wrap{display:flex;flex-direction:column;gap:.9rem;}
+.arr-controls{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.7rem;}
+.arr-play,.llc-play{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-mono);font-size:.72rem;font-weight:700;letter-spacing:.02em;background:var(--surface-2);color:var(--ink-soft);border:none;padding:.5rem .95rem;border-radius:999px;cursor:pointer;transition:background var(--dur-1) var(--ease), color var(--dur-1) var(--ease);}
+.arr-play:hover,.llc-play:hover{background:var(--tint);color:var(--accent-ink);}
+.arr-play:disabled,.llc-play:disabled{opacity:.55;cursor:default;}
+.arr-play svg,.llc-play svg{width:13px;height:13px;}
+.arr-status{font-family:var(--font-mono);font-size:.78rem;color:var(--ink-soft);background:var(--surface-2);padding:.5rem 1rem;border-radius:999px;}
+.arr-status strong{color:var(--ink);}
+.arr-status.is-found{background:var(--success-tint);color:var(--success);}
+.arr{display:flex;gap:.4rem;overflow-x:auto;padding:2.3rem .25rem 1rem;}
+.arr__cell{flex:none;width:50px;position:relative;text-align:center;}
+.arr__box{width:50px;height:50px;border-radius:10px;background:var(--surface);box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:.92rem;transition:background var(--dur-2) var(--ease), color var(--dur-2) var(--ease), opacity var(--dur-2) var(--ease);}
+.arr__idx{display:block;font-family:var(--font-mono);font-size:.6rem;color:var(--muted);margin-top:.3rem;}
+.arr__ptrs,.llc__ptrs{position:absolute;top:-2.15rem;left:50%;transform:translateX(-50%);display:flex;justify-content:center;gap:.2rem;min-height:1.5rem;white-space:nowrap;z-index:1;}
+.arr__ptr,.llc__ptr{font-family:var(--font-mono);font-size:.6rem;font-weight:800;letter-spacing:.02em;padding:.15rem .38rem;border-radius:6px;background:var(--accent);color:#fff;animation:arrPop .35s var(--ease);}
+.arr__ptr.is-r,.llc__ptr.is-fast{background:var(--warning);}
+.arr__ptr.is-mid{background:var(--accent-ink);}
+.arr__cell.is-eliminated .arr__box{opacity:.25;}
+.arr__cell.is-found .arr__box{background:var(--success);color:#fff;}
+.arr__cell.is-swap .arr__box{background:var(--warning-tint);}
+.arr__cell.is-pivot .arr__box{background:var(--accent);color:#fff;}
+@keyframes arrPop{0%{transform:scale(.6) translateY(3px);opacity:0;}100%{transform:scale(1) translateY(0);opacity:1;}}
+.arr-log,.llc-log{display:flex;flex-direction:column;gap:.35rem;font-family:var(--font-mono);font-size:.78rem;}
+.arr-log__row{background:var(--surface-2);border-radius:8px;padding:.45rem .7rem;color:var(--ink-soft);animation:arrRow .35s var(--ease);}
+.arr-log__row.is-found{background:var(--success-tint);color:var(--success);}
+@keyframes arrRow{0%{opacity:0;transform:translateY(-4px);}100%{opacity:1;transform:translateY(0);}}
+
+/* ---- linked-list cycle visual (fast & slow pointers) ---- */
+.llc-wrap{display:flex;flex-direction:column;gap:.9rem;}
+.llc-controls{display:flex;align-items:center;justify-content:flex-end;}
+.llc{position:relative;display:flex;align-items:center;gap:.5rem;overflow-x:auto;flex-wrap:wrap;padding:2.3rem .5rem 1rem;}
+.llc__node{flex:none;width:44px;height:44px;border-radius:50%;background:var(--surface);box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:.82rem;position:relative;color:var(--ink-soft);transition:background var(--dur-2) var(--ease), color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);}
+.llc__node.is-entry{outline:2px dashed var(--accent);outline-offset:3px;}
+.llc__node.is-meet{background:var(--success);color:#fff;box-shadow:var(--shadow-glow), var(--shadow-sm);}
+.llc__arrow{flex:none;width:24px;height:16px;color:var(--border-strong);}
+.llc__loop{flex:none;display:flex;flex-direction:column;align-items:center;gap:.15rem;color:var(--muted);}
+.llc__loop svg{width:22px;height:22px;}
+.llc__loop span{font-family:var(--font-mono);font-size:.6rem;white-space:nowrap;}
+
 /* ---- concentric soft layers ---- */
 .soft-nest{border-radius:var(--r-lg);padding:1.6rem;background:linear-gradient(155deg, var(--surface-2), var(--surface));box-shadow:var(--shadow-sm);}
 .soft-nest .soft-nest{margin-top:1rem;box-shadow:none;background:linear-gradient(155deg, var(--tint), var(--surface));}
@@ -715,16 +755,23 @@ minimum rooms</code></pre><p>Ask: Should I sort by start/end time, then sweep on
 
   <h3 class="sub reveal" id="two-pointers">Two pointers</h3>
   <div class="panel diagram-panel reveal">
-    <div class="soft-flow">
-      <div class="soft-node is-accent"><b>left →</b><span>index 0</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node"><b>scan inward</b><span>sum too small → left++</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node"><b>scan inward</b><span>sum too big → right--</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node is-accent"><b>← right</b><span>index n-1</span></div>
+    <div class="arr-wrap">
+      <div class="arr-controls">
+        <button type="button" class="arr-play" id="tpPlay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>Find a pair summing to 15</span></button>
+        <span class="arr-status" id="tpStatus">left = 0, right = 6 — press play</span>
+      </div>
+      <div class="arr" id="tpArr">
+        <div class="arr__cell" data-i="0"><div class="arr__ptrs"></div><div class="arr__box">1</div><span class="arr__idx">0</span></div>
+        <div class="arr__cell" data-i="1"><div class="arr__ptrs"></div><div class="arr__box">3</div><span class="arr__idx">1</span></div>
+        <div class="arr__cell" data-i="2"><div class="arr__ptrs"></div><div class="arr__box">4</div><span class="arr__idx">2</span></div>
+        <div class="arr__cell" data-i="3"><div class="arr__ptrs"></div><div class="arr__box">5</div><span class="arr__idx">3</span></div>
+        <div class="arr__cell" data-i="4"><div class="arr__ptrs"></div><div class="arr__box">7</div><span class="arr__idx">4</span></div>
+        <div class="arr__cell" data-i="5"><div class="arr__ptrs"></div><div class="arr__box">10</div><span class="arr__idx">5</span></div>
+        <div class="arr__cell" data-i="6"><div class="arr__ptrs"></div><div class="arr__box">11</div><span class="arr__idx">6</span></div>
+      </div>
+      <div class="arr-log" id="tpLog"></div>
     </div>
-    <p class="diagram-cap">On a <em>sorted</em> array, two pointers closing in from both ends solve "find a pair summing to target" in O(n) instead of the O(n²) brute-force pair check.</p>
+    <p class="diagram-cap">On a <em>sorted</em> array, two pointers closing in from both ends solve "find a pair summing to target" in O(n) instead of the O(n²) brute-force pair check — watch <code>left</code> and <code>right</code> converge on <code>[1, 3, 4, 5, 7, 10, 11]</code> looking for a pair that sums to 15.</p>
   </div>
 
   <div class="code-window reveal">
@@ -972,6 +1019,29 @@ minimum rooms</code></pre><p>Ask: Should I sort by start/end time, then sweep on
 
   <h3 class="sub reveal" id="fast-slow-pointers-floyd-s-cycle-detection">Fast &amp; slow pointers (Floyd's cycle detection)</h3>
   <p class="reveal">Two pointers move through the list at different speeds — <code>slow</code> one step, <code>fast</code> two steps. If there's a cycle, <code>fast</code> eventually laps <code>slow</code> and they meet; if the list ends, <code>fast</code> hits <code>null</code> first. No extra memory needed (unlike a hash-set of visited nodes).</p>
+  <div class="panel diagram-panel reveal">
+    <div class="llc-wrap">
+      <div class="llc-controls">
+        <button type="button" class="llc-play" id="llcPlay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>Race slow &amp; fast through the cycle</span></button>
+      </div>
+      <div class="llc" id="llc">
+        <div class="llc__node" data-n="0"><div class="llc__ptrs"></div>0</div>
+        <svg class="llc__arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="llc__node" data-n="1"><div class="llc__ptrs"></div>1</div>
+        <svg class="llc__arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="llc__node is-entry" data-n="2"><div class="llc__ptrs"></div>2</div>
+        <svg class="llc__arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="llc__node" data-n="3"><div class="llc__ptrs"></div>3</div>
+        <svg class="llc__arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="llc__node" data-n="4"><div class="llc__ptrs"></div>4</div>
+        <svg class="llc__arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="llc__node" data-n="5"><div class="llc__ptrs"></div>5</div>
+        <div class="llc__loop"><svg viewBox="0 0 24 24" fill="none"><path d="M20 11a8 8 0 1 0-2.6 5.9" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M20 6v5h-5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span>next &rarr; node 2</span></div>
+      </div>
+      <div class="llc-log" id="llcLog"></div>
+    </div>
+    <p class="diagram-cap">Node 5's <code>next</code> wraps back to node 2 (dashed ring = the cycle's entry point) — <code>slow</code> advances one node per tick, <code>fast</code> advances two. Once both are inside the loop, <code>fast</code> is mathematically guaranteed to lap <code>slow</code> and land on the exact same node.</p>
+  </div>
   <div class="code-window reveal">
     <div class="code-window__bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fname">HasCycle.java</span></div>
     <pre><code><span class="tk-typ">boolean</span> hasCycle(<span class="tk-typ">Node</span> head) {
@@ -2242,6 +2312,26 @@ minimum rooms</code></pre><p>Ask: Should I sort by start/end time, then sweep on
 }</code></pre>
   </div>
 
+  <div class="panel diagram-panel reveal">
+    <div class="arr-wrap">
+      <div class="arr-controls">
+        <button type="button" class="arr-play" id="qsPlay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>Partition around the pivot</span></button>
+        <span class="arr-status" id="qsStatus">pivot = a[6] = 7 — press play</span>
+      </div>
+      <div class="arr" id="qsArr">
+        <div class="arr__cell" data-i="0"><div class="arr__ptrs"></div><div class="arr__box">5</div><span class="arr__idx">0</span></div>
+        <div class="arr__cell" data-i="1"><div class="arr__ptrs"></div><div class="arr__box">2</div><span class="arr__idx">1</span></div>
+        <div class="arr__cell" data-i="2"><div class="arr__ptrs"></div><div class="arr__box">8</div><span class="arr__idx">2</span></div>
+        <div class="arr__cell" data-i="3"><div class="arr__ptrs"></div><div class="arr__box">4</div><span class="arr__idx">3</span></div>
+        <div class="arr__cell" data-i="4"><div class="arr__ptrs"></div><div class="arr__box">9</div><span class="arr__idx">4</span></div>
+        <div class="arr__cell" data-i="5"><div class="arr__ptrs"></div><div class="arr__box">3</div><span class="arr__idx">5</span></div>
+        <div class="arr__cell is-pivot" data-i="6"><div class="arr__ptrs"></div><div class="arr__box">7</div><span class="arr__idx">6</span></div>
+      </div>
+      <div class="arr-log" id="qsLog"></div>
+    </div>
+    <p class="diagram-cap">Partitioning <code>[5, 2, 8, 4, 9, 3, 7]</code> around the last element as pivot (7): <code>j</code> scans left to right, and every time <code>a[j]</code> is smaller than the pivot, it gets swapped just past <code>i</code> — so everything left of <code>i</code> stays smaller than the pivot the whole time.</p>
+  </div>
+
   <details class="accordion reveal">
     <summary><div class="accordion__chevron"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Why is merge sort's complexity O(n log n)?</summary>
     <div class="accordion__body">Every level of the recursion splits whatever's left exactly in half, so the recursion tree has depth log₂n — that's the "log n" factor. At each of those levels, the <code>merge</code> step touches every element in the current range exactly once to interleave the two sorted halves, and the pieces at any single level always add back up to n elements total — that's O(n) of work per level, no matter how many subarrays that level happens to be split into. Multiply the two: log n levels × O(n) per level = O(n log n) overall. Unlike quicksort, this bound holds for the best, average, <em>and</em> worst case alike, because the split is always a clean half regardless of the input's original order — there's no bad pivot to pick, and so no degenerate case to worry about.</div>
@@ -2376,12 +2466,24 @@ minimum rooms</code></pre><p>Ask: Should I sort by start/end time, then sweep on
   </div>
 
   <div class="panel diagram-panel reveal">
-    <div class="soft-flow">
-      <div class="soft-node is-accent"><b>low=0, high=9</b><span>mid=4 → a[4]=16 &lt; 23, search right</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node"><b>low=5, high=9</b><span>mid=7 → a[7]=56 &gt; 23, search left</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node is-accent"><b>low=5, high=6</b><span>mid=5 → a[5]=23, found</span></div>
+    <div class="arr-wrap">
+      <div class="arr-controls">
+        <button type="button" class="arr-play" id="bsPlay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>Search for 23</span></button>
+        <span class="arr-status" id="bsStatus">low = 0, high = 9 — press play</span>
+      </div>
+      <div class="arr" id="bsArr">
+        <div class="arr__cell" data-i="0"><div class="arr__ptrs"></div><div class="arr__box">2</div><span class="arr__idx">0</span></div>
+        <div class="arr__cell" data-i="1"><div class="arr__ptrs"></div><div class="arr__box">5</div><span class="arr__idx">1</span></div>
+        <div class="arr__cell" data-i="2"><div class="arr__ptrs"></div><div class="arr__box">8</div><span class="arr__idx">2</span></div>
+        <div class="arr__cell" data-i="3"><div class="arr__ptrs"></div><div class="arr__box">12</div><span class="arr__idx">3</span></div>
+        <div class="arr__cell" data-i="4"><div class="arr__ptrs"></div><div class="arr__box">16</div><span class="arr__idx">4</span></div>
+        <div class="arr__cell" data-i="5"><div class="arr__ptrs"></div><div class="arr__box">23</div><span class="arr__idx">5</span></div>
+        <div class="arr__cell" data-i="6"><div class="arr__ptrs"></div><div class="arr__box">38</div><span class="arr__idx">6</span></div>
+        <div class="arr__cell" data-i="7"><div class="arr__ptrs"></div><div class="arr__box">56</div><span class="arr__idx">7</span></div>
+        <div class="arr__cell" data-i="8"><div class="arr__ptrs"></div><div class="arr__box">72</div><span class="arr__idx">8</span></div>
+        <div class="arr__cell" data-i="9"><div class="arr__ptrs"></div><div class="arr__box">91</div><span class="arr__idx">9</span></div>
+      </div>
+      <div class="arr-log" id="bsLog"></div>
     </div>
     <p class="diagram-cap">Searching for 23 in the sorted array <code>[2, 5, 8, 12, 16, 23, 38, 56, 72, 91]</code> (indices 0-9): each comparison throws away half of whatever candidates remain — 10 → 5 → 2 — landing on the answer in 3 comparisons instead of scanning all 10 elements.</p>
   </div>
@@ -3377,6 +3479,282 @@ document.addEventListener("click",function(e){
     if(ex) ex.classList.add("is-shown");
   }
 });
+
+/* ---- two pointers: converging on a target sum ---- */
+(function(){
+  var arrEl = document.getElementById("tpArr");
+  if(!arrEl) return;
+  var log = document.getElementById("tpLog");
+  var status = document.getElementById("tpStatus");
+  var playBtn = document.getElementById("tpPlay");
+
+  function cell(i){ return arrEl.querySelector('.arr__cell[data-i="' + i + '"]'); }
+  function clearPtrs(){ arrEl.querySelectorAll(".arr__ptrs").forEach(function(el){ el.innerHTML = ""; }); }
+  function addLog(html, cls){
+    var row = document.createElement("div");
+    row.className = "arr-log__row" + (cls ? " " + cls : "");
+    row.innerHTML = html;
+    log.appendChild(row);
+  }
+
+  var states = [
+    { l:0, r:6, msg: "a[0] + a[6] = 1 + 11 = 12 &lt; 15 &rarr; sum too small, move left forward" },
+    { l:1, r:6, msg: "a[1] + a[6] = 3 + 11 = 14 &lt; 15 &rarr; still too small, move left forward" },
+    { l:2, r:6, msg: "a[2] + a[6] = 4 + 11 = 15 &rarr; <strong>match found</strong>", found:true }
+  ];
+
+  var i = 0, timer = null;
+  function reset(){
+    if(timer){ clearInterval(timer); timer = null; }
+    arrEl.querySelectorAll(".arr__cell").forEach(function(c){ c.classList.remove("is-found"); });
+    clearPtrs();
+    log.innerHTML = "";
+    status.className = "arr-status";
+    status.textContent = "left = 0, right = 6 — press play";
+    i = 0;
+  }
+
+  playBtn.addEventListener("click", function(){
+    if(timer) return;
+    reset();
+    playBtn.disabled = true;
+    timer = setInterval(function(){
+      var s = states[i];
+      clearPtrs();
+      cell(s.l).querySelector(".arr__ptrs").innerHTML += '<span class="arr__ptr">L</span>';
+      cell(s.r).querySelector(".arr__ptrs").innerHTML += '<span class="arr__ptr is-r">R</span>';
+      addLog(s.msg, s.found ? "is-found" : null);
+      status.textContent = "left = " + s.l + ", right = " + s.r;
+      if(s.found){
+        cell(s.l).classList.add("is-found");
+        cell(s.r).classList.add("is-found");
+        status.className = "arr-status is-found";
+        status.textContent = "found: a[" + s.l + "] + a[" + s.r + "] = 15";
+      }
+      i++;
+      if(i >= states.length){
+        clearInterval(timer);
+        timer = null;
+        playBtn.disabled = false;
+      }
+    }, 900);
+  });
+})();
+
+/* ---- linked-list cycle: fast & slow pointers ---- */
+(function(){
+  var llc = document.getElementById("llc");
+  if(!llc) return;
+  var log = document.getElementById("llcLog");
+  var playBtn = document.getElementById("llcPlay");
+
+  function nodeEl(n){ return llc.querySelector('.llc__node[data-n="' + n + '"]'); }
+  function clearPtrs(){ llc.querySelectorAll(".llc__ptrs").forEach(function(el){ el.innerHTML = ""; }); }
+  function placePtrs(slow, fast){
+    clearPtrs();
+    if(slow === fast){
+      nodeEl(slow).querySelector(".llc__ptrs").innerHTML = '<span class="llc__ptr">slow</span><span class="llc__ptr is-fast">fast</span>';
+    } else {
+      nodeEl(slow).querySelector(".llc__ptrs").innerHTML = '<span class="llc__ptr">slow</span>';
+      nodeEl(fast).querySelector(".llc__ptrs").innerHTML = '<span class="llc__ptr is-fast">fast</span>';
+    }
+  }
+  function addLog(html, cls){
+    var row = document.createElement("div");
+    row.className = "arr-log__row" + (cls ? " " + cls : "");
+    row.innerHTML = html;
+    log.appendChild(row);
+  }
+
+  var states = [
+    { slow:1, fast:2, msg: "slow steps 0&rarr;1. fast steps 0&rarr;1&rarr;2 (two hops)." },
+    { slow:2, fast:4, msg: "slow steps 1&rarr;2. fast steps 2&rarr;3&rarr;4." },
+    { slow:3, fast:2, msg: "slow steps 2&rarr;3. fast steps 4&rarr;5&rarr;2 &mdash; wrapping through the cycle-closing edge." },
+    { slow:4, fast:4, msg: "slow steps 3&rarr;4. fast steps 2&rarr;3&rarr;4 &mdash; <strong>same node as slow, cycle confirmed</strong>.", found:true }
+  ];
+
+  var i = 0, timer = null;
+  function reset(){
+    if(timer){ clearInterval(timer); timer = null; }
+    llc.querySelectorAll(".llc__node").forEach(function(n){ n.classList.remove("is-meet"); });
+    clearPtrs();
+    nodeEl(0).querySelector(".llc__ptrs").innerHTML = '<span class="llc__ptr">slow</span><span class="llc__ptr is-fast">fast</span>';
+    log.innerHTML = "";
+    i = 0;
+  }
+
+  playBtn.addEventListener("click", function(){
+    if(timer) return;
+    reset();
+    playBtn.disabled = true;
+    timer = setInterval(function(){
+      var s = states[i];
+      placePtrs(s.slow, s.fast);
+      addLog(s.msg, s.found ? "is-found" : null);
+      if(s.found){ nodeEl(s.slow).classList.add("is-meet"); }
+      i++;
+      if(i >= states.length){
+        clearInterval(timer);
+        timer = null;
+        playBtn.disabled = false;
+      }
+    }, 1000);
+  });
+
+  reset();
+})();
+
+/* ---- quicksort partition ---- */
+(function(){
+  var arrEl = document.getElementById("qsArr");
+  if(!arrEl) return;
+  var log = document.getElementById("qsLog");
+  var status = document.getElementById("qsStatus");
+  var playBtn = document.getElementById("qsPlay");
+  var initial = ["5","2","8","4","9","3","7"];
+
+  function cell(i){ return arrEl.querySelector('.arr__cell[data-i="' + i + '"]'); }
+  function val(i){ return cell(i).querySelector(".arr__box").textContent; }
+  function setVal(i, v){ cell(i).querySelector(".arr__box").textContent = v; }
+  function clearPtrs(){ arrEl.querySelectorAll(".arr__ptrs").forEach(function(el){ el.innerHTML = ""; }); }
+  function placeIJ(iPos, jPos){
+    clearPtrs();
+    if(iPos !== null) cell(iPos).querySelector(".arr__ptrs").innerHTML += '<span class="arr__ptr">i</span>';
+    if(jPos !== null) cell(jPos).querySelector(".arr__ptrs").innerHTML += '<span class="arr__ptr is-r">j</span>';
+  }
+  function addLog(html, cls){
+    var row = document.createElement("div");
+    row.className = "arr-log__row" + (cls ? " " + cls : "");
+    row.innerHTML = html;
+    log.appendChild(row);
+  }
+
+  // hand-traced partition(a, 0, 6) over [5,2,8,4,9,3,7] with pivot = a[6] = 7
+  var steps = [
+    { j:0, i:0, swap:[0,0], msg: "j=0: a[0]=5 &lt; pivot(7) &rarr; i++ (i=0), swap a[0]&harr;a[0]" },
+    { j:1, i:1, swap:[1,1], msg: "j=1: a[1]=2 &lt; pivot(7) &rarr; i++ (i=1), swap a[1]&harr;a[1]" },
+    { j:2, i:1, swap:null,  msg: "j=2: a[2]=8 &ge; pivot(7) &rarr; leave it, i stays at 1" },
+    { j:3, i:2, swap:[2,3], msg: "j=3: a[3]=4 &lt; pivot(7) &rarr; i++ (i=2), swap a[2]&harr;a[3]" },
+    { j:4, i:2, swap:null,  msg: "j=4: a[4]=9 &ge; pivot(7) &rarr; leave it, i stays at 2" },
+    { j:5, i:3, swap:[3,5], msg: "j=5: a[5]=3 &lt; pivot(7) &rarr; i++ (i=3), swap a[3]&harr;a[5]" },
+    { final:true, swap:[4,6], msg: "partition done &rarr; swap pivot into place: a[4]&harr;a[6] &rarr; pivot settles at index 4" }
+  ];
+
+  var i = 0, timer = null;
+  function reset(){
+    if(timer){ clearInterval(timer); timer = null; }
+    arrEl.querySelectorAll(".arr__cell").forEach(function(c, idx){
+      c.classList.remove("is-swap","is-found","is-pivot");
+      setVal(idx, initial[idx]);
+    });
+    cell(6).classList.add("is-pivot");
+    clearPtrs();
+    log.innerHTML = "";
+    status.className = "arr-status";
+    status.textContent = "pivot = a[6] = 7 — press play";
+    i = 0;
+  }
+
+  playBtn.addEventListener("click", function(){
+    if(timer) return;
+    reset();
+    playBtn.disabled = true;
+    timer = setInterval(function(){
+      var s = steps[i];
+      if(s.swap && s.swap[0] !== s.swap[1]){
+        var a = s.swap[0], b = s.swap[1];
+        var tmp = val(a);
+        setVal(a, val(b));
+        setVal(b, tmp);
+        cell(a).classList.add("is-swap");
+        cell(b).classList.add("is-swap");
+        setTimeout(function(){ cell(a).classList.remove("is-swap"); cell(b).classList.remove("is-swap"); }, 500);
+      }
+      if(s.final){
+        cell(6).classList.remove("is-pivot");
+        cell(4).classList.add("is-pivot","is-found");
+        clearPtrs();
+        status.className = "arr-status is-found";
+        status.textContent = "pivot 7 is now at index 4 — done";
+      } else {
+        placeIJ(s.i, s.j);
+        status.textContent = "i = " + s.i + ", j = " + s.j;
+      }
+      addLog(s.msg, s.final ? "is-found" : null);
+      i++;
+      if(i >= steps.length){
+        clearInterval(timer);
+        timer = null;
+        playBtn.disabled = false;
+      }
+    }, 900);
+  });
+
+  reset();
+})();
+
+/* ---- binary search: narrowing the range ---- */
+(function(){
+  var arrEl = document.getElementById("bsArr");
+  if(!arrEl) return;
+  var log = document.getElementById("bsLog");
+  var status = document.getElementById("bsStatus");
+  var playBtn = document.getElementById("bsPlay");
+
+  function cell(i){ return arrEl.querySelector('.arr__cell[data-i="' + i + '"]'); }
+  function clearPtrs(){ arrEl.querySelectorAll(".arr__ptrs").forEach(function(el){ el.innerHTML = ""; }); }
+  function addLog(html, cls){
+    var row = document.createElement("div");
+    row.className = "arr-log__row" + (cls ? " " + cls : "");
+    row.innerHTML = html;
+    log.appendChild(row);
+  }
+
+  var states = [
+    { low:0, high:9, mid:4, eliminate:[0,1,2,3,4], msg: "low=0, high=9 &rarr; mid=4, a[4]=16 &lt; 23 &rarr; search right half" },
+    { low:5, high:9, mid:7, eliminate:[7,8,9],      msg: "low=5, high=9 &rarr; mid=7, a[7]=56 &gt; 23 &rarr; search left half" },
+    { low:5, high:6, mid:5, eliminate:[],           msg: "low=5, high=6 &rarr; mid=5, a[5]=23 &rarr; <strong>found!</strong>", found:5 }
+  ];
+
+  var i = 0, timer = null;
+  function reset(){
+    if(timer){ clearInterval(timer); timer = null; }
+    arrEl.querySelectorAll(".arr__cell").forEach(function(c){ c.classList.remove("is-eliminated","is-found"); });
+    clearPtrs();
+    log.innerHTML = "";
+    status.className = "arr-status";
+    status.textContent = "low = 0, high = 9 — press play";
+    i = 0;
+  }
+
+  playBtn.addEventListener("click", function(){
+    if(timer) return;
+    reset();
+    playBtn.disabled = true;
+    timer = setInterval(function(){
+      var s = states[i];
+      clearPtrs();
+      cell(s.low).querySelector(".arr__ptrs").innerHTML += '<span class="arr__ptr">low</span>';
+      cell(s.high).querySelector(".arr__ptrs").innerHTML += '<span class="arr__ptr is-r">high</span>';
+      cell(s.mid).querySelector(".arr__ptrs").innerHTML += '<span class="arr__ptr is-mid">mid</span>';
+      s.eliminate.forEach(function(idx){ cell(idx).classList.add("is-eliminated"); });
+      addLog(s.msg, s.found !== undefined ? "is-found" : null);
+      status.textContent = "low = " + s.low + ", high = " + s.high + ", mid = " + s.mid;
+      if(s.found !== undefined){
+        cell(s.found).classList.remove("is-eliminated");
+        cell(s.found).classList.add("is-found");
+        status.className = "arr-status is-found";
+        status.textContent = "found 23 at index " + s.found;
+      }
+      i++;
+      if(i >= states.length){
+        clearInterval(timer);
+        timer = null;
+        playBtn.disabled = false;
+      }
+    }, 1000);
+  });
+})();
 
 function initReveal(){
   var els=document.querySelectorAll(".reveal");

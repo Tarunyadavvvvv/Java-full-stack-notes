@@ -250,6 +250,37 @@ tbody tr:hover{background:var(--surface-2);}
 .soft-arrow{flex:none;width:44px;height:24px;color:var(--muted);}
 .diagram-cap{font-size:.86rem;color:var(--muted);margin-top:.3rem;}
 
+/* ---- thread lifecycle (clickable hub-and-spoke) ---- */
+.tlc-wrap{display:flex;flex-direction:column;gap:1rem;}
+.tlc-controls{display:flex;justify-content:flex-end;}
+.tlc-play{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-mono);font-size:.72rem;font-weight:700;letter-spacing:.03em;background:var(--surface-2);color:var(--ink-soft);border:none;padding:.4rem .85rem;border-radius:999px;cursor:pointer;transition:background var(--dur-1) var(--ease), color var(--dur-1) var(--ease);}
+.tlc-play:hover{background:var(--tint);color:var(--accent-ink);}
+.tlc-play.is-playing{background:var(--accent);color:#fff;}
+.tlc-play svg{width:13px;height:13px;}
+.tlc__main{display:flex;align-items:center;justify-content:center;gap:.4rem;flex-wrap:wrap;}
+.tlc__branch-label{font-size:.82rem;color:var(--muted);text-align:center;max-width:560px;margin:0 auto;}
+.tlc__branches{display:flex;align-items:center;justify-content:center;gap:.9rem;flex-wrap:wrap;}
+.tlc__state{display:flex;flex-direction:column;align-items:center;gap:.4rem;background:var(--surface);border:2px solid var(--border);border-radius:var(--r-lg);padding:.85rem 1.05rem;cursor:pointer;font-family:inherit;box-shadow:var(--shadow-sm);transition:border-color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);min-width:118px;}
+.tlc__state:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.tlc__state.is-active{border-color:var(--accent);box-shadow:var(--shadow-glow), var(--shadow-md);}
+.tlc__state--hub{min-width:140px;}
+.tlc__state--hub.is-linked{border-color:var(--warning);box-shadow:0 0 0 5px var(--warning-tint);}
+.tlc__state--branch{min-width:132px;}
+.tlc__dot{width:12px;height:12px;border-radius:50%;background:var(--muted);transition:background var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);}
+.tlc__state[data-state="new"] .tlc__dot{background:var(--muted);}
+.tlc__state[data-state="runnable"] .tlc__dot{background:var(--success);}
+.tlc__state[data-state="terminated"] .tlc__dot{background:var(--ink-soft);}
+.tlc__state[data-state="blocked"] .tlc__dot{background:var(--danger);}
+.tlc__state[data-state="waiting"] .tlc__dot,.tlc__state[data-state="timed_waiting"] .tlc__dot{background:var(--warning);}
+.tlc__state.is-active .tlc__dot{box-shadow:0 0 0 5px color-mix(in srgb, currentColor 18%, transparent);}
+.tlc__label{font-weight:800;font-size:.78rem;letter-spacing:.02em;}
+.tlc__arrow{flex:none;width:36px;height:20px;color:var(--border-strong);}
+.tlc__detail{background:linear-gradient(160deg, var(--tint), var(--surface) 130%);border-radius:var(--r-lg);padding:1.1rem 1.4rem;box-shadow:var(--shadow-sm);}
+.tlc__detail-head{font-family:var(--font-mono);font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:.5rem;}
+.tlc__detail-body{font-size:.92rem;color:var(--ink-soft);margin:0;}
+.tlc__detail-body strong{color:var(--ink);}
+@media (max-width:640px){.tlc__arrow{transform:rotate(90deg);}}
+
 /* ---- concentric soft layers ---- */
 .soft-nest{border-radius:var(--r-lg);padding:1.6rem;background:linear-gradient(155deg, var(--surface-2), var(--surface));box-shadow:var(--shadow-sm);}
 .soft-nest .soft-nest{margin-top:1rem;box-shadow:none;background:linear-gradient(155deg, var(--tint), var(--surface));}
@@ -272,7 +303,37 @@ tbody tr:hover{background:var(--surface-2);}
 .bars__track{height:10px;background:var(--surface-2);border-radius:var(--r-pill);overflow:hidden;}
 .bars__fill{height:100%;border-radius:var(--r-pill);background:linear-gradient(90deg, var(--accent), var(--accent-strong));transition:width 1s var(--ease);}
 .bars__fill.danger{background:linear-gradient(90deg, #E38a83, var(--danger));}
+.bars__fill.warn{background:linear-gradient(90deg, color-mix(in srgb, var(--warning) 60%, var(--surface)), var(--warning));}
+.bars__fill.success{background:linear-gradient(90deg, color-mix(in srgb, var(--success) 60%, var(--surface)), var(--success));}
 .bars__val{font-family:var(--font-mono);font-size:.78rem;color:var(--muted);text-align:right;}
+
+/* ---- heap generations & GC sim ---- */
+.gcsim{display:flex;flex-direction:column;gap:1.1rem;}
+.gcsim-controls{display:flex;align-items:center;justify-content:flex-end;}
+.gcsim-play{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-mono);font-size:.72rem;font-weight:700;letter-spacing:.03em;background:var(--surface-2);color:var(--ink-soft);border:none;padding:.4rem .85rem;border-radius:999px;cursor:pointer;transition:background var(--dur-1) var(--ease), color var(--dur-1) var(--ease);}
+.gcsim-play:hover{background:var(--tint);color:var(--accent-ink);}
+.gcsim-play:disabled{opacity:.55;cursor:default;}
+.gcsim-play svg{width:13px;height:13px;}
+.gcsim__regions{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;}
+.gcsim__region{background:var(--surface-2);border-radius:var(--r-lg);padding:.9rem 1rem;box-shadow:var(--shadow-sm);transition:box-shadow var(--dur-2) var(--ease);}
+.gcsim__region.is-active{box-shadow:var(--shadow-glow), var(--shadow-sm);}
+.gcsim__region-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.55rem;}
+.gcsim__region-name{font-weight:800;font-size:.86rem;}
+.gcsim__region-note{font-family:var(--font-mono);font-size:.64rem;color:var(--muted);}
+.gcsim__slots{display:flex;gap:.3rem;flex-wrap:wrap;margin-top:.7rem;}
+.gcsim__slot{width:30px;height:30px;border-radius:8px;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--border);display:flex;align-items:center;justify-content:center;transition:box-shadow var(--dur-2) var(--ease);}
+.gcsim__chip{width:20px;height:20px;border-radius:6px;background:linear-gradient(160deg, var(--accent), var(--accent-strong));position:relative;animation:gcPop .4s var(--ease);}
+.gcsim__slot--survivor .gcsim__chip{background:linear-gradient(160deg, var(--warning), #b5751f);}
+.gcsim__slot--old .gcsim__chip{background:linear-gradient(160deg, var(--success), #1f7a4d);}
+.gcsim__chip.is-dying{animation:gcDie .5s var(--ease) forwards;}
+.gcsim__age{position:absolute;bottom:-7px;right:-7px;background:var(--surface);color:var(--ink);border-radius:999px;font-family:var(--font-mono);font-size:.52rem;font-weight:700;padding:.05rem .25rem;box-shadow:var(--shadow-sm);}
+@keyframes gcPop{0%{transform:scale(.5);opacity:0;}70%{transform:scale(1.15);}100%{transform:scale(1);opacity:1;}}
+@keyframes gcDie{0%{transform:scale(1);opacity:1;}100%{transform:scale(.3);opacity:0;}}
+.gcsim-log{display:flex;flex-direction:column;gap:.35rem;font-family:var(--font-mono);font-size:.78rem;max-height:210px;overflow-y:auto;}
+.gcsim-log__row{background:var(--surface-2);border-radius:8px;padding:.45rem .7rem;color:var(--ink-soft);animation:hmRow .4s var(--ease);}
+.gcsim-log__row.is-minor{background:var(--tint);color:var(--accent-ink);}
+.gcsim-log__row.is-major{background:var(--danger-tint);color:var(--danger);}
+.gcsim-log__row.is-promo{background:var(--success-tint);color:var(--success);}
 
 /* ---- bucket visual (soft) ---- */
 .soft-buckets{display:flex;gap:.6rem;overflow-x:auto;padding:.4rem .1rem 1rem;}
@@ -281,6 +342,22 @@ tbody tr:hover{background:var(--surface-2);}
 .soft-bucket__idx{font-family:var(--font-mono);font-size:.62rem;color:var(--muted);}
 .soft-bucket__node{width:100%;background:var(--surface);border-radius:8px;padding:.3rem .2rem;font-family:var(--font-mono);font-size:.6rem;text-align:center;box-shadow:var(--shadow-sm);}
 .soft-bucket__node.is-tree{background:var(--tint-strong);color:var(--accent-ink);}
+.soft-bucket.is-fresh{animation:hmPop .5s var(--ease);}
+@keyframes hmPop{0%{transform:scale(.85);opacity:0;}60%{transform:scale(1.06);opacity:1;}100%{transform:scale(1);}}
+
+/* ---- hashmap insertion sim ---- */
+.hmsim-controls{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.7rem;margin-bottom:.9rem;}
+.hmsim-play{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-mono);font-size:.72rem;font-weight:700;letter-spacing:.03em;background:var(--surface-2);color:var(--ink-soft);border:none;padding:.4rem .85rem;border-radius:999px;cursor:pointer;transition:background var(--dur-1) var(--ease), color var(--dur-1) var(--ease);}
+.hmsim-play:hover{background:var(--tint);color:var(--accent-ink);}
+.hmsim-play:disabled{opacity:.55;cursor:default;}
+.hmsim-play svg{width:13px;height:13px;}
+.hmsim-counter{font-family:var(--font-mono);font-size:.76rem;color:var(--muted);}
+.hmsim-counter strong{color:var(--ink);}
+.hmsim-log{display:flex;flex-direction:column;gap:.35rem;margin-top:.9rem;font-family:var(--font-mono);font-size:.78rem;}
+.hmsim-log__row{background:var(--surface-2);border-radius:8px;padding:.45rem .7rem;color:var(--ink-soft);animation:hmRow .4s var(--ease);}
+.hmsim-log__row.is-collision{background:var(--warning-tint);color:var(--warning);}
+.hmsim-log__row.is-tree{background:var(--tint-strong);color:var(--accent-ink);}
+@keyframes hmRow{0%{opacity:0;transform:translateY(-4px);}100%{opacity:1;transform:translateY(0);}}
 
 /* ---- tree hierarchy (soft) ---- */
 .soft-tree,.soft-tree ul{list-style:none;margin:0;padding:0;font-size:.9rem;}
@@ -1110,15 +1187,22 @@ System.out.println(a.equals(c));       <span class="tk-com">// true — equals()
   <h3 class="sub reveal" id="hashmap-internals">HashMap internals</h3>
   <p class="reveal">A <code>HashMap</code> is an array of buckets. Each key's hash decides which bucket it lands in; collisions chain inside that bucket.</p>
   <div class="panel diagram-panel reveal">
-    <div class="soft-buckets">
-      <div class="soft-bucket is-empty"><span class="soft-bucket__idx">0</span></div>
-      <div class="soft-bucket is-empty"><span class="soft-bucket__idx">1</span></div>
-      <div class="soft-bucket"><span class="soft-bucket__idx">3</span><div class="soft-bucket__node">"cat" → 1</div></div>
-      <div class="soft-bucket is-empty"><span class="soft-bucket__idx">4</span></div>
-      <div class="soft-bucket"><span class="soft-bucket__idx">5</span><div class="soft-bucket__node">"fox" → 2</div><div class="soft-bucket__node">"owl" → 9</div></div>
-      <div class="soft-bucket"><span class="soft-bucket__idx">7</span><div class="soft-bucket__node is-tree">8+ nodes → tree</div></div>
+    <div class="hmsim-controls">
+      <button type="button" class="hmsim-play" id="hmsimPlay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>Insert 8 keys, one by one</span></button>
+      <span class="hmsim-counter">Keys inserted: <strong id="hmsimCount">0</strong> / 8</span>
     </div>
-    <p class="diagram-cap">Bucket 5 shows a collision (chained as a list). Bucket 7 shows what happens past 8 entries in a table of ≥64: Java 8+ converts the chain to a red-black tree, taking worst-case lookup from O(n) to O(log n).</p>
+    <div class="soft-buckets" id="hmsimBuckets">
+      <div class="soft-bucket is-empty" data-idx="0"><span class="soft-bucket__idx">0</span></div>
+      <div class="soft-bucket is-empty" data-idx="1"><span class="soft-bucket__idx">1</span></div>
+      <div class="soft-bucket is-empty" data-idx="2"><span class="soft-bucket__idx">2</span></div>
+      <div class="soft-bucket is-empty" data-idx="3"><span class="soft-bucket__idx">3</span></div>
+      <div class="soft-bucket is-empty" data-idx="4"><span class="soft-bucket__idx">4</span></div>
+      <div class="soft-bucket is-empty" data-idx="5"><span class="soft-bucket__idx">5</span></div>
+      <div class="soft-bucket is-empty" data-idx="6"><span class="soft-bucket__idx">6</span></div>
+      <div class="soft-bucket is-empty" data-idx="7"><span class="soft-bucket__idx">7</span></div>
+    </div>
+    <div class="hmsim-log" id="hmsimLog"></div>
+    <p class="diagram-cap">Bucket 5 ends up with a real collision (chained as a list). Bucket 7 shows what happens past 8 entries in a table of ≥64: Java 8+ converts the chain to a red-black tree, taking worst-case lookup from O(n) to O(log n).</p>
   </div>
 
   <h3 class="sub reveal" id="fail-fast-vs-fail-safe-iterators">Fail-fast vs. fail-safe iterators</h3>
@@ -1495,16 +1579,28 @@ Future&lt;Integer&gt; f = executor.submit(c);
 
   <h3 class="sub reveal" id="thread-lifecycle">Thread lifecycle</h3>
   <div class="panel diagram-panel reveal">
-    <div class="soft-flow">
-      <div class="soft-node"><b>NEW</b></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node is-accent"><b>RUNNABLE</b><span>start()</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node"><b>BLOCKED / WAITING</b><span>lock, wait(), join()</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node"><b>TERMINATED</b><span>run() completes</span></div>
+    <div class="tlc-wrap">
+      <div class="tlc-controls">
+        <button type="button" class="tlc-play" id="tlcPlay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>Play a realistic lifecycle</span></button>
+      </div>
+      <div class="tlc" id="tlc">
+        <div class="tlc__main">
+          <button type="button" class="tlc__state is-active" data-state="new"><span class="tlc__dot"></span><span class="tlc__label">NEW</span></button>
+          <svg class="tlc__arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <button type="button" class="tlc__state tlc__state--hub" data-state="runnable"><span class="tlc__dot"></span><span class="tlc__label">RUNNABLE</span></button>
+          <svg class="tlc__arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <button type="button" class="tlc__state" data-state="terminated"><span class="tlc__dot"></span><span class="tlc__label">TERMINATED</span></button>
+        </div>
+        <div class="tlc__branch-label">While RUNNABLE, the scheduler can swap a thread into any of these — each one leads straight back to RUNNABLE once its condition clears:</div>
+        <div class="tlc__branches">
+          <button type="button" class="tlc__state tlc__state--branch" data-state="blocked"><span class="tlc__dot"></span><span class="tlc__label">BLOCKED</span></button>
+          <button type="button" class="tlc__state tlc__state--branch" data-state="waiting"><span class="tlc__dot"></span><span class="tlc__label">WAITING</span></button>
+          <button type="button" class="tlc__state tlc__state--branch" data-state="timed_waiting"><span class="tlc__dot"></span><span class="tlc__label">TIMED_WAITING</span></button>
+        </div>
+      </div>
+      <div class="tlc__detail" id="tlcDetail"></div>
     </div>
-    <p class="diagram-cap">From RUNNABLE, a thread can drop into BLOCKED (waiting on a lock), WAITING (<code>wait()</code>/<code>join()</code>, no timeout) or TIMED_WAITING (<code>sleep(t)</code>) — and rejoin RUNNABLE once its condition clears.</p>
+    <p class="diagram-cap">Click any state to read what triggers it, or press play to watch one thread's realistic path — it doesn't move in a straight line, it keeps returning to RUNNABLE until <code>run()</code> finally completes.</p>
   </div>
 
   <h3 class="sub reveal" id="synchronization-the-memory-model">Synchronization &amp; the memory model</h3>
@@ -2351,14 +2447,34 @@ Files.write(p, <span class="tk-str">"new content"</span>.getBytes(), StandardOpe
   <h3 class="sub reveal" id="heap-generations-gc">Heap generations &amp; GC</h3>
   <p class="reveal"><strong>Generational hypothesis:</strong> most objects die young. New objects are born in <strong>Eden</strong>; survivors copy between two survivor spaces, then get promoted to <strong>Old Gen</strong> after surviving enough cycles.</p>
   <div class="panel diagram-panel reveal">
-    <div class="soft-flow">
-      <div class="soft-node"><b>new object</b></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node is-accent"><b>Eden</b><span>Minor GC</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node"><b>Survivor S0/S1</b></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node"><b>Old Gen</b><span>Major/Full GC</span></div>
+    <div class="gcsim">
+      <div class="gcsim-controls">
+        <button type="button" class="gcsim-play" id="gcsimPlay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>Run allocation &amp; GC cycle</span></button>
+      </div>
+      <div class="gcsim__regions">
+        <div class="gcsim__region" id="gcsimEden">
+          <div class="gcsim__region-head"><span class="gcsim__region-name">Eden</span><span class="gcsim__region-note">Minor GC here</span></div>
+          <div class="bars__track"><div class="bars__fill" id="gcsimEdenBar" style="width:0%"></div></div>
+          <div class="gcsim__slots" id="gcsimEdenSlots">
+            <div class="gcsim__slot"></div><div class="gcsim__slot"></div><div class="gcsim__slot"></div><div class="gcsim__slot"></div>
+          </div>
+        </div>
+        <div class="gcsim__region" id="gcsimSurvivor">
+          <div class="gcsim__region-head"><span class="gcsim__region-name">Survivor</span><span class="gcsim__region-note">S0 / S1</span></div>
+          <div class="bars__track"><div class="bars__fill warn" id="gcsimSurvivorBar" style="width:0%"></div></div>
+          <div class="gcsim__slots" id="gcsimSurvivorSlots">
+            <div class="gcsim__slot gcsim__slot--survivor"></div><div class="gcsim__slot gcsim__slot--survivor"></div>
+          </div>
+        </div>
+        <div class="gcsim__region" id="gcsimOld">
+          <div class="gcsim__region-head"><span class="gcsim__region-name">Old Gen</span><span class="gcsim__region-note">Major/Full GC here</span></div>
+          <div class="bars__track"><div class="bars__fill success" id="gcsimOldBar" style="width:50%"></div></div>
+          <div class="gcsim__slots" id="gcsimOldSlots">
+            <div class="gcsim__slot gcsim__slot--old"><div class="gcsim__chip"></div></div><div class="gcsim__slot gcsim__slot--old"><div class="gcsim__chip"></div></div><div class="gcsim__slot gcsim__slot--old"></div><div class="gcsim__slot gcsim__slot--old"></div>
+          </div>
+        </div>
+      </div>
+      <div class="gcsim-log" id="gcsimLog"></div>
     </div>
   </div>
   <div class="tbl-wrap reveal">
@@ -2971,6 +3087,254 @@ document.addEventListener("click",function(e){
     if(ex) ex.classList.add("is-shown");
   }
 });
+
+/* ---- thread lifecycle diagram ---- */
+(function(){
+  var tlc = document.getElementById("tlc");
+  if(!tlc) return;
+  var detail = document.getElementById("tlcDetail");
+  var playBtn = document.getElementById("tlcPlay");
+  var info = {
+    "new": { title: "NEW", body: "The <code>Thread</code> object exists, but <code>start()</code> hasn't been called yet — no OS thread has been created. It's just a plain Java object at this point." },
+    "runnable": { title: "RUNNABLE &mdash; the hub", body: "Eligible to run. The JVM scheduler decides when it actually gets CPU time — Java doesn't distinguish \"running right now\" from \"ready and waiting for a turn,\" both count as RUNNABLE." },
+    "terminated": { title: "TERMINATED", body: "<code>run()</code> has returned, or the thread died from an uncaught exception. This is final — a terminated thread can never restart; you'd need a brand new <code>Thread</code> object." },
+    "blocked": { title: "BLOCKED", body: "Waiting to enter a <code>synchronized</code> block or method because another thread already holds that monitor lock. Returns to RUNNABLE the instant the lock is released and it wins the race to acquire it." },
+    "waiting": { title: "WAITING", body: "Waiting indefinitely for another thread to act — via <code>Object.wait()</code> with no timeout, <code>Thread.join()</code>, or <code>LockSupport.park()</code>. Only <code>notify()</code>/<code>notifyAll()</code>, or the joined thread finishing, wakes it." },
+    "timed_waiting": { title: "TIMED_WAITING", body: "Same as WAITING, but with a deadline — <code>sleep(ms)</code>, <code>wait(timeout)</code>, or <code>join(timeout)</code>. Returns to RUNNABLE on its own once the timeout elapses, even if nothing else happens." }
+  };
+
+  function setState(state){
+    tlc.querySelectorAll(".tlc__state").forEach(function(btn){
+      btn.classList.toggle("is-active", btn.dataset.state === state);
+    });
+    tlc.querySelector(".tlc__state--hub").classList.toggle("is-linked", state === "blocked" || state === "waiting" || state === "timed_waiting");
+    var d = info[state];
+    detail.innerHTML = '<div class="tlc__detail-head">' + d.title + '</div><p class="tlc__detail-body">' + d.body + '</p>';
+  }
+
+  tlc.querySelectorAll(".tlc__state").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      stopPlay();
+      setState(btn.dataset.state);
+    });
+  });
+
+  var sequence = ["new","runnable","timed_waiting","runnable","blocked","runnable","waiting","runnable","terminated"];
+  var seqIdx = 0, playTimer = null;
+  function stopPlay(){
+    if(playTimer){ clearInterval(playTimer); playTimer = null; playBtn.classList.remove("is-playing"); playBtn.querySelector("span").textContent = "Play a realistic lifecycle"; }
+  }
+  playBtn.addEventListener("click", function(){
+    if(playTimer){ stopPlay(); return; }
+    seqIdx = 0;
+    setState(sequence[0]);
+    playBtn.classList.add("is-playing");
+    playBtn.querySelector("span").textContent = "Playing…";
+    playTimer = setInterval(function(){
+      seqIdx++;
+      if(seqIdx >= sequence.length){ stopPlay(); return; }
+      setState(sequence[seqIdx]);
+      if(sequence[seqIdx] === "terminated") stopPlay();
+    }, 850);
+  });
+
+  setState("new");
+})();
+
+/* ---- hashmap bucket insertion sim ---- */
+(function(){
+  var buckets = document.getElementById("hmsimBuckets");
+  if(!buckets) return;
+  var log = document.getElementById("hmsimLog");
+  var countEl = document.getElementById("hmsimCount");
+  var playBtn = document.getElementById("hmsimPlay");
+  var steps = [
+    { idx:0, key:"bee", val:14, mode:"fill" },
+    { idx:3, key:"cat", val:1,  mode:"fill" },
+    { idx:6, key:"ant", val:23, mode:"fill" },
+    { idx:2, key:"dog", val:7,  mode:"fill" },
+    { idx:5, key:"fox", val:2,  mode:"fill" },
+    { idx:5, key:"owl", val:9,  mode:"collide" },
+    { idx:7, key:"cow", val:4,  mode:"fill" },
+    { idx:7, mode:"treeify" }
+  ];
+  var timer = null, i = 0;
+
+  function bucketEl(idx){ return buckets.querySelector('.soft-bucket[data-idx="' + idx + '"]'); }
+
+  function addLog(html, cls){
+    var row = document.createElement("div");
+    row.className = "hmsim-log__row" + (cls ? " " + cls : "");
+    row.innerHTML = html;
+    log.appendChild(row);
+  }
+
+  function applyStep(step){
+    var b = bucketEl(step.idx);
+    if(step.mode === "treeify"){
+      b.innerHTML = '<span class="soft-bucket__idx">' + step.idx + '</span><div class="soft-bucket__node is-tree">8+ nodes &rarr; tree</div>';
+      addLog("Bucket " + step.idx + " just crossed 8 chained entries in a table of ≥64 buckets → Java 8+ converts it to a red-black tree.", "is-tree");
+      return;
+    }
+    b.classList.remove("is-empty");
+    b.classList.add("is-fresh");
+    var node = document.createElement("div");
+    node.className = "soft-bucket__node";
+    node.textContent = '"' + step.key + '" → ' + step.val;
+    b.appendChild(node);
+    if(step.mode === "collide"){
+      addLog('hash("' + step.key + '") &rarr; bucket ' + step.idx + ' &mdash; <strong>collision</strong>, chained onto the entry already there.', "is-collision");
+    } else {
+      addLog('hash("' + step.key + '") &rarr; bucket ' + step.idx + ' (was empty)', null);
+    }
+  }
+
+  function reset(){
+    if(timer){ clearInterval(timer); timer = null; }
+    buckets.querySelectorAll(".soft-bucket").forEach(function(b){
+      var idx = b.dataset.idx;
+      b.className = "soft-bucket is-empty";
+      b.innerHTML = '<span class="soft-bucket__idx">' + idx + '</span>';
+    });
+    log.innerHTML = "";
+    countEl.textContent = "0";
+    i = 0;
+  }
+
+  playBtn.addEventListener("click", function(){
+    if(timer) return;
+    reset();
+    playBtn.disabled = true;
+    timer = setInterval(function(){
+      applyStep(steps[i]);
+      i++;
+      countEl.textContent = String(i);
+      if(i >= steps.length){
+        clearInterval(timer);
+        timer = null;
+        playBtn.disabled = false;
+      }
+    }, 480);
+  });
+})();
+
+/* ---- heap generations & GC sim ---- */
+(function(){
+  var edenSlots = document.getElementById("gcsimEdenSlots");
+  if(!edenSlots) return;
+  var survivorSlots = document.getElementById("gcsimSurvivorSlots");
+  var oldSlots = document.getElementById("gcsimOldSlots");
+  var edenBar = document.getElementById("gcsimEdenBar");
+  var survivorBar = document.getElementById("gcsimSurvivorBar");
+  var oldBar = document.getElementById("gcsimOldBar");
+  var edenRegion = document.getElementById("gcsimEden");
+  var survivorRegion = document.getElementById("gcsimSurvivor");
+  var oldRegion = document.getElementById("gcsimOld");
+  var log = document.getElementById("gcsimLog");
+  var playBtn = document.getElementById("gcsimPlay");
+
+  var eden, survivor, old;
+
+  function renderEden(){
+    var slots = edenSlots.children;
+    for(var k = 0; k < slots.length; k++){ slots[k].innerHTML = eden[k] ? '<div class="gcsim__chip"></div>' : ""; }
+    edenBar.style.width = (eden.filter(Boolean).length / eden.length * 100) + "%";
+  }
+  function renderSurvivor(){
+    var slots = survivorSlots.children;
+    for(var k = 0; k < slots.length; k++){
+      var s = survivor[k];
+      slots[k].innerHTML = s ? '<div class="gcsim__chip"><span class="gcsim__age">' + s.age + '</span></div>' : "";
+    }
+    var filled = survivor.filter(function(x){ return x; }).length;
+    survivorBar.style.width = (filled / survivor.length * 100) + "%";
+  }
+  function renderOld(){
+    var slots = oldSlots.children;
+    for(var k = 0; k < slots.length; k++){ slots[k].innerHTML = old[k] ? '<div class="gcsim__chip"></div>' : ""; }
+    var filled = old.filter(Boolean).length;
+    oldBar.style.width = (filled / old.length * 100) + "%";
+  }
+  function flash(regions){
+    [edenRegion, survivorRegion, oldRegion].forEach(function(r){ r.classList.remove("is-active"); });
+    regions.forEach(function(r){ r.classList.add("is-active"); });
+  }
+  function addLog(html, cls){
+    var row = document.createElement("div");
+    row.className = "gcsim-log__row" + (cls ? " " + cls : "");
+    row.innerHTML = html;
+    log.appendChild(row);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  var steps = [
+    function(){ eden[0]=true; renderEden(); flash([edenRegion]); addLog("new Request() &rarr; Eden", null); },
+    function(){ eden[1]=true; renderEden(); flash([edenRegion]); addLog("new byte[1024]() &rarr; Eden", null); },
+    function(){ eden[2]=true; renderEden(); flash([edenRegion]); addLog("new StringBuilder() &rarr; Eden", null); },
+    function(){ eden[3]=true; renderEden(); flash([edenRegion]); addLog("new Response() &rarr; Eden <strong>(4/4, full)</strong>", null); },
+    function(){
+      eden = [false,false,false,false]; survivor[0] = {age:1};
+      renderEden(); renderSurvivor(); flash([edenRegion,survivorRegion]);
+      addLog("Eden full &rarr; <strong>Minor GC #1</strong>: 3 objects collected, 1 survivor copied to S0 (age 1)", "is-minor");
+    },
+    function(){ eden[0]=true; renderEden(); flash([edenRegion]); addLog("new Order() &rarr; Eden", null); },
+    function(){ eden[1]=true; renderEden(); flash([edenRegion]); addLog("new byte[2048]() &rarr; Eden", null); },
+    function(){ eden[2]=true; renderEden(); flash([edenRegion]); addLog("new Connection() &rarr; Eden", null); },
+    function(){ eden[3]=true; renderEden(); flash([edenRegion]); addLog("new Response() &rarr; Eden <strong>(4/4, full)</strong>", null); },
+    function(){
+      eden = [false,false,false,false]; survivor[1] = {age:1}; survivor[0].age = 2;
+      renderEden(); renderSurvivor(); flash([edenRegion,survivorRegion]);
+      addLog("Eden full &rarr; <strong>Minor GC #2</strong>: 3 collected, 1 new survivor copied to S1 (age 1); existing survivor aged to 2", "is-minor");
+    },
+    function(){
+      survivor[0] = null; old[old.indexOf(false)] = true;
+      renderSurvivor(); renderOld(); flash([survivorRegion,oldRegion]);
+      addLog("Object aged to 2 generations in Survivor &rarr; <strong>promoted to Old Gen</strong> (3/4)", "is-promo");
+    },
+    function(){
+      old[old.indexOf(false)] = true;
+      renderOld(); flash([oldRegion]);
+      addLog("Meanwhile, another long-lived cache entry also crosses the age threshold &rarr; Old Gen <strong>(4/4, full)</strong>", "is-promo");
+    },
+    function(){
+      old = [true,true,false,false];
+      renderOld(); flash([oldRegion]);
+      addLog("Old Gen full &rarr; <strong>Major GC</strong> (stop-the-world): 2 unreachable objects collected, heap compacted to 2/4", "is-major");
+    },
+    function(){
+      flash([]);
+      addLog("Cycle complete &mdash; this is exactly why GC tuning focuses on Eden size: the fewer objects that survive long enough to reach Old Gen, the rarer these expensive stop-the-world Major GCs become.", null);
+    }
+  ];
+
+  var i = 0, timer = null;
+  function resetState(){
+    eden = [false,false,false,false];
+    survivor = [null,null];
+    old = [true,true,false,false];
+    renderEden(); renderSurvivor(); renderOld();
+    flash([]);
+    log.innerHTML = "";
+    i = 0;
+  }
+
+  playBtn.addEventListener("click", function(){
+    if(timer) return;
+    resetState();
+    playBtn.disabled = true;
+    timer = setInterval(function(){
+      steps[i]();
+      i++;
+      if(i >= steps.length){
+        clearInterval(timer);
+        timer = null;
+        playBtn.disabled = false;
+      }
+    }, 900);
+  });
+
+  resetState();
+})();
 
 function initReveal(){
   var els=document.querySelectorAll(".reveal");
