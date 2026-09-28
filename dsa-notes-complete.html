@@ -266,6 +266,7 @@ tbody tr:hover{background:var(--surface-2);}
 .arr-play,.llc-play{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-mono);font-size:.72rem;font-weight:700;letter-spacing:.02em;background:var(--surface-2);color:var(--ink-soft);border:none;padding:.5rem .95rem;border-radius:999px;cursor:pointer;transition:background var(--dur-1) var(--ease), color var(--dur-1) var(--ease);}
 .arr-play:hover,.llc-play:hover{background:var(--tint);color:var(--accent-ink);}
 .arr-play:disabled,.llc-play:disabled{opacity:.55;cursor:default;}
+.arr-play.is-playing,.llc-play.is-playing{background:var(--accent);color:#fff;}
 .arr-play svg,.llc-play svg{width:13px;height:13px;}
 .arr-status{font-family:var(--font-mono);font-size:.78rem;color:var(--ink-soft);background:var(--surface-2);padding:.5rem 1rem;border-radius:999px;}
 .arr-status strong{color:var(--ink);}
@@ -3503,9 +3504,9 @@ document.addEventListener("click",function(e){
     { l:2, r:6, msg: "a[2] + a[6] = 4 + 11 = 15 &rarr; <strong>match found</strong>", found:true }
   ];
 
-  var i = 0, timer = null;
+  var i = 0, timer = null, started = false;
+  var playIcon = '<path d="M8 5v14l11-7z"/>', pauseIcon = '<rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/>';
   function reset(){
-    if(timer){ clearInterval(timer); timer = null; }
     arrEl.querySelectorAll(".arr__cell").forEach(function(c){ c.classList.remove("is-found"); });
     clearPtrs();
     log.innerHTML = "";
@@ -3513,11 +3514,11 @@ document.addEventListener("click",function(e){
     status.textContent = "left = 0, right = 6 — press play";
     i = 0;
   }
-
-  playBtn.addEventListener("click", function(){
-    if(timer) return;
-    reset();
-    playBtn.disabled = true;
+  function start(){
+    if(!started || i >= states.length){ reset(); started = true; }
+    playBtn.classList.add("is-playing");
+    playBtn.querySelector("svg").innerHTML = pauseIcon;
+    playBtn.querySelector("span").textContent = "Pause";
     timer = setInterval(function(){
       var s = states[i];
       clearPtrs();
@@ -3532,12 +3533,18 @@ document.addEventListener("click",function(e){
         status.textContent = "found: a[" + s.l + "] + a[" + s.r + "] = 15";
       }
       i++;
-      if(i >= states.length){
-        clearInterval(timer);
-        timer = null;
-        playBtn.disabled = false;
-      }
+      if(i >= states.length) stop();
     }, 900);
+  }
+  function stop(){
+    if(timer){ clearInterval(timer); timer = null; }
+    playBtn.classList.remove("is-playing");
+    playBtn.querySelector("svg").innerHTML = playIcon;
+    playBtn.querySelector("span").textContent = (i >= states.length) ? "Find a pair summing to 15" : "Resume";
+  }
+
+  playBtn.addEventListener("click", function(){
+    if(timer){ stop(); } else { start(); }
   });
 })();
 
@@ -3573,32 +3580,38 @@ document.addEventListener("click",function(e){
     { slow:4, fast:4, msg: "slow steps 3&rarr;4. fast steps 2&rarr;3&rarr;4 &mdash; <strong>same node as slow, cycle confirmed</strong>.", found:true }
   ];
 
-  var i = 0, timer = null;
+  var i = 0, timer = null, started = false;
+  var playIcon = '<path d="M8 5v14l11-7z"/>', pauseIcon = '<rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/>';
   function reset(){
-    if(timer){ clearInterval(timer); timer = null; }
     llc.querySelectorAll(".llc__node").forEach(function(n){ n.classList.remove("is-meet"); });
     clearPtrs();
     nodeEl(0).querySelector(".llc__ptrs").innerHTML = '<span class="llc__ptr">slow</span><span class="llc__ptr is-fast">fast</span>';
     log.innerHTML = "";
     i = 0;
   }
-
-  playBtn.addEventListener("click", function(){
-    if(timer) return;
-    reset();
-    playBtn.disabled = true;
+  function start(){
+    if(!started || i >= states.length){ reset(); started = true; }
+    playBtn.classList.add("is-playing");
+    playBtn.querySelector("svg").innerHTML = pauseIcon;
+    playBtn.querySelector("span").textContent = "Pause";
     timer = setInterval(function(){
       var s = states[i];
       placePtrs(s.slow, s.fast);
       addLog(s.msg, s.found ? "is-found" : null);
       if(s.found){ nodeEl(s.slow).classList.add("is-meet"); }
       i++;
-      if(i >= states.length){
-        clearInterval(timer);
-        timer = null;
-        playBtn.disabled = false;
-      }
+      if(i >= states.length) stop();
     }, 1000);
+  }
+  function stop(){
+    if(timer){ clearInterval(timer); timer = null; }
+    playBtn.classList.remove("is-playing");
+    playBtn.querySelector("svg").innerHTML = playIcon;
+    playBtn.querySelector("span").textContent = (i >= states.length) ? "Race slow & fast through the cycle" : "Resume";
+  }
+
+  playBtn.addEventListener("click", function(){
+    if(timer){ stop(); } else { start(); }
   });
 
   reset();
@@ -3640,9 +3653,9 @@ document.addEventListener("click",function(e){
     { final:true, swap:[4,6], msg: "partition done &rarr; swap pivot into place: a[4]&harr;a[6] &rarr; pivot settles at index 4" }
   ];
 
-  var i = 0, timer = null;
+  var i = 0, timer = null, started = false;
+  var playIcon = '<path d="M8 5v14l11-7z"/>', pauseIcon = '<rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/>';
   function reset(){
-    if(timer){ clearInterval(timer); timer = null; }
     arrEl.querySelectorAll(".arr__cell").forEach(function(c, idx){
       c.classList.remove("is-swap","is-found","is-pivot");
       setVal(idx, initial[idx]);
@@ -3654,11 +3667,11 @@ document.addEventListener("click",function(e){
     status.textContent = "pivot = a[6] = 7 — press play";
     i = 0;
   }
-
-  playBtn.addEventListener("click", function(){
-    if(timer) return;
-    reset();
-    playBtn.disabled = true;
+  function start(){
+    if(!started || i >= steps.length){ reset(); started = true; }
+    playBtn.classList.add("is-playing");
+    playBtn.querySelector("svg").innerHTML = pauseIcon;
+    playBtn.querySelector("span").textContent = "Pause";
     timer = setInterval(function(){
       var s = steps[i];
       if(s.swap && s.swap[0] !== s.swap[1]){
@@ -3682,12 +3695,18 @@ document.addEventListener("click",function(e){
       }
       addLog(s.msg, s.final ? "is-found" : null);
       i++;
-      if(i >= steps.length){
-        clearInterval(timer);
-        timer = null;
-        playBtn.disabled = false;
-      }
+      if(i >= steps.length) stop();
     }, 900);
+  }
+  function stop(){
+    if(timer){ clearInterval(timer); timer = null; }
+    playBtn.classList.remove("is-playing");
+    playBtn.querySelector("svg").innerHTML = playIcon;
+    playBtn.querySelector("span").textContent = (i >= steps.length) ? "Partition around the pivot" : "Resume";
+  }
+
+  playBtn.addEventListener("click", function(){
+    if(timer){ stop(); } else { start(); }
   });
 
   reset();
@@ -3716,9 +3735,9 @@ document.addEventListener("click",function(e){
     { low:5, high:6, mid:5, eliminate:[],           msg: "low=5, high=6 &rarr; mid=5, a[5]=23 &rarr; <strong>found!</strong>", found:5 }
   ];
 
-  var i = 0, timer = null;
+  var i = 0, timer = null, started = false;
+  var playIcon = '<path d="M8 5v14l11-7z"/>', pauseIcon = '<rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/>';
   function reset(){
-    if(timer){ clearInterval(timer); timer = null; }
     arrEl.querySelectorAll(".arr__cell").forEach(function(c){ c.classList.remove("is-eliminated","is-found"); });
     clearPtrs();
     log.innerHTML = "";
@@ -3726,11 +3745,19 @@ document.addEventListener("click",function(e){
     status.textContent = "low = 0, high = 9 — press play";
     i = 0;
   }
+  function stop(){
+    if(timer){ clearInterval(timer); timer = null; }
+    playBtn.classList.remove("is-playing");
+    playBtn.querySelector("svg").innerHTML = playIcon;
+    playBtn.querySelector("span").textContent = (i >= states.length) ? "Search for 23" : "Resume";
+  }
 
   playBtn.addEventListener("click", function(){
-    if(timer) return;
-    reset();
-    playBtn.disabled = true;
+    if(timer){ stop(); return; }
+    if(!started || i >= states.length){ reset(); started = true; }
+    playBtn.classList.add("is-playing");
+    playBtn.querySelector("svg").innerHTML = pauseIcon;
+    playBtn.querySelector("span").textContent = "Pause";
     timer = setInterval(function(){
       var s = states[i];
       clearPtrs();
@@ -3747,11 +3774,7 @@ document.addEventListener("click",function(e){
         status.textContent = "found 23 at index " + s.found;
       }
       i++;
-      if(i >= states.length){
-        clearInterval(timer);
-        timer = null;
-        playBtn.disabled = false;
-      }
+      if(i >= states.length) stop();
     }, 1000);
   });
 })();

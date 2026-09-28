@@ -414,6 +414,7 @@ noscript .reveal{opacity:1;}
 .qsim-play{display:inline-flex;align-items:center;gap:.45rem;font-family:var(--font-mono);font-size:.74rem;font-weight:700;background:var(--danger-tint);color:var(--danger);border:none;padding:.55rem 1rem;border-radius:999px;cursor:pointer;transition:transform var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);}
 .qsim-play--fix{background:var(--tint);color:var(--accent-ink);}
 .qsim-play:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm);}
+.qsim-play.is-playing{background:var(--accent);color:#fff;}
 .qsim-play:disabled{opacity:.55;cursor:default;transform:none;box-shadow:none;}
 .qsim-play svg{width:12px;height:12px;}
 .qsim-counter{margin-left:auto;font-family:var(--font-mono);font-size:.78rem;color:var(--ink-soft);background:var(--surface-2);padding:.4rem .9rem;border-radius:999px;}
@@ -2222,10 +2223,11 @@ document.addEventListener("click",function(e){
   var counterEl = document.getElementById("qsimCounter");
   var n1Btn = document.getElementById("nplus1Play");
   var fixBtn = document.getElementById("fetchFixPlay");
-  var timer = null;
+  var timer = null, fixTimeout = null;
+  var orders = 5, i = 0, n1Started = false;
+  var playIcon = '<path d="M8 5v14l11-7z"/>', pauseIcon = '<rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/>';
 
   function clearLog(){
-    if(timer){ clearInterval(timer); timer = null; }
     log.innerHTML = "";
     countEl.textContent = "0";
     counterEl.classList.remove("is-bad","is-good");
@@ -2246,37 +2248,51 @@ document.addEventListener("click",function(e){
     log.appendChild(row);
   }
 
-  function setButtons(disabled){
-    n1Btn.disabled = disabled;
-    fixBtn.disabled = disabled;
+  function stopN1(){
+    if(timer){ clearInterval(timer); timer = null; }
+    n1Btn.classList.remove("is-playing");
+    n1Btn.querySelector("svg").innerHTML = playIcon;
+    n1Btn.querySelector("span").textContent = (!n1Started || i > orders) ? "Run the code above" : "Resume";
   }
 
-  n1Btn.addEventListener("click", function(){
-    clearLog();
-    setButtons(true);
-    counterEl.classList.add("is-bad");
-    var orders = 5, i = 0;
-    addRow(1, "SELECT * FROM orders &rarr; 5 rows");
+  function startN1(){
+    if(timer) return;
+    if(fixTimeout){ clearTimeout(fixTimeout); fixTimeout = null; }
+    if(!n1Started || i > orders){
+      clearLog();
+      counterEl.classList.add("is-bad");
+      addRow(1, "SELECT * FROM orders &rarr; 5 rows");
+      i = 0;
+      n1Started = true;
+    }
+    n1Btn.classList.add("is-playing");
+    n1Btn.querySelector("svg").innerHTML = pauseIcon;
+    n1Btn.querySelector("span").textContent = "Pause";
     timer = setInterval(function(){
       i++;
       if(i <= orders){
         addRow(1 + i, "SELECT * FROM order_lines WHERE order_id = " + i + " <span style=\"opacity:.6\">(lazy load for order " + i + ")</span>");
       } else {
-        clearInterval(timer); timer = null;
         addSummary((1 + orders) + " queries for 5 orders — and it only gets worse as the order count grows.", false);
-        setButtons(false);
+        stopN1();
       }
     }, 450);
+  }
+
+  n1Btn.addEventListener("click", function(){
+    if(timer){ stopN1(); } else { startN1(); }
   });
 
   fixBtn.addEventListener("click", function(){
+    stopN1();
+    n1Started = false;
+    if(fixTimeout){ clearTimeout(fixTimeout); fixTimeout = null; }
     clearLog();
-    setButtons(true);
     counterEl.classList.add("is-good");
-    setTimeout(function(){
+    fixTimeout = setTimeout(function(){
       addRow(1, "SELECT o.*, l.* FROM orders o JOIN order_lines l ON l.order_id = o.id &rarr; all 5 orders and their lines, in one round-trip");
       addSummary("1 query, regardless of how many orders there are.", true);
-      setButtons(false);
+      fixTimeout = null;
     }, 450);
   });
 })();

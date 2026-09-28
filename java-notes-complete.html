@@ -312,6 +312,7 @@ tbody tr:hover{background:var(--surface-2);}
 .gcsim-controls{display:flex;align-items:center;justify-content:flex-end;}
 .gcsim-play{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-mono);font-size:.72rem;font-weight:700;letter-spacing:.03em;background:var(--surface-2);color:var(--ink-soft);border:none;padding:.4rem .85rem;border-radius:999px;cursor:pointer;transition:background var(--dur-1) var(--ease), color var(--dur-1) var(--ease);}
 .gcsim-play:hover{background:var(--tint);color:var(--accent-ink);}
+.gcsim-play.is-playing{background:var(--accent);color:#fff;}
 .gcsim-play:disabled{opacity:.55;cursor:default;}
 .gcsim-play svg{width:13px;height:13px;}
 .gcsim__regions{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;}
@@ -349,6 +350,7 @@ tbody tr:hover{background:var(--surface-2);}
 .hmsim-controls{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.7rem;margin-bottom:.9rem;}
 .hmsim-play{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-mono);font-size:.72rem;font-weight:700;letter-spacing:.03em;background:var(--surface-2);color:var(--ink-soft);border:none;padding:.4rem .85rem;border-radius:999px;cursor:pointer;transition:background var(--dur-1) var(--ease), color var(--dur-1) var(--ease);}
 .hmsim-play:hover{background:var(--tint);color:var(--accent-ink);}
+.hmsim-play.is-playing{background:var(--accent);color:#fff;}
 .hmsim-play:disabled{opacity:.55;cursor:default;}
 .hmsim-play svg{width:13px;height:13px;}
 .hmsim-counter{font-family:var(--font-mono);font-size:.76rem;color:var(--muted);}
@@ -3112,30 +3114,42 @@ document.addEventListener("click",function(e){
     detail.innerHTML = '<div class="tlc__detail-head">' + d.title + '</div><p class="tlc__detail-body">' + d.body + '</p>';
   }
 
+  var sequence = ["new","runnable","timed_waiting","runnable","blocked","runnable","waiting","runnable","terminated"];
+  var seqIdx = 0, playTimer = null, started = false;
+  var playIcon = '<path d="M8 5v14l11-7z"/>', pauseIcon = '<rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/>';
+
+  function stopPlay(){
+    if(playTimer){ clearInterval(playTimer); playTimer = null; }
+    playBtn.classList.remove("is-playing");
+    playBtn.querySelector("svg").innerHTML = playIcon;
+    playBtn.querySelector("span").textContent = (!started || sequence[seqIdx] === "terminated") ? "Play a realistic lifecycle" : "Resume";
+  }
+  function startPlay(){
+    if(!started || sequence[seqIdx] === "terminated"){
+      seqIdx = 0;
+      setState(sequence[0]);
+      started = true;
+    }
+    playBtn.classList.add("is-playing");
+    playBtn.querySelector("svg").innerHTML = pauseIcon;
+    playBtn.querySelector("span").textContent = "Pause";
+    playTimer = setInterval(function(){
+      seqIdx++;
+      setState(sequence[seqIdx]);
+      if(sequence[seqIdx] === "terminated") stopPlay();
+    }, 850);
+  }
+
   tlc.querySelectorAll(".tlc__state").forEach(function(btn){
     btn.addEventListener("click", function(){
       stopPlay();
+      started = false;
       setState(btn.dataset.state);
     });
   });
 
-  var sequence = ["new","runnable","timed_waiting","runnable","blocked","runnable","waiting","runnable","terminated"];
-  var seqIdx = 0, playTimer = null;
-  function stopPlay(){
-    if(playTimer){ clearInterval(playTimer); playTimer = null; playBtn.classList.remove("is-playing"); playBtn.querySelector("span").textContent = "Play a realistic lifecycle"; }
-  }
   playBtn.addEventListener("click", function(){
-    if(playTimer){ stopPlay(); return; }
-    seqIdx = 0;
-    setState(sequence[0]);
-    playBtn.classList.add("is-playing");
-    playBtn.querySelector("span").textContent = "Playing…";
-    playTimer = setInterval(function(){
-      seqIdx++;
-      if(seqIdx >= sequence.length){ stopPlay(); return; }
-      setState(sequence[seqIdx]);
-      if(sequence[seqIdx] === "terminated") stopPlay();
-    }, 850);
+    if(playTimer){ stopPlay(); } else { startPlay(); }
   });
 
   setState("new");
@@ -3189,8 +3203,9 @@ document.addEventListener("click",function(e){
     }
   }
 
+  var started = false;
+  var playIcon = '<path d="M8 5v14l11-7z"/>', pauseIcon = '<rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/>';
   function reset(){
-    if(timer){ clearInterval(timer); timer = null; }
     buckets.querySelectorAll(".soft-bucket").forEach(function(b){
       var idx = b.dataset.idx;
       b.className = "soft-bucket is-empty";
@@ -3200,21 +3215,27 @@ document.addEventListener("click",function(e){
     countEl.textContent = "0";
     i = 0;
   }
-
-  playBtn.addEventListener("click", function(){
-    if(timer) return;
-    reset();
-    playBtn.disabled = true;
+  function start(){
+    if(!started || i >= steps.length){ reset(); started = true; }
+    playBtn.classList.add("is-playing");
+    playBtn.querySelector("svg").innerHTML = pauseIcon;
+    playBtn.querySelector("span").textContent = "Pause";
     timer = setInterval(function(){
       applyStep(steps[i]);
       i++;
       countEl.textContent = String(i);
-      if(i >= steps.length){
-        clearInterval(timer);
-        timer = null;
-        playBtn.disabled = false;
-      }
+      if(i >= steps.length) stop();
     }, 480);
+  }
+  function stop(){
+    if(timer){ clearInterval(timer); timer = null; }
+    playBtn.classList.remove("is-playing");
+    playBtn.querySelector("svg").innerHTML = playIcon;
+    playBtn.querySelector("span").textContent = (i >= steps.length) ? "Insert 8 keys, one by one" : "Resume";
+  }
+
+  playBtn.addEventListener("click", function(){
+    if(timer){ stop(); } else { start(); }
   });
 })();
 
@@ -3307,7 +3328,8 @@ document.addEventListener("click",function(e){
     }
   ];
 
-  var i = 0, timer = null;
+  var i = 0, timer = null, started = false;
+  var playIcon = '<path d="M8 5v14l11-7z"/>', pauseIcon = '<rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/>';
   function resetState(){
     eden = [false,false,false,false];
     survivor = [null,null];
@@ -3317,20 +3339,26 @@ document.addEventListener("click",function(e){
     log.innerHTML = "";
     i = 0;
   }
-
-  playBtn.addEventListener("click", function(){
-    if(timer) return;
-    resetState();
-    playBtn.disabled = true;
+  function start(){
+    if(!started || i >= steps.length){ resetState(); started = true; }
+    playBtn.classList.add("is-playing");
+    playBtn.querySelector("svg").innerHTML = pauseIcon;
+    playBtn.querySelector("span").textContent = "Pause";
     timer = setInterval(function(){
       steps[i]();
       i++;
-      if(i >= steps.length){
-        clearInterval(timer);
-        timer = null;
-        playBtn.disabled = false;
-      }
+      if(i >= steps.length) stop();
     }, 900);
+  }
+  function stop(){
+    if(timer){ clearInterval(timer); timer = null; }
+    playBtn.classList.remove("is-playing");
+    playBtn.querySelector("svg").innerHTML = playIcon;
+    playBtn.querySelector("span").textContent = (i >= steps.length) ? "Run allocation & GC cycle" : "Resume";
+  }
+
+  playBtn.addEventListener("click", function(){
+    if(timer){ stop(); } else { start(); }
   });
 
   resetState();
