@@ -407,6 +407,294 @@ noscript .reveal{opacity:1;}
 .site-search mark{background:var(--tint-strong);color:inherit;border-radius:3px;padding:0 .1em;}
 @media (max-width:820px){.site-search{order:3;flex-basis:100%;max-width:none;margin:.6rem 0 0;}}
 [id]{scroll-margin-top:90px;}
+
+/* ============================================================
+   Interactive Docker diagrams
+   ============================================================ */
+.diagram-panel.is-live::after{display:none;}
+.dk-wrap{display:flex;flex-direction:column;gap:1rem;}
+.dk-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.7rem;}
+.dk-toggle{display:flex;gap:.45rem;flex-wrap:wrap;}
+.dk-toggle__btn{cursor:pointer;font-family:var(--font-display);font-size:.8rem;font-weight:700;padding:.5rem .95rem;border:none;border-radius:999px;background:var(--surface-2);color:var(--ink-soft);transition:background var(--dur-1) var(--ease), color var(--dur-1) var(--ease);}
+.dk-toggle__btn:hover{background:var(--tint);color:var(--accent-ink);}
+.dk-toggle__btn.is-active{background:var(--accent);color:#fff;}
+.dk-play{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-mono);font-size:.74rem;font-weight:700;letter-spacing:.02em;background:var(--surface-2);color:var(--ink-soft);border:none;padding:.55rem 1rem;border-radius:999px;cursor:pointer;transition:background var(--dur-1) var(--ease), color var(--dur-1) var(--ease);}
+.dk-play:hover{background:var(--tint);color:var(--accent-ink);}
+.dk-play.is-playing{background:var(--accent);color:#fff;}
+.dk-play svg{width:13px;height:13px;}
+.dk-status{font-size:.9rem;font-weight:600;text-align:center;padding:.65rem 1rem;border-radius:var(--r-md);background:var(--surface-2);color:var(--ink-soft);transition:background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);}
+.dk-status.is-good{background:var(--success-tint);color:var(--success);}
+.dk-status.is-warn{background:var(--warning-tint);color:var(--warning);}
+.dk-status.is-bad{background:var(--danger-tint);color:var(--danger);}
+.dk-note{font-size:.72rem;color:var(--muted);font-family:var(--font-mono);}
+.dk-note.is-bad{color:var(--danger);font-weight:700;}
+@keyframes dkPop{0%{transform:scale(.6);opacity:0;}70%{transform:scale(1.08);opacity:1;}100%{transform:scale(1);}}
+@keyframes dkFlash{0%{box-shadow:0 0 0 0 rgba(14,143,115,.5);}100%{box-shadow:0 0 0 10px rgba(14,143,115,0);}}
+
+/* -- ch1: VM vs container race -- */
+.dkb{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1rem;align-items:start;}
+.dkb__col{background:var(--surface-2);border-radius:var(--r-lg);padding:1rem;display:flex;flex-direction:column;gap:.5rem;}
+.dkb__title{display:flex;align-items:baseline;justify-content:space-between;gap:.5rem;font-weight:800;font-size:.95rem;margin-bottom:.2rem;}
+.dkb__title small{font-family:var(--font-mono);font-size:.62rem;font-weight:600;color:var(--muted);text-align:right;}
+.dkb__apps{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;}
+.dkb__tower{display:flex;flex-direction:column;gap:.25rem;}
+.dkb__app{height:34px;border-radius:8px;background:var(--surface);box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:.64rem;font-weight:700;color:var(--muted);transition:background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);}
+.dkb__app.is-up{background:var(--success);color:#fff;}
+.dkb__os{height:60px;border-radius:8px;background:var(--surface);box-shadow:var(--shadow-sm);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:.58rem;font-weight:700;color:var(--ink-soft);text-align:center;line-height:1.25;padding:0 .25rem;}
+.dkb__os i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--warning-tint);transition:width .8s var(--ease), background var(--dur-2) var(--ease);}
+.dkb__os span{position:relative;}
+.dkb__os.is-up i{background:var(--tint-strong);}
+.dkb__layer{border-radius:8px;padding:.45rem .7rem;font-family:var(--font-mono);font-size:.68rem;font-weight:700;text-align:center;color:var(--ink-soft);background:var(--surface);box-shadow:var(--shadow-sm);}
+.dkb__layer--kernel{background:var(--tint-strong);color:var(--accent-ink);}
+.dkb__layer--hyp{background:var(--warning-tint);color:var(--warning);}
+.dkb__meter{display:flex;flex-direction:column;gap:.3rem;margin-top:.3rem;}
+.dkb__row{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:.72rem;color:var(--ink-soft);}
+.dkb__row b{color:var(--ink);}
+.dkb__track{height:8px;border-radius:999px;background:var(--surface);overflow:hidden;}
+.dkb__fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-strong));transition:width .8s var(--ease);}
+.dkb__fill--vm{background:linear-gradient(90deg,color-mix(in srgb,var(--warning) 55%,var(--surface)),var(--warning));}
+
+/* -- ch1: namespace switches -- */
+.dkn{display:flex;flex-direction:column;gap:.8rem;}
+.dkn__top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.7rem;}
+.dkn__score{font-family:var(--font-mono);font-size:.78rem;font-weight:700;padding:.45rem .9rem;border-radius:999px;background:var(--tint);color:var(--accent-ink);transition:background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);}
+.dkn__score.is-off{background:var(--danger-tint);color:var(--danger);}
+.dkn__score.is-mixed{background:var(--warning-tint);color:var(--warning);}
+.dkn__grid{display:grid;grid-template-columns:minmax(170px,.8fr) 1fr 1fr;gap:.45rem .6rem;align-items:stretch;}
+.dkn__row{display:contents;}
+.dkn__hd{font-family:var(--font-mono);font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:0 .3rem;}
+.dkn__sw{display:flex;align-items:center;gap:.6rem;text-align:left;border:none;cursor:pointer;background:var(--surface-2);border-radius:var(--r-md);padding:.55rem .7rem;font-family:inherit;color:var(--ink);transition:background var(--dur-1) var(--ease);}
+.dkn__sw:hover{background:var(--tint);}
+.dkn__knob{flex:none;width:34px;height:20px;border-radius:999px;background:var(--border-strong);position:relative;transition:background var(--dur-2) var(--ease);}
+.dkn__knob::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:var(--shadow-sm);transition:transform var(--dur-2) var(--ease);}
+.dkn__row.is-on .dkn__knob{background:var(--accent);}
+.dkn__row.is-on .dkn__knob::after{transform:translateX(14px);}
+.dkn__swtxt{display:flex;flex-direction:column;line-height:1.15;}
+.dkn__swtxt b{font-family:var(--font-mono);font-size:.78rem;}
+.dkn__swtxt em{font-style:normal;font-size:.7rem;color:var(--muted);}
+.dkn__cell{border-radius:var(--r-md);padding:.55rem .75rem;font-size:.8rem;line-height:1.35;display:flex;align-items:center;transition:background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);}
+.dkn__cell--host{background:var(--surface-2);color:var(--ink-soft);}
+.dkn__cell--ct{background:var(--tint);color:var(--accent-ink);}
+.dkn__row.is-shared .dkn__cell--ct{background:var(--danger-tint);color:var(--danger);}
+@media (max-width:720px){.dkn__grid{grid-template-columns:1fr 1fr;}.dkn__sw{grid-column:1 / -1;margin-top:.4rem;}.dkn__hd:first-child{display:none;}}
+
+/* -- ch2: build cache -- */
+.dkc{display:flex;flex-direction:column;gap:.9rem;}
+.dkc__ask{display:flex;flex-direction:column;gap:.45rem;font-size:.8rem;font-weight:700;color:var(--ink-soft);}
+.dkc__stack{display:flex;flex-direction:column;gap:.35rem;}
+.dkc__card{display:flex;align-items:center;justify-content:space-between;gap:.8rem;flex-wrap:wrap;padding:.6rem .9rem;border-radius:var(--r-md);background:var(--success-tint);color:var(--success);border:2px solid transparent;font-family:var(--font-mono);font-size:.8rem;font-weight:700;transition:background .35s var(--ease), color .35s var(--ease), border-color .35s var(--ease);}
+.dkc__card code{background:none;padding:0;color:inherit;font-size:inherit;font-weight:700;}
+.dkc__tag{flex:none;font-size:.66rem;letter-spacing:.03em;}
+.dkc__card.is-rebuilt{background:var(--warning-tint);color:var(--warning);}
+.dkc__card.is-origin{background:var(--danger-tint);color:var(--danger);border-color:var(--danger);}
+.dkc__total{display:flex;align-items:baseline;gap:.7rem;flex-wrap:wrap;justify-content:center;padding:.4rem;}
+.dkc__total b{font-family:var(--font-display);font-size:1.9rem;line-height:1;color:var(--success);transition:color var(--dur-2) var(--ease);}
+.dkc__total b.is-bad{color:var(--danger);}
+.dkc__total span{font-size:.8rem;color:var(--muted);font-weight:600;}
+
+/* -- ch3: multi-stage -- */
+.dkm{display:flex;flex-direction:column;gap:.9rem;}
+.dkm__row{display:grid;grid-template-columns:1fr auto 1fr;gap:.8rem;align-items:stretch;}
+.dkm__stage{background:var(--surface-2);border-radius:var(--r-lg);padding:.9rem 1rem;display:flex;flex-direction:column;gap:.5rem;transition:opacity var(--dur-3) var(--ease), filter var(--dur-3) var(--ease);}
+.dkm__stage.is-discarded{opacity:.35;filter:grayscale(1);}
+.dkm__title{display:flex;flex-direction:column;font-weight:800;font-size:.9rem;}
+.dkm__title small{font-family:var(--font-mono);font-size:.62rem;font-weight:600;color:var(--muted);}
+.dkm__chips{display:flex;flex-direction:column;gap:.3rem;min-height:128px;}
+.dkm__chip{display:none;justify-content:space-between;gap:.5rem;padding:.4rem .65rem;border-radius:8px;background:var(--surface);box-shadow:var(--shadow-sm);font-family:var(--font-mono);font-size:.7rem;font-weight:600;color:var(--ink-soft);}
+.dkm__chip.is-in{display:flex;animation:dkPop .4s var(--ease);}
+.dkm__chip b{color:var(--ink);}
+.dkm__chip--heavy{background:var(--danger-tint);color:var(--danger);}
+.dkm__chip--heavy b{color:var(--danger);}
+.dkm__chip--keep{background:var(--tint-strong);color:var(--accent-ink);}
+.dkm__chip--keep b{color:var(--accent-ink);}
+.dkm__arrow{align-self:center;display:flex;flex-direction:column;align-items:center;gap:.3rem;font-family:var(--font-mono);font-size:.58rem;font-weight:700;color:var(--muted);text-align:center;max-width:96px;transition:color var(--dur-2) var(--ease);}
+.dkm__arrow svg{width:36px;height:20px;}
+.dkm__arrow.is-on{color:var(--accent);}
+.dkm__ship{display:flex;flex-direction:column;gap:.35rem;}
+.dkm__shiprow{display:flex;align-items:baseline;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--ink-soft);}
+.dkm__shiprow b{font-family:var(--font-display);font-size:1.5rem;color:var(--ink);}
+.dkm__track{height:12px;border-radius:999px;background:var(--surface-2);overflow:hidden;}
+.dkm__fill{height:100%;width:0;border-radius:999px;background:var(--danger);transition:width .7s var(--ease), background .4s var(--ease);}
+.dkm__fill.is-small{background:var(--success);}
+.dkm--single .dkm__row{grid-template-columns:1fr;}
+.dkm--single .dkm__arrow,.dkm--single .dkm__stage--final{display:none;}
+@media (max-width:640px){.dkm__row{grid-template-columns:1fr;}.dkm__arrow svg{transform:rotate(90deg);}}
+
+/* -- ch3: docker stop / SIGTERM -- */
+.dks__stage{position:relative;background:var(--surface-2);border-radius:var(--r-lg);padding:1.1rem 1.2rem;display:flex;flex-direction:column;gap:.7rem;min-height:150px;}
+.dks__tree{display:flex;flex-direction:column;gap:.55rem;align-items:flex-start;}
+.dks__proc{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;padding:.55rem .8rem;border-radius:var(--r-md);background:var(--surface);box-shadow:var(--shadow-sm);font-family:var(--font-mono);font-size:.76rem;border:2px solid transparent;transition:border-color var(--dur-2) var(--ease), background var(--dur-2) var(--ease), color var(--dur-2) var(--ease), opacity var(--dur-2) var(--ease);}
+.dks__proc b{color:var(--accent-ink);}
+.dks__proc--child{margin-left:1.8rem;position:relative;}
+.dks__proc--child::before{content:"";position:absolute;left:-1.1rem;top:-.6rem;height:1.3rem;width:.9rem;border-left:2px solid var(--border-strong);border-bottom:2px solid var(--border-strong);border-bottom-left-radius:8px;}
+.dks__proc.is-hit{border-color:var(--accent);}
+.dks__proc.is-dead{background:var(--danger-tint);color:var(--danger);}
+.dks__proc.is-dead b{color:var(--danger);}
+.dks__proc.is-clean{background:var(--success-tint);color:var(--success);}
+.dks__proc.is-clean b{color:var(--success);}
+.dks__reqs{display:flex;align-items:center;gap:.3rem;}
+.dks__req{width:14px;height:14px;border-radius:50%;background:var(--accent);transition:background var(--dur-2) var(--ease);}
+.dks__req.is-busy{animation:dksPulse 1s ease-in-out infinite;}
+.dks__req.is-done{background:var(--success);}
+.dks__req.is-dropped{background:var(--danger);}
+@keyframes dksPulse{50%{opacity:.35;}}
+.dks__sig{position:absolute;top:1rem;right:1.2rem;font-family:var(--font-mono);font-size:.72rem;font-weight:800;padding:.3rem .65rem;border-radius:8px;background:var(--warning);color:#fff;opacity:0;transform:translateY(-6px);transition:opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease), background var(--dur-2) var(--ease);}
+.dks__sig.is-on{opacity:1;transform:none;}
+.dks__sig.is-kill{background:var(--danger);}
+.dks__sig.is-ok{background:var(--success);}
+.dks__clock{display:flex;align-items:baseline;gap:.5rem;font-family:var(--font-mono);font-size:.74rem;color:var(--muted);}
+.dks__clock b{font-family:var(--font-display);font-size:1.5rem;color:var(--ink);}
+
+/* -- ch4: where does the data live -- */
+.dkv__row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.7rem;align-items:stretch;}
+.dkv__box{background:var(--surface-2);border-radius:var(--r-lg);padding:.8rem;display:flex;flex-direction:column;gap:.5rem;min-height:128px;transition:opacity var(--dur-3) var(--ease), filter var(--dur-3) var(--ease);}
+.dkv__box.is-gone{opacity:.3;filter:grayscale(1);}
+.dkv__box.is-hidden{visibility:hidden;}
+.dkv__box--mid{background:var(--tint);}
+.dkv__box--mid.is-off{background:var(--surface-2);opacity:.6;}
+.dkv__title{font-weight:800;font-size:.84rem;display:flex;flex-direction:column;}
+.dkv__title small{font-family:var(--font-mono);font-size:.6rem;font-weight:600;color:var(--muted);}
+.dkv__slot{border:2px dashed var(--border-strong);border-radius:10px;padding:.5rem;min-height:58px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:.4rem;text-align:center;flex:1;}
+.dkv__file{background:var(--accent);color:#fff;border-radius:8px;padding:.35rem .6rem;font-family:var(--font-mono);font-size:.72rem;font-weight:700;animation:dkPop .4s var(--ease);}
+@media (max-width:640px){.dkv__row{grid-template-columns:1fr;}}
+
+/* -- ch4: service discovery -- */
+.dkd__net{background:var(--surface-2);border-radius:var(--r-lg);padding:.9rem 1rem 1rem;display:flex;flex-direction:column;gap:.8rem;}
+.dkd__netname{font-family:var(--font-mono);font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);}
+.dkd__nodes{position:relative;display:flex;align-items:center;justify-content:space-between;gap:.8rem;}
+.dkd__nodes::before{content:"";position:absolute;left:10%;right:10%;top:50%;border-top:2px dashed var(--border-strong);z-index:0;}
+.dkd__node{position:relative;z-index:1;flex:0 1 210px;background:var(--surface);box-shadow:var(--shadow-sm);border-radius:var(--r-md);padding:.7rem .8rem;font-family:var(--font-mono);font-size:.78rem;font-weight:700;display:flex;flex-direction:column;gap:.15rem;border:2px solid transparent;transition:border-color var(--dur-2) var(--ease), background var(--dur-2) var(--ease), opacity var(--dur-2) var(--ease);}
+.dkd__node small{font-size:.62rem;font-weight:600;color:var(--muted);}
+.dkd__node.is-hit{border-color:var(--accent);}
+.dkd__node.is-good{background:var(--success-tint);border-color:var(--success);}
+.dkd__node.is-bad{background:var(--danger-tint);border-color:var(--danger);}
+.dkd__dns{position:relative;z-index:1;flex:0 0 auto;text-align:center;font-family:var(--font-mono);font-size:.68rem;font-weight:700;padding:.5rem .7rem;border-radius:var(--r-md);background:var(--tint-strong);color:var(--accent-ink);border:2px solid transparent;transition:opacity var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease), background var(--dur-2) var(--ease);}
+.dkd__dns.is-off{opacity:.35;background:var(--surface);color:var(--muted);text-decoration:line-through;}
+.dkd__dns.is-hit{border-color:var(--accent);}
+.dkd__msg{font-family:var(--font-mono);font-size:.8rem;font-weight:700;text-align:center;padding:.55rem .8rem;border-radius:var(--r-md);background:var(--surface);color:var(--ink-soft);box-shadow:var(--shadow-sm);min-height:2.3rem;}
+.dkd__msg.is-good{color:var(--success);}
+.dkd__msg.is-bad{color:var(--danger);}
+@media (max-width:640px){.dkd__nodes{flex-direction:column;align-items:stretch;}.dkd__nodes::before{display:none;}.dkd__node{flex-basis:auto;}}
+
+/* -- ch5: depends_on timeline -- */
+.dkp__grid{display:grid;grid-template-columns:96px repeat(8,minmax(66px,1fr));gap:.3rem;min-width:620px;}
+.dkp__scroll{overflow-x:auto;padding-bottom:.4rem;}
+.dkp__lab{font-family:var(--font-mono);font-size:.68rem;font-weight:700;color:var(--ink-soft);display:flex;align-items:center;}
+.dkp__t{font-family:var(--font-mono);font-size:.62rem;font-weight:700;color:var(--muted);text-align:center;padding:.15rem 0;border-radius:6px;transition:background var(--dur-1) var(--ease), color var(--dur-1) var(--ease);}
+.dkp__t.is-now{background:var(--accent);color:#fff;}
+.dkp__c{height:44px;border-radius:8px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;text-align:center;font-family:var(--font-mono);font-size:.6rem;font-weight:700;line-height:1.15;color:transparent;transition:background .3s var(--ease), color .3s var(--ease);}
+.dkp__c.is-boot,.dkp__c.is-init{background:var(--warning-tint);color:var(--warning);}
+.dkp__c.is-ready,.dkp__c.is-ok{background:var(--success-tint);color:var(--success);}
+.dkp__c.is-wait{background:var(--surface-2);color:var(--muted);}
+.dkp__c.is-start{background:var(--tint-strong);color:var(--accent-ink);}
+.dkp__c.is-fail{background:var(--danger-tint);color:var(--danger);}
+.dkp__legend{display:flex;gap:.9rem;flex-wrap:wrap;font-size:.72rem;color:var(--muted);font-weight:600;}
+.dkp__legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:.35rem;vertical-align:-1px;box-shadow:inset 0 0 0 1px var(--border-strong);}
+
+/* -- ch6: docker run chain -- */
+.dkr__rowlab{font-family:var(--font-mono);font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:.2rem 0 .35rem;}
+.dkr__strip{display:flex;align-items:stretch;gap:.35rem;flex-wrap:wrap;}
+.dkr__node{cursor:pointer;border:2px solid transparent;font-family:inherit;flex:1 1 110px;min-width:104px;background:var(--surface-2);border-radius:var(--r-md);padding:.6rem .6rem;text-align:center;display:flex;flex-direction:column;gap:.15rem;color:var(--ink-soft);transition:background var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);}
+.dkr__node:hover{background:var(--tint);}
+.dkr__node b{font-family:var(--font-mono);font-size:.78rem;color:var(--ink);}
+.dkr__node span{font-size:.66rem;}
+.dkr__node.is-done{background:var(--tint);color:var(--accent-ink);}
+.dkr__node.is-active{background:var(--tint-strong);border-color:var(--accent);transform:translateY(-2px);}
+.dkr__detail{background:var(--surface-2);border-radius:var(--r-lg);padding:1rem 1.2rem;display:flex;flex-direction:column;gap:.5rem;min-height:92px;}
+.dkr__dtitle{font-family:var(--font-mono);font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-ink);}
+.dkr__dtext{font-size:.92rem;color:var(--ink-soft);margin:0;}
+.dkr__meter{display:flex;align-items:center;gap:.8rem;font-family:var(--font-mono);font-size:.72rem;color:var(--ink-soft);}
+.dkr__meter b{color:var(--ink);min-width:3.4rem;}
+.dkr__track{flex:1;height:8px;border-radius:999px;background:var(--surface);overflow:hidden;}
+.dkr__fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-strong));transition:width .6s var(--ease);}
+
+/* -- ch6: OverlayFS playground -- */
+.dko__actions{display:flex;gap:.45rem;flex-wrap:wrap;}
+.dko__stack{display:flex;flex-direction:column;gap:.45rem;}
+.dko__slab{border-radius:var(--r-md);padding:.6rem .8rem;display:flex;flex-direction:column;gap:.4rem;}
+.dko__slab-t{font-family:var(--font-mono);font-size:.62rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;display:flex;justify-content:space-between;gap:.5rem;}
+.dko__slab-t span{font-weight:600;opacity:.75;text-transform:none;letter-spacing:0;}
+.dko__files{display:flex;flex-wrap:wrap;gap:.35rem;min-height:30px;align-items:center;}
+.dko__slab--merged{background:var(--tint-strong);color:var(--accent-ink);box-shadow:var(--shadow-sm);}
+.dko__slab--upper{background:var(--tint);color:var(--accent-ink);border:2px dashed var(--accent);}
+.dko__slab--lower{background:var(--surface-2);color:var(--ink-soft);}
+.dko__file{font-family:var(--font-mono);font-size:.72rem;font-weight:700;padding:.3rem .55rem;border-radius:8px;background:var(--surface);box-shadow:var(--shadow-sm);display:inline-flex;gap:.4rem;align-items:center;color:var(--ink);transition:opacity var(--dur-2) var(--ease);}
+.dko__file i{font-style:normal;font-size:.58rem;font-weight:700;padding:.08rem .35rem;border-radius:999px;background:var(--surface-2);color:var(--muted);}
+.dko__file.is-up i{background:var(--accent);color:#fff;}
+.dko__file.is-shadow{opacity:.35;}
+.dko__file.is-struck{opacity:.35;text-decoration:line-through;}
+.dko__file.is-wh{background:var(--danger-tint);color:var(--danger);}
+.dko__file.is-flash{animation:dkFlash .9s var(--ease);}
+.dko__empty{font-size:.74rem;color:var(--muted);font-style:italic;}
+
+/* -- ch7: tag vs digest -- */
+.dkt__reg{background:var(--surface-2);border-radius:var(--r-lg);padding:1rem 1.1rem;display:flex;flex-direction:column;gap:.6rem;}
+.dkt__blobs{display:flex;gap:1.4rem;flex-wrap:wrap;min-height:84px;align-items:flex-start;padding-top:.7rem;}
+.dkt__blob{position:relative;min-width:156px;border-radius:var(--r-md);background:var(--surface);box-shadow:var(--shadow-sm);padding:.7rem .8rem .6rem;font-family:var(--font-mono);font-size:.72rem;display:none;flex-direction:column;gap:.15rem;}
+.dkt__blob.is-in{display:flex;animation:dkPop .4s var(--ease);}
+.dkt__blob b{font-size:.8rem;}
+.dkt__blob em{font-style:normal;color:var(--muted);font-size:.64rem;}
+.dkt__blob--a{border-top:3px solid var(--accent);}
+.dkt__blob--b{border-top:3px solid var(--warning);}
+.dkt__sticker{position:absolute;top:-.8rem;right:.6rem;background:var(--accent);color:#fff;font-weight:800;font-size:.66rem;padding:.2rem .5rem;border-radius:6px;animation:dkPop .35s var(--ease);}
+.dkt__envs{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;}
+.dkt__env{background:var(--surface-2);border-radius:var(--r-lg);padding:.8rem 1rem;display:flex;flex-direction:column;gap:.3rem;min-height:86px;}
+.dkt__env b{font-size:.86rem;}
+.dkt__cmd{font-family:var(--font-mono);font-size:.64rem;color:var(--muted);word-break:break-all;}
+.dkt__run{font-family:var(--font-mono);font-size:.78rem;font-weight:800;}
+.dkt__run.is-a{color:var(--accent-ink);}
+.dkt__run.is-b{color:var(--warning);}
+@media (max-width:560px){.dkt__envs{grid-template-columns:1fr;}}
+
+/* -- ch7: push moves only what's missing -- */
+.dkq__grid{display:grid;grid-template-columns:1fr 1fr;gap:.35rem .7rem;align-items:stretch;}
+.dkq__hd{font-family:var(--font-mono);font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:0 .3rem;}
+.dkq__cell{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.55rem .75rem;border-radius:var(--r-md);background:var(--surface-2);font-family:var(--font-mono);font-size:.72rem;font-weight:600;color:var(--ink-soft);transition:background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);}
+.dkq__cell b{color:var(--ink);}
+.dkq__cell.is-changed{background:var(--warning-tint);color:var(--warning);}
+.dkq__cell.is-changed b{color:var(--warning);}
+.dkq__cell.is-skip{background:var(--success-tint);color:var(--success);}
+.dkq__cell.is-up{background:var(--tint-strong);color:var(--accent-ink);}
+.dkq__cell.is-done{background:var(--tint);color:var(--accent-ink);}
+.dkq__sum{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;justify-content:center;}
+.dkq__sum b{font-family:var(--font-display);font-size:1.7rem;line-height:1;color:var(--ink);}
+.dkq__sum span{font-size:.8rem;color:var(--muted);font-weight:600;}
+
+/* -- ch8: memory ceiling / OOM -- */
+.dkx__ctl{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;justify-content:space-between;}
+.dkx__slider{flex:1 1 240px;display:flex;flex-direction:column;gap:.3rem;font-size:.8rem;font-weight:700;color:var(--ink-soft);}
+.dkx__slider code{background:var(--surface-2);padding:.05rem .4rem;border-radius:6px;font-size:.78rem;}
+.dkx__slider input[type=range]{width:100%;accent-color:var(--accent);}
+.dkx__meter{background:var(--surface-2);border-radius:var(--r-lg);padding:1.6rem 1rem .9rem;display:flex;flex-direction:column;gap:.7rem;}
+.dkx__wrap{position:relative;}
+.dkx__track{position:relative;height:40px;border-radius:10px;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--border);overflow:hidden;display:flex;}
+.dkx__seg{height:100%;width:0;flex:none;transition:width .6s var(--ease);}
+.dkx__seg--heap{background:var(--accent);}
+.dkx__seg--meta{background:var(--accent-ink);}
+.dkx__seg--thr{background:var(--warning);}
+.dkx__seg--nat{background:color-mix(in srgb,var(--warning) 55%,var(--ink-soft));}
+.dkx__seg--gc{background:var(--muted);}
+.dkx__limit{position:absolute;top:-.4rem;bottom:-.4rem;width:3px;background:var(--danger);border-radius:2px;left:82.58%;}
+.dkx__limit span{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);margin-bottom:.15rem;white-space:nowrap;font-family:var(--font-mono);font-size:.62rem;font-weight:800;color:var(--danger);}
+.dkx__meter.is-oom .dkx__track{box-shadow:inset 0 0 0 2px var(--danger);animation:dkxShake .5s ease;}
+@keyframes dkxShake{20%{transform:translateX(-4px);}40%{transform:translateX(4px);}60%{transform:translateX(-3px);}80%{transform:translateX(3px);}}
+.dkx__legend{display:flex;flex-wrap:wrap;gap:.4rem .9rem;font-size:.7rem;font-weight:600;color:var(--ink-soft);}
+.dkx__legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:.35rem;vertical-align:-1px;}
+.dkx__nums{font-family:var(--font-mono);font-size:.76rem;color:var(--ink-soft);text-align:center;}
+.dkx__nums b{color:var(--ink);}
+
+/* -- ch8: triage -- */
+.dky__flow{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;}
+.dky__node{cursor:pointer;border:none;font-family:var(--font-mono);font-size:.76rem;font-weight:700;padding:.6rem .9rem;border-radius:var(--r-md);background:var(--surface-2);color:var(--ink-soft);transition:background var(--dur-1) var(--ease), color var(--dur-1) var(--ease);}
+.dky__node:hover{background:var(--tint);color:var(--accent-ink);}
+.dky__node.is-active{background:var(--accent);color:#fff;}
+.dky__sep{color:var(--muted);font-weight:700;}
+.dky__term{background:#1B2320;border-radius:var(--r-lg);padding:1rem 1.2rem;font-family:var(--font-mono);font-size:.76rem;color:#DCEAE4;line-height:1.6;overflow-x:auto;min-height:130px;white-space:pre;}
+.dky__term .p{color:#7BD8B4;}
+.dky__term mark{background:rgba(224,170,70,.3);color:#FFD9A0;padding:0 .2rem;border-radius:3px;}
+.dky__term .dim{color:rgba(220,234,228,.5);}
+.dky__look{background:var(--tint);border-radius:var(--r-md);padding:.75rem 1rem;font-size:.88rem;color:var(--ink-soft);}
+.dky__look b{color:var(--accent-ink);}
 </style>
 <noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript>
 
@@ -464,7 +752,7 @@ noscript .reveal{opacity:1;}
   <p class="lede">"Works on my machine" used to be an inside joke and an excuse in the same breath. Docker didn't just package your app — it changed what "the machine" even means, by turning isolation into a kernel feature instead of a separate computer. This module goes from why that matters down to the OverlayFS mounts and cgroup files underneath every <code>docker run</code>, then back up to how you actually keep containers alive in production.</p>
   <div class="site-stats">
     <div class="stat"><div class="n">8</div><div class="l">Chapters</div></div>
-    <div class="stat"><div class="n">15</div><div class="l">Diagrams &amp; code examples</div></div>
+    <div class="stat"><div class="n">21</div><div class="l">Diagrams &amp; code examples (14 interactive)</div></div>
     <div class="stat"><div class="n">8</div><div class="l">Diagnostic checks</div></div>
     <div class="stat"><div class="n">16</div><div class="l">Interview deep-dives</div></div>
     <div class="stat"><div class="n">38</div><div class="l">Reference rows</div></div>
@@ -507,6 +795,29 @@ noscript .reveal{opacity:1;}
     </table>
   </div>
 
+  <div class="panel diagram-panel reveal">
+    <div class="dkn" id="dkNs">
+      <div class="dkn__top">
+        <div class="dk-toggle" id="dknQuick">
+          <button type="button" class="dk-toggle__btn is-active" data-v="on">Docker default: all isolated</button>
+          <button type="button" class="dk-toggle__btn" data-v="off">Plain process: nothing isolated</button>
+        </div>
+        <span class="dkn__score" id="dknScore">6 / 6 isolated</span>
+      </div>
+      <div class="dkn__grid">
+        <span class="dkn__hd">Flip a switch</span><span class="dkn__hd">On the host</span><span class="dkn__hd">Inside the container</span>
+        <div class="dkn__row is-on" data-ns="pid"><button type="button" class="dkn__sw" aria-pressed="true"><span class="dkn__knob"></span><span class="dkn__swtxt"><b>PID</b><em>which processes?</em></span></button><div class="dkn__cell dkn__cell--host"></div><div class="dkn__cell dkn__cell--ct"></div></div>
+        <div class="dkn__row is-on" data-ns="net"><button type="button" class="dkn__sw" aria-pressed="true"><span class="dkn__knob"></span><span class="dkn__swtxt"><b>NET</b><em>which network?</em></span></button><div class="dkn__cell dkn__cell--host"></div><div class="dkn__cell dkn__cell--ct"></div></div>
+        <div class="dkn__row is-on" data-ns="mnt"><button type="button" class="dkn__sw" aria-pressed="true"><span class="dkn__knob"></span><span class="dkn__swtxt"><b>MNT</b><em>which files?</em></span></button><div class="dkn__cell dkn__cell--host"></div><div class="dkn__cell dkn__cell--ct"></div></div>
+        <div class="dkn__row is-on" data-ns="uts"><button type="button" class="dkn__sw" aria-pressed="true"><span class="dkn__knob"></span><span class="dkn__swtxt"><b>UTS</b><em>which hostname?</em></span></button><div class="dkn__cell dkn__cell--host"></div><div class="dkn__cell dkn__cell--ct"></div></div>
+        <div class="dkn__row is-on" data-ns="user"><button type="button" class="dkn__sw" aria-pressed="true"><span class="dkn__knob"></span><span class="dkn__swtxt"><b>USER</b><em>who am I?</em></span></button><div class="dkn__cell dkn__cell--host"></div><div class="dkn__cell dkn__cell--ct"></div></div>
+        <div class="dkn__row is-on" data-ns="ipc"><button type="button" class="dkn__sw" aria-pressed="true"><span class="dkn__knob"></span><span class="dkn__swtxt"><b>IPC</b><em>which shared memory?</em></span></button><div class="dkn__cell dkn__cell--host"></div><div class="dkn__cell dkn__cell--ct"></div></div>
+      </div>
+      <div class="dk-status" id="dknStatus"></div>
+    </div>
+    <p class="diagram-cap">Each switch is one Linux namespace. Docker turns all six on by default — that's the whole trick behind "it looks like its own machine".</p>
+  </div>
+
   <h3 class="sub reveal" id="cgroups-decide-what-a-process-can-use">cgroups decide what a process can use</h3>
   <p class="reveal">Namespaces answer "what can this process see?" — they say nothing about resource usage. A process with its own PID namespace could still consume 100% of every CPU core and starve everything else on the host. That's the job of control groups (cgroups): a kernel accounting and limiting mechanism for CPU shares, memory ceilings, and I/O bandwidth. When you pass <code>--memory=512m --cpus=1.5</code> to <code>docker run</code>, Docker is writing those numbers into cgroup control files — the same mechanism, whether or not Docker is involved. Chapter 6 goes under the hood of exactly which files those are.</p>
 
@@ -532,25 +843,47 @@ noscript .reveal{opacity:1;}
   </div>
 
   <div class="panel diagram-panel reveal">
-    <div class="soft-flow">
-      <div class="soft-node"><b>Hardware</b><span>physical or virtualized host</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node is-accent"><b>Hypervisor</b><span>ESXi, KVM, Hyper-V</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node"><b>Guest OS (×N)</b><span>each VM boots its own kernel</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node"><b>App + libs</b><span>duplicated in every VM</span></div>
+    <div class="dk-wrap" id="dkBoot">
+      <div class="dk-bar">
+        <span class="dk-note">Same 3 apps, two ways to run them</span>
+        <button type="button" class="dk-play" id="dkbPlay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>Start the 3 apps</span></button>
+      </div>
+      <div class="dkb">
+        <div class="dkb__col" id="dkbVm">
+          <div class="dkb__title">Virtual machines <small>every app drags a whole OS along</small></div>
+          <div class="dkb__apps">
+            <div class="dkb__tower"><div class="dkb__app">App 1</div><div class="dkb__os"><i></i><span>Guest OS<br>+ own kernel</span></div></div>
+            <div class="dkb__tower"><div class="dkb__app">App 2</div><div class="dkb__os"><i></i><span>Guest OS<br>+ own kernel</span></div></div>
+            <div class="dkb__tower"><div class="dkb__app">App 3</div><div class="dkb__os"><i></i><span>Guest OS<br>+ own kernel</span></div></div>
+          </div>
+          <div class="dkb__layer dkb__layer--hyp">Hypervisor</div>
+          <div class="dkb__layer">Hardware</div>
+          <div class="dkb__meter">
+            <div class="dkb__row"><span>time to ready</span><b class="dkb__time">0 s</b></div>
+            <div class="dkb__row"><span>memory used</span><b class="dkb__mem">0 MB</b></div>
+            <div class="dkb__track"><div class="dkb__fill dkb__fill--vm"></div></div>
+          </div>
+        </div>
+        <div class="dkb__col" id="dkbCt">
+          <div class="dkb__title">Containers <small>apps share the host's kernel</small></div>
+          <div class="dkb__apps">
+            <div class="dkb__tower"><div class="dkb__app">App 1</div></div>
+            <div class="dkb__tower"><div class="dkb__app">App 2</div></div>
+            <div class="dkb__tower"><div class="dkb__app">App 3</div></div>
+          </div>
+          <div class="dkb__layer dkb__layer--kernel">One shared host kernel</div>
+          <div class="dkb__layer">Container runtime</div>
+          <div class="dkb__layer">Hardware</div>
+          <div class="dkb__meter">
+            <div class="dkb__row"><span>time to ready</span><b class="dkb__time">0 s</b></div>
+            <div class="dkb__row"><span>memory used</span><b class="dkb__mem">0 MB</b></div>
+            <div class="dkb__track"><div class="dkb__fill"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="dk-status" id="dkbStatus">Press play to start the same 3 apps on each stack.</div>
     </div>
-    <div class="soft-flow">
-      <div class="soft-node"><b>Hardware</b><span>physical or virtualized host</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node"><b>Host OS + kernel</b><span>one kernel, shared</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node is-accent"><b>Container runtime</b><span>containerd, runc, dockerd</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node"><b>Containers (×N)</b><span>isolated processes, no duplicated kernel</span></div>
-    </div>
-    <p class="diagram-cap">Same hardware, two very different stacks: a VM duplicates the kernel and OS per instance, while every container on a host shares one kernel and only isolates what a process can see and use.</p>
+    <p class="diagram-cap">Same hardware, two very different stacks: a VM duplicates the kernel and OS per instance, while every container on a host shares one kernel and only isolates what a process can see and use. (Times and sizes are typical, for illustration.)</p>
   </div>
 
   <div class="callout callout--tip reveal">
@@ -600,19 +933,26 @@ noscript .reveal{opacity:1;}
   <p class="reveal">The catch is that the cache key chains forward: it's not just "did this instruction change," it's "did this instruction <em>or any instruction before it</em> change." The moment one layer's cache misses, every layer after it must rebuild too, even if their own instructions are byte-for-byte identical to last time — because their cache key includes the now-different parent hash. This is the entire reason Dockerfile instruction order is a performance decision, not just documentation order.</p>
 
   <div class="panel diagram-panel reveal">
-    <ul class="soft-tree">
-      <li><span class="k">app:1.0 image</span><span class="d">final stack, top layer is the active view</span>
-        <ul>
-          <li><span class="k">FROM node:20-alpine</span><span class="d">base layer — changes only on a base image bump</span></li>
-          <li><span class="k">RUN apk add --no-cache curl</span><span class="d">cached until this line or an earlier one changes</span></li>
-          <li><span class="k">COPY package*.json ./</span><span class="d">tiny, changes only when dependencies change</span></li>
-          <li><span class="k">RUN npm ci</span><span class="d">cached across every build where package*.json is unchanged</span></li>
-          <li><span class="k">COPY . .</span><span class="d">invalidated on <em>every</em> source code change</span></li>
-          <li><span class="k">CMD ["node", "server.js"]</span><span class="d">metadata only — no filesystem diff, never invalidates anything</span></li>
-        </ul>
-      </li>
-    </ul>
-    <p class="diagram-cap">Because <code>COPY package*.json ./</code> and <code>RUN npm ci</code> sit above <code>COPY . .</code>, editing a source file only re-executes the last two layers — the expensive dependency install stays cached.</p>
+    <div class="dkc" id="dkCache">
+      <div class="dkc__ask">1. Pick a Dockerfile layout
+        <div class="dk-toggle" id="dkcOrder">
+          <button type="button" class="dk-toggle__btn is-active" data-v="good">Dependencies first (good)</button>
+          <button type="button" class="dk-toggle__btn" data-v="bad">COPY . . first (the trap)</button>
+        </div>
+      </div>
+      <div class="dkc__ask">2. What did you change before rebuilding?
+        <div class="dk-toggle" id="dkcChange">
+          <button type="button" class="dk-toggle__btn" data-v="none">Nothing</button>
+          <button type="button" class="dk-toggle__btn is-active" data-v="src">Edited a source file</button>
+          <button type="button" class="dk-toggle__btn" data-v="dep">Added a dependency</button>
+          <button type="button" class="dk-toggle__btn" data-v="base">Bumped the base image</button>
+        </div>
+      </div>
+      <div class="dkc__stack" id="dkcStack"></div>
+      <div class="dkc__total"><span>build time</span><b id="dkcTime">14 s</b><span id="dkcVs"></span></div>
+      <div class="dk-status" id="dkcStatus"></div>
+    </div>
+    <p class="diagram-cap">Cache invalidation only flows <em>downward</em>: the first changed layer and everything after it re-runs. Put the things that change rarely (dependencies) above the things that change constantly (your source).</p>
   </div>
 
   <p class="reveal">The same caching principle drives a Java build layout, even though the syntax looks nothing like <code>npm</code>. A Maven project's entire dependency graph lives in <code>pom.xml</code>, so copying just that file first — before any source — lets Docker cache the dependency-resolution step independently of how often the actual code changes:</p>
@@ -707,16 +1047,43 @@ ENTRYPOINT ["nginx"]
 CMD ["-g", "daemon off;"]</code></pre>
 
   <div class="panel diagram-panel reveal">
-    <div class="soft-flow">
-      <div class="soft-node"><b>Stage 1: build</b><span>FROM node:20 — full toolchain</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node is-accent"><b>npm run build</b><span>produces /app/dist</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node"><b>Stage 2: runtime</b><span>FROM nginx:alpine — fresh, empty</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node"><b>Final image</b><span>only /dist copied in — no Node, no compilers</span></div>
+    <div class="dkm" id="dkMulti">
+      <div class="dk-bar">
+        <div class="dk-toggle" id="dkmToggle">
+          <button type="button" class="dk-toggle__btn" data-v="single">Single-stage</button>
+          <button type="button" class="dk-toggle__btn is-active" data-v="multi">Multi-stage</button>
+        </div>
+        <button type="button" class="dk-play" id="dkmPlay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>Build the image</span></button>
+      </div>
+      <div class="dkm__row">
+        <div class="dkm__stage" id="dkmBuild">
+          <div class="dkm__title"><span id="dkmBuildName">Stage 1 · build</span><small id="dkmBuildSub">FROM node:20 AS build</small></div>
+          <div class="dkm__chips">
+            <div class="dkm__chip dkm__chip--heavy" data-c="base"><span>node:20 base image</span><b>1 GB</b></div>
+            <div class="dkm__chip dkm__chip--heavy" data-c="mods"><span>npm cache + node_modules</span><b>300 MB</b></div>
+            <div class="dkm__chip dkm__chip--heavy" data-c="src"><span>source + dev tools</span><b>50 MB</b></div>
+            <div class="dkm__chip dkm__chip--keep" data-c="dist"><span>dist/ (the built app)</span><b>5 MB</b></div>
+          </div>
+        </div>
+        <div class="dkm__arrow" id="dkmArrow">
+          <svg viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>COPY --from=build /app/dist</span>
+        </div>
+        <div class="dkm__stage dkm__stage--final" id="dkmFinal">
+          <div class="dkm__title"><span>Stage 2 · runtime</span><small>FROM nginx:alpine</small></div>
+          <div class="dkm__chips">
+            <div class="dkm__chip" data-f="base"><span>nginx:alpine base image</span><b>40 MB</b></div>
+            <div class="dkm__chip dkm__chip--keep" data-f="dist"><span>dist/ (the built app)</span><b>5 MB</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="dkm__ship">
+        <div class="dkm__shiprow"><span>Ships to production</span><b id="dkmSize">—</b></div>
+        <div class="dkm__track"><div class="dkm__fill" id="dkmFill"></div></div>
+      </div>
+      <div class="dk-status" id="dkmStatus"></div>
     </div>
-    <p class="diagram-cap">The build stage's entire filesystem — Node runtime, npm cache, dev dependencies — is discarded; only the explicit <code>COPY --from=build</code> artifact crosses into the shipped image.</p>
+    <p class="diagram-cap">The build stage's entire filesystem — Node runtime, npm cache, dev dependencies — is discarded; only the explicit <code>COPY --from=build</code> artifact crosses into the shipped image. (Sizes are typical, for illustration.)</p>
   </div>
 
   <p class="reveal">The exact same pattern for a Spring Boot service — the toolchain (Maven, the full JDK) stays entirely inside the build stage, and only a runnable JAR crosses into the runtime image:</p>
@@ -758,6 +1125,25 @@ ENTRYPOINT ["java", "-jar", "app.jar"]</code></pre>
   <p class="reveal">Both <code>CMD java -jar app.jar</code> and <code>CMD ["java", "-jar", "app.jar"]</code> look interchangeable, and in the happy path they behave the same — but they put a completely different process in PID 1. The first is shell form: Docker silently wraps it as <code>/bin/sh -c "java -jar app.jar"</code>, so <code>/bin/sh</code> becomes PID 1 and the JVM is merely its child. The second is exec form — a JSON array — and Docker runs <code>java</code> directly with no intervening shell, so the JVM itself is PID 1.</p>
 
   <p class="reveal">That distinction is invisible until someone runs <code>docker stop</code>, which sends <code>SIGTERM</code> to PID 1 and then waits out a grace period (10 seconds by default) before escalating to <code>SIGKILL</code>. Shells typically don't forward signals to child processes on their own — so in shell form, <code>/bin/sh</code> receives the SIGTERM and the java child never sees it at all. Docker waits the full grace period for nothing to happen, then SIGKILLs the JVM outright. Spring Boot's graceful shutdown (<code>server.shutdown=graceful</code>, draining in-flight requests, closing the connection pool cleanly) never gets the chance to run — the process is killed mid-request instead of exiting cleanly. In exec form, SIGTERM reaches the JVM directly and immediately, so the shutdown hook actually fires.</p>
+
+  <div class="panel diagram-panel reveal">
+    <div class="dk-wrap" id="dkSig">
+      <div class="dk-bar">
+        <div class="dk-toggle" id="dksToggle">
+          <button type="button" class="dk-toggle__btn is-active" data-v="shell">Shell form: CMD java -jar app.jar</button>
+          <button type="button" class="dk-toggle__btn" data-v="exec">Exec form: CMD ["java", "-jar", "app.jar"]</button>
+        </div>
+        <button type="button" class="dk-play" id="dksPlay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>docker stop</span></button>
+      </div>
+      <div class="dks__stage">
+        <span class="dks__sig" id="dksSig">SIGTERM</span>
+        <div class="dks__tree" id="dksTree"></div>
+        <div class="dks__clock"><span>time since docker stop</span><b id="dksClock">0 s</b><span>(Docker waits up to 10 s)</span></div>
+      </div>
+      <div class="dk-status" id="dksStatus"></div>
+    </div>
+    <p class="diagram-cap">Same app, same command — the only difference is whether the JVM or a shell is PID 1. <code>docker stop</code> only ever talks to PID 1.</p>
+  </div>
 
   <div class="callout callout--mistake reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3L2 20h20L12 3z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M12 9.5v4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17" r="1.1" fill="currentColor"/></svg></div>
@@ -855,6 +1241,27 @@ ENTRYPOINT ["java", "-jar", "app.jar"]</code></pre>
     </table>
   </div>
 
+  <div class="panel diagram-panel reveal">
+    <div class="dk-wrap" id="dkVol">
+      <div class="dk-bar">
+        <div class="dk-toggle" id="dkvToggle">
+          <button type="button" class="dk-toggle__btn is-active" data-v="none">No volume</button>
+          <button type="button" class="dk-toggle__btn" data-v="volume">Volume</button>
+          <button type="button" class="dk-toggle__btn" data-v="bind">Bind mount</button>
+          <button type="button" class="dk-toggle__btn" data-v="tmpfs">tmpfs</button>
+        </div>
+        <button type="button" class="dk-play" id="dkvPlay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>Redeploy: docker rm + docker run</span></button>
+      </div>
+      <div class="dkv__row">
+        <div class="dkv__box" id="dkvV1"><div class="dkv__title">Container v1<small>the old version</small></div><div class="dkv__slot" id="dkvV1Slot"></div></div>
+        <div class="dkv__box dkv__box--mid" id="dkvMid"><div class="dkv__title"><span id="dkvMidName">No volume</span><small id="dkvMidSub">nothing mounted</small></div><div class="dkv__slot" id="dkvMidSlot"></div></div>
+        <div class="dkv__box is-hidden" id="dkvV2"><div class="dkv__title">Container v2<small>the redeploy</small></div><div class="dkv__slot" id="dkvV2Slot"></div></div>
+      </div>
+      <div class="dk-status" id="dkvStatus"></div>
+    </div>
+    <p class="diagram-cap">Pick where the app writes its data, then redeploy. Only data that lives <em>outside</em> the container's writable layer survives the <code>docker rm</code>.</p>
+  </div>
+
   <h3 class="sub reveal" id="network-drivers">Network drivers</h3>
   <p class="reveal">By default a container joins Docker's <code>bridge</code> network — a private, NAT'd network local to the host, which is why you need <code>-p 8080:80</code> to expose a port to the outside world at all. <code>host</code> mode drops that isolation and gives the container the host's network namespace directly: no port mapping needed, slightly better network performance, but the container can now see (and bind to) every port on the host. <code>none</code> gives a container no networking at all, useful for pure batch jobs. <code>overlay</code> networks span multiple Docker hosts using VXLAN encapsulation — the mechanism Swarm (and conceptually, Kubernetes) uses so containers on different physical machines can still talk to each other as if they were on one network.</p>
 
@@ -862,12 +1269,24 @@ ENTRYPOINT ["java", "-jar", "app.jar"]</code></pre>
   <p class="reveal">Here's the detail that trips people up: the default <code>bridge</code> network does <em>not</em> resolve containers by name — that only works on a user-defined bridge network (<code>docker network create appnet</code>), which gets Docker's embedded DNS server at <code>127.0.0.11</code>. Put two containers on that network and each can resolve the other by its container name or <code>--network-alias</code>, with no manual IP wiring. This is exactly the mechanism Compose relies on to let a <code>web</code> service reach <code>db:5432</code> by name (Chapter 5) — Compose is just auto-creating a user-defined network for you.</p>
 
   <div class="panel diagram-panel reveal">
-    <div class="soft-flow">
-      <div class="soft-node"><b>Container: web</b><span>connects to "db:5432"</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node is-accent"><b>Embedded DNS</b><span>127.0.0.11, user-defined bridge only</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node"><b>Container: db</b><span>resolved to its internal IP</span></div>
+    <div class="dk-wrap" id="dkDns">
+      <div class="dk-bar">
+        <div class="dk-toggle" id="dkdToggle">
+          <button type="button" class="dk-toggle__btn" data-v="default">Default bridge</button>
+          <button type="button" class="dk-toggle__btn is-active" data-v="user">User-defined bridge</button>
+        </div>
+        <button type="button" class="dk-play" id="dkdPlay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>web connects to "db"</span></button>
+      </div>
+      <div class="dkd__net">
+        <div class="dkd__netname" id="dkdNetName">network: appnet (user-defined)</div>
+        <div class="dkd__nodes">
+          <div class="dkd__node" id="dkdWeb">web<small>172.18.0.2</small></div>
+          <div class="dkd__dns" id="dkdDns">embedded DNS<br>127.0.0.11</div>
+          <div class="dkd__node" id="dkdDb">db<small>172.18.0.3</small></div>
+        </div>
+        <div class="dkd__msg" id="dkdMsg">&nbsp;</div>
+      </div>
+      <div class="dk-status" id="dkdStatus"></div>
     </div>
     <p class="diagram-cap">Name-based service discovery is a feature of user-defined bridge (and overlay) networks specifically — the legacy default bridge network requires the deprecated <code>--link</code> flag instead.</p>
   </div>
@@ -948,6 +1367,27 @@ volumes:
   <p class="reveal">The short-form <code>depends_on: [db]</code> only guarantees the <code>db</code> container's process has <em>started</em> before <code>web</code> starts — not that Postgres has finished initializing and is ready to accept connections, which can take a few extra seconds even after the container itself is running. Left this way, <code>web</code> frequently crash-loops on its first few restarts with "connection refused." The fix, shown above, is the long-form <code>depends_on</code> with <code>condition: service_healthy</code>, paired with an actual <code>healthcheck</code> on <code>db</code> — now <code>web</code> only starts once Postgres genuinely answers, not just once its process exists.</p>
 
   <div class="panel diagram-panel reveal">
+    <div class="dk-wrap" id="dkDep">
+      <div class="dk-bar">
+        <div class="dk-toggle" id="dkpToggle">
+          <button type="button" class="dk-toggle__btn is-active" data-v="short">depends_on: [db]</button>
+          <button type="button" class="dk-toggle__btn" data-v="healthy">condition: service_healthy</button>
+        </div>
+        <button type="button" class="dk-play" id="dkpPlay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>docker compose up</span></button>
+      </div>
+      <div class="dkp__scroll"><div class="dkp__grid" id="dkpGrid"></div></div>
+      <div class="dkp__legend">
+        <span><i style="background:var(--warning-tint)"></i>db starting up</span>
+        <span><i style="background:var(--danger-tint)"></i>connection refused</span>
+        <span><i style="background:var(--surface-2)"></i>waiting</span>
+        <span><i style="background:var(--success-tint)"></i>ready / connected</span>
+      </div>
+      <div class="dk-status" id="dkpStatus"></div>
+    </div>
+    <p class="diagram-cap">Each column is one second after <code>docker compose up</code>. Postgres needs about six seconds to initialise — the only question is whether <code>web</code> waits for that, or finds out the hard way.</p>
+  </div>
+
+  <div class="panel diagram-panel reveal">
     <div class="soft-flow">
       <div class="soft-node"><b>web</b><span>DB_URL=postgres://db:5432</span></div>
       <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1012,41 +1452,59 @@ volumes:
 
   <h3 class="sub reveal" id="the-docker-run-sequence">The docker run sequence</h3>
   <div class="panel diagram-panel reveal">
-    <div class="soft-flow">
-      <div class="soft-node"><b>docker CLI</b><span>docker run app:1.0</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node"><b>dockerd</b><span>Engine API over a Unix socket</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node is-accent"><b>containerd</b><span>manages image, storage, lifecycle</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node"><b>runc</b><span>OCI runtime, creates one container</span></div>
+    <div class="dk-wrap" id="dkRun">
+      <div class="dk-bar">
+        <span class="dk-note">click any step, or press play</span>
+        <button type="button" class="dk-play" id="dkrPlay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>docker run app:1.0</span></button>
+      </div>
+      <div>
+        <div class="dkr__rowlab">1 · who hands the work down</div>
+        <div class="dkr__strip">
+          <button type="button" class="dkr__node" data-k="0"><b>docker CLI</b><span>sends the request</span></button>
+          <button type="button" class="dkr__node" data-k="1"><b>dockerd</b><span>Engine daemon</span></button>
+          <button type="button" class="dkr__node" data-k="2"><b>containerd</b><span>lifecycle + storage</span></button>
+          <button type="button" class="dkr__node" data-k="3"><b>runc</b><span>creates the container</span></button>
+        </div>
+      </div>
+      <div>
+        <div class="dkr__rowlab">2 · what runc sets up in the kernel</div>
+        <div class="dkr__strip">
+          <button type="button" class="dkr__node" data-k="4"><b>namespaces</b><span>what it can see</span></button>
+          <button type="button" class="dkr__node" data-k="5"><b>cgroups</b><span>what it can use</span></button>
+          <button type="button" class="dkr__node" data-k="6"><b>OverlayFS</b><span>its filesystem</span></button>
+          <button type="button" class="dkr__node" data-k="7"><b>execve()</b><span>your app starts</span></button>
+        </div>
+      </div>
+      <div class="dkr__detail">
+        <div class="dkr__dtitle" id="dkrTitle"></div>
+        <p class="dkr__dtext" id="dkrText"></p>
+        <div class="dkr__meter"><span>since you hit Enter</span><b id="dkrMs">0 ms</b><div class="dkr__track"><div class="dkr__fill" id="dkrFill"></div></div></div>
+      </div>
     </div>
-    <div class="soft-flow">
-      <div class="soft-node"><b>Create namespaces</b><span>PID, net, mount, user, UTS, IPC</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node is-accent"><b>Apply cgroup limits</b><span>--memory, --cpus written to cgroup files</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node"><b>OverlayFS mount</b><span>image layers + fresh writable layer</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node"><b>execve()</b><span>your ENTRYPOINT becomes PID 1</span></div>
-    </div>
-    <p class="diagram-cap">Every step here is bookkeeping — creating kernel objects and mounting a filesystem view — not booting anything, which is why this entire chain completes in milliseconds.</p>
+    <p class="diagram-cap">Every step here is bookkeeping — creating kernel objects and mounting a filesystem view — not booting anything, which is why this entire chain completes in milliseconds. (Timings are illustrative.)</p>
   </div>
 
   <h3 class="sub reveal" id="overlayfs-the-union-filesystem">OverlayFS: the union filesystem</h3>
   <p class="reveal">OverlayFS is how Docker presents many separate read-only layers plus one writable layer as a single coherent filesystem. It stacks a <code>lowerdir</code> (the image's read-only layers, ordered) under an <code>upperdir</code> (the container's writable layer), and exposes a <code>merged</code> view that's actually mounted into the container. Reading a file resolves from the topmost layer that contains it. Writing is where it gets interesting: if a process modifies a file that only exists in a <code>lowerdir</code> layer, the kernel first performs a "copy-up" — copying that file into <code>upperdir</code> — before applying the write, so the original read-only layers stay pristine and shareable across every other container built from the same image.</p>
 
   <div class="panel diagram-panel reveal">
-    <ul class="soft-tree">
-      <li><span class="k">merged (what the container sees)</span><span class="d">unified view exposed at the container's root</span>
-        <ul>
-          <li><span class="k">upperdir</span><span class="d">this container's writable layer — new files and copy-ups land here</span></li>
-          <li><span class="k">lowerdir: layer 3</span><span class="d">e.g. COPY . . from the image</span></li>
-          <li><span class="k">lowerdir: layer 2</span><span class="d">e.g. RUN npm ci</span></li>
-          <li><span class="k">lowerdir: layer 1 (base)</span><span class="d">e.g. FROM node:20-alpine</span></li>
-        </ul>
-      </li>
-    </ul>
+    <div class="dk-wrap" id="dkOvl">
+      <div class="dko__actions" id="dkoActions">
+        <button type="button" class="dk-toggle__btn" data-a="read">Read config.json</button>
+        <button type="button" class="dk-toggle__btn" data-a="edit">Edit config.json</button>
+        <button type="button" class="dk-toggle__btn" data-a="create">Create logs.txt</button>
+        <button type="button" class="dk-toggle__btn" data-a="remove">Delete server.js</button>
+        <button type="button" class="dk-toggle__btn" data-a="reset">docker rm (start over)</button>
+      </div>
+      <div class="dko__stack">
+        <div class="dko__slab dko__slab--merged"><div class="dko__slab-t">merged<span>what the container sees</span></div><div class="dko__files" id="dkoMerged"></div></div>
+        <div class="dko__slab dko__slab--upper"><div class="dko__slab-t">upperdir<span>this container's writable layer</span></div><div class="dko__files" id="dkoUpper"></div></div>
+        <div class="dko__slab dko__slab--lower"><div class="dko__slab-t">lowerdir · layer 3<span>COPY . .</span></div><div class="dko__files" id="dkoL3"></div></div>
+        <div class="dko__slab dko__slab--lower"><div class="dko__slab-t">lowerdir · layer 2<span>RUN npm ci</span></div><div class="dko__files" id="dkoL2"></div></div>
+        <div class="dko__slab dko__slab--lower"><div class="dko__slab-t">lowerdir · layer 1<span>FROM node:20-alpine</span></div><div class="dko__files" id="dkoL1"></div></div>
+      </div>
+      <div class="dk-status" id="dkoStatus"></div>
+    </div>
     <p class="diagram-cap">Every container started from the same image shares identical, read-only lowerdir layers on disk — only the thin upperdir differs per container, which is also why many containers from one image use far less disk than you'd expect.</p>
   </div>
 
@@ -1117,18 +1575,48 @@ docker pull myapp:latest
 # immutable — always the exact image that was scanned and tested
 docker pull myapp@sha256:9d3c1f2b7a4e0c8d5f6b3a2e1d0c9b8a7f6e5d4c3b2a1908f7e6d5c4b3a2918</code></pre>
 
+  <div class="panel diagram-panel reveal">
+    <div class="dk-wrap" id="dkTag">
+      <div class="dk-bar">
+        <div class="dk-toggle" id="dktToggle">
+          <button type="button" class="dk-toggle__btn is-active" data-v="tag">Deploy by tag</button>
+          <button type="button" class="dk-toggle__btn" data-v="digest">Deploy by digest</button>
+        </div>
+        <button type="button" class="dk-play" id="dktPlay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>Play the week</span></button>
+      </div>
+      <div class="dkt__reg">
+        <div class="dk-note">registry · myapp</div>
+        <div class="dkt__blobs">
+          <div class="dkt__blob dkt__blob--a" id="dktA"><b>sha256:9d3c…</b><em>Monday's build · tested</em></div>
+          <div class="dkt__blob dkt__blob--b" id="dktB"><b>sha256:41ae…</b><em>Tuesday's build · never tested</em></div>
+        </div>
+      </div>
+      <div class="dkt__envs">
+        <div class="dkt__env"><b>Staging</b><span class="dkt__cmd" id="dktStageCmd"></span><span class="dkt__run" id="dktStageRun">not deployed yet</span></div>
+        <div class="dkt__env"><b>Production</b><span class="dkt__cmd" id="dktProdCmd"></span><span class="dkt__run" id="dktProdRun">not deployed yet</span></div>
+      </div>
+      <div class="dk-status" id="dktStatus"></div>
+    </div>
+    <p class="diagram-cap">A tag is a sticker that can be peeled off and stuck on different bytes. A digest <em>is</em> the bytes. Switch the toggle and replay to see the difference.</p>
+  </div>
+
   <h3 class="sub reveal" id="push-and-pull-only-move-what-s-missing">Push and pull only move what's missing</h3>
   <p class="reveal">Registries store layers individually, keyed by digest. A <code>docker push</code> checks the manifest of layer digests already present in the registry and uploads only the ones it's missing; <code>docker pull</code> does the same in reverse. A code-only change touches just the top layer, so pushing it is fast — but bumping the base image (<code>FROM node:20</code> → <code>node:22</code>) changes every downstream layer's digest, since each layer's identity depends on its own content, meaning the whole stack above it has to re-upload even though your application code didn't change a line.</p>
 
   <div class="panel diagram-panel reveal">
-    <div class="soft-flow">
-      <div class="soft-node"><b>docker push</b><span>compare local layer digests to registry</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node is-accent"><b>Diff missing layers</b><span>content-addressed, dedup across images</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node"><b>Upload + update manifest</b><span>tag pointer reassigned to new digest</span></div>
+    <div class="dk-wrap" id="dkPush">
+      <div class="dk-bar">
+        <div class="dk-toggle" id="dkqToggle">
+          <button type="button" class="dk-toggle__btn is-active" data-v="code">Changed only my code</button>
+          <button type="button" class="dk-toggle__btn" data-v="base">Bumped the base image</button>
+        </div>
+        <button type="button" class="dk-play" id="dkqPlay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>docker push</span></button>
+      </div>
+      <div class="dkq__grid" id="dkqGrid"></div>
+      <div class="dkq__sum"><span>uploaded</span><b id="dkqSent">0 MB</b><span id="dkqOf"></span></div>
+      <div class="dk-status" id="dkqStatus"></div>
     </div>
-    <p class="diagram-cap">Only layers the registry doesn't already have are transferred — which is also why unrelated images sharing a common base layer only pay that base's transfer cost once.</p>
+    <p class="diagram-cap">Only layers the registry doesn't already have are transferred — which is also why unrelated images sharing a common base layer only pay that base's transfer cost once. (Sizes are illustrative.)</p>
   </div>
 
   <h3 class="sub reveal" id="supply-chain-security-signing-and-sboms">Supply-chain security: signing and SBOMs</h3>
@@ -1201,6 +1689,40 @@ docker pull myapp@sha256:9d3c1f2b7a4e0c8d5f6b3a2e1d0c9b8a7f6e5d4c3b2a1908f7e6d5c
     <p class="diagram-cap">Three nested ceilings, not one: the container limit is the only one the kernel actually enforces, the JVM process has to fit entirely inside it, and the heap is only ever one part of what that process needs.</p>
   </div>
 
+  <div class="panel diagram-panel reveal">
+    <div class="dk-wrap" id="dkMem">
+      <div class="dkx__ctl">
+        <label class="dkx__slider">
+          <span>JVM heap = <code>-XX:MaxRAMPercentage=<span id="dkxPctLabel">75</span></code> of the container's memory</span>
+          <input type="range" id="dkxPct" min="50" max="90" step="5" value="75">
+        </label>
+        <button type="button" class="dk-play" id="dkxPlay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>Traffic spike</span></button>
+      </div>
+      <div class="dkx__meter" id="dkxMeter">
+        <div class="dkx__wrap">
+          <div class="dkx__track">
+            <div class="dkx__seg dkx__seg--heap" id="dkxHeap"></div>
+            <div class="dkx__seg dkx__seg--meta" id="dkxMeta"></div>
+            <div class="dkx__seg dkx__seg--thr" id="dkxThr"></div>
+            <div class="dkx__seg dkx__seg--nat" id="dkxNat"></div>
+            <div class="dkx__seg dkx__seg--gc" id="dkxGc"></div>
+          </div>
+          <div class="dkx__limit"><span>--memory=512m</span></div>
+        </div>
+        <div class="dkx__legend">
+          <span><i style="background:var(--accent)"></i>heap</span>
+          <span><i style="background:var(--accent-ink)"></i>metaspace</span>
+          <span><i style="background:var(--warning)"></i>thread stacks</span>
+          <span><i style="background:color-mix(in srgb,var(--warning) 55%,var(--ink-soft))"></i>direct / native buffers</span>
+          <span><i style="background:var(--muted)"></i>JIT code cache + GC</span>
+        </div>
+        <div class="dkx__nums" id="dkxNums"></div>
+      </div>
+      <div class="dk-status" id="dkxStatus"></div>
+    </div>
+    <p class="diagram-cap">Drag the slider, then hit "Traffic spike". The heap is only part of the JVM's footprint — at 75% there's no room left for everything else, and the kernel kills the container. (Sizes are illustrative.)</p>
+  </div>
+
   <div class="callout callout--real reveal">
     <div class="callout__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2.5l2.1 5.9 5.9 2.1-5.9 2.1L12 18.5l-2.1-5.9-5.9-2.1 5.9-2.1L12 2.5z" fill="currentColor"/></svg></div>
     <div class="callout__body"><b class="h">The heap flag that outlived its server</b><p>A team containerizing an old service copied its JVM flags straight from the bare-metal deploy script it was replacing — including a hardcoded <code>-Xmx12g</code>, sized years earlier for a physical box with 32GB of RAM. Nobody revisited it, because the flag "already worked." The new container was capped at 4GB. Under normal load the JVM never got near 12GB of live heap, so staging looked perfectly healthy — until a traffic spike pushed heap usage up, the JVM kept expanding toward the number it was told, sailed straight past the container's 4GB ceiling, and got OOMKilled mid-peak. The flag wasn't wrong when it was written; it was just written for a machine that no longer existed.</p></div>
@@ -1216,16 +1738,16 @@ docker pull myapp@sha256:9d3c1f2b7a4e0c8d5f6b3a2e1d0c9b8a7f6e5d4c3b2a1908f7e6d5c
   <p class="reveal">When a container is misbehaving, the same handful of commands answer almost every question, in order: <code>docker ps -a</code> tells you its actual state (running, restarting, exited); <code>docker inspect &lt;id&gt;</code> gives you the exit code, <code>OOMKilled</code> flag, mounts, and network config; <code>docker logs -f --tail=200 &lt;id&gt;</code> shows the last thing it said before things went wrong; <code>docker stats</code> shows live CPU/memory/I/O per container if it's still running; <code>docker exec -it &lt;id&gt; sh</code> gets you a live shell inside it, if the image even has one.</p>
 
   <div class="panel diagram-panel reveal">
-    <div class="soft-flow">
-      <div class="soft-node"><b>Container unhealthy</b><span>alert fires, or a report comes in</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node"><b>docker ps -a</b><span>running, restarting, or exited?</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node is-accent"><b>docker inspect</b><span>exit code, OOMKilled, mounts</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node"><b>docker logs -f</b><span>the last error before it died</span></div>
-      <svg class="soft-arrow" viewBox="0 0 44 24"><path d="M2 12h34m0 0-8-7m8 7-8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="soft-node"><b>docker exec</b><span>live shell, if still running</span></div>
+    <div class="dk-wrap" id="dkTri">
+      <div class="dk-note">A container keeps dying and coming back. Click each step and read the clue.</div>
+      <div class="dky__flow" id="dkyFlow">
+        <button type="button" class="dky__node is-active" data-k="0">1 · docker ps -a</button><span class="dky__sep">&rsaquo;</span>
+        <button type="button" class="dky__node" data-k="1">2 · docker inspect</button><span class="dky__sep">&rsaquo;</span>
+        <button type="button" class="dky__node" data-k="2">3 · docker logs</button><span class="dky__sep">&rsaquo;</span>
+        <button type="button" class="dky__node" data-k="3">4 · docker exec</button>
+      </div>
+      <div class="dky__term" id="dkyTerm"></div>
+      <div class="dky__look" id="dkyLook"></div>
     </div>
     <p class="diagram-cap">This sequence answers "what state is it in, why, what did it say, and can I poke at it live" — in that order, before reaching for anything heavier.</p>
   </div>
@@ -1467,6 +1989,682 @@ document.addEventListener("click",function(e){
     if(ex) ex.classList.add("is-shown");
   }
 });
+
+/* ============================================================
+   Interactive Docker diagrams
+   ============================================================ */
+var DK_PLAY = '<path d="M8 5v14l11-7z"/>';
+var DK_PAUSE = '<rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/>';
+
+function dk$(id){ return document.getElementById(id); }
+function dkStatus(el, text, kind){ el.textContent = text; el.className = "dk-status" + (kind ? " is-" + kind : ""); }
+
+/* Shared play / pause / resume driver. o = { btn, label, interval, steps(), reset() }.
+   A step may return "end" to finish the run early. Returns { reset(), seek(k) }. */
+function dkPlayer(o){
+  var btn = o.btn, i = 0, timer = null, started = false;
+  function done(){ return i >= o.steps().length; }
+  function setBtn(playing, label){
+    btn.classList.toggle("is-playing", playing);
+    btn.querySelector("svg").innerHTML = playing ? DK_PAUSE : DK_PLAY;
+    btn.querySelector("span").textContent = label;
+  }
+  function stop(){
+    if(timer){ clearInterval(timer); timer = null; }
+    setBtn(false, done() ? o.label : "Resume");
+  }
+  function tick(){
+    var s = o.steps();
+    var r = s[i](i);
+    i++;
+    if(r === "end") i = s.length;
+    if(i >= s.length) stop();
+  }
+  function start(){
+    if(!started || done()){ o.reset(); i = 0; started = true; }
+    setBtn(true, "Pause");
+    tick();
+    if(!done()) timer = setInterval(tick, o.interval || 1200);
+  }
+  btn.addEventListener("click", function(){ if(timer){ stop(); } else { start(); } });
+  return {
+    reset: function(){
+      if(timer){ clearInterval(timer); timer = null; }
+      started = false; i = 0;
+      o.reset();
+      setBtn(false, o.label);
+    },
+    seek: function(k){
+      if(timer){ clearInterval(timer); timer = null; }
+      started = true; i = k + 1;
+      setBtn(false, done() ? o.label : "Resume");
+    }
+  };
+}
+
+/* these panels fit their width, so drop the site's "scroll for more" edge fade on them */
+["dkBoot", "dkNs", "dkCache", "dkMulti", "dkSig", "dkVol", "dkDns", "dkDep", "dkRun", "dkOvl", "dkTag", "dkPush", "dkMem", "dkTri"].forEach(function(id){
+  var el = dk$(id), p = el && el.closest(".diagram-panel");
+  if(p) p.classList.add("is-live");
+});
+
+function dkToggle(container, onPick){
+  var btns = container.querySelectorAll(".dk-toggle__btn");
+  btns.forEach(function(b){
+    b.addEventListener("click", function(){
+      if(b.classList.contains("is-active")) return;
+      btns.forEach(function(x){ x.classList.toggle("is-active", x === b); });
+      onPick(b.dataset.v);
+    });
+  });
+}
+
+/* ---- ch1: the same 3 apps as VMs vs containers ---- */
+(function(){
+  var root = dk$("dkBoot"); if(!root) return;
+  var vm = dk$("dkbVm"), ct = dk$("dkbCt"), st = dk$("dkbStatus");
+  var vmOs = vm.querySelectorAll(".dkb__os"), vmApp = vm.querySelectorAll(".dkb__app"), ctApp = ct.querySelectorAll(".dkb__app");
+  var vmTime = vm.querySelector(".dkb__time"), vmMem = vm.querySelector(".dkb__mem"), vmFill = vm.querySelector(".dkb__fill");
+  var ctTime = ct.querySelector(".dkb__time"), ctMem = ct.querySelector(".dkb__mem"), ctFill = ct.querySelector(".dkb__fill");
+  var stages = ["BIOS…", "Bootloader…", "Booting kernel…", "Starting init…", "Ready"];
+  var prog = [20, 42, 66, 86, 100], times = ["12 s", "26 s", "52 s", "78 s", "94 s"];
+  var mems = ["0.8 GB", "1.6 GB", "2.4 GB", "3.0 GB", "3.4 GB"], fills = [24, 47, 70, 88, 100];
+  var notes = [
+    "Containers are already running. The VMs are still in BIOS.",
+    "VMs: loading a bootloader…",
+    "VMs: booting three separate kernels…",
+    "VMs: starting their init systems…",
+    "Same 3 apps: 0.4 s and 120 MB as containers, 94 s and 3.4 GB as VMs."
+  ];
+  function vmStep(k){
+    vmOs.forEach(function(o){
+      o.querySelector("i").style.width = prog[k] + "%";
+      o.querySelector("span").textContent = stages[k];
+      o.classList.toggle("is-up", k === 4);
+    });
+    if(k === 4) vmApp.forEach(function(a){ a.classList.add("is-up"); });
+    vmTime.textContent = times[k]; vmMem.textContent = mems[k]; vmFill.style.width = fills[k] + "%";
+  }
+  function reset(){
+    vmOs.forEach(function(o){ o.querySelector("i").style.width = "0"; o.querySelector("span").innerHTML = "Guest OS<br>+ own kernel"; o.classList.remove("is-up"); });
+    vmApp.forEach(function(a){ a.classList.remove("is-up"); });
+    ctApp.forEach(function(a){ a.classList.remove("is-up"); });
+    vmTime.textContent = "0 s"; vmMem.textContent = "0 MB"; vmFill.style.width = "0";
+    ctTime.textContent = "0 s"; ctMem.textContent = "0 MB"; ctFill.style.width = "0";
+    dkStatus(st, "Press play to start the same 3 apps on each stack.");
+  }
+  var steps = [0, 1, 2, 3, 4].map(function(k){
+    return function(){
+      if(k === 0){
+        ctApp.forEach(function(a){ a.classList.add("is-up"); });
+        ctTime.textContent = "0.4 s"; ctMem.textContent = "120 MB"; ctFill.style.width = "5%";
+      }
+      vmStep(k);
+      dkStatus(st, notes[k], k === 4 ? "good" : "warn");
+    };
+  });
+  var player = dkPlayer({ btn: dk$("dkbPlay"), label: "Start the 3 apps", interval: 1000, steps: function(){ return steps; }, reset: reset });
+  player.reset();
+})();
+
+/* ---- ch1: the six namespace switches ---- */
+(function(){
+  var root = dk$("dkNs"); if(!root) return;
+  var rows = root.querySelectorAll(".dkn__row");
+  var score = dk$("dknScore"), st = dk$("dknStatus");
+  var quick = dk$("dknQuick").querySelectorAll(".dk-toggle__btn");
+  var data = {
+    pid:  { host: "212 processes: systemd, sshd, dockerd, <b>node (PID 48213)</b> …", iso: "1 process: <b>node is PID 1</b>", shared: "sees all 212 host processes, and can signal them" },
+    net:  { host: "eth0 10.0.4.12 · port 80 used by nginx", iso: "its own <b>eth0 172.17.0.2</b> · port 80 is free", shared: "the host's network: port 80 is taken, bind fails" },
+    mnt:  { host: "/ → home · var · etc · boot …", iso: "/ → <b>app · bin · etc · usr</b> (from the image)", shared: "the host's /: can read /home and /etc/shadow" },
+    uts:  { host: "hostname: prod-host-01", iso: "hostname: <b>a3f9c1d2e7b4</b>", shared: "hostname: prod-host-01 (rename it, rename the host)" },
+    user: { host: "you are uid 1000 (not root)", iso: "root inside = <b>uid 165536</b> on the host", shared: "root inside = <b>real root</b> on the host" },
+    ipc:  { host: "shared memory: postgres, redis segments", iso: "<b>none</b> of the host's shared memory", shared: "can attach to the host's shared memory" }
+  };
+  var on = { pid: true, net: true, mnt: true, uts: true, user: true, ipc: true };
+  function render(){
+    var n = 0;
+    rows.forEach(function(r){
+      var k = r.dataset.ns, d = data[k], isOn = on[k];
+      if(isOn) n++;
+      r.classList.toggle("is-on", isOn);
+      r.classList.toggle("is-shared", !isOn);
+      r.querySelector(".dkn__cell--host").innerHTML = "<span>" + d.host + "</span>";
+      r.querySelector(".dkn__cell--ct").innerHTML = "<span>" + (isOn ? d.iso : d.shared) + "</span>";
+      r.querySelector(".dkn__sw").setAttribute("aria-pressed", isOn ? "true" : "false");
+    });
+    score.textContent = n + " / 6 isolated";
+    score.className = "dkn__score" + (n === 6 ? "" : n === 0 ? " is-off" : " is-mixed");
+    quick[0].classList.toggle("is-active", n === 6);
+    quick[1].classList.toggle("is-active", n === 0);
+    if(n === 6) dkStatus(st, "Looks like its own machine, but it's still just one process on the host's kernel.", "good");
+    else if(n === 0) dkStatus(st, "Nothing isolated: it's a normal process that sees everything.", "bad");
+    else dkStatus(st, n + " of 6 isolated. Every switch you turn off exposes one more thing.", "warn");
+  }
+  rows.forEach(function(r){
+    r.querySelector(".dkn__sw").addEventListener("click", function(){ on[r.dataset.ns] = !on[r.dataset.ns]; render(); });
+  });
+  quick[0].addEventListener("click", function(){ Object.keys(on).forEach(function(k){ on[k] = true; }); render(); });
+  quick[1].addEventListener("click", function(){ Object.keys(on).forEach(function(k){ on[k] = false; }); render(); });
+  render();
+})();
+
+/* ---- ch2: the build cache ---- */
+(function(){
+  var root = dk$("dkCache"); if(!root) return;
+  var stack = dk$("dkcStack"), timeEl = dk$("dkcTime"), vsEl = dk$("dkcVs"), st = dk$("dkcStatus");
+  var layouts = {
+    good: [
+      { c: "FROM node:20-alpine", t: 5, hit: ["base"] },
+      { c: "COPY package*.json ./", t: 1, hit: ["dep"] },
+      { c: "RUN npm ci", t: 45, hit: [] },
+      { c: "COPY . .", t: 2, hit: ["src"] },
+      { c: "RUN npm run build", t: 12, hit: [] }
+    ],
+    bad: [
+      { c: "FROM node:20-alpine", t: 5, hit: ["base"] },
+      { c: "COPY . .", t: 2, hit: ["src", "dep"] },
+      { c: "RUN npm ci", t: 45, hit: [] },
+      { c: "RUN npm run build", t: 12, hit: [] }
+    ]
+  };
+  var order = "good", change = "src";
+  function build(){
+    stack.innerHTML = "";
+    layouts[order].forEach(function(L){
+      var d = document.createElement("div");
+      d.className = "dkc__card is-cached";
+      d.innerHTML = '<code></code><span class="dkc__tag"></span>';
+      d.querySelector("code").textContent = L.c;
+      stack.appendChild(d);
+    });
+  }
+  function message(){
+    if(change === "none") return ["Nothing changed, so every layer comes straight from the cache.", "good"];
+    if(change === "base") return ["A new base image changes the very first layer, so everything after it re-runs.", "bad"];
+    if(order === "bad") return change === "src"
+      ? ["COPY . . comes before the install, so even a one-line edit re-runs the 45 s npm ci. That's the trap.", "bad"]
+      : ["Everything re-runs. Fair for a new dependency, but in this layout a plain source edit costs the same.", "bad"];
+    return change === "src"
+      ? ["Only the last 2 layers re-run. The 45 s dependency install stayed cached.", "good"]
+      : ["package.json changed, so the install re-runs. That's fair: the dependencies really did change.", "warn"];
+  }
+  function render(){
+    var layers = layouts[order], origin = -1, total = 0, full = 0;
+    if(change !== "none") layers.forEach(function(L, idx){ if(origin < 0 && L.hit.indexOf(change) >= 0) origin = idx; });
+    layers.forEach(function(L, idx){
+      full += L.t;
+      var rebuilt = origin >= 0 && idx >= origin;
+      if(rebuilt) total += L.t;
+      var c = stack.children[idx];
+      c.style.transitionDelay = (rebuilt ? (idx - origin) * 130 : 0) + "ms";
+      c.className = "dkc__card " + (idx === origin ? "is-origin" : rebuilt ? "is-rebuilt" : "is-cached");
+      c.querySelector(".dkc__tag").textContent = rebuilt ? (idx === origin ? "CHANGED · re-runs · " : "re-runs · ") + L.t + " s" : "CACHED · 0 s";
+    });
+    timeEl.textContent = total + " s";
+    timeEl.className = total > 20 ? "is-bad" : "";
+    vsEl.textContent = "(a full rebuild takes " + full + " s)";
+    var m = message();
+    dkStatus(st, m[0], m[1]);
+  }
+  dkToggle(dk$("dkcOrder"), function(v){ order = v; build(); render(); });
+  dkToggle(dk$("dkcChange"), function(v){ change = v; render(); });
+  build(); render();
+})();
+
+/* ---- ch3: single-stage vs multi-stage builds ---- */
+(function(){
+  var root = dk$("dkMulti"); if(!root) return;
+  var build = dk$("dkmBuild"), arrow = dk$("dkmArrow"), size = dk$("dkmSize"), fill = dk$("dkmFill"), st = dk$("dkmStatus");
+  var bName = dk$("dkmBuildName"), bSub = dk$("dkmBuildSub");
+  var bc = {}, fc = {};
+  root.querySelectorAll("[data-c]").forEach(function(e){ bc[e.dataset.c] = e; });
+  root.querySelectorAll("[data-f]").forEach(function(e){ fc[e.dataset.f] = e; });
+  var mode = "multi";
+  function ship(mb, label, small){
+    size.textContent = label;
+    fill.style.width = Math.max(2.5, mb / 1355 * 100) + "%";
+    fill.className = "dkm__fill" + (small ? " is-small" : "");
+  }
+  function reset(){
+    root.classList.toggle("dkm--single", mode === "single");
+    Object.keys(bc).forEach(function(k){ bc[k].classList.remove("is-in"); });
+    Object.keys(fc).forEach(function(k){ fc[k].classList.remove("is-in"); });
+    build.classList.remove("is-discarded");
+    arrow.classList.remove("is-on");
+    size.textContent = "—"; fill.style.width = "0"; fill.className = "dkm__fill";
+    if(mode === "single"){
+      bName.textContent = "The only stage"; bSub.textContent = "FROM node:20 — everything stays in the image";
+      dkStatus(st, "Single-stage: whatever you install while building stays in the final image.");
+    } else {
+      bName.textContent = "Stage 1 · build"; bSub.textContent = "FROM node:20 AS build";
+      dkStatus(st, "Multi-stage: build in one stage, ship from another.");
+    }
+  }
+  var single = [
+    function(){ bc.base.classList.add("is-in"); ship(1000, "1.0 GB"); dkStatus(st, "Start from the full node:20 image…", "warn"); },
+    function(){ bc.mods.classList.add("is-in"); ship(1300, "1.3 GB"); dkStatus(st, "npm install adds the cache and every dev dependency…", "warn"); },
+    function(){ bc.src.classList.add("is-in"); ship(1350, "1.35 GB"); dkStatus(st, "Your source code and build tools come along too…", "warn"); },
+    function(){ bc.dist.classList.add("is-in"); ship(1355, "1.35 GB"); dkStatus(st, "All of it ships to production, and only 5 MB of it is the app.", "bad"); }
+  ];
+  var multi = [
+    function(){ bc.base.classList.add("is-in"); dkStatus(st, "Stage 1 pulls the full toolchain. It's heavy, but it's temporary.", "warn"); },
+    function(){ bc.mods.classList.add("is-in"); },
+    function(){ bc.src.classList.add("is-in"); },
+    function(){ bc.dist.classList.add("is-in"); dkStatus(st, "npm run build produces dist/, the only thing we actually need.", "warn"); },
+    function(){ arrow.classList.add("is-on"); fc.base.classList.add("is-in"); fc.dist.classList.add("is-in"); ship(45, "45 MB", true); dkStatus(st, "COPY --from=build brings just dist/ into a fresh, tiny runtime stage.", "good"); },
+    function(){ build.classList.add("is-discarded"); dkStatus(st, "Stage 1 is thrown away. Only 45 MB ships; the 1.35 GB toolchain never leaves the build machine.", "good"); }
+  ];
+  var player = dkPlayer({ btn: dk$("dkmPlay"), label: "Build the image", interval: 1100, steps: function(){ return mode === "single" ? single : multi; }, reset: reset });
+  dkToggle(dk$("dkmToggle"), function(v){ mode = v; player.reset(); });
+  player.reset();
+})();
+
+/* ---- ch3: docker stop, shell form vs exec form ---- */
+(function(){
+  var root = dk$("dkSig"); if(!root) return;
+  var tree = dk$("dksTree"), sig = dk$("dksSig"), clock = dk$("dksClock"), st = dk$("dksStatus");
+  var mode = "shell";
+  var reqs = '<span class="dks__reqs"><span class="dks__req is-busy"></span><span class="dks__req is-busy"></span><span class="dks__req is-busy"></span></span>';
+  function draw(){
+    tree.innerHTML = mode === "shell"
+      ? '<div class="dks__proc" id="dksP1"><b>PID 1</b><span>/bin/sh -c "java -jar app.jar"</span></div>' +
+        '<div class="dks__proc dks__proc--child" id="dksP2"><b>PID 7</b><span>java -jar app.jar</span>' + reqs + '<span class="dk-note" id="dksNote"></span></div>'
+      : '<div class="dks__proc" id="dksP1"><b>PID 1</b><span>java -jar app.jar</span>' + reqs + '<span class="dk-note" id="dksNote"></span></div>';
+  }
+  function setReqs(cls){ tree.querySelectorAll(".dks__req").forEach(function(r){ r.className = "dks__req" + (cls ? " " + cls : ""); }); }
+  function showSig(text, cls){ sig.textContent = text; sig.className = "dks__sig is-on" + (cls ? " " + cls : ""); }
+  function reset(){
+    draw();
+    sig.className = "dks__sig"; sig.textContent = "SIGTERM";
+    clock.textContent = "0 s";
+    dkStatus(st, mode === "shell" ? "Shell form: the shell is PID 1 and java is just its child. Press docker stop." : "Exec form: java itself is PID 1. Press docker stop.");
+  }
+  var shellSteps = [
+    function(){ showSig("SIGTERM → PID 1"); dk$("dksP1").classList.add("is-hit"); dkStatus(st, "docker stop sends SIGTERM to PID 1…", "warn"); },
+    function(){ dk$("dksNote").textContent = "never hears it"; dkStatus(st, "…but PID 1 is the shell, and it doesn't pass signals on. java has no idea.", "warn"); },
+    function(){ clock.textContent = "5 s"; dkStatus(st, "Docker waits out the 10 s grace period. Nothing is shutting down.", "warn"); },
+    function(){
+      clock.textContent = "10 s"; showSig("SIGKILL", "is-kill");
+      dk$("dksP1").classList.add("is-dead"); dk$("dksP2").classList.add("is-dead"); setReqs("is-dropped");
+      dkStatus(st, "Time's up: SIGKILL. java dies mid-request and its shutdown hook never ran.", "bad");
+    }
+  ];
+  var execSteps = [
+    function(){ showSig("SIGTERM → PID 1"); dk$("dksP1").classList.add("is-hit"); dkStatus(st, "docker stop sends SIGTERM to PID 1, which is java itself.", "warn"); },
+    function(){ clock.textContent = "1 s"; dk$("dksNote").textContent = "shutdown hook running…"; dkStatus(st, "java's shutdown hook starts: stop taking traffic and drain in-flight requests.", "warn"); },
+    function(){ clock.textContent = "2 s"; setReqs("is-done"); dk$("dksNote").textContent = "closing the DB pool…"; dkStatus(st, "In-flight requests finished. Closing connections…", "warn"); },
+    function(){ showSig("exit 0", "is-ok"); dk$("dksP1").classList.add("is-clean"); dk$("dksNote").textContent = "exited cleanly"; dkStatus(st, "Exited cleanly in about 2 s. Nothing dropped, no SIGKILL needed.", "good"); }
+  ];
+  var player = dkPlayer({ btn: dk$("dksPlay"), label: "docker stop", interval: 1300, steps: function(){ return mode === "shell" ? shellSteps : execSteps; }, reset: reset });
+  dkToggle(dk$("dksToggle"), function(v){ mode = v; player.reset(); });
+  player.reset();
+})();
+
+/* ---- ch4: does the data survive a redeploy? ---- */
+(function(){
+  var root = dk$("dkVol"); if(!root) return;
+  var v1 = dk$("dkvV1"), mid = dk$("dkvMid"), v2 = dk$("dkvV2");
+  var s1 = dk$("dkvV1Slot"), sm = dk$("dkvMidSlot"), s2 = dk$("dkvV2Slot");
+  var midName = dk$("dkvMidName"), midSub = dk$("dkvMidSub"), st = dk$("dkvStatus");
+  var mode = "none";
+  var file = '<span class="dkv__file">orders.db</span>';
+  function note(t, bad){ return '<span class="dk-note' + (bad ? ' is-bad' : '') + '">' + t + '</span>'; }
+  var info = {
+    none:   { name: "No volume",     sub: "nothing mounted" },
+    volume: { name: "Docker volume", sub: "pgdata · /var/lib/docker/volumes" },
+    bind:   { name: "Host folder",   sub: "./data, bind-mounted in" },
+    tmpfs:  { name: "RAM (tmpfs)",   sub: "memory only, never on disk" }
+  };
+  function reset(){
+    v1.classList.remove("is-gone"); v2.classList.add("is-hidden");
+    s1.innerHTML = note("empty");
+    sm.innerHTML = mode === "none" ? note("nothing mounted") : note("empty");
+    s2.innerHTML = "";
+    mid.classList.toggle("is-off", mode === "none");
+    midName.textContent = info[mode].name; midSub.textContent = info[mode].sub;
+    dkStatus(st, "Pick where the app stores its data, then press the button to redeploy.");
+  }
+  var steps = [
+    function(){
+      if(mode === "none"){ s1.innerHTML = file; }
+      else { s1.innerHTML = note(mode === "tmpfs" ? "writes go to RAM" : "writes go to the mount"); sm.innerHTML = file; }
+      dkStatus(st, "1 · The app writes orders.db.", "warn");
+    },
+    function(){
+      v1.classList.add("is-gone");
+      if(mode === "none") s1.innerHTML = note("deleted with the container", true);
+      if(mode === "tmpfs") sm.innerHTML = note("RAM freed: data gone", true);
+      dkStatus(st, "2 · docker rm removes the old container.", "warn");
+    },
+    function(){
+      v2.classList.remove("is-hidden");
+      s2.innerHTML = mode === "none" ? note("fresh, empty writable layer") : mode === "tmpfs" ? note("new, empty RAM disk") : note("same mount attached");
+      dkStatus(st, "3 · docker run starts the new version.", "warn");
+    },
+    function(){
+      var kept = (mode === "volume" || mode === "bind");
+      s2.innerHTML = kept ? file : note("orders.db: not found", true);
+      dkStatus(st, kept ? "Data survived: it lived outside the container." : "Data lost: it lived in something that disappeared with the container.", kept ? "good" : "bad");
+    }
+  ];
+  var player = dkPlayer({ btn: dk$("dkvPlay"), label: "Redeploy: docker rm + docker run", interval: 1200, steps: function(){ return steps; }, reset: reset });
+  dkToggle(dk$("dkvToggle"), function(v){ mode = v; player.reset(); });
+  player.reset();
+})();
+
+/* ---- ch4: service discovery by name ---- */
+(function(){
+  var root = dk$("dkDns"); if(!root) return;
+  var web = dk$("dkdWeb"), db = dk$("dkdDb"), dns = dk$("dkdDns"), msg = dk$("dkdMsg"), st = dk$("dkdStatus"), netName = dk$("dkdNetName");
+  var mode = "user";
+  function setMsg(t, kind){ msg.innerHTML = t || "&nbsp;"; msg.className = "dkd__msg" + (kind ? " is-" + kind : ""); }
+  function reset(){
+    var isUser = mode === "user";
+    netName.textContent = isUser ? "network: appnet (user-defined bridge)" : "network: bridge (the default)";
+    web.innerHTML = 'web<small>' + (isUser ? "172.18.0.2" : "172.17.0.2") + '</small>';
+    db.innerHTML = 'db<small>' + (isUser ? "172.18.0.3" : "172.17.0.3") + '</small>';
+    web.className = "dkd__node"; db.className = "dkd__node";
+    dns.className = "dkd__dns" + (isUser ? "" : " is-off");
+    setMsg("");
+    dkStatus(st, isUser ? "This network has Docker's embedded DNS. Press play." : "This is the legacy default bridge: no DNS. Press play.");
+  }
+  var userSteps = [
+    function(){ web.classList.add("is-hit"); setMsg('connect("db", 5432)'); dkStatus(st, "web's code connects to the hostname db.", "warn"); },
+    function(){ dns.classList.add("is-hit"); setMsg('web → DNS: where is "db"?'); dkStatus(st, "The lookup goes to Docker's embedded DNS at 127.0.0.11.", "warn"); },
+    function(){ setMsg("DNS → web: db is 172.18.0.3"); dkStatus(st, "The DNS server knows every container on this network by name.", "warn"); },
+    function(){ db.classList.add("is-good"); web.classList.add("is-good"); setMsg("connected ✓", "good"); dkStatus(st, "Connected by name. No IP addresses hardcoded anywhere.", "good"); }
+  ];
+  var defSteps = [
+    function(){ web.classList.add("is-hit"); setMsg('connect("db", 5432)'); dkStatus(st, "web's code connects to the hostname db.", "warn"); },
+    function(){ setMsg('web → ??? where is "db"?'); dkStatus(st, "The default bridge has no embedded DNS server to ask.", "warn"); },
+    function(){ web.classList.add("is-bad"); setMsg("could not resolve host: db ✗", "bad"); dkStatus(st, "The name lookup fails.", "bad"); },
+    function(){ db.classList.add("is-hit"); setMsg('only connect("172.17.0.3", 5432) works…', "bad"); dkStatus(st, "Hardcoding the IP works, until the container restarts and gets a new one.", "bad"); }
+  ];
+  var player = dkPlayer({ btn: dk$("dkdPlay"), label: 'web connects to "db"', interval: 1200, steps: function(){ return mode === "user" ? userSteps : defSteps; }, reset: reset });
+  dkToggle(dk$("dkdToggle"), function(v){ mode = v; player.reset(); });
+  player.reset();
+})();
+
+/* ---- ch5: depends_on vs service_healthy ---- */
+(function(){
+  var root = dk$("dkDep"); if(!root) return;
+  var grid = dk$("dkpGrid"), st = dk$("dkpStatus");
+  var mode = "short", N = 8;
+  var dbRow = [["boot", "start"], ["init", "init…"], ["init", "init…"], ["init", "init…"], ["init", "init…"], ["init", "init…"], ["ready", "healthy ✓"], ["ready", "healthy ✓"]];
+  var webRow = {
+    short:   [["start", "start"], ["fail", "refused ✗"], ["fail", "refused ✗"], ["fail", "refused ✗"], ["fail", "refused ✗"], ["fail", "refused ✗"], ["ok", "connected ✓"], ["ok", "connected ✓"]],
+    healthy: [["wait", "waiting…"], ["wait", "waiting…"], ["wait", "waiting…"], ["wait", "waiting…"], ["wait", "waiting…"], ["wait", "waiting…"], ["start", "start"], ["ok", "connected ✓"]]
+  };
+  var said = {
+    short:   { 0: "docker compose up: db and web start almost together.", 1: "web tries to connect: connection refused. Postgres is still initialising.", 3: "web keeps crashing and restarting…", 6: "Postgres is finally ready, so web's next try works.", 7: ["web crash-looped 5 times: depends_on only waited for db to START.", "bad"] },
+    healthy: { 0: "docker compose up: db starts, web waits for a healthy db.", 3: "The healthcheck keeps failing, so web stays put.", 6: "db is healthy, so web starts now.", 7: ["web started once, exactly when Postgres could really answer.", "good"] }
+  };
+  var hdr = [], dbC = [], webC = [];
+  function add(cls, text){ var d = document.createElement("div"); d.className = cls; d.textContent = text; grid.appendChild(d); return d; }
+  function build(){
+    grid.innerHTML = ""; hdr = []; dbC = []; webC = [];
+    add("dkp__lab", "");
+    for(var t = 0; t < N; t++) hdr.push(add("dkp__t", t + " s"));
+    add("dkp__lab", "db (postgres)");
+    for(var a = 0; a < N; a++) dbC.push(add("dkp__c", ""));
+    add("dkp__lab", "web (your app)");
+    for(var b = 0; b < N; b++) webC.push(add("dkp__c", ""));
+  }
+  function showCol(k){
+    hdr.forEach(function(h, i){ h.classList.toggle("is-now", i === k); });
+    dbC[k].className = "dkp__c is-" + dbRow[k][0]; dbC[k].textContent = dbRow[k][1];
+    var w = webRow[mode][k];
+    webC[k].className = "dkp__c is-" + w[0]; webC[k].textContent = w[1];
+    var s = said[mode][k];
+    if(s){ if(typeof s === "string") dkStatus(st, s, "warn"); else dkStatus(st, s[0], s[1]); }
+  }
+  function reset(){
+    build();
+    dkStatus(st, mode === "short" ? "depends_on: [db] only waits for the db container to start. Press play." : "service_healthy waits until the db healthcheck passes. Press play.");
+  }
+  var steps = [0, 1, 2, 3, 4, 5, 6, 7].map(function(k){ return function(){ showCol(k); }; });
+  var player = dkPlayer({ btn: dk$("dkpPlay"), label: "docker compose up", interval: 800, steps: function(){ return steps; }, reset: reset });
+  dkToggle(dk$("dkpToggle"), function(v){ mode = v; player.reset(); });
+  player.reset();
+})();
+
+/* ---- ch6: what docker run actually does ---- */
+(function(){
+  var root = dk$("dkRun"); if(!root) return;
+  var nodes = root.querySelectorAll(".dkr__node");
+  var title = dk$("dkrTitle"), text = dk$("dkrText"), msEl = dk$("dkrMs"), fill = dk$("dkrFill");
+  var info = [
+    { t: "docker CLI", ms: 0,  d: "Parses docker run app:1.0 and sends it to the daemon as a REST call. It does no real work itself." },
+    { t: "dockerd",    ms: 3,  d: "The Docker Engine daemon. Checks the image exists (pulls it if not) and creates the container's config." },
+    { t: "containerd", ms: 18, d: "Manages the container's lifecycle and storage, and prepares the image layers." },
+    { t: "runc",       ms: 38, d: "A tiny OCI program with one job: create exactly one container, then exit." },
+    { t: "namespaces", ms: 44, d: "Creates new PID, net, mount, UTS, IPC and user namespaces: the process's private view of the system." },
+    { t: "cgroups",    ms: 48, d: "Writes --memory and --cpus into cgroup control files: the process's resource limits." },
+    { t: "OverlayFS",  ms: 78, d: "Mounts the image's read-only layers plus a fresh writable layer as the container's root filesystem." },
+    { t: "execve()",   ms: 90, d: "Your ENTRYPOINT is exec'd and becomes PID 1. Nothing was booted: it's just a process." }
+  ];
+  var total = 90;
+  function show(k){
+    nodes.forEach(function(n, i){ n.classList.toggle("is-active", i === k); n.classList.toggle("is-done", i < k); });
+    var d = info[k];
+    title.textContent = (k + 1) + " · " + d.t;
+    text.textContent = d.d;
+    msEl.textContent = "≈ " + d.ms + " ms";
+    fill.style.width = (d.ms / total * 100) + "%";
+  }
+  function reset(){
+    nodes.forEach(function(n){ n.classList.remove("is-active", "is-done"); });
+    title.textContent = "Ready";
+    text.textContent = "Press play to follow one docker run from your keyboard to a running process, or click any step.";
+    msEl.textContent = "0 ms"; fill.style.width = "0";
+  }
+  var steps = info.map(function(_, k){ return function(){ show(k); }; });
+  var player = dkPlayer({ btn: dk$("dkrPlay"), label: "docker run app:1.0", interval: 1100, steps: function(){ return steps; }, reset: reset });
+  nodes.forEach(function(n){ n.addEventListener("click", function(){ var k = +n.dataset.k; show(k); player.seek(k); }); });
+  player.reset();
+})();
+
+/* ---- ch6: OverlayFS playground ---- */
+(function(){
+  var root = dk$("dkOvl"); if(!root) return;
+  var mergedEl = dk$("dkoMerged"), upperEl = dk$("dkoUpper"), st = dk$("dkoStatus");
+  var lowerEl = { 3: dk$("dkoL3"), 2: dk$("dkoL2"), 1: dk$("dkoL1") };
+  var lower = [
+    { n: "server.js", l: 3 }, { n: "config.json", l: 3 }, { n: "node_modules/", l: 2 }, { n: "bin/sh", l: 1 }, { n: "os-release", l: 1 }
+  ];
+  var upper = {};
+  var flash = null;
+  function chip(name, badge, cls){ return '<span class="dko__file ' + (cls || "") + '">' + name + (badge ? "<i>" + badge + "</i>" : "") + "</span>"; }
+  function render(){
+    [3, 2, 1].forEach(function(l){
+      lowerEl[l].innerHTML = lower.filter(function(f){ return f.l === l; }).map(function(f){
+        var u = upper[f.n];
+        return chip(f.n, "", u === "wh" ? "is-struck" : u === "copy" ? "is-shadow" : "");
+      }).join("");
+    });
+    var ups = Object.keys(upper);
+    upperEl.innerHTML = ups.length ? ups.map(function(n){
+      var u = upper[n];
+      if(u === "wh") return chip(".wh." + n, "whiteout", "is-wh");
+      return chip(n, u === "copy" ? "copy-up" : "new", "is-up");
+    }).join("") : '<span class="dko__empty">empty: nothing written yet</span>';
+    var names = lower.map(function(f){ return f.n; });
+    ups.forEach(function(n){ if(upper[n] !== "wh" && names.indexOf(n) < 0) names.push(n); });
+    mergedEl.innerHTML = names.filter(function(n){ return upper[n] !== "wh"; }).map(function(n){
+      var src = upper[n] ? "upper" : "layer " + lower.filter(function(f){ return f.n === n; })[0].l;
+      return chip(n, src, (upper[n] ? "is-up " : "") + (flash === n ? "is-flash" : ""));
+    }).join("");
+  }
+  var actions = {
+    read:   function(){ flash = "config.json"; dkStatus(st, "Read: found in layer 3, the top-most layer that has it. Nothing is copied.", "good"); },
+    edit:   function(){ upper["config.json"] = "copy"; flash = "config.json"; dkStatus(st, "Writing to a lower-layer file triggers a copy-up: the whole file is copied into upperdir, then edited. Layer 3 keeps the original.", "warn"); },
+    create: function(){ upper["logs.txt"] = "new"; flash = "logs.txt"; dkStatus(st, "New files go straight into upperdir.", "good"); },
+    remove: function(){ upper["server.js"] = "wh"; flash = null; dkStatus(st, "Lower layers are read-only, so a delete is a whiteout marker in upperdir. server.js still exists in layer 3, just hidden.", "warn"); },
+    reset:  function(){ upper = {}; flash = null; dkStatus(st, "docker rm deletes upperdir. The lower layers are untouched, and every other container from this image never noticed.", "good"); }
+  };
+  root.querySelectorAll("[data-a]").forEach(function(b){
+    b.addEventListener("click", function(){ actions[b.dataset.a](); render(); });
+  });
+  render();
+  dkStatus(st, "Try the buttons: the merged view is what the app sees, the layers below are where things really live.");
+})();
+
+/* ---- ch7: tags move, digests don't ---- */
+(function(){
+  var root = dk$("dkTag"); if(!root) return;
+  var A = dk$("dktA"), B = dk$("dktB"), st = dk$("dktStatus");
+  var sCmd = dk$("dktStageCmd"), sRun = dk$("dktStageRun"), pCmd = dk$("dktProdCmd"), pRun = dk$("dktProdRun");
+  var mode = "tag";
+  var cmdTag = "docker pull myapp:1.0";
+  var cmdDig = "docker pull myapp@sha256:9d3c…";
+  function sticker(blob){
+    root.querySelectorAll(".dkt__sticker").forEach(function(s){ s.remove(); });
+    if(blob){ var s = document.createElement("span"); s.className = "dkt__sticker"; s.textContent = "myapp:1.0"; blob.appendChild(s); }
+  }
+  function reset(){
+    A.classList.remove("is-in"); B.classList.remove("is-in"); sticker(null);
+    sCmd.textContent = ""; pCmd.textContent = "";
+    sRun.textContent = "not deployed yet"; sRun.className = "dkt__run";
+    pRun.textContent = "not deployed yet"; pRun.className = "dkt__run";
+    dkStatus(st, "Press play to follow one team through a week.");
+  }
+  var steps = [
+    function(){ A.classList.add("is-in"); sticker(A); dkStatus(st, "Monday: CI pushes a build and tags it myapp:1.0.", "warn"); },
+    function(){ sCmd.textContent = mode === "tag" ? cmdTag : cmdDig; sRun.textContent = "runs 9d3c… (tested)"; sRun.className = "dkt__run is-a"; dkStatus(st, "Staging deploys it, and the team tests it.", "warn"); },
+    function(){ B.classList.add("is-in"); sticker(B); dkStatus(st, "Tuesday: another build is pushed under the same tag. The sticker moved; Monday's bytes didn't change.", "warn"); },
+    function(){
+      if(mode === "tag"){ pCmd.textContent = cmdTag; pRun.textContent = "runs 41ae… (never tested)"; pRun.className = "dkt__run is-b"; }
+      else { pCmd.textContent = cmdDig; pRun.textContent = "runs 9d3c… (tested)"; pRun.className = "dkt__run is-a"; }
+      dkStatus(st, "Production deploys.", "warn");
+    },
+    function(){
+      if(mode === "tag") dkStatus(st, "Staging ran 9d3c, production ran 41ae. Same tag, different bytes.", "bad");
+      else dkStatus(st, "Staging and production ran the exact same bytes.", "good");
+    }
+  ];
+  var player = dkPlayer({ btn: dk$("dktPlay"), label: "Play the week", interval: 1400, steps: function(){ return steps; }, reset: reset });
+  dkToggle(dk$("dktToggle"), function(v){ mode = v; player.reset(); });
+  player.reset();
+})();
+
+/* ---- ch7: push only moves the missing layers ---- */
+(function(){
+  var root = dk$("dkPush"); if(!root) return;
+  var grid = dk$("dkqGrid"), sentEl = dk$("dkqSent"), ofEl = dk$("dkqOf"), st = dk$("dkqStatus");
+  var mode = "code", sent = 0, cells = [];
+  var layers = [
+    { n: "L1 · base image", mb: 180, d: "3f1a9c" },
+    { n: "L2 · npm ci",     mb: 120, d: "7be204" },
+    { n: "L3 · config",     mb: 2,   d: "c5d118" },
+    { n: "L4 · your code",  mb: 8,   d: "a91f7e" }
+  ];
+  var fresh = { code: [false, false, false, true], base: [true, true, true, true] };
+  var newD = ["e402b7", "5c9a11", "b7d3f0", "d3b650"];
+  function digest(i){ return fresh[mode][i] ? newD[i] : layers[i].d; }
+  function add(cls, html){ var d = document.createElement("div"); d.className = cls; d.innerHTML = html; grid.appendChild(d); return d; }
+  function reset(){
+    grid.innerHTML = ""; cells = []; sent = 0;
+    add("dkq__hd", "Your machine (local layers)"); add("dkq__hd", "Registry");
+    layers.forEach(function(L, i){
+      add("dkq__cell" + (fresh[mode][i] ? " is-changed" : ""), "<span>" + L.n + " · sha256:" + digest(i) + (fresh[mode][i] ? " (new)" : "") + "</span><b>" + L.mb + " MB</b>");
+      cells.push(add("dkq__cell", "<span>waiting…</span>"));
+    });
+    sentEl.textContent = "0 MB";
+    ofEl.textContent = "(the whole image is 310 MB)";
+    dkStatus(st, mode === "code" ? "You only changed your code. Press docker push." : "The base image changed, so every layer above it is different too. Press docker push.");
+  }
+  var steps = [0, 1, 2, 3].map(function(i){
+    return function(){
+      if(fresh[mode][i]){
+        sent += layers[i].mb;
+        cells[i].className = "dkq__cell is-up";
+        cells[i].innerHTML = "<span>↑ not in the registry: uploading</span><b>" + layers[i].mb + " MB</b>";
+      } else {
+        cells[i].className = "dkq__cell is-skip";
+        cells[i].innerHTML = "<span>✓ already there: skipped</span><b>0 MB</b>";
+      }
+      sentEl.textContent = sent + " MB";
+      if(i === 3) dkStatus(st, mode === "code" ? "Pushed 8 MB. The other 3 layers were already in the registry." : "Pushed all 310 MB, because every layer has a new digest.", mode === "code" ? "good" : "bad");
+      else dkStatus(st, "Comparing layer " + (i + 1) + " by digest…", "warn");
+    };
+  });
+  var player = dkPlayer({ btn: dk$("dkqPlay"), label: "docker push", interval: 1100, steps: function(){ return steps; }, reset: reset });
+  dkToggle(dk$("dkqToggle"), function(v){ mode = v; player.reset(); });
+  player.reset();
+})();
+
+/* ---- ch8: heap percentage vs the container's memory limit ---- */
+(function(){
+  var root = dk$("dkMem"); if(!root) return;
+  var meter = dk$("dkxMeter"), st = dk$("dkxStatus"), nums = dk$("dkxNums");
+  var pct = dk$("dkxPct"), pctLabel = dk$("dkxPctLabel");
+  var seg = { heap: dk$("dkxHeap"), meta: dk$("dkxMeta"), thr: dk$("dkxThr"), nat: dk$("dkxNat"), gc: dk$("dkxGc") };
+  var LIMIT = 512, SCALE = 620;
+  var nonheap = [[40, 18, 12, 10], [45, 24, 18, 14], [49, 30, 26, 18], [52, 34, 32, 22]];
+  var fr = [0.35, 0.65, 0.9, 1];
+  function draw(k){
+    var hm = LIMIT * (+pct.value) / 100;
+    var heap = k < 0 ? 0 : hm * fr[k];
+    var nh = k < 0 ? [0, 0, 0, 0] : nonheap[k];
+    var vals = [heap, nh[0], nh[1], nh[2], nh[3]];
+    ["heap", "meta", "thr", "nat", "gc"].forEach(function(key, i){ seg[key].style.width = (vals[i] / SCALE * 100) + "%"; });
+    var nhSum = nh[0] + nh[1] + nh[2] + nh[3];
+    var tot = heap + nhSum;
+    nums.innerHTML = k < 0
+      ? "heap may grow to <b>" + Math.round(hm) + " MB</b> · everything else needs about <b>140 MB</b> · limit <b>512 MB</b>"
+      : "heap <b>" + Math.round(heap) + " MB</b> + everything else <b>" + nhSum + " MB</b> = <b>" + Math.round(tot) + " MB</b> of 512 MB";
+    return tot;
+  }
+  function reset(){
+    meter.classList.remove("is-oom");
+    pctLabel.textContent = pct.value;
+    draw(-1);
+    dkStatus(st, "Set the heap percentage, then press Traffic spike.");
+  }
+  var steps = [0, 1, 2, 3].map(function(k){
+    return function(){
+      var tot = draw(k);
+      if(tot > LIMIT){
+        meter.classList.add("is-oom");
+        dkStatus(st, "OOMKilled: the kernel sends SIGKILL and the container exits with code 137. The heap flag never saw it coming.", "bad");
+        return "end";
+      }
+      if(k === 3) dkStatus(st, "Survived the spike with " + Math.round(LIMIT - tot) + " MB to spare. The heap setting left room for everything else.", "good");
+      else dkStatus(st, "Load is rising…", "warn");
+    };
+  });
+  var player = dkPlayer({ btn: dk$("dkxPlay"), label: "Traffic spike", interval: 1100, steps: function(){ return steps; }, reset: reset });
+  pct.addEventListener("input", function(){ player.reset(); });
+  player.reset();
+})();
+
+/* ---- ch8: triage workflow ---- */
+(function(){
+  var root = dk$("dkTri"); if(!root) return;
+  var nodes = root.querySelectorAll(".dky__node"), term = dk$("dkyTerm"), look = dk$("dkyLook");
+  var steps = [
+    { cmd: "docker ps -a",
+      out: "CONTAINER ID   IMAGE       STATUS                          NAMES\na3f9c1d2e7b4   myapp:1.4   <mark>Restarting (137)</mark> 8 seconds ago    myapp",
+      look: "<b>Restarting (137)</b> means it keeps dying and Docker keeps reviving it. Exit code 137 is 128 + 9: it was killed with SIGKILL." },
+    { cmd: "docker inspect myapp --format '{{json .State}}'",
+      out: '{"Status":"restarting","ExitCode":137,<mark>"OOMKilled":true</mark>,"RestartCount":14}',
+      look: "<b>OOMKilled: true</b> is the confirmation: the kernel killed it for exceeding its memory limit. Not an application bug." },
+    { cmd: "docker logs --tail=3 myapp",
+      out: '09:41:07 INFO  Processing order 8841\n09:41:07 INFO  Processing order 8842\n<span class="dim">(and then nothing: no exception, no shutdown message)</span>',
+      look: "<b>The logs just stop.</b> No stack trace, because the app never got a chance to say anything. That silence is itself the clue." },
+    { cmd: "docker exec -it myapp sh",
+      out: "Error response from daemon: <mark>Container a3f9c1d2e7b4 is restarting</mark>, wait until the container is running",
+      look: "<b>exec only works on a running container.</b> That's why the first three steps matter: they work on dead ones too. Next move: raise the limit or lower the heap percentage." }
+  ];
+  function show(k){
+    nodes.forEach(function(n, i){ n.classList.toggle("is-active", i === k); });
+    term.innerHTML = '<span class="p">$</span> ' + steps[k].cmd + "\n" + steps[k].out;
+    look.innerHTML = steps[k].look;
+  }
+  nodes.forEach(function(n){ n.addEventListener("click", function(){ show(+n.dataset.k); }); });
+  show(0);
+})();
 
 function initReveal(){
   var els=document.querySelectorAll(".reveal");
